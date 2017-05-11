@@ -2,8 +2,8 @@
 // for more information see the following page on the TypeScript wiki:
 // https://github.com/Microsoft/TypeScript/wiki/JSX
 "use strict";
-var React = require("react");
-var ReactDOM = require("react-dom");
-var Hello_1 = require("./components/Hello");
-ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById("example"));
+const React = require("react");
+const ReactDOM = require("react-dom");
+const CrosswordPuzzleLoader_1 = require("./components/CrosswordPuzzleLoader");
+ReactDOM.render(React.createElement(CrosswordPuzzleLoader_1.CrosswordPuzzleLoader, null), document.getElementById("example"));
 //# sourceMappingURL=index.js.map

@@ -5,9 +5,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { Hello } from "./components/Hello";
+import { CrosswordPuzzleLoader } from "./components/CrosswordPuzzleLoader";
 
 ReactDOM.render(
-    <Hello compiler="TypeScript" framework="React" />,
+    <CrosswordPuzzleLoader/>,
     document.getElementById("example")
 );

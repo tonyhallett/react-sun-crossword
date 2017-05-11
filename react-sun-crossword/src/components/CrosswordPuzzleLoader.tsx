@@ -10,9 +10,10 @@ interface CrosswordState {
 export class CrosswordPuzzleLoader extends React.Component<undefined, CrosswordState> {
     constructor(props) {
         super(props);
+        this.state = { crosswordModel: this.getModel() };
     }
     
-    componentDidMount() {
+    getModel(): CrosswordModel{
         var crosswordJson = {
             "data": {
 
@@ -2085,9 +2086,7 @@ export class CrosswordPuzzleLoader extends React.Component<undefined, CrosswordS
             }
         }
         var model = ModelFromJson(crosswordJson);
-        this.setState({
-            crosswordModel: model
-        })
+        return model;
     }
     render() {
         return <CrosswordPuzzle crosswordModel={this.state.crosswordModel} />

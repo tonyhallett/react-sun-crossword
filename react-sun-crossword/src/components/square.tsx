@@ -1,19 +1,19 @@
 ﻿import * as React from "react";
-import  Radium  from 'radium'
+//import  Radium  =require('radium')
 import { SolvingMode } from '../models/index'
 import { SquareLetter, SquareLetterProps } from './squareLetter' 
 import { SquareNumber, SquareNumberProps } from './squareNumber'
 import { commonColourStyles,BackgroundColorStyle } from './commonColourStyling'
 
+export interface SquareProps { selected: (identifier: any) => any, isSelected: boolean, isWordSelected: boolean, solvingMode: SolvingMode, number: string, letter: string, guess: string, identifier: any }
 
-export interface SquareProps { isSelected: boolean, isWordSelected: boolean, solvingMode: SolvingMode,number:string,letter:string,guess:string,identifier:any,  selected: (identifier: any) => any }
 
-@Radium
+//@Radium
 export class Square extends React.Component<SquareProps, undefined> {
-    render() {
-        //console.log("**********")
-        //console.log(this.props);
-        //console.log("**********")
+    _getBackgroundColorStyle(): BackgroundColorStyle{
+        if (this.props.letter === "") {
+            return commonColourStyles.blank;
+        }
         var solvingMode = this.props.solvingMode;
         var isSelected = this.props.isSelected;
         var isWordSelected = this.props.isWordSelected;
@@ -47,16 +47,37 @@ export class Square extends React.Component<SquareProps, undefined> {
         propName = propName + solvingModePropPart;
         
         backgroundColorStyle = commonColourStyles[propName];
-        
+        return backgroundColorStyle;
+    };
+    _getSquareStyle() {
+        var baseStyle= {
+            width: "32px",
+            height: "32px",
+            textAlign: "center",
+            display: "table-cell",
+            margin: 0,
+            padding: 0,
+            border: "1px",
+            position:"relative"
+        }
+        return Object.assign(baseStyle, this._getBackgroundColorStyle());
+    }
+    _getSquareLetter(): string{
         var letter = this.props.letter;
         if (this.props.solvingMode !== SolvingMode.Cheating) {
             letter = this.props.guess;
         }
-
-        return <div style={backgroundColorStyle}>
-            <SquareLetter letter={letter} />
-            <SquareNumber number={this.props.number}/>
-        </div>
+        return letter;
+    }
+    _raiseSelected=()=> {
+        this.props.selected(this.props.identifier)
+    }
+    render() {
+        return <span onClick={this._raiseSelected} style={this._getSquareStyle()}>
+            <SquareNumber number={this.props.number} />
+            <SquareLetter letter={this._getSquareLetter()} />
+            
+        </span>
     }
 }
 

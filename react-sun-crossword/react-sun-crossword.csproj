@@ -88,6 +88,7 @@
     <TypeScriptCompile Include="src\components\CrosswordPuzzleLoader.tsx" />
     <TypeScriptCompile Include="src\components\squareLetter.tsx" />
     <TypeScriptCompile Include="src\components\squareNumber.tsx" />
+    <TypeScriptCompile Include="__tests__\crosswordPuzzleTests.tsx" />
     <TypeScriptCompile Include="__tests__\squareTests.tsx" />
     <TypeScriptCompile Include="__not_run_tests\sunCrosswordModelProviderTests.tsx" />
   </ItemGroup>
@@ -109,7 +110,6 @@
     <TypeScriptCompile Include="src\helpers\SunCrosswordModelProvider.ts" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\models\index.ts" />
-    <TypeScriptCompile Include="src\view-models\index.ts" />
     <TypeScriptCompile Include="__tests__\crosswordTests.tsx" />
   </ItemGroup>
   <ItemGroup>

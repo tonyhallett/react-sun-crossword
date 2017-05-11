@@ -11,6 +11,11 @@ import { commonColourStyles, BackgroundColorStyle } from '../src/components/comm
 import { xpit,pit, pits } from '../node_modules/jestextensions/index'
 
 describe('<Square />', () => {
+    describe('should style the background color appropriately when there is no letter', () => {
+        const wrapper = mount(<Square guess="" letter="" isSelected={false} isWordSelected={false} solvingMode={CrosswordModel.SolvingMode.Cheating} number="" identifier="id" selected={() => { }} />);
+        var domNode = wrapper.getDOMNode() as HTMLElement;
+        expect(domNode.style.backgroundColor).toBe(commonColourStyles.blank.backgroundColor);
+    })
     describe('should style the background color of the root node for selection state and solving mode combinations given the guess and the letter', () => {
         var letter, solvedGuess;
         letter = solvedGuess = "Y";
@@ -71,5 +76,11 @@ describe('<Square />', () => {
             expect(wrapper.find(SquareLetter).prop("letter")).toBe(expectedLetterProperty);
         });
     });
-    
+    describe('should raise the selected event when the containing element receives click event passing the identifier', () => {
+        var selectedHandler = jest.fn();
+        var identifier = { id: 1 };
+        const wrapper = mount(<Square guess="" letter="A" isSelected={false} isWordSelected={false} solvingMode={CrosswordModel.SolvingMode.Cheating} number="" identifier={identifier} selected={selectedHandler} />);
+        wrapper.simulate("click");
+        expect(selectedHandler).toBeCalledWith(identifier);
+    })
 });

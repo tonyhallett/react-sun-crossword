@@ -1,6 +1,8 @@
 ﻿export interface CrosswordModel {
     clueProviders: ClueProvider[],
     grid: Square[][],
+    selectedSquare: Square,
+    selectedWord:IWord
     //might want selectedSquare, selectedWord
 }
 export interface ClueProvider {
