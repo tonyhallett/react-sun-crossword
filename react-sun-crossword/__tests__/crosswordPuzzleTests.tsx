@@ -11,16 +11,6 @@ import { pit, pits } from '../node_modules/jestextensions/index'
 import { Square, SquareProps } from "../src/components/square";
 
 describe('<CrosswordPuzzle/>', () => {
-    //should I be checking selected and wordSelected of each square
-    //I DO NOT NEED TO CHECK THE SQUARE COMPONENT JUST THE squares: SquareProps[][] on the Crossword
-    //now I am going to be providing the model
-    //assume that when testing against the SquareProps[][] can just use a map of the model
-    //well partly 
-
-    //a) assume that can use a json crossword to start with - method above all describes 
-    //if was sure about nested beforeEach
-
-    //Am I interested in unnecessary state changes ??? and how would this be tested ?
     function getModel(): CrosswordModel {
         var crosswordJson = {
             "data": {
@@ -2330,15 +2320,9 @@ describe('<CrosswordPuzzle/>', () => {
                         for (var i = 0; i < 9; i++) {
                             expect(squareProps[0][i].isWordSelected).toBe(true);
                         }
-
-
-
-
                     })
                 });
             })
         });
-        
-        
     });
 })
