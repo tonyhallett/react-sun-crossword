@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "target": "es2016",
+    "experimentalDecorators": true,
+    "lib": [ "dom", "es5" ],
+    "jsx": "react"
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+  
+}
