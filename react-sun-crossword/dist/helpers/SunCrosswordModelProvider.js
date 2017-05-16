@@ -70,7 +70,9 @@ function ModelFromJson(json) {
         grid: grid,
         clueProviders: [{ name: "Cryptic", acrossClues: mapClues(sunCluesByProviderAndDirection[0].clues), downClues: mapClues(sunCluesByProviderAndDirection[1].clues) },
             { name: "Coffee time", acrossClues: mapClues(sunCluesByProviderAndDirection[2].clues), downClues: mapClues(sunCluesByProviderAndDirection[3].clues) }
-        ]
+        ],
+        selectedSquare: null,
+        selectedWord: null
     };
     return crosswordModel;
 }

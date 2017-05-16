@@ -1,7 +1,7 @@
 ﻿import * as React from "react";
 import { ModelFromJson } from '../helpers/SunCrosswordModelProvider'
 import { CrosswordModel } from '../models/index'
-import { CrosswordPuzzle } from "./crosswordPuzzle";
+import { CrosswordPuzzleKeyEvents } from "./crosswordPuzzle";
 
 
 interface CrosswordState {
@@ -2089,6 +2089,6 @@ export class CrosswordPuzzleLoader extends React.Component<undefined, CrosswordS
         return model;
     }
     render() {
-        return <CrosswordPuzzle crosswordModel={this.state.crosswordModel} />
+        return <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel} />
     }
 }

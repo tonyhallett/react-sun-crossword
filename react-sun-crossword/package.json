@@ -29,7 +29,7 @@
     "source-map-loader": "^0.2.1",
     "ts-jest": "^19.0.14",
     "ts-loader": "^2.0.3",
-    "typescript": "^2.3.2"
+    "typescript": "^2.4.0-dev.20170516"
   },
   "jest": {
     "transform": {

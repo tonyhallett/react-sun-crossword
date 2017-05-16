@@ -4,13 +4,15 @@ import * as ReactDOM from 'react-dom'
 import { mount, shallow, ReactWrapper } from 'enzyme';
 import { CrosswordPuzzle } from '../src/components/crosswordPuzzle'
 import { Crossword } from '../src/components/crossword'
-import { CrosswordModel } from '../src/models/index'
+import { CrosswordModel,Square } from '../src/models/index'
 import { ModelFromJson } from '../src/helpers/SunCrosswordModelProvider'
 
-import { pit, pits } from '../node_modules/jestextensions/index'
-import { Square, SquareProps } from "../src/components/square";
+import { pit, pits,xpit } from '../node_modules/jestextensions/index'
 
-describe('<CrosswordPuzzle/>', () => {
+
+type ArrowKeys = 'arrowLeft' | 'arrowRight' | 'arrowUp' | 'arrowDown';
+
+describe('<CrosswordPuzzle/ navigation>', () => {
     function getModel(): CrosswordModel {
         var crosswordJson = {
             "data": {
@@ -2086,243 +2088,64 @@ describe('<CrosswordPuzzle/>', () => {
         var model = ModelFromJson(crosswordJson);
         return model;
     }
-    describe('when a square is selected', () => {
-        describe('that is blank', () => {
-            it('should not rerender the crossword', () => {
-                var model = getModel();
-                const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                var crosswordWrapper = wrapper.find(Crossword);
-                var initialProps = crosswordWrapper.prop("squares");
-                
-                var blankSquare = crosswordWrapper.findWhere(w => {
-                    var isBlank = false;
-                    if (w.is(Square)) {
-                        var square = w as ReactWrapper<SquareProps, any>;
-                        isBlank = square.prop("letter") === "";
-                    }
-                    return isBlank;
-                }).first();
-                expect(initialProps).toBe(crosswordWrapper.prop("squares"));
-            })
+    describe('nothing selected', () => {
+        it('should not select', () => {
+            var model = getModel();
+            const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
+            var crosswordPuzzle = wrapper.instance() as CrosswordPuzzle;
+            var mockSquareSelected = jest.fn();
+            crosswordPuzzle.squareSelected = mockSquareSelected;
+            crosswordPuzzle.arrowDown();
+            expect(mockSquareSelected).not.toBeCalled();
         })
-        describe('that is not blank', () => {
-            describe('that is different to previous', () => {
-                //for all of these should check that there is only a single rerender
-                it('should change the selected square', () => {
-                    var model = getModel();
-                    var squareModel = model.grid[0][0];
-                    squareModel.selected = true;
-                    model.selectedSquare = squareModel;
-
-                    const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                    var crosswordWrapper = wrapper.find(Crossword);
-                    var squareToClick = crosswordWrapper.find({ id: "SquareTd2" }).first().find(Square);
-                    squareToClick.simulate("click");
-                    var squareProps = crosswordWrapper.prop("squares");
-                    expect(squareProps[0][0].isSelected).toBe(false);
-                    expect(squareProps[0][1].isSelected).toBe(true);
-                });
-                
-                describe('with only a downWord or acrossWord', () => {
-                    it('should change the selected word if different words', () => {
-                        var model = getModel();
-                        var squareModel = model.grid[0][0];
-                        squareModel.selected = true;
-                        model.selectedSquare = squareModel;
-                        //setting the initial selected word
-                        for (var i = 0; i < 9; i++) {
-                            model.grid[0][i].wordSelected = true;
-                        }
-                        model.selectedWord = model.grid[0][0].acrossWord;
-
-                        const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                        var crosswordWrapper = wrapper.find(Crossword);
-                        var squareToClick = crosswordWrapper.find({ id: "SquareTd26" }).first().find(Square);
-                        squareToClick.simulate("click");
-                        var squareProps = crosswordWrapper.prop("squares");
-
-                        for (var i = 0; i < 9; i++) {
-                            expect(squareProps[0][i].isWordSelected).toBe(false);
-                        }
-                        for (var i = 0; i < 7; i++) {
-                            expect(squareProps[i][12].isWordSelected).toBe(true);
-                        }
-                        
-                    });
-                    //xit('should not change the selected word if same words', () => {
-
-                    //});
-                });
-                describe('with a downWord and acrossWord', () => {
-                    it('should favour the across word when the selected is not a number square', () => {
-                        var model = getModel();
-                        var squareModel = model.grid[0][0];
-                        squareModel.selected = true;
-                        model.selectedSquare = squareModel;
-                        //setting the initial selected word
-                        for (var i = 0; i < 9; i++) {
-                            model.grid[0][i].wordSelected = true;
-                        }
-                        model.selectedWord = model.grid[0][0].acrossWord;
-
-                        const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                        var crosswordWrapper = wrapper.find(Crossword);
-                        var squareToClick = crosswordWrapper.find({ id: "SquareTd29" }).first().find(Square);
-                        squareToClick.simulate("click");
-                        var squareProps = crosswordWrapper.prop("squares");
-
-                        for (var i = 0; i < 9; i++) {
-                            expect(squareProps[0][i].isWordSelected).toBe(false);
-                        }
-                        for (var i = 0; i < 5; i++) {
-                            expect(squareProps[2][i].isWordSelected).toBe(true);
-                        }
-                    });
-                    it('should word select the downWord when the selected is the first square of only a downWord', () => {
-                        var model = getModel();
-                        var squareModel = model.grid[0][0];
-                        squareModel.selected = true;
-                        model.selectedSquare = squareModel;
-                        //setting the initial selected word
-                        for (var i = 0; i < 9; i++) {
-                            model.grid[0][i].wordSelected = true;
-                        }
-                        model.selectedWord = model.grid[0][0].acrossWord;
-
-                        const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                        var crosswordWrapper = wrapper.find(Crossword);
-                        var squareToClick = crosswordWrapper.find({ id: "SquareTd3" }).first().find(Square);
-                        squareToClick.simulate("click");
-                        var squareProps = crosswordWrapper.prop("squares");
-
-                        var previousSelectedValues = [false, false, true, false, false, false, false, false, false]
-                        previousSelectedValues.forEach((psv, i) => {
-                            expect(squareProps[0][i].isWordSelected).toBe(psv);
-                        });
-                            
-                        
-                        for (var i = 0; i < 7; i++) {
-                            expect(squareProps[i][2].isWordSelected).toBe(true);
-                        }
-                    });
-                    it('should word select the acrossWord when the selected is the first square of only an acrossWord', () => {
-
-                    });
-                    it('should favour the acrossWord when the selected is the first square of a downWord and acrossWord', () => {
-                        var model = getModel();
-                        var squareModel = model.grid[0][0];
-                        squareModel.selected = true;
-                        model.selectedSquare = squareModel;
-                        //setting the initial selected word
-                        for (var i = 0; i < 9; i++) {
-                            model.grid[0][i].wordSelected = true;
-                        }
-                        model.selectedWord = model.grid[0][0].acrossWord;
-
-                        const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                        var crosswordWrapper = wrapper.find(Crossword);
-                        var squareToClick = crosswordWrapper.find({ id: "SquareTd79" }).first().find(Square);
-                        squareToClick.simulate("click");
-
-                        var squareProps = crosswordWrapper.prop("squares");
-
-                        for (var i = 0; i < 9; i++) {
-                            expect(squareProps[0][i].isWordSelected).toBe(false);
-                        }
-
-
-                        for (var i = 0; i < 6; i++) {
-                            expect(squareProps[6][i].isWordSelected).toBe(true);
-                        }
-                    });
-                });
-            });
-            describe('that is the same as previous', () => {
-                describe('not on an intersection', () => {
-                    it('should not rerender', () => {
-                        var model = getModel();
-                        var squareModel = model.grid[0][1];
-                        squareModel.selected = true;
-                        model.selectedSquare = squareModel;
-                        //setting the initial selected word
-                        for (var i = 0; i < 9; i++) {
-                            model.grid[0][i].wordSelected = true;
-                        }
-                        model.selectedWord = model.grid[0][0].acrossWord;
-
-                        const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                        var crosswordWrapper = wrapper.find(Crossword);
-                        var initialProps = crosswordWrapper.prop("squares");
-                        var squareToClick = crosswordWrapper.find({ id: "SquareTd2" }).first().find(Square);
-                        squareToClick.simulate("click");
-                        expect(initialProps).toBe(crosswordWrapper.prop("squares"));
-
-                    });
-                });
-                describe('at an intersection', () => {
-                    //should parameterize
-                    it('should switch the selected words, across to down', () => {
-                        var model = getModel();
-                        var squareModel = model.grid[0][0];
-                        squareModel.selected = true;
-                        model.selectedSquare = squareModel;
-                        //setting the initial selected word
-                        for (var i = 0; i < 9; i++) {
-                            model.grid[0][i].wordSelected = true;
-                        }
-                        model.selectedWord = model.grid[0][0].acrossWord;
-
-                        const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                        var crosswordWrapper = wrapper.find(Crossword);
-                        var squareToClick = crosswordWrapper.find({ id: "SquareTd1" }).first().find(Square);
-                        squareToClick.simulate("click");
-
-                        var squareProps = crosswordWrapper.prop("squares");
-
-                        var previousSelectedValues = [true, false, false, false, false, false, false, false, false]
-                        previousSelectedValues.forEach((psv, i) => {
-                            expect(squareProps[0][i].isWordSelected).toBe(psv);
-                        });
-
-
-                        for (var i = 0; i < 5; i++) {
-                            expect(squareProps[i][0].isWordSelected).toBe(true);
-                        }
-
-                        
-
-
-                    })
-                    it('should switch the selected words, down to across', () => {
-                        var model = getModel();
-                        var squareModel = model.grid[0][0];
-                        squareModel.selected = true;
-                        model.selectedSquare = squareModel;
-                        //setting the initial selected word
-                        for (var i = 0; i < 5; i++) {
-                            model.grid[i][0].wordSelected = true;
-                        }
-                        model.selectedWord = model.grid[0][0].downWord;
-
-                        const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
-                        var crosswordWrapper = wrapper.find(Crossword);
-                        var squareToClick = crosswordWrapper.find({ id: "SquareTd1" }).first().find(Square);
-                        squareToClick.simulate("click");
-
-                        var squareProps = crosswordWrapper.prop("squares");
-
-                        var previousSelectedValues = [true, false, false, false, false]
-                        previousSelectedValues.forEach((psv, i) => {
-                            expect(squareProps[i][0].isWordSelected).toBe(psv);
-                        });
-
-
-                        for (var i = 0; i < 9; i++) {
-                            expect(squareProps[0][i].isWordSelected).toBe(true);
-                        }
-                    })
-                });
-            })
-        });
+        
     });
-})
+    //must remember that although the cols and index are not starting at 0 in the pit, they are in the test and
+    //that a failing result will show the values starting from 0
+    describe('affects selection if something is selected', () => {
+        pit('stays in word, first, right', 1, 11, 'arrowRight', 1, 12);
+        pit('stays in word, penultimate, right', 1, 12, 'arrowRight', 1, 13);
+        pit('stays in word, last, left', 1, 13, 'arrowLeft', 1, 12);
+        pit('stays in word, penultimate, left', 1, 12, 'arrowLeft', 1, 11);
+        pit('stays in word, first, down', 1, 1, 'arrowDown', 2, 1);
+        pit('stays in word, last, up', 5, 1, 'arrowUp', 4, 1);
+
+        pit('skips left single no pacman', 1, 11, 'arrowLeft', 1, 9);
+        pit('skips right single no pacman', 1, 9, 'arrowRight', 1, 11);
+        pit('skips down single no pacman', 13, 3, 'arrowDown', 1, 3);
+        pit('skips up single no pacman', 1, 3, 'arrowUp', 13, 3);
+
+
+        pit('skips left multiple no pacman', 8, 5, 'arrowLeft', 8, 1);
+        pit('skips right multiple no pacman', 6, 9, 'arrowRight', 6, 13);
+        pit('skips down multiple no pacman', 1, 6, 'arrowDown', 5, 6);
+        pit('skips up multiple no pacman', 5, 6, 'arrowUp', 1, 6);
+
+        pit('left pacman no skip', 1, 1, 'arrowLeft', 1, 13);
+        pit('right pacman no skip', 1, 13, 'arrowRight', 1, 1);
+        pit('down pacman no skip', 13, 5, 'arrowDown', 1, 5);
+        pit('up pacman no skip', 1, 13, 'arrowUp', 13, 13);
+
+        pit('left pacman skip after', 8, 1, 'arrowLeft', 8, 11);
+        pit('right pacman skip after', 6, 13, 'arrowRight', 6, 3);
+        pit('left pacman skip before', 6, 3, 'arrowLeft', 6, 13);
+        pit('down pacman skip before', 11, 4, 'arrowDown', 1, 4);
+        //.. could add couple more 
+        pits((initialSelectedRowIndex:number, initialSelectedColIndex:number, arrowKey: ArrowKeys,expectedSelectedRowIndex:number,expectedSelectedColIndex:number) => {
+            var model = getModel();
+            var initialSelected = model.grid[initialSelectedRowIndex - 1][initialSelectedColIndex - 1];
+            initialSelected.selected = true;
+            model.selectedSquare = initialSelected;
+            const wrapper = mount(<CrosswordPuzzle crosswordModel={model} />);
+            var crosswordPuzzle = wrapper.instance() as CrosswordPuzzle;
+            var stubPerformSelection = jest.fn();
+            crosswordPuzzle.performSelection = stubPerformSelection;
+            crosswordPuzzle[arrowKey]();
+            var square = stubPerformSelection.mock.calls[0][0] as Square;
+            expect(square.rowIndex).toBe(expectedSelectedRowIndex - 1);
+            expect(square.columnIndex).toBe(expectedSelectedColIndex - 1);
+            expect(stubPerformSelection.mock.calls[0][1]).toBe(true);
+            //will decrease by 1 on each
+        }
+    })
+});

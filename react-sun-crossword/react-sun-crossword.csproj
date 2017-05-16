@@ -76,6 +76,7 @@
     <None Include="src\crosswordJsons\23829.json" />
     <None Include="src\crosswordJsons\23830.json" />
     <None Include="src\crosswordJsons\23912.json" />
+    <Content Include="src\lib\index.js" />
     <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -88,7 +89,11 @@
     <TypeScriptCompile Include="src\components\CrosswordPuzzleLoader.tsx" />
     <TypeScriptCompile Include="src\components\squareLetter.tsx" />
     <TypeScriptCompile Include="src\components\squareNumber.tsx" />
-    <TypeScriptCompile Include="__tests__\crosswordPuzzleTests.tsx" />
+    <TypeScriptCompile Include="src\lib\constants.ts" />
+    <TypeScriptCompile Include="src\lib\key-handler.tsx" />
+    <TypeScriptCompile Include="src\lib\utils.tsx" />
+    <TypeScriptCompile Include="__tests__\crosswordPuzzleNavigationTests.tsx" />
+    <TypeScriptCompile Include="__tests__\crosswordPuzzleSelectionTests.tsx" />
     <TypeScriptCompile Include="__tests__\squareTests.tsx" />
     <TypeScriptCompile Include="__not_run_tests\sunCrosswordModelProviderTests.tsx" />
   </ItemGroup>

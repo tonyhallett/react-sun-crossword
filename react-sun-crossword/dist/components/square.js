@@ -7,7 +7,16 @@ const squareNumber_1 = require("./squareNumber");
 const commonColourStyling_1 = require("./commonColourStyling");
 //@Radium
 class Square extends React.Component {
+    constructor() {
+        super(...arguments);
+        this._raiseSelected = () => {
+            this.props.selected(this.props.identifier);
+        };
+    }
     _getBackgroundColorStyle() {
+        if (this.props.letter === "") {
+            return commonColourStyling_1.commonColourStyles.blank;
+        }
         var solvingMode = this.props.solvingMode;
         var isSelected = this.props.isSelected;
         var isWordSelected = this.props.isWordSelected;
@@ -43,6 +52,19 @@ class Square extends React.Component {
         return backgroundColorStyle;
     }
     ;
+    _getSquareStyle() {
+        var baseStyle = {
+            width: "32px",
+            height: "32px",
+            textAlign: "center",
+            display: "table-cell",
+            margin: 0,
+            padding: 0,
+            border: "1px",
+            position: "relative"
+        };
+        return Object.assign(baseStyle, this._getBackgroundColorStyle());
+    }
     _getSquareLetter() {
         var letter = this.props.letter;
         if (this.props.solvingMode !== index_1.SolvingMode.Cheating) {
@@ -51,9 +73,9 @@ class Square extends React.Component {
         return letter;
     }
     render() {
-        return React.createElement("div", { style: this._getBackgroundColorStyle() },
-            React.createElement(squareLetter_1.SquareLetter, { letter: this._getSquareLetter() }),
-            React.createElement(squareNumber_1.SquareNumber, { number: this.props.number }));
+        return React.createElement("span", { onClick: this._raiseSelected, style: this._getSquareStyle() },
+            React.createElement(squareNumber_1.SquareNumber, { number: this.props.number }),
+            React.createElement(squareLetter_1.SquareLetter, { letter: this._getSquareLetter() }));
     }
 }
 exports.Square = Square;
