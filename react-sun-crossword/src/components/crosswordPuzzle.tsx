@@ -19,20 +19,20 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
         return mappedGrid;
     }
 
-    _selectWord(selectedWord: IWord) {
+    _selectWord(selectedWord: IWord) { //the crosswordModel selectedWord property should deal with it - but interface 
         if (this.props.crosswordModel.selectedWord) {
-            this._setWordSquaresSelection(this.props.crosswordModel.selectedWord, false);
+            //this._setWordSquaresSelection(this.props.crosswordModel.selectedWord, false);
+            this.props.crosswordModel.selectedWord.deselect();
         }
-        
-        this._setWordSquaresSelection(selectedWord, true);
+        selectedWord.select(); 
         this.props.crosswordModel.selectedWord = selectedWord;
     }
-    _setWordSquaresSelection(word: IWord, select: boolean) {
-        word.squares.forEach(square => {
-            square.wordSelected = select;
-        })
-    }
+    //the crosswordModel selectedCell property should deal with it - but interface 
     _selectSquare(square: Square) {
+        var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
+        if (previousSelectedSquare) {
+            previousSelectedSquare.selected = false;
+        }
         square.selected = true;
         this.props.crosswordModel.selectedSquare = square;
     }
@@ -49,12 +49,10 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
     performSelection(square: Square,wordSelectWord=false) {
         var requiresRender = false;
         if (square.letter !== "") {
+            //leave here as _selectSquare changes
             var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
             var sameSquare = square.selected;
             if (!sameSquare) {
-                if (previousSelectedSquare) {
-                    previousSelectedSquare.selected = false;
-                }
                 this._selectSquare(square);
                 requiresRender = true;
             }
@@ -66,6 +64,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
                 } else {
                     var determinePreference = true;
                     if (wordSelectWord) {
+                        
                         if (previousSelectedSquare.acrossWord === square.acrossWord || previousSelectedSquare.downWord === square.downWord) {
                             wordToSelect = this.props.crosswordModel.selectedWord;
                             determinePreference = false;
@@ -94,7 +93,27 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
             this.forceUpdate();
         }
     }
-    navLeft(stopAtWord:boolean=true) {
+    arrowDown() {
+        var crosswordModel = this.props.crosswordModel
+        var selectedSquare = crosswordModel.selectedSquare;
+        if (selectedSquare) {
+            var grid = crosswordModel.grid
+            var numSquaresInColumn = grid.length;//instead of recalculating - props on the model
+            var nextNonBlankSquare: Square;
+            var nextSquareRowIndex = selectedSquare.rowIndex;
+            var colIndex = selectedSquare.columnIndex;
+            while (!nextNonBlankSquare) {
+                nextSquareRowIndex = nextSquareRowIndex == numSquaresInColumn - 1 ? 0 : nextSquareRowIndex + 1;
+                var nextSquare = grid[nextSquareRowIndex][colIndex];
+                if (nextSquare.letter !== "") {
+                    nextNonBlankSquare = nextSquare;
+                    break;
+                }
+            }
+            this.performSelection(nextNonBlankSquare, true);
+        }
+    }
+    arrowLeft() {
         var crosswordModel = this.props.crosswordModel
         var selectedSquare = crosswordModel.selectedSquare;
         if (selectedSquare) {
@@ -114,7 +133,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
             this.performSelection(nextNonBlankSquare, true);
         }
     }
-    navRight(stopAtWord:boolean=true) {
+    arrowRight() {
         var crosswordModel = this.props.crosswordModel
         var selectedSquare = crosswordModel.selectedSquare;
         if (selectedSquare) {
@@ -131,10 +150,10 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
                     break;
                 }
             }
-            this.performSelection(nextNonBlankSquare,true);
+            this.performSelection(nextNonBlankSquare, true);
         }
     }
-    navUp(stopAtWord: boolean = true) {
+    arrowUp() {
         var crosswordModel = this.props.crosswordModel
         var selectedSquare = crosswordModel.selectedSquare;
         if (selectedSquare) {
@@ -151,53 +170,41 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
                     break;
                 }
             }
-            this.performSelection(nextNonBlankSquare,true);
+            this.performSelection(nextNonBlankSquare, true);
         }
     }
-    navDown(stopAtWord: boolean = true) {
-        var crosswordModel = this.props.crosswordModel
-        var selectedSquare = crosswordModel.selectedSquare;
+    backspace() {
+        var selectedSquare = this.props.crosswordModel.selectedSquare
         if (selectedSquare) {
-            var grid = crosswordModel.grid
-            var numSquaresInColumn = grid.length;//instead of recalculating - props on the model
-            var nextNonBlankSquare: Square;
-            var nextSquareRowIndex = selectedSquare.rowIndex;
-            var colIndex = selectedSquare.columnIndex;
-            while (!nextNonBlankSquare) {
-                nextSquareRowIndex = nextSquareRowIndex == numSquaresInColumn - 1 ? 0 : nextSquareRowIndex + 1;
-                var nextSquare = grid[nextSquareRowIndex][colIndex];
-                if (nextSquare.letter !== "") {
-                    nextNonBlankSquare = nextSquare;
-                    break;
+            selectedSquare.guess = "";
+            var selectedWord = this.props.crosswordModel.selectedWord;
+            if (selectedWord.squares.indexOf(selectedSquare) !== 0) {
+                if (selectedWord.isAcross) {
+                    this.arrowLeft();
+                } else {
+                    this.arrowUp();
                 }
             }
-            this.performSelection(nextNonBlankSquare,true);
         }
-    }
-    arrowDown() {
-        this.navDown(false);
-    }
-    arrowLeft() {
-        this.navLeft(false);
-    }
-    arrowRight() {
-        this.navRight(false);
-    }
-    arrowUp() {
-        this.navUp(false);
+        
     }
     render() {
         return <Crossword squares={this._mapGrid(this.props.crosswordModel.grid)} />
     }
-    //event, keyValue, keyCode, modifiers
-    keyGuess(event,keyValue:string) {
-        console.log("Key guess");
-        //extract in to a guess
-        this.props.crosswordModel.selectedSquare.guess = keyValue.toUpperCase();
-
-        //when add nav will have to consider may render twice
+    keyGuess(event, keyValue: string) {
+        var selectedSquare = this.props.crosswordModel.selectedSquare;
+        if (selectedSquare) {
+            this.props.crosswordModel.selectedSquare.guess = keyValue.toUpperCase();
+            var selectedWord = this.props.crosswordModel.selectedWord;
+            if (selectedWord.squares.indexOf(selectedSquare) !== selectedWord.squares.length-1) {
+                if (selectedWord.isAcross) {
+                    this.arrowRight();
+                } else {
+                    this.arrowDown();
+                }
+            }
+        }
     }
-
 }
 
 var alphaKeysUpper = ["A", "B", "C", "D", "E", "F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
@@ -231,7 +238,12 @@ var arrowMatches = [
 
     }
 ]
+var backspaceMatch = {
+    methodName: "backspace",
+    keyMatches:["Backspace"]
+}
 var keyMatches = arrowMatches.concat(alphaMatches);
+keyMatches.push(backspaceMatch);
 export var CrosswordPuzzleKeyEvents = KeyEvents.keyHandler({
     keyEventName: "keydown", keyMatches: keyMatches
 })(CrosswordPuzzle);

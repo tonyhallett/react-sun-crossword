@@ -2146,6 +2146,6 @@ describe('<CrosswordPuzzle/ navigation>', () => {
             expect(square.columnIndex).toBe(expectedSelectedColIndex - 1);
             expect(stubPerformSelection.mock.calls[0][1]).toBe(true);
             //will decrease by 1 on each
-        }
+        })
     })
 });

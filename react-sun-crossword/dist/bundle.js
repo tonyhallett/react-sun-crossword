@@ -1144,7 +1144,7 @@ class Word {
         this._setSolvingMode(SolvingMode.Guessing);
     }
     _setSelectionState(selected) {
-        this.squares.forEach(square => square.selected = selected);
+        this.squares.forEach(square => square.wordSelected = selected);
         this.selected = selected;
     }
     select() {
@@ -4349,17 +4349,17 @@ class CrosswordPuzzle extends React.Component {
     }
     _selectWord(selectedWord) {
         if (this.props.crosswordModel.selectedWord) {
-            this._setWordSquaresSelection(this.props.crosswordModel.selectedWord, false);
+            //this._setWordSquaresSelection(this.props.crosswordModel.selectedWord, false);
+            this.props.crosswordModel.selectedWord.deselect();
         }
-        this._setWordSquaresSelection(selectedWord, true);
+        selectedWord.select();
         this.props.crosswordModel.selectedWord = selectedWord;
     }
-    _setWordSquaresSelection(word, select) {
-        word.squares.forEach(square => {
-            square.wordSelected = select;
-        });
-    }
     _selectSquare(square) {
+        var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
+        if (previousSelectedSquare) {
+            previousSelectedSquare.selected = false;
+        }
         square.selected = true;
         this.props.crosswordModel.selectedSquare = square;
     }
@@ -4372,12 +4372,10 @@ class CrosswordPuzzle extends React.Component {
     performSelection(square, wordSelectWord = false) {
         var requiresRender = false;
         if (square.letter !== "") {
+            //leave here as _selectSquare changes
             var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
             var sameSquare = square.selected;
             if (!sameSquare) {
-                if (previousSelectedSquare) {
-                    previousSelectedSquare.selected = false;
-                }
                 this._selectSquare(square);
                 requiresRender = true;
             }
@@ -4416,67 +4414,7 @@ class CrosswordPuzzle extends React.Component {
             this.forceUpdate();
         }
     }
-    navLeft(stopAtWord = true) {
-        var crosswordModel = this.props.crosswordModel;
-        var selectedSquare = crosswordModel.selectedSquare;
-        if (selectedSquare) {
-            var grid = crosswordModel.grid;
-            var numSquaresInRow = grid[0].length; //instead of recalculating - props on the model
-            var nextNonBlankSquare;
-            var nextSquareColIndex = selectedSquare.columnIndex;
-            var rowIndex = selectedSquare.rowIndex;
-            while (!nextNonBlankSquare) {
-                nextSquareColIndex = nextSquareColIndex == 0 ? numSquaresInRow - 1 : nextSquareColIndex - 1;
-                var nextSquare = grid[rowIndex][nextSquareColIndex];
-                if (nextSquare.letter !== "") {
-                    nextNonBlankSquare = nextSquare;
-                    break;
-                }
-            }
-            this.performSelection(nextNonBlankSquare, true);
-        }
-    }
-    navRight(stopAtWord = true) {
-        var crosswordModel = this.props.crosswordModel;
-        var selectedSquare = crosswordModel.selectedSquare;
-        if (selectedSquare) {
-            var grid = crosswordModel.grid;
-            var numSquaresInRow = grid[0].length; //instead of recalculating - props on the model
-            var nextNonBlankSquare;
-            var nextSquareColIndex = selectedSquare.columnIndex;
-            var rowIndex = selectedSquare.rowIndex;
-            while (!nextNonBlankSquare) {
-                nextSquareColIndex = nextSquareColIndex == numSquaresInRow - 1 ? 0 : nextSquareColIndex + 1;
-                var nextSquare = grid[rowIndex][nextSquareColIndex];
-                if (nextSquare.letter !== "") {
-                    nextNonBlankSquare = nextSquare;
-                    break;
-                }
-            }
-            this.performSelection(nextNonBlankSquare, true);
-        }
-    }
-    navUp(stopAtWord = true) {
-        var crosswordModel = this.props.crosswordModel;
-        var selectedSquare = crosswordModel.selectedSquare;
-        if (selectedSquare) {
-            var grid = crosswordModel.grid;
-            var numSquaresInColumn = grid.length; //instead of recalculating - props on the model
-            var nextNonBlankSquare;
-            var nextSquareRowIndex = selectedSquare.rowIndex;
-            var colIndex = selectedSquare.columnIndex;
-            while (!nextNonBlankSquare) {
-                nextSquareRowIndex = nextSquareRowIndex == 0 ? numSquaresInColumn - 1 : nextSquareRowIndex - 1;
-                var nextSquare = grid[nextSquareRowIndex][colIndex];
-                if (nextSquare.letter !== "") {
-                    nextNonBlankSquare = nextSquare;
-                    break;
-                }
-            }
-            this.performSelection(nextNonBlankSquare, true);
-        }
-    }
-    navDown(stopAtWord = true) {
+    arrowDown() {
         var crosswordModel = this.props.crosswordModel;
         var selectedSquare = crosswordModel.selectedSquare;
         if (selectedSquare) {
@@ -4496,27 +4434,98 @@ class CrosswordPuzzle extends React.Component {
             this.performSelection(nextNonBlankSquare, true);
         }
     }
-    arrowDown() {
-        this.navDown(false);
-    }
     arrowLeft() {
-        this.navLeft(false);
+        var crosswordModel = this.props.crosswordModel;
+        var selectedSquare = crosswordModel.selectedSquare;
+        if (selectedSquare) {
+            var grid = crosswordModel.grid;
+            var numSquaresInRow = grid[0].length; //instead of recalculating - props on the model
+            var nextNonBlankSquare;
+            var nextSquareColIndex = selectedSquare.columnIndex;
+            var rowIndex = selectedSquare.rowIndex;
+            while (!nextNonBlankSquare) {
+                nextSquareColIndex = nextSquareColIndex == 0 ? numSquaresInRow - 1 : nextSquareColIndex - 1;
+                var nextSquare = grid[rowIndex][nextSquareColIndex];
+                if (nextSquare.letter !== "") {
+                    nextNonBlankSquare = nextSquare;
+                    break;
+                }
+            }
+            this.performSelection(nextNonBlankSquare, true);
+        }
     }
     arrowRight() {
-        this.navRight(false);
+        var crosswordModel = this.props.crosswordModel;
+        var selectedSquare = crosswordModel.selectedSquare;
+        if (selectedSquare) {
+            var grid = crosswordModel.grid;
+            var numSquaresInRow = grid[0].length; //instead of recalculating - props on the model
+            var nextNonBlankSquare;
+            var nextSquareColIndex = selectedSquare.columnIndex;
+            var rowIndex = selectedSquare.rowIndex;
+            while (!nextNonBlankSquare) {
+                nextSquareColIndex = nextSquareColIndex == numSquaresInRow - 1 ? 0 : nextSquareColIndex + 1;
+                var nextSquare = grid[rowIndex][nextSquareColIndex];
+                if (nextSquare.letter !== "") {
+                    nextNonBlankSquare = nextSquare;
+                    break;
+                }
+            }
+            this.performSelection(nextNonBlankSquare, true);
+        }
     }
     arrowUp() {
-        this.navUp(false);
+        var crosswordModel = this.props.crosswordModel;
+        var selectedSquare = crosswordModel.selectedSquare;
+        if (selectedSquare) {
+            var grid = crosswordModel.grid;
+            var numSquaresInColumn = grid.length; //instead of recalculating - props on the model
+            var nextNonBlankSquare;
+            var nextSquareRowIndex = selectedSquare.rowIndex;
+            var colIndex = selectedSquare.columnIndex;
+            while (!nextNonBlankSquare) {
+                nextSquareRowIndex = nextSquareRowIndex == 0 ? numSquaresInColumn - 1 : nextSquareRowIndex - 1;
+                var nextSquare = grid[nextSquareRowIndex][colIndex];
+                if (nextSquare.letter !== "") {
+                    nextNonBlankSquare = nextSquare;
+                    break;
+                }
+            }
+            this.performSelection(nextNonBlankSquare, true);
+        }
+    }
+    backspace() {
+        var selectedSquare = this.props.crosswordModel.selectedSquare;
+        if (selectedSquare) {
+            selectedSquare.guess = "";
+            var selectedWord = this.props.crosswordModel.selectedWord;
+            if (selectedWord.squares.indexOf(selectedSquare) !== 0) {
+                if (selectedWord.isAcross) {
+                    this.arrowLeft();
+                }
+                else {
+                    this.arrowUp();
+                }
+            }
+        }
     }
     render() {
         return React.createElement(crossword_1.Crossword, { squares: this._mapGrid(this.props.crosswordModel.grid) });
     }
-    //event, keyValue, keyCode, modifiers
     keyGuess(event, keyValue) {
-        console.log("Key guess");
-        //extract in to a guess
-        this.props.crosswordModel.selectedSquare.guess = keyValue.toUpperCase();
-        //when add nav will have to consider may render twice
+        var selectedSquare = this.props.crosswordModel.selectedSquare;
+        if (selectedSquare) {
+            this.props.crosswordModel.selectedSquare.guess = keyValue.toUpperCase();
+            var selectedWord = this.props.crosswordModel.selectedWord;
+            if (selectedWord.squares.indexOf(selectedSquare) !== selectedWord.squares.length - 1) {
+                if (selectedWord.isAcross) {
+                    this.arrowRight();
+                }
+                else {
+                    this.arrowDown();
+                }
+            }
+        }
     }
 }
 exports.CrosswordPuzzle = CrosswordPuzzle;
@@ -4547,7 +4556,12 @@ var arrowMatches = [
         keyMatches: ["ArrowUp"]
     }
 ];
+var backspaceMatch = {
+    methodName: "backspace",
+    keyMatches: ["Backspace"]
+};
 var keyMatches = arrowMatches.concat(alphaMatches);
+keyMatches.push(backspaceMatch);
 exports.CrosswordPuzzleKeyEvents = KeyEvents.keyHandler({
     keyEventName: "keydown", keyMatches: keyMatches
 })(CrosswordPuzzle);
@@ -4867,7 +4881,7 @@ class KeyHandler extends React.Component {
             return match;
         };
         this.handleKey = (event) => {
-            console.log("keyhandler component handle key");
+            //console.log("keyhandler component handle key")
             const { keyValue, keyCode, keyMatches, onKeyHandle } = this.props;
             if (!onKeyHandle) {
                 return;
@@ -4971,7 +4985,7 @@ function keyHandleDecorator(matcher) {
                 super(...arguments);
                 this.state = { keyValue: null, keyCode: null, modifiers: null };
                 this.handleKey = (event, ids) => {
-                    console.log("HOC handleKey");
+                    //console.log("HOC handleKey");
                     if (matcher && matcher(event, this.state)) {
                         this.setState({ keyValue: null, keyCode: null });
                         return;

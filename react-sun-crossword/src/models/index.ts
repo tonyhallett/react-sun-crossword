@@ -61,7 +61,7 @@ export class Word implements IWord {
         this._setSolvingMode(SolvingMode.Guessing);
     }
     _setSelectionState(selected: boolean) {
-        this.squares.forEach(square => square.selected = selected);
+        this.squares.forEach(square => square.wordSelected = selected);
         this.selected = selected;
     }
     select() {
