@@ -334,8 +334,10 @@ function keyHandleDecorator<P>(matcher?: typeof matchesKeyboardEvent) {
                           this.wrappedInstance[methodName](event, keyValue, keyCode, modifiers);
                       })
 
+                  } else {
+                      this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
                   }
-                  this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
+                  
           
                 };
             }

@@ -11,7 +11,7 @@ import { commonColourStyles, BackgroundColorStyle } from '../src/components/comm
 import { xpit,pit, pits } from '../node_modules/jestextensions/index'
 
 describe('<Square />', () => {
-    describe('should style the background color appropriately when there is no letter', () => {
+    describe('should style the background color appropriately when is blank', () => {
         const wrapper = mount(<Square guess="" letter="" isSelected={false} isWordSelected={false} solvingMode={CrosswordModel.SolvingMode.Cheating} number="" identifier="id" selected={() => { }} />);
         var domNode = wrapper.getDOMNode() as HTMLElement;
         expect(domNode.style.backgroundColor).toBe(commonColourStyles.blank.backgroundColor);
@@ -21,33 +21,33 @@ describe('<Square />', () => {
         letter = solvedGuess = "Y";
         var unsolvedGuess = "N";
 
-        pit('NotSelected, Cheating', false, false, CrosswordModel.SolvingMode.Cheating, "", commonColourStyles.notSelectedCheating);
-        pit('Selected,Cheating', true, true, CrosswordModel.SolvingMode.Cheating, "", commonColourStyles.selectedCheating);
-        pit('WordSelected,Cheating', false, true, CrosswordModel.SolvingMode.Cheating, "", commonColourStyles.wordSelectedCheating);
+        pit('NotSelected, Cheating, Unsolved', false, false, CrosswordModel.SolvingMode.Cheating, unsolvedGuess, commonColourStyles.notSelectedCheating);
+        pit('Selected,Cheating, Unsolved', true, true, CrosswordModel.SolvingMode.Cheating, unsolvedGuess, commonColourStyles.selectedCheating);
+        pit('WordSelected,Cheating, Unsolved', false, true, CrosswordModel.SolvingMode.Cheating, unsolvedGuess, commonColourStyles.wordSelectedCheating);
 
+        pit('NotSelected, Cheating, Solved', false, false, CrosswordModel.SolvingMode.Cheating, solvedGuess, commonColourStyles.notSelectedSolved);
+        pit('Selected,Cheating,Solved', true, true, CrosswordModel.SolvingMode.Cheating, solvedGuess, commonColourStyles.selectedSolved);
+        pit('WordSelected,Cheating,Solved', false, true, CrosswordModel.SolvingMode.Cheating, solvedGuess, commonColourStyles.wordSelectedSolved);
+
+        //guessing is just selected 
         pit('NotSelected, Guessing', false, false, CrosswordModel.SolvingMode.Guessing, "", commonColourStyles.notSelectedGuessing);
         pit('Selected,Guessing', true, true, CrosswordModel.SolvingMode.Guessing, "", commonColourStyles.selectedGuessing);
         pit('WordSelected,Guessing', false, true, CrosswordModel.SolvingMode.Guessing, "", commonColourStyles.wordSelectedGuessing);
 
-        //***** will have to consider auto solving later
-        pit('NotSelected, Solved', false, false, CrosswordModel.SolvingMode.Solving, solvedGuess, commonColourStyles.notSelectedSolved);
-        pit('Selected,Solved', true, true, CrosswordModel.SolvingMode.Solving, solvedGuess, commonColourStyles.selectedSolved);
-        pit('WordSelected,Solved', false, true, CrosswordModel.SolvingMode.Solving, solvedGuess, commonColourStyles.wordSelectedSolved);
 
-        pit('NotSelected, Unsolved', false, false, CrosswordModel.SolvingMode.Solving, unsolvedGuess, commonColourStyles.notSelectedUnsolved);
-        pit('Selected,Unsolved', true, true, CrosswordModel.SolvingMode.Solving, unsolvedGuess, commonColourStyles.selectedUnsolved);
-        pit('WordSelected,Unsolved', false, true, CrosswordModel.SolvingMode.Solving, unsolvedGuess, commonColourStyles.wordSelectedUnsolved);
+        pit('NotSelected,Solving, Solved', false, false, CrosswordModel.SolvingMode.Solving, solvedGuess, commonColourStyles.notSelectedSolved);
+        pit('Selected,Solving, Solved', true, true, CrosswordModel.SolvingMode.Solving, solvedGuess, commonColourStyles.selectedSolved);
+        pit('WordSelected,Solving,Solved', false, true, CrosswordModel.SolvingMode.Solving, solvedGuess, commonColourStyles.wordSelectedSolved);
+
+        pit('NotSelected,Solving, Unsolved', false, false, CrosswordModel.SolvingMode.Solving, unsolvedGuess, commonColourStyles.notSelectedUnsolved);
+        pit('Selected,Solving,Unsolved', true, true, CrosswordModel.SolvingMode.Solving, unsolvedGuess, commonColourStyles.selectedUnsolved);
+        pit('WordSelected,Solving, Unsolved', false, true, CrosswordModel.SolvingMode.Solving, unsolvedGuess, commonColourStyles.wordSelectedUnsolved);
 
         pits((isSelected: boolean, isWordSelected: boolean, solvingMode: CrosswordModel.SolvingMode, guess: string, backgroundStyle: BackgroundColorStyle) => {
             const wrapper = mount(<Square guess={guess} letter={letter} isSelected={isSelected} isWordSelected={isWordSelected} solvingMode={solvingMode} number="" identifier="id" selected={() => { }} />);
             var domNode = wrapper.getDOMNode() as HTMLElement;
             expect(domNode.style.backgroundColor).toBe(backgroundStyle.backgroundColor);
         });
-
-
-
-        
-
     });
     
     describe('should have a <SquareNumber/> inside with the number prop ', () => {

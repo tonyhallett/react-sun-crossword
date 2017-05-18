@@ -2122,15 +2122,14 @@ describe('Crossword puzzle input', () => {
                 row: number,
                 col: number
             }
-            //set these and then can move on
-            pit('not last across', { row: 0, col: 1 }, true, { row: 0, col: 0 });
-            pit('not last down', { row: 1, col: 0 }, false, { row: 0, col: 0 });
-            pit('not last intersection across', { row: 2, col: 2 }, true, { row: 2, col: 1 })
-            pit('not last intersection down', { row: 2, col: 2 }, false, { row: 1, col: 2 })
-            pit('last across not on edge', { row: 0, col: 10 }, true, { row: 0, col: 10 })
-            pit('last across on edge intersection', { row: 0, col: 0 }, true, { row: 0, col: 0 })
-            pit('last down not on edge', { row: 5, col: 8 }, false, { row: 5, col: 8 })
-            pit('last down on edge intersection', { row: 0, col: 0 }, false, { row: 0, col: 0 })
+            pit('not last across', { row: 0, col: 1 }, true, { row: 0, col: 2 });
+            pit('not last down', { row: 1, col: 0 }, false, { row: 2, col: 0 });
+            pit('not last intersection across', { row: 2, col: 2 }, true, { row: 2, col: 3 })
+            pit('not last intersection down', { row: 2, col: 2 }, false, { row: 3, col: 2 })
+            pit('last across not on edge', { row: 0, col: 8 }, true, { row: 0, col: 8 })
+            pit('last across on edge intersection', { row: 0, col: 12 }, true, { row: 0, col: 12 })
+            pit('last down not on edge', { row: 5, col: 6 }, false, { row: 5, col: 6 })
+            pit('last down on edge intersection', { row: 12, col: 4 }, false, { row: 12, col: 4})
 
             pits((selectedRowCol: RowCol, acrossWord: boolean, expectedSelectedSquare: RowCol) => {
                 var model = getModelWithSelectedSquare(selectedRowCol.row, selectedRowCol.col);

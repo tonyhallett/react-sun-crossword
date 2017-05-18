@@ -18,34 +18,27 @@ class Square extends React.Component {
             return commonColourStyling_1.commonColourStyles.blank;
         }
         var solvingMode = this.props.solvingMode;
-        var isSelected = this.props.isSelected;
-        var isWordSelected = this.props.isWordSelected;
         var backgroundColorStyle;
         var propName = "selected";
-        if (!isSelected) {
-            if (isWordSelected) {
+        if (!this.props.isSelected) {
+            if (this.props.isWordSelected) {
                 propName = "wordSelected";
             }
             else {
                 propName = "notSelected";
             }
         }
-        var solvingModePropPart;
-        switch (solvingMode) {
-            case index_1.SolvingMode.Cheating:
-                solvingModePropPart = "Cheating";
-                break;
-            case index_1.SolvingMode.Guessing:
-                solvingModePropPart = "Guessing";
-                break;
-            case index_1.SolvingMode.Solving:
-                if (this.props.letter === this.props.guess) {
-                    solvingModePropPart = "Solved";
+        var solvingModePropPart = "Guessing";
+        if (solvingMode !== index_1.SolvingMode.Guessing) {
+            if (this.props.letter === this.props.guess) {
+                solvingModePropPart = "Solved";
+            }
+            else {
+                solvingModePropPart = "Unsolved";
+                if (solvingMode === index_1.SolvingMode.Cheating) {
+                    solvingModePropPart = "Cheating";
                 }
-                else {
-                    solvingModePropPart = "Unsolved";
-                }
-                break;
+            }
         }
         propName = propName + solvingModePropPart;
         backgroundColorStyle = commonColourStyling_1.commonColourStyles[propName];

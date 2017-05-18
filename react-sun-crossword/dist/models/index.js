@@ -14,20 +14,31 @@ class Word {
         this.squares.forEach(square => square.solvingMode = solvingMode);
         this.solvingMode = solvingMode;
     }
-    cheat() {
-        this._setSolvingMode(SolvingMode.Cheating);
+    solved() {
+        var isSolved = true;
+        for (var i = 0; i < this.squares.length; i++) {
+            var square = this.squares[i];
+            if (square.guess !== square.letter) {
+                isSolved = false;
+                break;
+            }
+        }
+        return isSolved;
     }
-    uncheat() {
-        this._setSolvingMode(SolvingMode.Guessing);
-    }
-    solve() {
-        this._setSolvingMode(SolvingMode.Solving);
-    }
-    unsolve() {
-        this._setSolvingMode(SolvingMode.Guessing);
-    }
+    //cheat() {
+    //    this._setSolvingMode(SolvingMode.Cheating);
+    //}
+    //uncheat() {
+    //    this._setSolvingMode(SolvingMode.Guessing);
+    //}
+    //solve() {
+    //    this._setSolvingMode(SolvingMode.Solving);
+    //}
+    //unsolve() {
+    //    this._setSolvingMode(SolvingMode.Guessing);
+    //}
     _setSelectionState(selected) {
-        this.squares.forEach(square => square.selected = selected);
+        this.squares.forEach(square => square.wordSelected = selected);
         this.selected = selected;
     }
     select() {

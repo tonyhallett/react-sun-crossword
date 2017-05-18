@@ -1,10 +1,11 @@
 ﻿//it will only be necessary to read this the once - after that will be working from IndexedDbModelProvider or JsonModelProvider
 import * as Crossword from "../models/index"
 
+
 export function ModelFromJson(json: SunJson): Crossword.CrosswordModel{
     var grid: Crossword.Square[][] = json.data.grid.map((row,rowIndex) => {
         return row.map((square, columnIndex) => {
-            var crosswordSquare: Crossword.Square = { columnIndex:columnIndex, rowIndex:rowIndex, acrossWord: null, downWord: null, guess: "", letter: square.Letter, number: square.Number, selected: false, wordSelected: false, solvingMode: Crossword.SolvingMode.Guessing }
+            var crosswordSquare: Crossword.Square = { autoSolved:false,columnIndex:columnIndex, rowIndex:rowIndex, acrossWord: null, downWord: null, guess: "", letter: square.Letter, number: square.Number, selected: false, wordSelected: false, solvingMode: Crossword.SolvingMode.Guessing }
             return crosswordSquare;
         });
     });
@@ -77,7 +78,9 @@ export function ModelFromJson(json: SunJson): Crossword.CrosswordModel{
             { name: "Coffee time", acrossClues: mapClues(sunCluesByProviderAndDirection[2].clues), downClues: mapClues(sunCluesByProviderAndDirection[3].clues) }
         ],
         selectedSquare: null,
-        selectedWord:null
+        selectedWord: null,
+        solvingMode: Crossword.SolvingMode.Guessing,
+        words: crosswordWords
     }
     return crosswordModel;
 }

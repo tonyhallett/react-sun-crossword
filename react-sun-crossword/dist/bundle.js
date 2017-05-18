@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 20);
+/******/ 	return __webpack_require__(__webpack_require__.s = 23);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -91,8 +91,67 @@ exports.KEYUP = 'keyup';
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SolvingMode;
+(function (SolvingMode) {
+    SolvingMode[SolvingMode["Guessing"] = 0] = "Guessing";
+    SolvingMode[SolvingMode["Solving"] = 1] = "Solving";
+    SolvingMode[SolvingMode["Cheating"] = 2] = "Cheating";
+})(SolvingMode = exports.SolvingMode || (exports.SolvingMode = {}));
+class Word {
+    constructor() {
+        this.squares = [];
+        this.solvingMode = SolvingMode.Guessing;
+    }
+    _setSolvingMode(solvingMode) {
+        this.squares.forEach(square => square.solvingMode = solvingMode);
+        this.solvingMode = solvingMode;
+    }
+    solved() {
+        var isSolved = true;
+        for (var i = 0; i < this.squares.length; i++) {
+            var square = this.squares[i];
+            if (square.guess !== square.letter) {
+                isSolved = false;
+                break;
+            }
+        }
+        return isSolved;
+    }
+    //cheat() {
+    //    this._setSolvingMode(SolvingMode.Cheating);
+    //}
+    //uncheat() {
+    //    this._setSolvingMode(SolvingMode.Guessing);
+    //}
+    //solve() {
+    //    this._setSolvingMode(SolvingMode.Solving);
+    //}
+    //unsolve() {
+    //    this._setSolvingMode(SolvingMode.Guessing);
+    //}
+    _setSelectionState(selected) {
+        this.squares.forEach(square => square.wordSelected = selected);
+        this.selected = selected;
+    }
+    select() {
+        this._setSelectionState(true);
+    }
+    deselect() {
+        this._setSelectionState(false);
+    }
+}
+exports.Word = Word;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
 /* MIT license */
-var cssKeywords = __webpack_require__(3);
+var cssKeywords = __webpack_require__(4);
 
 // NOTE: conversions should only return primitive values (i.e. arrays, or
 //       values that give correct `typeof` results).
@@ -955,7 +1014,7 @@ convert.rgb.gray = function (rgb) {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -1110,63 +1169,76 @@ module.exports = {
 };
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var SolvingMode;
-(function (SolvingMode) {
-    SolvingMode[SolvingMode["Guessing"] = 0] = "Guessing";
-    SolvingMode[SolvingMode["Solving"] = 1] = "Solving";
-    SolvingMode[SolvingMode["Cheating"] = 2] = "Cheating";
-})(SolvingMode = exports.SolvingMode || (exports.SolvingMode = {}));
-class Word {
-    constructor() {
-        this.squares = [];
-        this.solvingMode = SolvingMode.Guessing;
-    }
-    _setSolvingMode(solvingMode) {
-        this.squares.forEach(square => square.solvingMode = solvingMode);
-        this.solvingMode = solvingMode;
-    }
-    cheat() {
-        this._setSolvingMode(SolvingMode.Cheating);
-    }
-    uncheat() {
-        this._setSolvingMode(SolvingMode.Guessing);
-    }
-    solve() {
-        this._setSolvingMode(SolvingMode.Solving);
-    }
-    unsolve() {
-        this._setSolvingMode(SolvingMode.Guessing);
-    }
-    _setSelectionState(selected) {
-        this.squares.forEach(square => square.wordSelected = selected);
-        this.selected = selected;
-    }
-    select() {
-        this._setSelectionState(true);
-    }
-    deselect() {
-        this._setSelectionState(false);
-    }
-}
-exports.Word = Word;
-
-
-/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+const Color = __webpack_require__(8);
+//these all have the same initial lightness but in rgb which is not ideal
+//the values are too dark - so is there a way 
+//to provide as hsl !
+//these are hsl(x, y, 50%) until call the lightness value
+var initialLightness = 80;
+var greenColor = Color("rgb(0, 255, 17)").lightness(initialLightness);
+var redColor = Color("rgb(255, 13, 0)").lightness(initialLightness);
+var orangeColor = Color("rgb(255, 132, 0)").lightness(initialLightness);
+var yellowColor = Color("rgb(217, 255, 0)").lightness(initialLightness);
+var blueColor = Color("rgb(0, 106, 255)").lightness(initialLightness);
+//this will be added in at the end
+var whiteRgb = "rgb(255, 255, 255)";
+var blackRgb = "rgb(0, 0, 0)";
+var notSelectedSolutionModeColours = [
+    {
+        mode: 'Guessing',
+        color: blueColor
+    }, {
+        mode: 'Solved',
+        color: greenColor
+    }, {
+        mode: 'Unsolved',
+        color: redColor
+    }, {
+        mode: 'Cheating',
+        color: orangeColor
+    }
+];
+var changeAmount = 0.3;
+var selectionModes = [{
+        mode: 'notSelected',
+        change: 0
+    }, {
+        mode: 'selected',
+        change: 2
+    }, {
+        mode: 'wordSelected',
+        change: 1
+    }
+];
+var styles = {};
+selectionModes.forEach(selectionMode => {
+    notSelectedSolutionModeColours.forEach(notSelectedSolutionModeColour => {
+        styles[selectionMode.mode + notSelectedSolutionModeColour.mode] = {
+            backgroundColor: notSelectedSolutionModeColour.color.darken(changeAmount * selectionMode.change).rgb().toString()
+        };
+    });
+});
+styles.notSelectedGuessing.backgroundColor = whiteRgb;
+styles.blank = { backgroundColor: blackRgb };
+exports.commonColourStyles = styles;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const SunCrosswordModelProvider_1 = __webpack_require__(19);
-const crosswordPuzzle_1 = __webpack_require__(15);
+const SunCrosswordModelProvider_1 = __webpack_require__(22);
+const crosswordPuzzle_1 = __webpack_require__(16);
 class CrosswordPuzzleLoader extends React.Component {
     constructor(props) {
         super(props);
@@ -3254,20 +3326,20 @@ exports.CrosswordPuzzleLoader = CrosswordPuzzleLoader;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var colorString = __webpack_require__(10);
-var convert = __webpack_require__(8);
+var colorString = __webpack_require__(11);
+var convert = __webpack_require__(9);
 
 var _slice = [].slice;
 
@@ -3746,11 +3818,11 @@ module.exports = Color;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(2);
-var route = __webpack_require__(9);
+var conversions = __webpack_require__(3);
+var route = __webpack_require__(10);
 
 var convert = {};
 
@@ -3830,10 +3902,10 @@ module.exports = convert;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(2);
+var conversions = __webpack_require__(3);
 
 /*
 	this function routes a model to all other models.
@@ -3934,12 +4006,12 @@ module.exports = function (fromModel) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(3);
-var swizzle = __webpack_require__(11);
+var colorNames = __webpack_require__(4);
+var swizzle = __webpack_require__(12);
 
 var reverseNames = {};
 
@@ -4173,13 +4245,13 @@ function hexDouble(num) {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isArrayish = __webpack_require__(12);
+var isArrayish = __webpack_require__(13);
 
 var concat = Array.prototype.concat;
 var slice = Array.prototype.slice;
@@ -4209,7 +4281,7 @@ swizzle.wrap = function (fn) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4227,67 +4299,6 @@ module.exports = function isArrayish(obj) {
 
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const Color = __webpack_require__(7);
-//these all have the same initial lightness but in rgb which is not ideal
-//the values are too dark - so is there a way 
-//to provide as hsl !
-//these are hsl(x, y, 50%) until call the lightness value
-var initialLightness = 80;
-var greenColor = Color("rgb(0, 255, 17)").lightness(initialLightness);
-var redColor = Color("rgb(255, 13, 0)").lightness(initialLightness);
-var orangeColor = Color("rgb(255, 132, 0)").lightness(initialLightness);
-var yellowColor = Color("rgb(217, 255, 0)").lightness(initialLightness);
-var blueColor = Color("rgb(0, 106, 255)").lightness(initialLightness);
-//this will be added in at the end
-var whiteRgb = "rgb(255, 255, 255)";
-var blackRgb = "rgb(0, 0, 0)";
-var notSelectedSolutionModeColours = [
-    {
-        mode: 'Guessing',
-        color: blueColor
-    }, {
-        mode: 'Solved',
-        color: greenColor
-    }, {
-        mode: 'Unsolved',
-        color: redColor
-    }, {
-        mode: 'Cheating',
-        color: orangeColor
-    }
-];
-var changeAmount = 0.3;
-var selectionModes = [{
-        mode: 'notSelected',
-        change: 0
-    }, {
-        mode: 'selected',
-        change: 2
-    }, {
-        mode: 'wordSelected',
-        change: 1
-    }
-];
-var styles = {};
-selectionModes.forEach(selectionMode => {
-    notSelectedSolutionModeColours.forEach(notSelectedSolutionModeColour => {
-        styles[selectionMode.mode + notSelectedSolutionModeColour.mode] = {
-            backgroundColor: notSelectedSolutionModeColour.color.darken(changeAmount * selectionMode.change).rgb().toString()
-        };
-    });
-});
-styles.notSelectedGuessing.backgroundColor = whiteRgb;
-styles.blank = { backgroundColor: blackRgb };
-exports.commonColourStyles = styles;
-
-
-/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4295,7 +4306,28 @@ exports.commonColourStyles = styles;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const square_1 = __webpack_require__(16);
+class AutoSolveButton extends React.Component {
+    render() {
+        var text = "Auto Solve";
+        if (this.props.isAutoSolving) {
+            text = "Stop Auto Solving";
+        }
+        //will add styling later
+        return React.createElement("button", { onClick: () => { this.props.clicked(); } }, text);
+    }
+}
+exports.AutoSolveButton = AutoSolveButton;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+const square_1 = __webpack_require__(19);
 // State is never set so we use the 'undefined' type.
 class Crossword extends React.Component {
     //this is wrong do not want to pass through SquareProps as the selected ?
@@ -4308,7 +4340,7 @@ class Crossword extends React.Component {
                 var square = squares[rowIndex][index];
                 //remember that square.selected is callback from the CrosswordPuzzle
                 return React.createElement("td", { style: { border: "0px" }, key: index, id: "SquareTd" + id },
-                    React.createElement(square_1.Square, { selected: square.selected, letter: square.letter, isSelected: square.isSelected, isWordSelected: square.isWordSelected, solvingMode: square.solvingMode, guess: square.guess, identifier: square.identifier, number: square.number }));
+                    React.createElement(square_1.Square, { selected: square.selected, letter: square.letter, isSelected: square.isSelected, isWordSelected: square.isWordSelected, solvingMode: square.solvingMode, autoSolved: square.autoSolved, guess: square.guess, identifier: square.identifier, number: square.number }));
             });
             return React.createElement("tr", { key: rowIndex }, tds);
         });
@@ -4321,40 +4353,74 @@ exports.Crossword = Crossword;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const crossword_1 = __webpack_require__(14);
-const KeyEvents = __webpack_require__(21);
+const index_1 = __webpack_require__(2);
+const crossword_1 = __webpack_require__(15);
+const KeyEvents = __webpack_require__(24);
+const solveButton_1 = __webpack_require__(18);
+const globalCheatButton_1 = __webpack_require__(17);
+const autoSolveButton_1 = __webpack_require__(14);
 class CrosswordPuzzle extends React.Component {
-    constructor() {
-        super(...arguments);
+    constructor(props) {
+        super(props);
         //this context lost otherwise
-        this.squareSelected = (square) => {
+        this.squareSelected = (rowColIndices) => {
+            var square = this.props.crosswordModel.grid[rowColIndices.row][rowColIndices.col];
             this.performSelection(square);
         };
+        this.solveClicked = () => {
+            if (this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving) {
+                this.props.crosswordModel.solvingMode = index_1.SolvingMode.Guessing;
+            }
+            else {
+                this.props.crosswordModel.solvingMode = index_1.SolvingMode.Solving;
+            }
+            this.setTheState();
+        };
+        this.globalCheatClicked = () => {
+            if (this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating) {
+                this.props.crosswordModel.solvingMode = index_1.SolvingMode.Guessing;
+            }
+            else {
+                this.props.crosswordModel.solvingMode = index_1.SolvingMode.Cheating;
+            }
+            this.setTheState();
+        };
+        this.autoSolveClicked = () => {
+            this.autoSolve = !this.autoSolve;
+            this.setTheState();
+        };
+        this.autoSolve = true;
+        this.state = { squares: this.getTheState() };
     }
     _mapGrid(grid) {
         var self = this;
-        var mappedGrid = grid.map(row => {
-            return row.map(square => {
-                return { identifier: square, selected: this.squareSelected, isSelected: square.selected, isWordSelected: square.wordSelected, solvingMode: square.solvingMode, number: square.number, letter: square.letter, guess: square.guess };
+        var mappedGrid = grid.map((row, rowIndex) => {
+            return row.map((square, colIndex) => {
+                return {
+                    identifier: { row: rowIndex, col: colIndex }, autoSolved: square.autoSolved, selected: this.squareSelected, isSelected: square.selected, isWordSelected: square.wordSelected, solvingMode: this.props.crosswordModel.solvingMode, number: square.number, letter: square.letter, guess: square.guess
+                };
             });
         });
         return mappedGrid;
     }
     _selectWord(selectedWord) {
-        if (this.props.crosswordModel.selectedWord) {
-            //this._setWordSquaresSelection(this.props.crosswordModel.selectedWord, false);
-            this.props.crosswordModel.selectedWord.deselect();
+        if (this.props.crosswordModel.selectedWord !== selectedWord) {
+            if (this.props.crosswordModel.selectedWord) {
+                //this._setWordSquaresSelection(this.props.crosswordModel.selectedWord, false);
+                this.props.crosswordModel.selectedWord.deselect();
+            }
+            selectedWord.select();
+            this.props.crosswordModel.selectedWord = selectedWord;
         }
-        selectedWord.select();
-        this.props.crosswordModel.selectedWord = selectedWord;
     }
+    //the crosswordModel selectedCell property should deal with it - but interface 
     _selectSquare(square) {
         var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
         if (previousSelectedSquare) {
@@ -4372,6 +4438,7 @@ class CrosswordPuzzle extends React.Component {
     performSelection(square, wordSelectWord = false) {
         var requiresRender = false;
         if (square.letter !== "") {
+            var previousSelectedWord = this.props.crosswordModel.selectedWord;
             //leave here as _selectSquare changes
             var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
             var sameSquare = square.selected;
@@ -4411,7 +4478,7 @@ class CrosswordPuzzle extends React.Component {
             this._selectWord(wordToSelect);
         }
         if (requiresRender) {
-            this.forceUpdate();
+            this.setTheState();
         }
     }
     arrowDown() {
@@ -4497,7 +4564,11 @@ class CrosswordPuzzle extends React.Component {
     backspace() {
         var selectedSquare = this.props.crosswordModel.selectedSquare;
         if (selectedSquare) {
-            selectedSquare.guess = "";
+            var requiresRender;
+            if (selectedSquare.guess !== "") {
+                selectedSquare.guess = "";
+                requiresRender = true;
+            }
             var selectedWord = this.props.crosswordModel.selectedWord;
             if (selectedWord.squares.indexOf(selectedSquare) !== 0) {
                 if (selectedWord.isAcross) {
@@ -4507,15 +4578,22 @@ class CrosswordPuzzle extends React.Component {
                     this.arrowUp();
                 }
             }
+            else {
+                if (requiresRender) {
+                    this.setTheState();
+                }
+            }
         }
-    }
-    render() {
-        return React.createElement(crossword_1.Crossword, { squares: this._mapGrid(this.props.crosswordModel.grid) });
     }
     keyGuess(event, keyValue) {
         var selectedSquare = this.props.crosswordModel.selectedSquare;
         if (selectedSquare) {
-            this.props.crosswordModel.selectedSquare.guess = keyValue.toUpperCase();
+            var guess = keyValue.toUpperCase();
+            var requiresRender;
+            if (selectedSquare.guess !== guess) {
+                selectedSquare.guess = guess;
+                requiresRender = true;
+            }
             var selectedWord = this.props.crosswordModel.selectedWord;
             if (selectedWord.squares.indexOf(selectedSquare) !== selectedWord.squares.length - 1) {
                 if (selectedWord.isAcross) {
@@ -4525,7 +4603,54 @@ class CrosswordPuzzle extends React.Component {
                     this.arrowDown();
                 }
             }
+            else {
+                if (requiresRender) {
+                    this.setTheState();
+                }
+            }
         }
+    }
+    getTheState() {
+        var crosswordModel = this.props.crosswordModel;
+        //given that autoSolve is unrelated to a specific crossword
+        if (this.autoSolve) {
+            var solvedWords = [];
+            var unsolvedWords = [];
+            this.props.crosswordModel.words.forEach(word => {
+                if (word.solved()) {
+                    solvedWords.push(word);
+                }
+                else {
+                    unsolvedWords.push(word);
+                }
+            });
+            unsolvedWords.forEach(word => {
+                word.squares.forEach(square => square.autoSolved = false);
+            });
+            solvedWords.forEach(word => {
+                console.log("solved word !");
+                word.squares.forEach(square => square.autoSolved = true);
+            });
+        }
+        else {
+            var grid = this.props.crosswordModel.grid;
+            grid.forEach(row => {
+                row.forEach(square => {
+                    square.autoSolved = false;
+                });
+            });
+        }
+        return this._mapGrid(this.props.crosswordModel.grid);
+    }
+    setTheState() {
+        this.setState({ squares: this.getTheState() });
+    }
+    render() {
+        return React.createElement("div", null,
+            React.createElement(crossword_1.Crossword, { squares: this.state.squares }),
+            React.createElement(solveButton_1.SolveButton, { isSolving: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, clicked: this.solveClicked }),
+            React.createElement(globalCheatButton_1.GlobalCheatButton, { isCheating: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, clicked: this.globalCheatClicked }),
+            React.createElement(autoSolveButton_1.AutoSolveButton, { isAutoSolving: this.autoSolve, clicked: this.autoSolveClicked }));
     }
 }
 exports.CrosswordPuzzle = CrosswordPuzzle;
@@ -4568,7 +4693,49 @@ exports.CrosswordPuzzleKeyEvents = KeyEvents.keyHandler({
 
 
 /***/ }),
-/* 16 */
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+class GlobalCheatButton extends React.Component {
+    render() {
+        var text = "Cheat";
+        if (this.props.isCheating) {
+            text = "Uncheat";
+        }
+        //will add styling later
+        return React.createElement("button", { onClick: () => { this.props.clicked(); } }, text);
+    }
+}
+exports.GlobalCheatButton = GlobalCheatButton;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __webpack_require__(0);
+class SolveButton extends React.Component {
+    render() {
+        var text = "Solve";
+        if (this.props.isSolving) {
+            text = "Unsolve";
+        }
+        //will add styling later
+        return React.createElement("button", { onClick: () => { this.props.clicked(); } }, text);
+    }
+}
+exports.SolveButton = SolveButton;
+
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4576,10 +4743,10 @@ exports.CrosswordPuzzleKeyEvents = KeyEvents.keyHandler({
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 //import  Radium  =require('radium')
-const index_1 = __webpack_require__(4);
-const squareLetter_1 = __webpack_require__(17);
-const squareNumber_1 = __webpack_require__(18);
-const commonColourStyling_1 = __webpack_require__(13);
+const index_1 = __webpack_require__(2);
+const squareLetter_1 = __webpack_require__(20);
+const squareNumber_1 = __webpack_require__(21);
+const commonColourStyling_1 = __webpack_require__(5);
 //@Radium
 class Square extends React.Component {
     constructor() {
@@ -4593,34 +4760,27 @@ class Square extends React.Component {
             return commonColourStyling_1.commonColourStyles.blank;
         }
         var solvingMode = this.props.solvingMode;
-        var isSelected = this.props.isSelected;
-        var isWordSelected = this.props.isWordSelected;
         var backgroundColorStyle;
         var propName = "selected";
-        if (!isSelected) {
-            if (isWordSelected) {
+        if (!this.props.isSelected) {
+            if (this.props.isWordSelected) {
                 propName = "wordSelected";
             }
             else {
                 propName = "notSelected";
             }
         }
-        var solvingModePropPart;
-        switch (solvingMode) {
-            case index_1.SolvingMode.Cheating:
-                solvingModePropPart = "Cheating";
-                break;
-            case index_1.SolvingMode.Guessing:
-                solvingModePropPart = "Guessing";
-                break;
-            case index_1.SolvingMode.Solving:
-                if (this.props.letter === this.props.guess) {
-                    solvingModePropPart = "Solved";
+        var solvingModePropPart = "Guessing";
+        if (solvingMode !== index_1.SolvingMode.Guessing) {
+            if (this.props.letter === this.props.guess) {
+                solvingModePropPart = "Solved";
+            }
+            else {
+                solvingModePropPart = "Unsolved";
+                if (solvingMode === index_1.SolvingMode.Cheating) {
+                    solvingModePropPart = "Cheating";
                 }
-                else {
-                    solvingModePropPart = "Unsolved";
-                }
-                break;
+            }
         }
         propName = propName + solvingModePropPart;
         backgroundColorStyle = commonColourStyling_1.commonColourStyles[propName];
@@ -4648,32 +4808,37 @@ class Square extends React.Component {
         return letter;
     }
     render() {
+        if (this.props.autoSolved) {
+            console.log("Square autoSolved");
+        }
         return React.createElement("span", { onClick: this._raiseSelected, style: this._getSquareStyle() },
             React.createElement(squareNumber_1.SquareNumber, { number: this.props.number }),
-            React.createElement(squareLetter_1.SquareLetter, { letter: this._getSquareLetter() }));
+            React.createElement(squareLetter_1.SquareLetter, { letter: this._getSquareLetter(), autoSolvedGuessing: this.props.solvingMode === index_1.SolvingMode.Guessing && this.props.autoSolved }));
     }
 }
 exports.Square = Square;
 
 
 /***/ }),
-/* 17 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
+const commonColourStyling_1 = __webpack_require__(5);
 class SquareLetter extends React.Component {
     render() {
-        return React.createElement("span", { style: { verticalAlign: "middle", fontSize: "20px", fontWeight: 700, lineHeight: "28px" } }, this.props.letter);
+        var fontColor = this.props.autoSolvedGuessing ? commonColourStyling_1.commonColourStyles.selectedSolved.backgroundColor : "rgb(0, 0, 0)";
+        return React.createElement("span", { style: { color: fontColor, verticalAlign: "middle", fontSize: "20px", fontWeight: 700, lineHeight: "28px" } }, this.props.letter);
     }
 }
 exports.SquareLetter = SquareLetter;
 
 
 /***/ }),
-/* 18 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4691,18 +4856,18 @@ exports.SquareNumber = SquareNumber;
 
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 //it will only be necessary to read this the once - after that will be working from IndexedDbModelProvider or JsonModelProvider
-const Crossword = __webpack_require__(4);
+const Crossword = __webpack_require__(2);
 function ModelFromJson(json) {
     var grid = json.data.grid.map((row, rowIndex) => {
         return row.map((square, columnIndex) => {
-            var crosswordSquare = { columnIndex: columnIndex, rowIndex: rowIndex, acrossWord: null, downWord: null, guess: "", letter: square.Letter, number: square.Number, selected: false, wordSelected: false, solvingMode: Crossword.SolvingMode.Guessing };
+            var crosswordSquare = { autoSolved: false, columnIndex: columnIndex, rowIndex: rowIndex, acrossWord: null, downWord: null, guess: "", letter: square.Letter, number: square.Number, selected: false, wordSelected: false, solvingMode: Crossword.SolvingMode.Guessing };
             return crosswordSquare;
         });
     });
@@ -4770,7 +4935,9 @@ function ModelFromJson(json) {
             { name: "Coffee time", acrossClues: mapClues(sunCluesByProviderAndDirection[2].clues), downClues: mapClues(sunCluesByProviderAndDirection[3].clues) }
         ],
         selectedSquare: null,
-        selectedWord: null
+        selectedWord: null,
+        solvingMode: Crossword.SolvingMode.Guessing,
+        words: crosswordWords
     };
     return crosswordModel;
 }
@@ -4778,7 +4945,7 @@ exports.ModelFromJson = ModelFromJson;
 
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4788,13 +4955,13 @@ exports.ModelFromJson = ModelFromJson;
 // https://github.com/Microsoft/TypeScript/wiki/JSX
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
-const ReactDOM = __webpack_require__(6);
-const CrosswordPuzzleLoader_1 = __webpack_require__(5);
+const ReactDOM = __webpack_require__(7);
+const CrosswordPuzzleLoader_1 = __webpack_require__(6);
 ReactDOM.render(React.createElement(CrosswordPuzzleLoader_1.CrosswordPuzzleLoader, null), document.getElementById("example"));
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4807,7 +4974,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __webpack_require__(0);
 //import {canUseDOM} from 'exenv';
 const constants_1 = __webpack_require__(1);
-const utils_1 = __webpack_require__(22);
+const utils_1 = __webpack_require__(25);
 function keyModifiersAny() {
     return {
         altKey: true,
@@ -5007,7 +5174,9 @@ function keyHandleDecorator(matcher) {
                             this.wrappedInstance[methodName](event, keyValue, keyCode, modifiers);
                         });
                     }
-                    this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
+                    else {
+                        this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
+                    }
                 };
             }
             render() {
@@ -5074,7 +5243,7 @@ __export(__webpack_require__(1));
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

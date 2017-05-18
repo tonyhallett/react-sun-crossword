@@ -2082,7 +2082,7 @@ class CrosswordPuzzleLoader extends React.Component {
         return model;
     }
     render() {
-        return React.createElement(crosswordPuzzle_1.CrosswordPuzzle, { crosswordModel: this.state.crosswordModel });
+        return React.createElement(crosswordPuzzle_1.CrosswordPuzzleKeyEvents, { crosswordModel: this.state.crosswordModel });
     }
 }
 exports.CrosswordPuzzleLoader = CrosswordPuzzleLoader;

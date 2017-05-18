@@ -84,6 +84,9 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <TypeScriptCompile Include="src\components\autoSolveButton.tsx" />
+    <TypeScriptCompile Include="src\components\globalCheatButton.tsx" />
+    <TypeScriptCompile Include="src\components\solveButton.tsx" />
     <TypeScriptCompile Include="__tests__\crosswordPuzzleInputTests.tsx" />
     <TypeScriptCompile Include="src\components\commonColourStyling.ts" />
     <TypeScriptCompile Include="src\components\crosswordPuzzle.tsx" />
@@ -93,10 +96,10 @@
     <TypeScriptCompile Include="src\lib\constants.ts" />
     <TypeScriptCompile Include="src\lib\key-handler.tsx" />
     <TypeScriptCompile Include="src\lib\utils.tsx" />
-    <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleNavigationTests.tsx" />
-    <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleSelectionTests.tsx" />
-    <TypeScriptCompile Include="__not_run_tests\squareTests.tsx" />
-    <TypeScriptCompile Include="__not_run_tests\sunCrosswordModelProviderTests.tsx" />
+    <TypeScriptCompile Include="__tests__\crosswordPuzzleNavigationTests.tsx" />
+    <TypeScriptCompile Include="__tests__\crosswordPuzzleSelectionTests.tsx" />
+    <TypeScriptCompile Include="__tests__\squareTests.tsx" />
+    <TypeScriptCompile Include="__tests__\sunCrosswordModelProviderTests.tsx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
@@ -109,6 +112,7 @@
   <ItemGroup>
     <Folder Include="dist\" />
     <Folder Include="src\__mocks__\" />
+    <Folder Include="__not_run_tests\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\components\crossword.tsx" />
@@ -116,7 +120,7 @@
     <TypeScriptCompile Include="src\helpers\SunCrosswordModelProvider.ts" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\models\index.ts" />
-    <TypeScriptCompile Include="__not_run_tests\crosswordTests.tsx" />
+    <TypeScriptCompile Include="__tests__\crosswordTests.tsx" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

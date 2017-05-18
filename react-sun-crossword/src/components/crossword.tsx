@@ -19,7 +19,7 @@ export class Crossword extends React.Component<CrosswordProps, undefined> {
                 var square = squares[rowIndex][index];
                 //remember that square.selected is callback from the CrosswordPuzzle
                 return <td style={{ border: "0px" }} key={index} id={"SquareTd" + id} >
-                    <Square  selected={square.selected} letter={square.letter} isSelected={square.isSelected} isWordSelected={square.isWordSelected} solvingMode={square.solvingMode} guess={square.guess} identifier={square.identifier} number={square.number} />
+                    <Square selected={square.selected} letter={square.letter} isSelected={square.isSelected} isWordSelected={square.isWordSelected} solvingMode={square.solvingMode} autoSolved={square.autoSolved} guess={square.guess} identifier={square.identifier} number={square.number} />
                 </td>
             });
             return <tr key={rowIndex}>{tds}</tr>;

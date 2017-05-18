@@ -2,8 +2,9 @@
     clueProviders: ClueProvider[],
     grid: Square[][],
     selectedSquare: Square,
-    selectedWord:IWord
-    //might want selectedSquare, selectedWord
+    selectedWord: IWord
+    solvingMode: SolvingMode,
+    words:IWord[]
 }
 export interface ClueProvider {
     name: string;
@@ -17,10 +18,11 @@ export interface Clue {
 }
 export interface IWord {
     squares: Square[],
-    cheat: () => void,
-    uncheat: () => void,
-    solve: () => void,
-    unsolve:()=> void,
+    //cheat: () => void,
+    //uncheat: () => void,
+    //solved: () => boolean,
+    //unsolve:()=> void,
+    solved(): boolean,
     select: () => void,
     deselect: () => void,
     selected:boolean,
@@ -38,7 +40,8 @@ export interface Square {
     letter: string,
     guess: string,
     rowIndex: number,
-    columnIndex:number
+    columnIndex: number
+    autoSolved:boolean
 }
 export enum SolvingMode { Guessing,Solving, Cheating  }
 
@@ -48,18 +51,29 @@ export class Word implements IWord {
         this.squares.forEach(square => square.solvingMode = solvingMode);
         this.solvingMode = solvingMode;
     }
-    cheat() {
-        this._setSolvingMode(SolvingMode.Cheating);
+    solved(): boolean {
+        var isSolved = true;
+        for (var i = 0; i < this.squares.length; i++) {
+            var square = this.squares[i];
+            if (square.guess !== square.letter) {
+                isSolved = false;
+                break;
+            }
+        }
+        return isSolved;
     }
-    uncheat() {
-        this._setSolvingMode(SolvingMode.Guessing);
-    }
-    solve() {
-        this._setSolvingMode(SolvingMode.Solving);
-    }
-    unsolve() {
-        this._setSolvingMode(SolvingMode.Guessing);
-    }
+    //cheat() {
+    //    this._setSolvingMode(SolvingMode.Cheating);
+    //}
+    //uncheat() {
+    //    this._setSolvingMode(SolvingMode.Guessing);
+    //}
+    //solve() {
+    //    this._setSolvingMode(SolvingMode.Solving);
+    //}
+    //unsolve() {
+    //    this._setSolvingMode(SolvingMode.Guessing);
+    //}
     _setSelectionState(selected: boolean) {
         this.squares.forEach(square => square.wordSelected = selected);
         this.selected = selected;
