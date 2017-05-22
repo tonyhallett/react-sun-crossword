@@ -70,10 +70,17 @@ export class Square extends React.Component<SquareProps, undefined> {
     _raiseSelected=()=> {
         this.props.selected(this.props.identifier)
     }
-    render() {
-        if (this.props.autoSolved) {
-            console.log("Square autoSolved");
+    shouldComponentUpdate(nextProps: SquareProps, nextState) {
+        var shouldUpdate = false;
+        for (var p in nextProps) {
+            if (this.props[p] !== nextProps[p]) {
+                shouldUpdate = true;
+                break;
+            }
         }
+        return shouldUpdate;
+    }
+    render() {
         return <span onClick={this._raiseSelected} style={this._getSquareStyle()}>
             <SquareNumber number={this.props.number} />
             <SquareLetter letter={this._getSquareLetter()} autoSolvedGuessing={this.props.solvingMode === SolvingMode.Guessing && this.props.autoSolved}/>

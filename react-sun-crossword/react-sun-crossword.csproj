@@ -76,6 +76,7 @@
     <None Include="src\crosswordJsons\23829.json" />
     <None Include="src\crosswordJsons\23830.json" />
     <None Include="src\crosswordJsons\23912.json" />
+    <Content Include="react-tabs.css" />
     <Content Include="src\lib\index.js" />
     <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
@@ -85,8 +86,13 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <TypeScriptCompile Include="src\components\autoSolveButton.tsx" />
+    <TypeScriptCompile Include="src\components\clueContainer.tsx" />
+    <TypeScriptCompile Include="src\components\clueNumber.tsx" />
+    <TypeScriptCompile Include="src\components\clues.tsx" />
+    <TypeScriptCompile Include="src\components\formatWord.tsx" />
     <TypeScriptCompile Include="src\components\globalCheatButton.tsx" />
     <TypeScriptCompile Include="src\components\solveButton.tsx" />
+    <TypeScriptCompile Include="src\components\twoCol.tsx" />
     <TypeScriptCompile Include="__tests__\crosswordPuzzleInputTests.tsx" />
     <TypeScriptCompile Include="src\components\commonColourStyling.ts" />
     <TypeScriptCompile Include="src\components\crosswordPuzzle.tsx" />

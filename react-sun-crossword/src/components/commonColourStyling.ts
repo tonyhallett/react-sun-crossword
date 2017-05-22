@@ -12,13 +12,13 @@ var greenColor = Color("rgb(0, 255, 17)").lightness(initialLightness);
 var redColor = Color("rgb(255, 13, 0)").lightness(initialLightness);
 var orangeColor = Color("rgb(255, 132, 0)").lightness(initialLightness);
 var yellowColor = Color("rgb(217, 255, 0)").lightness(initialLightness);
-var blueColor = Color("rgb(0, 106, 255)").lightness(initialLightness);
+var blueColor = Color("rgb(242, 242, 242)").lightness(95);
 
 
 
 //this will be added in at the end
-var whiteRgb = "rgb(255, 255, 255)";	
-var blackRgb = "rgb(0, 0, 0)";
+var whiteRgb = "rgb(247, 247, 247)";	
+var blackRgb = "rgb(51, 51, 51)";
 
 var notSelectedSolutionModeColours = [
     {
@@ -70,12 +70,14 @@ interface CommonColourStyles {
     notSelected: BackgroundColorStyle,
     selected: BackgroundColorStyle,
     wordSelected: BackgroundColorStyle,
-    blank: BackgroundColorStyle
+    blank: BackgroundColorStyle,
+    letter: BackgroundColorStyle,
+    autoSolved: BackgroundColorStyle
 
 }
-var styles:any = {
+var styles: CommonColourStyles = {
 
-}
+} as CommonColourStyles;
 selectionModes.forEach(selectionMode => {
     notSelectedSolutionModeColours.forEach(notSelectedSolutionModeColour => {
         styles[selectionMode.mode + notSelectedSolutionModeColour.mode] = {
@@ -84,6 +86,8 @@ selectionModes.forEach(selectionMode => {
     })
 });
 
-(styles as CommonColourStyles).notSelectedGuessing.backgroundColor = whiteRgb;
-(styles as CommonColourStyles).blank = { backgroundColor: blackRgb };
+styles.notSelectedGuessing.backgroundColor = whiteRgb;
+styles.blank = { backgroundColor: blackRgb };
+styles.letter = { backgroundColor: blackRgb };
+styles.autoSolved =styles.selectedSolved;
 export  var commonColourStyles:CommonColourStyles =styles as CommonColourStyles

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom'
 import { mount, shallow, ReactWrapper } from 'enzyme';
-import { CrosswordPuzzle } from '../src/components/crosswordPuzzle'
+import { CrosswordPuzzle, WordSelectMode } from '../src/components/crosswordPuzzle'
 import { Crossword } from '../src/components/crossword'
 import { CrosswordModel,Square } from '../src/models/index'
 import { ModelFromJson } from '../src/helpers/SunCrosswordModelProvider'
@@ -2144,7 +2144,7 @@ describe('<CrosswordPuzzle/ navigation>', () => {
             var square = stubPerformSelection.mock.calls[0][0] as Square;
             expect(square.rowIndex).toBe(expectedSelectedRowIndex - 1);
             expect(square.columnIndex).toBe(expectedSelectedColIndex - 1);
-            expect(stubPerformSelection.mock.calls[0][1]).toBe(true);
+            expect(stubPerformSelection.mock.calls[0][1]).toBe(WordSelectMode.nav);
             //will decrease by 1 on each
         })
     })

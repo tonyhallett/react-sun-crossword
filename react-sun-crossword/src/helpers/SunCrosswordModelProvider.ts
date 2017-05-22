@@ -5,7 +5,19 @@ import * as Crossword from "../models/index"
 export function ModelFromJson(json: SunJson): Crossword.CrosswordModel{
     var grid: Crossword.Square[][] = json.data.grid.map((row,rowIndex) => {
         return row.map((square, columnIndex) => {
-            var crosswordSquare: Crossword.Square = { autoSolved:false,columnIndex:columnIndex, rowIndex:rowIndex, acrossWord: null, downWord: null, guess: "", letter: square.Letter, number: square.Number, selected: false, wordSelected: false, solvingMode: Crossword.SolvingMode.Guessing }
+            var crosswordSquare: Crossword.Square = {
+                autoSolved: false,
+                columnIndex: columnIndex,
+                rowIndex: rowIndex,
+                acrossWord: null,
+                downWord: null,
+                guess: "",
+                letter: square.Letter,
+                number: square.Number,
+                selected: false,
+                wordSelected: false,
+                solvingMode: Crossword.SolvingMode.Guessing
+            }
             return crosswordSquare;
         });
     });
@@ -65,6 +77,7 @@ export function ModelFromJson(json: SunJson): Crossword.CrosswordModel{
             var crosswordClue: Crossword.Clue = {
                 format: clue.format,
                 text: clue.clue,
+                number: clue.number,
                 word: findCrossword(clue.word)
             };
             return crosswordClue;
@@ -74,8 +87,17 @@ export function ModelFromJson(json: SunJson): Crossword.CrosswordModel{
     //for simplicity...
     var crosswordModel: Crossword.CrosswordModel = {
         grid: grid,
-        clueProviders: [{ name: "Cryptic", acrossClues: mapClues(sunCluesByProviderAndDirection[0].clues), downClues: mapClues(sunCluesByProviderAndDirection[1].clues) },
-            { name: "Coffee time", acrossClues: mapClues(sunCluesByProviderAndDirection[2].clues), downClues: mapClues(sunCluesByProviderAndDirection[3].clues) }
+        clueProviders: [
+            {
+                name: "Cryptic",
+                acrossClues: mapClues(sunCluesByProviderAndDirection[0].clues),
+                downClues: mapClues(sunCluesByProviderAndDirection[1].clues)
+            },
+            {
+                name: "Coffee time",
+                acrossClues: mapClues(sunCluesByProviderAndDirection[2].clues),
+                downClues: mapClues(sunCluesByProviderAndDirection[3].clues)
+            }
         ],
         selectedSquare: null,
         selectedWord: null,

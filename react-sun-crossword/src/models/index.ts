@@ -14,6 +14,7 @@ export interface ClueProvider {
 export interface Clue {
     text: string,
     format: string,
+    number:string,
     word:IWord
 }
 export interface IWord {
