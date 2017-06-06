@@ -7,7 +7,7 @@ import { Square, SquareProps } from '../src/components/square'
 import { SquareLetter, SquareLetterProps } from '../src/components/squareLetter'
 import { SquareNumber, SquareNumberProps } from '../src/components/squareNumber'
 //probably should test that have set the module correctly !
-import { commonColourStyles, BackgroundColorStyle } from '../src/components/commonColourStyling'
+import { commonColourStyles, BackgroundColorStyle } from '../src/components/commonStyling'
 import { xpit,pit, pits } from '../node_modules/jestextensions/index'
 
 describe('<Square />', () => {

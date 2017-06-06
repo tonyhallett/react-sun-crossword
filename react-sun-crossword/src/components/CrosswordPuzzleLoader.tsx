@@ -1,9 +1,9 @@
 ﻿import * as React from "react";
-import { ModelFromJson } from '../helpers/SunCrosswordModelProvider'
+//import { ModelFromJson } from '../helpers/SunCrosswordModelProvider'
 import { CrosswordModel } from '../models/index'
 import { CrosswordPuzzleKeyEvents } from "./crosswordPuzzle";
 
-
+var ModelFromJson;//*** Loader will be deleted
 interface CrosswordState {
     crosswordModel: CrosswordModel
 }

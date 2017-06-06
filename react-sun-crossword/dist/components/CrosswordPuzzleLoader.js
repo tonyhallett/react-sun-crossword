@@ -1,13 +1,20 @@
 "use strict";
-const React = require("react");
-const SunCrosswordModelProvider_1 = require("../helpers/SunCrosswordModelProvider");
-const crosswordPuzzle_1 = require("./crosswordPuzzle");
-class CrosswordPuzzleLoader extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { crosswordModel: this.getModel() };
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var React = require("react");
+var crosswordPuzzle_1 = require("./crosswordPuzzle");
+var ModelFromJson; //*** Loader will be deleted
+var CrosswordPuzzleLoader = (function (_super) {
+    __extends(CrosswordPuzzleLoader, _super);
+    function CrosswordPuzzleLoader(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { crosswordModel: _this.getModel() };
+        return _this;
     }
-    getModel() {
+    CrosswordPuzzleLoader.prototype.getModel = function () {
         var crosswordJson = {
             "data": {
                 "headline": "Crossword No 431844",
@@ -2078,12 +2085,13 @@ class CrosswordPuzzleLoader extends React.Component {
                 "created": "2017-05-08 00:00:21"
             }
         };
-        var model = SunCrosswordModelProvider_1.ModelFromJson(crosswordJson);
+        var model = ModelFromJson(crosswordJson);
         return model;
-    }
-    render() {
+    };
+    CrosswordPuzzleLoader.prototype.render = function () {
         return React.createElement(crosswordPuzzle_1.CrosswordPuzzleKeyEvents, { crosswordModel: this.state.crosswordModel });
-    }
-}
+    };
+    return CrosswordPuzzleLoader;
+}(React.Component));
 exports.CrosswordPuzzleLoader = CrosswordPuzzleLoader;
 //# sourceMappingURL=CrosswordPuzzleLoader.js.map

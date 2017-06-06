@@ -50,7 +50,34 @@ export class CroswordClues extends React.Component<CrosswordCluesProps, undefine
             }
         })
     }
-    
+    mapFirst(clues: ClueProps[]): GroupedMappedClue[] {
+        return clues.map(clue => {
+            var mapped = {
+                clueNumber: clue.clueNumber,
+                wordId: clue.wordId,
+                isSolved: clue.isSolved,
+                solvingMode: clue.solvingMode,
+                isSelected: clue.isSelected,
+                clueTextFormats: [{ text: clue.text, format: clue.format }],
+                clueLetters: clue.clueLetters
+            };
+            return mapped;
+        });
+    }
+    getWrappedClues(groupedMappedClues: GroupedMappedClue[]) {
+        return groupedMappedClues.map(groupedMappedClue => {
+            var wrappedElement = <GroupedClue clueTextFormats={groupedMappedClue.clueTextFormats} isSolved={groupedMappedClue.isSolved} clueLetters={groupedMappedClue.clueLetters} />
+            var wrappedClue: WrappedClue = {
+                clueNumber: groupedMappedClue.clueNumber,
+                isSelected: groupedMappedClue.isSelected,
+                wordId: groupedMappedClue.wordId,
+                solvingMode: groupedMappedClue.solvingMode,
+                isSolved: groupedMappedClue.isSolved,
+                wrappedElement: wrappedElement
+            }
+            return wrappedClue
+        });
+    }   
     render() {//grouping or not grouping should render in the same div ( same width)
         if (this.props.grouping) {
             var allAcrossClues = []
@@ -63,23 +90,9 @@ export class CroswordClues extends React.Component<CrosswordCluesProps, undefine
             var firstAcrossClues = firstClueProvider.acrossClues;
             var firstDownClues = firstClueProvider.downClues;
 
-            function mapFirst(clues: ClueProps[]): GroupedMappedClue[]{
-                return clues.map(clue => {
-                    var mapped= {
-                        clueNumber: clue.clueNumber,
-                        wordId:clue.wordId,
-                        isSolved: clue.isSolved,
-                        solvingMode: clue.solvingMode,
-                        isSelected: clue.isSelected,
-                        clueTextFormats: [{ text: clue.text, format: clue.format }],
-                        clueLetters:clue.clueLetters
-                    };
-                    return mapped;
-                });
-            }
             
-            var mappedAcrossClues = mapFirst(firstAcrossClues);
-            var mappedDownClues = mapFirst(firstDownClues);
+            var mappedAcrossClues = this.mapFirst(firstAcrossClues);
+            var mappedDownClues = this.mapFirst(firstDownClues);
             for (var i = 1; i < clueProviders.length; i++) {
                 var clueProvider = clueProviders[i];
                 var clueProviderAcrossClues = clueProvider.acrossClues;
@@ -93,22 +106,9 @@ export class CroswordClues extends React.Component<CrosswordCluesProps, undefine
                     mappedDownClues[j].clueTextFormats.push({ text: downClue.text, format: downClue.format });
                 }
             }
-            function getWrappedClues(groupedMappedClues: GroupedMappedClue[]) {
-                return groupedMappedClues.map(groupedMappedClue => {
-                    var wrappedElement = <GroupedClue clueTextFormats={groupedMappedClue.clueTextFormats} isSolved={groupedMappedClue.isSolved} clueLetters={groupedMappedClue.clueLetters} />
-                    var wrappedClue: WrappedClue = {
-                        clueNumber: groupedMappedClue.clueNumber,
-                        isSelected: groupedMappedClue.isSelected,
-                        wordId: groupedMappedClue.wordId,
-                        solvingMode: groupedMappedClue.solvingMode,
-                        isSolved: groupedMappedClue.isSolved,
-                        wrappedElement: wrappedElement
-                    }
-                    return wrappedClue
-                });
-            }
-            var acrossWrappedClues = getWrappedClues(mappedAcrossClues);
-            var downWrappedClues = getWrappedClues(mappedDownClues);
+
+            var acrossWrappedClues = this.getWrappedClues(mappedAcrossClues);
+            var downWrappedClues = this.getWrappedClues(mappedDownClues);
             
             
             return <div style={{ width: '600px' }}>
@@ -190,15 +190,18 @@ export class AcrossOrDownClues extends React.Component<AcrossOrDownCluesProps, u
                         borderBottom: ""
                         
                     }
-                    if (index !== this.props.clues.length - 1) {
+                    if (index !== this.props.clues.length) {
                         style.borderTop = border;
                     } else {
                         style.borderBottom = border;
                     }
-                    return <div style={style} key={index}><ClueContainer wrapped={clue.wrappedElement} key={index} selected={this.clueSelected} clueNumber={clue.clueNumber} wordId={clue.wordId} isSolved={clue.isSolved} solvingMode={clue.solvingMode} isSelected={clue.isSelected}>
+                    return <div style={style} key={index}>
+                        <ClueContainer wrapped={clue.wrappedElement} key={index} selected={this.clueSelected} clueNumber={clue.clueNumber} wordId={clue.wordId} isSolved={clue.isSolved} solvingMode={clue.solvingMode} isSelected={clue.isSelected}>
                     
-                </ClueContainer></div>
-            })}
+                        </ClueContainer>
+                    </div>
+                    
+                })}
             </Scrollbars>
         </div>)
     }

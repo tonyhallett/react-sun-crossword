@@ -67,15 +67,18 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app.css" />
+    <Content Include="firebaseui.css" />
     <Content Include="packages.config" />
     <Content Include="package.json" />
-    <None Include="src\crosswordJsons\23825.json" />
-    <None Include="src\crosswordJsons\23826.json" />
-    <None Include="src\crosswordJsons\23827.json" />
-    <None Include="src\crosswordJsons\23828.json" />
-    <None Include="src\crosswordJsons\23829.json" />
-    <None Include="src\crosswordJsons\23830.json" />
-    <None Include="src\crosswordJsons\23912.json" />
+    <None Include="src\sunCrosswordJsons\23825.json" />
+    <None Include="src\sunCrosswordJsons\23826.json" />
+    <None Include="src\sunCrosswordJsons\23827.json" />
+    <None Include="src\sunCrosswordJsons\23828.json" />
+    <None Include="src\sunCrosswordJsons\23829.json" />
+    <None Include="src\sunCrosswordJsons\23830.json" />
+    <None Include="src\sunCrosswordJsons\23912.json" />
+    <Content Include="react-select.css" />
     <Content Include="react-tabs.css" />
     <Content Include="src\lib\index.js" />
     <Content Include="tsconfig.json" />
@@ -89,12 +92,20 @@
     <TypeScriptCompile Include="src\components\clueContainer.tsx" />
     <TypeScriptCompile Include="src\components\clueNumber.tsx" />
     <TypeScriptCompile Include="src\components\clues.tsx" />
+    <TypeScriptCompile Include="src\components\crosswordPuzzleApp.tsx" />
+    <TypeScriptCompile Include="src\components\emailLogOn.tsx" />
     <TypeScriptCompile Include="src\components\formatWord.tsx" />
     <TypeScriptCompile Include="src\components\globalCheatButton.tsx" />
+    <TypeScriptCompile Include="src\components\Lighbulbs.tsx" />
+    <TypeScriptCompile Include="src\components\lightbulb.tsx" />
     <TypeScriptCompile Include="src\components\solveButton.tsx" />
     <TypeScriptCompile Include="src\components\twoCol.tsx" />
+    <TypeScriptCompile Include="src\helpers\crosswordPuzzleDataStore.ts" />
+    <TypeScriptCompile Include="src\helpers\crosswordPuzzleJsonStore.ts" />
+    <TypeScriptCompile Include="src\helpers\firebaseApp.ts" />
+    <TypeScriptCompile Include="src\helpers\stores.ts" />
     <TypeScriptCompile Include="__tests__\crosswordPuzzleInputTests.tsx" />
-    <TypeScriptCompile Include="src\components\commonColourStyling.ts" />
+    <TypeScriptCompile Include="src\components\commonStyling.ts" />
     <TypeScriptCompile Include="src\components\crosswordPuzzle.tsx" />
     <TypeScriptCompile Include="src\components\CrosswordPuzzleLoader.tsx" />
     <TypeScriptCompile Include="src\components\squareLetter.tsx" />

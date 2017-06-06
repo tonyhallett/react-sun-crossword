@@ -3,7 +3,7 @@ import { SolvingMode } from "../models/index";
 import { ClueLetterProps, FormatWord, FormatWordProps } from "./formatWord";
 import { ClueNumber } from "./clueNumber";
 import { TwoCol } from "./twoCol";
-import { BackgroundColorStyle, commonColourStyles } from "./commonColourStyling";
+import { BackgroundColorStyle, commonColourStyles } from "./commonStyling";
 
 
 export interface ClueContainerProps { wrapped: JSX.Element, isSelected: boolean, solvingMode: SolvingMode, isSolved: boolean, clueNumber: string, wordId:number,selected: (wordId: number) => void }
@@ -90,19 +90,7 @@ export class ClueText extends React.Component<ClueTextProps, undefined>{
         return <div  dangerouslySetInnerHTML={{ __html: this.props.text }}></div>
     }
 }
-//export interface ClueProps extends ClueContainerProps {
-//    clueTextFormat: ClueTextFormat
-//    clueLetters:ClueLetterProps[]
-//}
 
-//export class Clue extends React.Component<ClueProps, undefined> {
-//    render() {
-//        return <ClueContainer isSelected={this.props.isSelected} clueNumber={this.props.clueNumber} isSolved={this.props.isSolved} solvingMode={this.props.solvingMode}>
-//            <div>{this.props.clueTextFormat.text}</div>
-//            <FormatWord format={this.props.clueTextFormat.format} clueLetters={this.props.clueLetters} />
-//        </ClueContainer>
-//    }
-//}
 export interface ClueTextFormat {
     text: string,
     format:string
@@ -133,7 +121,7 @@ export class GroupedClue extends React.Component<GroupedClueProps, undefined> {
         if (formatsSame) {
             return (<div>
                 {this.props.clueTextFormats.map((clueTextFormat, index) => {
-                    return <div style={{ paddingBottom:'2px' }}><ClueText key={index} text={clueTextFormat.text + " /"} /></div>
+                    return <div key={index}  style={{ paddingBottom:'2px' }}><ClueText key={index} text={clueTextFormat.text + " /"} /></div>
                 })}
                 
                 <FormatWord isSolved={this.props.isSolved} format={compareFormat} clueLetters={this.props.clueLetters} />
@@ -141,8 +129,8 @@ export class GroupedClue extends React.Component<GroupedClueProps, undefined> {
         } else {
             return <div>
                 {clueTextFormats.map((clueTextFormat, index) => {
-                    return <div>
-                        <ClueFormat isSolved={this.props.isSolved} clueLetters={this.props.clueLetters} format={clueTextFormat.format} text={clueTextFormat.text} key={index} />
+                    return <div key={index} >
+                        <ClueFormat isSolved={this.props.isSolved} clueLetters={this.props.clueLetters} format={clueTextFormat.format} text={clueTextFormat.text} />
                         </div>
                 })}
                 </div>

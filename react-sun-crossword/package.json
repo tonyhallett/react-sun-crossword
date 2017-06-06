@@ -11,15 +11,20 @@
   "license": "ISC",
   "dependencies": {
     "@types/enzyme": "^2.8.0",
+    "@types/es6-promise": "0.0.32",
     "@types/jest": "^19.2.2",
     "@types/radium": "^0.18.21",
     "@types/react": "^15.0.23",
     "@types/react-dom": "^15.5.0",
+    "@types/react-select": "^1.0.46",
     "color": "^1.0.3",
-    "radium": "^0.18.2",
+    "es6-promise": "^4.1.0",
+    "firebase": "^4.1.1",
+    "firebaseui": "^2.0.0",
     "react": "^15.5.4",
     "react-custom-scrollbars": "^4.1.2",
     "react-dom": "^15.5.4",
+    "react-select": "^1.0.0-rc.5",
     "react-tabs": "^1.0.0"
   },
   "devDependencies": {

@@ -4,7 +4,7 @@ import { Square, SquareProps } from "./square";
 
 
 export interface CrosswordProps { squares: SquareProps[][] }
-import {  commonColourStyles } from "./commonColourStyling";
+import {  commonColourStyles } from "./commonStyling";
 
 // State is never set so we use the 'undefined' type.
 export class Crossword extends React.Component<CrosswordProps, undefined> {
@@ -19,7 +19,7 @@ export class Crossword extends React.Component<CrosswordProps, undefined> {
                 var square = squares[rowIndex][index];
                 //remember that square.selected is callback from the CrosswordPuzzle
 
-                return <td style={{ border: "0px"}} key={index} id={"SquareTd" + id} >
+                return <td style={{ border: "0px" }} key={index} id={"SquareTd" + id} >
                     <Square selected={square.selected} letter={square.letter} isSelected={square.isSelected} isWordSelected={square.isWordSelected} solvingMode={square.solvingMode} autoSolved={square.autoSolved} guess={square.guess} identifier={square.identifier} number={square.number} />
                 </td>
             });
@@ -28,6 +28,7 @@ export class Crossword extends React.Component<CrosswordProps, undefined> {
         
         //could do above inline  ,
         return <table style={{
+            
             backgroundColor: commonColourStyles.blank.backgroundColor, border: "2px solid", borderColor: commonColourStyles.blank.backgroundColor, borderCollapse:"collapse" }}>
             <tbody>
                 {trs}

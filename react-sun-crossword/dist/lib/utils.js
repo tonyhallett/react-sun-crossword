@@ -1,10 +1,10 @@
 /* @flow */
 "use strict";
-const constants_1 = require("./constants");
+var constants_1 = require("./constants");
 /**
  * Constants.
  */
-const NORMALIZED_KEYS = {
+var NORMALIZED_KEYS = {
     'Esc': 'Escape',
     'Spacebar': ' ',
     'Left': 'ArrowLeft',
@@ -18,7 +18,7 @@ const NORMALIZED_KEYS = {
     'Scroll': 'ScrollLock',
     'MozPrintableKey': 'Unidentified',
 };
-const KEY_CODE_KEYS = {
+var KEY_CODE_KEYS = {
     '8': 'Backspace',
     '9': 'Tab',
     '12': 'Clear',
@@ -63,8 +63,8 @@ function isInput(element) {
     if (!element) {
         return false;
     }
-    const { tagName } = element;
-    const editable = isContentEditable(element);
+    var tagName = element.tagName;
+    var editable = isContentEditable(element);
     return tagName === 'INPUT' || tagName === 'TEXTAREA' || editable;
 }
 exports.isInput = isInput;
@@ -77,7 +77,8 @@ function isContentEditable(element) {
 /**
  * Matches an event against a given keyboard key.
  */
-function matchesKeyboardEvent(event, { keyCode, keyValue }) {
+function matchesKeyboardEvent(event, _a) {
+    var keyCode = _a.keyCode, keyValue = _a.keyValue;
     if (!isNullOrUndefined(keyValue)) {
         //console.log("checking " + keyValue);
         return keyValue === eventKey(event);
@@ -92,15 +93,15 @@ function isNullOrUndefined(value) {
     return (value === undefined) || (value === null);
 }
 function eventKey(event) {
-    const { key, keyCode, type } = event;
+    var key = event.key, keyCode = event.keyCode, type = event.type;
     if (key) {
-        const normalizedKey = NORMALIZED_KEYS[key] || key;
+        var normalizedKey = NORMALIZED_KEYS[key] || key;
         if (normalizedKey !== 'Unidentified') {
             return normalizedKey;
         }
     }
     if (type === constants_1.KEYPRESS) {
-        const charCode = eventCharCode(event);
+        var charCode = eventCharCode(event);
         return charCode === 13 ? 'Enter' : String.fromCharCode(charCode);
     }
     if (type === constants_1.KEYDOWN || type === constants_1.KEYUP) {
@@ -110,7 +111,7 @@ function eventKey(event) {
 }
 exports.eventKey = eventKey;
 function eventCharCode(event) {
-    let { charCode, keyCode } = event;
+    var charCode = event.charCode, keyCode = event.keyCode;
     if ('charCode' in event) {
         if (charCode === 0 && keyCode === 13) {
             return 13;

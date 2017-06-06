@@ -6,8 +6,16 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { CrosswordPuzzleLoader } from "./components/CrosswordPuzzleLoader";
+import { Lightbulb } from "./components/lightbulb";
+import { Lightbulbs } from "./components/Lighbulbs";
+import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
 
+//ReactDOM.render(
+//    <CrosswordPuzzleLoader/>,
+//    document.getElementById("example")
+//);
+//CrosswordPuzzleApp
 ReactDOM.render(
-    <CrosswordPuzzleLoader/>,
+    <CrosswordPuzzleApp/>,
     document.getElementById("example")
 );

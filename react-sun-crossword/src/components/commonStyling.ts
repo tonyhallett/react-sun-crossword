@@ -6,42 +6,41 @@
 //to provide as hsl !
 
 //these are hsl(x, y, 50%) until call the lightness value
-var initialLightness = 80;
+var initialLightness = 95;
 
-var greenColor = Color("rgb(0, 255, 17)").lightness(initialLightness);
-var redColor = Color("rgb(255, 13, 0)").lightness(initialLightness);
-var orangeColor = Color("rgb(255, 132, 0)").lightness(initialLightness);
-var yellowColor = Color("rgb(217, 255, 0)").lightness(initialLightness);
-var blueColor = Color("rgb(242, 242, 242)").lightness(95);
+var solvedColor = Color("rgb(0, 255, 0)").lightness(initialLightness);
+var notSolvedColor = Color("rgb(220, 20, 60)").lightness(initialLightness);
 
 
+var greyColor = Color("rgb(242, 242, 242)").lightness(95);
+var cheatColor = greyColor;
 
-//this will be added in at the end
-var whiteRgb = "rgb(247, 247, 247)";	
+var notSelectedGuessingRgb = "rgb(247, 247, 247)";	
+var blankRgb = "rgb(51, 51, 51)";
 var blackRgb = "rgb(51, 51, 51)";
 
 var notSelectedSolutionModeColours = [
     {
         mode: 'Guessing',
-        color: blueColor
+        color: greyColor
     }, {
         mode: 'Solved',
-        color: greenColor
+        color: solvedColor
     }, {
         mode: 'Unsolved',
-        color: redColor
+        color: notSolvedColor
     }, {
         mode: 'Cheating',
-        color: orangeColor
+        color: cheatColor
     }]
 
-var changeAmount = 0.3;
+var changeAmount = 0.1;
 var selectionModes = [{
     mode:'notSelected',
     change:0
 }, {
     mode:'selected',
-    change: 2
+    change: 3
     }, {
         mode: 'wordSelected',
         change: 1
@@ -49,7 +48,7 @@ var selectionModes = [{
 
 ];
 
-//#p1 {background-color: rgb(255, 0, 0);}   /* red */
+
 export interface BackgroundColorStyle {
     backgroundColor:string
 }
@@ -72,13 +71,14 @@ interface CommonColourStyles {
     wordSelected: BackgroundColorStyle,
     blank: BackgroundColorStyle,
     letter: BackgroundColorStyle,
-    autoSolved: BackgroundColorStyle
+    letterSolved: BackgroundColorStyle
 
 }
 var styles: CommonColourStyles = {
 
 } as CommonColourStyles;
-selectionModes.forEach(selectionMode => {
+
+selectionModes.forEach((selectionMode) => {
     notSelectedSolutionModeColours.forEach(notSelectedSolutionModeColour => {
         styles[selectionMode.mode + notSelectedSolutionModeColour.mode] = {
             backgroundColor: notSelectedSolutionModeColour.color.darken(changeAmount * selectionMode.change).rgb().toString()
@@ -86,8 +86,10 @@ selectionModes.forEach(selectionMode => {
     })
 });
 
-styles.notSelectedGuessing.backgroundColor = whiteRgb;
-styles.blank = { backgroundColor: blackRgb };
+styles.notSelectedGuessing.backgroundColor = notSelectedGuessingRgb;
+styles.blank = { backgroundColor: blankRgb };
 styles.letter = { backgroundColor: blackRgb };
-styles.autoSolved =styles.selectedSolved;
-export  var commonColourStyles:CommonColourStyles =styles as CommonColourStyles
+styles.letterSolved = {
+    backgroundColor: solvedColor.darken(0.7).rgb().toString()
+}
+export var commonColourStyles: CommonColourStyles = styles as CommonColourStyles

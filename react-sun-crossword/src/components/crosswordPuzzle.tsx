@@ -8,6 +8,8 @@ import { GlobalCheatButton } from "./globalCheatButton";
 import { AutoSolveButton } from "./autoSolveButton";
 import { TwoCol } from "./twoCol";
 import { CroswordClues, ClueProps } from "./clues";
+import { Lightbulbs } from "./Lighbulbs"
+import { Lightbulb } from "./lightbulb";
 
 export interface CrosswordPuzzleProps {
     crosswordModel: CrosswordModel
@@ -16,19 +18,16 @@ interface RowColIndices {
     row: number,
     col:number
 }
-export interface CrosswordPuzzleState {
-    squares: SquareProps[][],
-}
+
 export enum WordSelectMode {
     select,nav,across,down
 }
-export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, CrosswordPuzzleState> {
+export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undefined> {
     constructor(props: CrosswordPuzzleProps) {
         super(props);
         this.autoSolve = true;
-        this.state = { squares: this.getTheState() };
     }
-    autoSolve: boolean;
+    autoSolve: boolean;//to come as props
     _mapGrid(grid: Square[][]):SquareProps[][] {
         var self = this;
         var mappedGrid=grid.map((row,rowIndex) => {
@@ -72,7 +71,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.performSelection(square);
     }
     performSelection(square: Square, wordSelectMode = WordSelectMode.select) {
-        
+        console.log(square);
         var requiresRender = false;
         if (square.letter !== "") {
             var previousSelectedWord = this.props.crosswordModel.selectedWord;
@@ -122,7 +121,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             }
         }
         if (requiresRender) {
-            this.setTheState();
+            this.forceUpdate();
         }
     }
     arrowDownDown(evt: KeyboardEvent) {
@@ -238,7 +237,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 }
             } else {
                 if (requiresRender) {
-                    this.setTheState();
+                    this.forceUpdate();
                 }
             }
         }
@@ -263,12 +262,12 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 }
             } else {
                 if (requiresRender) {
-                    this.setTheState();
+                    this.forceUpdate();
                 }
             }
         }
     }
-    getTheState() {
+    setAutoSolve() {
         var crosswordModel = this.props.crosswordModel;
         //given that autoSolve is unrelated to a specific crossword
         if (this.autoSolve) {
@@ -287,7 +286,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             solvedWords.forEach(word => {
                 word.squares.forEach(square => square.autoSolved = true);
             });
-                
+
         } else {
             var grid = this.props.crosswordModel.grid;
             grid.forEach(row => {
@@ -296,10 +295,6 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 });
             })
         }
-        return this._mapGrid(this.props.crosswordModel.grid);
-    }
-    setTheState() {
-        this.setState({ squares: this.getTheState() })
     }
     solveClicked = ()=>{
         if (this.props.crosswordModel.solvingMode === SolvingMode.Solving) {
@@ -307,25 +302,31 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         } else {
             this.props.crosswordModel.solvingMode = SolvingMode.Solving;
         }
-        this.setTheState();
+        this.forceUpdate();
     }
-    globalCheatClicked = ()=>{
+    globalCheatClicked = () => {
         if (this.props.crosswordModel.solvingMode === SolvingMode.Cheating) {
             this.props.crosswordModel.solvingMode = SolvingMode.Guessing;
         } else {
             this.props.crosswordModel.solvingMode = SolvingMode.Cheating;
         }
-        this.setTheState();
+        this.forceUpdate();
     }
     autoSolveClicked = () => {
         this.autoSolve = !this.autoSolve;
-        this.setTheState();
+        this.forceUpdate();
     }
     clueSelected = (isAcross: boolean, wordId: number) => {
-        var cm = this.props.crosswordModel
-        var selectedWord=cm.words.find(word => {
-            return word.id==wordId
-        });
+        var words = this.props.crosswordModel.words;
+        var selectedWord: IWord;
+        for (var i = 0; i < words.length; i++) {
+            var word = words[i];
+            if (word.id == wordId) {
+                selectedWord = word;
+                break;
+            }
+        }
+        
         var firstSquare = selectedWord.squares[0];
         var wordSelectMode = WordSelectMode.down;
         if (isAcross) {
@@ -334,52 +335,67 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.performSelection(firstSquare, wordSelectMode)
         //want to select it and force across/down
     }
-    render() {
-        
+    mapClues(clues: Clue[]): ClueProps[] {
         var crosswordModel = this.props.crosswordModel;
 
-        //solvingMode on the word........
-        var solvingMode = crosswordModel.solvingMode;
         
-        function mapClues(clues: Clue[]):ClueProps[] {
-            return clues.map(clue => {
-                var clueWord = clue.word;
-                var wordSolved = clueWord.solved();
-                var clueLetters=clueWord.squares.map(sq => {
-                    return {
-                        guess: sq.guess,
-                        letter: sq.letter,
-                        autoSolved: sq.autoSolved,
-                        solvingMode: solvingMode,
-                        isSolved:wordSolved
-                    }
-                });
-                var clueProps: ClueProps = {
-                    clueNumber: clue.number,
-                    format: clue.format,
-                    text: clue.text,
+        var solvingMode = crosswordModel.solvingMode;
+        return clues.map(clue => {
+            var clueWord = clue.word;
+            var wordSolved = clueWord.solved();
+            var clueLetters = clueWord.squares.map(sq => {
+                return {
+                    guess: sq.guess,
+                    letter: sq.letter,
+                    autoSolved: sq.autoSolved,
                     solvingMode: solvingMode,
-                    isSelected: crosswordModel.selectedWord === clue.word,
-                    isSolved: wordSolved,
-                    clueLetters: clueLetters,
-                    wordId: clue.word.id
-                };
-                return clueProps;
+                    isSolved: wordSolved
+                }
             });
-        }
-
+            var clueProps: ClueProps = {
+                clueNumber: clue.number,
+                format: clue.format,
+                text: clue.text,
+                solvingMode: solvingMode,
+                isSelected: crosswordModel.selectedWord === clue.word,
+                isSolved: wordSolved,
+                clueLetters: clueLetters,
+                wordId: clue.word.id
+            };
+            return clueProps;
+        });
+    }
+    componentWillReceiveProps(nextProps: CrosswordPuzzleProps) {
+        
+    }
+    render() {
+        this.setAutoSolve();
+        var squares = this._mapGrid(this.props.crosswordModel.grid);
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(cp => {
             return {
                 name: cp.name,
-                acrossClues: mapClues(cp.acrossClues),
-                downClues: mapClues(cp.downClues)
+                acrossClues: this.mapClues(cp.acrossClues),
+                downClues: this.mapClues(cp.downClues)
             }
         });
-        var leftContent = 
-            <div style={{ padding: '100px' }}><Crossword squares={this.state.squares} />
-            <SolveButton isSolving={this.props.crosswordModel.solvingMode === SolvingMode.Solving} clicked={this.solveClicked} />
+        /*
+        <SolveButton  isSolving={this.props.crosswordModel.solvingMode === SolvingMode.Solving} clicked={this.solveClicked} />
             <GlobalCheatButton isCheating={this.props.crosswordModel.solvingMode === SolvingMode.Cheating} clicked={this.globalCheatClicked} />
             <AutoSolveButton isAutoSolving={this.autoSolve} clicked={this.autoSolveClicked} />
+        */
+        
+        var leftContent =
+            <div >
+                <Crossword squares={squares} />
+                <div>
+                    <span onClick={this.globalCheatClicked}>
+                        <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Cheating} rayColour="red" onGlowColour="red" text="Cheat" id="cheatBulb" bulbOuterColour="red" innerGlowColour="red" />
+                    </span>
+                    <span onClick={this.solveClicked}>
+                        <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Solving} rayColour="yellow" onGlowColour="yellow" text="Solve" id="solveBulb" bulbOuterColour="yellow" innerGlowColour="yellow" />
+                    </span>
+                </div>
+                
             </div>
         
         var rightContent = <CroswordClues clueSelected={this.clueSelected} grouping={true} clueProviders={mappedClueProviders} />

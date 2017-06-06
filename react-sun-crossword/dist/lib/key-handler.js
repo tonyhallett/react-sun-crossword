@@ -1,5 +1,10 @@
 /* @flow */
 "use strict";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -11,10 +16,10 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-const React = require("react");
+var React = require("react");
 //import {canUseDOM} from 'exenv';
-const constants_1 = require("./constants");
-const utils_1 = require("./utils");
+var constants_1 = require("./constants");
+var utils_1 = require("./utils");
 function keyModifiersAny() {
     return {
         altKey: true,
@@ -39,10 +44,11 @@ var AndOr;
     AndOr[AndOr["AndLoose"] = 1] = "AndLoose";
     AndOr[AndOr["AndExact"] = 2] = "AndExact";
 })(AndOr = exports.AndOr || (exports.AndOr = {}));
-class KeyHandler extends React.Component {
-    constructor(props) {
-        super(props);
-        this.isModifierMatch = (event, modifiers) => {
+var KeyHandler = (function (_super) {
+    __extends(KeyHandler, _super);
+    function KeyHandler(props) {
+        var _this = _super.call(this, props) || this;
+        _this.isModifierMatch = function (event, modifiers) {
             var match = true;
             var modKeys = {
                 altKey: modifiers.altKey,
@@ -87,13 +93,13 @@ class KeyHandler extends React.Component {
             //console.log('is match: ' + match)
             return match;
         };
-        this.handleKey = (event) => {
+        _this.handleKey = function (event) {
             //console.log("keyhandler component handle key")
-            const { keyValue, keyCode, keyMatches, onKeyHandle } = this.props;
+            var _a = _this.props, keyValue = _a.keyValue, keyCode = _a.keyCode, keyMatches = _a.keyMatches, onKeyHandle = _a.onKeyHandle;
             if (!onKeyHandle) {
                 return;
             }
-            const { target } = event;
+            var target = event.target;
             if (target instanceof HTMLElement && utils_1.isInput(target)) {
                 return;
             }
@@ -120,7 +126,7 @@ class KeyHandler extends React.Component {
                         var kbKey = { keyValue: key, keyCode: null };
                         var possibleMatch = utils_1.matchesKeyboardEvent(event, kbKey);
                         if (possibleMatch) {
-                            var isMatch = this.isModifierMatch(event, mod);
+                            var isMatch = _this.isModifierMatch(event, mod);
                             if (!matches) {
                                 matches = isMatch;
                             }
@@ -139,40 +145,42 @@ class KeyHandler extends React.Component {
                         var key = keys[i];
                         var possibleMatch = utils_1.matchesKeyboardEvent(event, { keyValue: key, keyCode: null });
                         if (possibleMatch) {
-                            matches = this.isModifierMatch(event, keyMatches.modifiers);
+                            matches = _this.isModifierMatch(event, keyMatches.modifiers);
                             break;
                         }
                     }
                 }
             }
             else {
-                matches = utils_1.matchesKeyboardEvent(event, { keyValue, keyCode });
+                matches = utils_1.matchesKeyboardEvent(event, { keyValue: keyValue, keyCode: keyCode });
             }
             if (matches) {
                 onKeyHandle(event, matchingIds);
             }
         };
+        return _this;
         /* eslint-disable no-console */
         //if (!props.keyValue && !props.keyCode) {
         //  console.error('Warning: Failed propType: Missing prop `keyValue` or `keyCode` for `KeyHandler`.');
         //}
         /* eslint-enable */
     }
-    shouldComponentUpdate() {
+    KeyHandler.prototype.shouldComponentUpdate = function () {
         return false;
-    }
-    componentDidMount() {
+    };
+    KeyHandler.prototype.componentDidMount = function () {
         //if (!canUseDOM) return;
         window.document.addEventListener(this.props.keyEventName, this.handleKey);
-    }
-    componentWillUnmount() {
+    };
+    KeyHandler.prototype.componentWillUnmount = function () {
         //if (!canUseDOM) return;
         window.document.removeEventListener(this.props.keyEventName, this.handleKey);
-    }
-    render() {
+    };
+    KeyHandler.prototype.render = function () {
         return null;
-    }
-}
+    };
+    return KeyHandler;
+}(React.Component));
 KeyHandler.defaultProps = {
     keyEventName: constants_1.KEYUP,
 };
@@ -183,18 +191,18 @@ exports.KeyHandler = KeyHandler;
  */
 //...any: any[]
 function keyHandleDecorator(matcher) {
-    return (props) => {
-        const { keyValue, keyCode, keyEventName, keyMatches } = props || {};
-        return (Component) => (
-        //the decorator needs to have the same property interface 
-        class KeyHandleDecorator extends React.Component {
-            constructor() {
-                super(...arguments);
-                this.state = { keyValue: null, keyCode: null, modifiers: null };
-                this.handleKey = (event, ids) => {
+    return function (props) {
+        var _a = props || {}, keyValue = _a.keyValue, keyCode = _a.keyCode, keyEventName = _a.keyEventName, keyMatches = _a.keyMatches;
+        return function (Component) { return ((function (_super) {
+            __extends(KeyHandleDecorator, _super);
+            //the decorator needs to have the same property interface 
+            function KeyHandleDecorator() {
+                var _this = _super !== null && _super.apply(this, arguments) || this;
+                _this.state = { keyValue: null, keyCode: null, modifiers: null };
+                _this.handleKey = function (event, ids) {
                     //console.log("HOC handleKey");
-                    if (matcher && matcher(event, this.state)) {
-                        this.setState({ keyValue: null, keyCode: null });
+                    if (matcher && matcher(event, _this.state)) {
+                        _this.setState({ keyValue: null, keyCode: null });
                         return;
                     }
                     var modifiers = KeyModifiersEnum.none;
@@ -210,16 +218,18 @@ function keyHandleDecorator(matcher) {
                     var keyValue = utils_1.eventKey(event);
                     var keyCode = event.keyCode;
                     if (ids.length > 0) {
-                        ids.forEach(methodName => {
-                            this.wrappedInstance[methodName](event, keyValue, keyCode, modifiers);
+                        ids.forEach(function (methodName) {
+                            _this.wrappedInstance[methodName](event, keyValue, keyCode, modifiers);
                         });
                     }
                     else {
-                        this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
+                        _this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
                     }
                 };
+                return _this;
             }
-            render() {
+            KeyHandleDecorator.prototype.render = function () {
+                var _this = this;
                 function isKeyMatchesMethodName(toDetermine) {
                     return toDetermine.methodName !== undefined;
                 }
@@ -230,7 +240,7 @@ function keyHandleDecorator(matcher) {
                         if (isKeyMatchesMethodName(testEntry)) {
                             var keyMatchesMethodNameArray = keyMatches;
                             var allModKeys = [];
-                            keyMatchesMethodNameArray.forEach(keyMatchesMethodName => {
+                            keyMatchesMethodNameArray.forEach(function (keyMatchesMethodName) {
                                 var methodName = keyMatchesMethodName.methodName;
                                 var kMatches = keyMatchesMethodName.keyMatches;
                                 var modKeys;
@@ -238,7 +248,7 @@ function keyHandleDecorator(matcher) {
                                     var tEntry = kMatches[0];
                                     if (typeof tEntry === 'string') {
                                         var anyKeyModifiers = keyModifiersAny();
-                                        modKeys = kMatches.map(kMatch => {
+                                        modKeys = kMatches.map(function (kMatch) {
                                             var modKey = {
                                                 key: kMatch,
                                                 modifiers: anyKeyModifiers
@@ -252,7 +262,7 @@ function keyHandleDecorator(matcher) {
                                 }
                                 else {
                                     var modifiers = kMatches.modifiers;
-                                    modKeys = kMatches.keys.map(key => {
+                                    modKeys = kMatches.keys.map(function (key) {
                                         var modKey = {
                                             key: key,
                                             modifiers: modifiers
@@ -260,7 +270,7 @@ function keyHandleDecorator(matcher) {
                                         return modKey;
                                     });
                                 }
-                                modKeys.forEach(modKey => modKey.id = methodName);
+                                modKeys.forEach(function (modKey) { return modKey.id = methodName; });
                                 allModKeys = allModKeys.concat(modKeys);
                             });
                             mappedKeyMatches = allModKeys;
@@ -269,9 +279,10 @@ function keyHandleDecorator(matcher) {
                 }
                 return (React.createElement("div", null,
                     React.createElement(KeyHandler, { keyValue: keyValue, keyCode: keyCode, keyMatches: mappedKeyMatches, keyEventName: keyEventName, onKeyHandle: this.handleKey }),
-                    React.createElement(Component, __assign({ ref: (instance) => { this.wrappedInstance = instance; } }, this.props, this.state))));
-            }
-        });
+                    React.createElement(Component, __assign({ ref: function (instance) { _this.wrappedInstance = instance; } }, this.props, this.state))));
+            };
+            return KeyHandleDecorator;
+        }(React.Component))); };
     };
 }
 exports.keyHandler = keyHandleDecorator();

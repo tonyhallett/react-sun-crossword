@@ -3,7 +3,7 @@
 import { SolvingMode } from '../models/index'
 import { SquareLetter, SquareLetterProps } from './squareLetter' 
 import { SquareNumber, SquareNumberProps } from './squareNumber'
-import { commonColourStyles,BackgroundColorStyle } from './commonColourStyling'
+import { commonColourStyles,BackgroundColorStyle } from './commonStyling'
 
 export interface SquareProps { selected: (identifier: any) => any, isSelected: boolean, isWordSelected: boolean,autoSolved:boolean, solvingMode: SolvingMode, number: string, letter: string, guess: string, identifier: any }
 
@@ -46,9 +46,9 @@ export class Square extends React.Component<SquareProps, undefined> {
         backgroundColorStyle = commonColourStyles[propName];
         return backgroundColorStyle;
     };
-    
-    _getSquareStyle() {
-        var baseStyle= {
+
+    _getSquareStyle(): React.CSSProperties {
+        var style= {
             width: "32px",
             height: "32px",
             textAlign: "center",
@@ -56,9 +56,10 @@ export class Square extends React.Component<SquareProps, undefined> {
             margin: 0,
             padding: 0,
             border: "1px",
-            position:"relative"
+            position: "relative",
+            backgroundColor: this._getBackgroundColorStyle().backgroundColor
         }
-        return Object.assign(baseStyle, this._getBackgroundColorStyle());
+        return style as React.CSSProperties;
     }
     _getSquareLetter(): string{
         var letter = this.props.letter;

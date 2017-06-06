@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 import { SolvingMode } from "../models/index";
-import { BackgroundColorStyle, commonColourStyles } from "./commonColourStyling";
+import { BackgroundColorStyle, commonColourStyles } from "./commonStyling";
 
 
 export interface ClueLetterProps {
@@ -41,6 +41,8 @@ export class FormatWord extends React.Component<FormatWordProps, undefined> {
                 key++;
             }
         }
+        var hyphenFormat = format.replace(",", "-")
+        formatted.push(<span style={{ fontWeight: 'bolder', paddingLeft: '5px' }} key={key++}>{"(" + hyphenFormat + ")"}</span>)
         return <div >{formatted}</div>
     }
 }
@@ -52,24 +54,40 @@ export class ClueLetter extends React.Component<ClueLetterProps, undefined> {
         var letter = this.props.letter;
         var displayLetter = letter;
         var guess = this.props.guess;
+        var fontWeight = "normal";
+        var showWithSolvedColour = false;
+        var showWithSolvedWeight = false;
         if (solvingMode !== SolvingMode.Cheating) {
             displayLetter = guess === "" ? "_" : guess;
         }
         var fontColor: string = commonColourStyles.letter.backgroundColor;
-        if (solvingMode === SolvingMode.Guessing) {
-            
-            if (this.props.isSolved && this.props.autoSolved) {
-                fontColor = commonColourStyles.autoSolved.backgroundColor;
+        if (solvingMode === SolvingMode.Guessing) {  
+            if (this.props.autoSolved) {
+                showWithSolvedColour = true;
+                showWithSolvedWeight = true;
             } 
         } else {
-            if (solvingMode === SolvingMode.Solving) {
-                if (!this.props.isSolved && guess === letter) {
-                    fontColor = commonColourStyles.autoSolved.backgroundColor;
+            if (this.props.isSolved) {
+                showWithSolvedWeight = true;
+            } else {
+                if (guess === letter) {
+                    showWithSolvedColour = true;
+                    showWithSolvedWeight = true;
                 }
             }
+            
         }
-
-        return <span style={{color:fontColor,paddingRight:'2px'}}>{displayLetter}</span>
+        if (showWithSolvedColour) {
+            fontColor = commonColourStyles.letterSolved.backgroundColor;
+            
+        }
+        if (showWithSolvedWeight) {
+            fontWeight = "bold"
+        }
+        var style: React.CSSProperties = {
+            color: fontColor, fontWeight: fontWeight, paddingRight: '2px'
+        } as React.CSSProperties;
+        return <span style={style}>{displayLetter}</span>
     }
 }
 

@@ -2,8 +2,13 @@
 // for more information see the following page on the TypeScript wiki:
 // https://github.com/Microsoft/TypeScript/wiki/JSX
 "use strict";
-const React = require("react");
-const ReactDOM = require("react-dom");
-const CrosswordPuzzleLoader_1 = require("./components/CrosswordPuzzleLoader");
-ReactDOM.render(React.createElement(CrosswordPuzzleLoader_1.CrosswordPuzzleLoader, null), document.getElementById("example"));
+var React = require("react");
+var ReactDOM = require("react-dom");
+var crosswordPuzzleApp_1 = require("./components/crosswordPuzzleApp");
+//ReactDOM.render(
+//    <CrosswordPuzzleLoader/>,
+//    document.getElementById("example")
+//);
+//CrosswordPuzzleApp
+ReactDOM.render(React.createElement(crosswordPuzzleApp_1.CrosswordPuzzleApp, null), document.getElementById("example"));
 //# sourceMappingURL=index.js.map

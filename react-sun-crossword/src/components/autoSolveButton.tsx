@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 
-import { commonColourStyles, BackgroundColorStyle } from './commonColourStyling'
+import { commonColourStyles, BackgroundColorStyle } from './commonStyling'
 export interface AutoSolveProps {
     isAutoSolving: boolean,
     clicked: () => void

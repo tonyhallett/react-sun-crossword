@@ -1,0 +1,50 @@
+﻿body {
+    font-family: "Times New Roman", Times, serif;
+}
+button {
+    font-family: "Times New Roman", Times, serif;
+}
+.innerLight {
+    opacity:0;
+    -webkit-transition: opacity 2s;
+    transition: opacity 2s
+}
+.innerLight.on {
+    opacity:1
+}
+.onGlow.on {
+    opacity: 1
+}
+.onGlow {
+    opacity: 0;
+    -webkit-transition: opacity 2s;
+    transition: opacity 2s
+}
+.rays {
+    visibility: hidden;
+    -webkit-transition: visibility 0s linear 0.1s;
+    transition: visibility 0s linear 0.1s 
+}
+.rays.on {
+    visibility: visible
+}
+
+.solveCheatTextFilament {
+    -webkit-transition: fill 2s;
+    transition: fill 2s
+}
+
+.solveCheatTextFilament.on {
+    fill: red
+}
+
+#cheatBulb{
+    cursor:pointer
+}
+#solveBulb {
+    cursor: pointer
+}
+
+
+
+
