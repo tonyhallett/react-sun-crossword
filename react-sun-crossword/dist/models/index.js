@@ -37,6 +37,65 @@ var Word = (function () {
     return Word;
 }());
 exports.Word = Word;
+function ConvertCrosswordModelToJson(crosswordModel) {
+    //dates different types
+    var grid = crosswordModel.grid.map(function (row) {
+        return row.map(function (square) {
+            var jsonSquare = {
+                autoSolved: square.autoSolved,
+                guess: square.guess,
+                letter: square.letter,
+                number: square.number,
+                selected: square.selected,
+                wordSelected: square.wordSelected,
+                solvingMode: square.solvingMode
+            };
+            return jsonSquare;
+        });
+    });
+    var words = crosswordModel.words.map(function (word) {
+        var jsonWord = {
+            id: word.id,
+            isAcross: word.isAcross,
+            selected: word.selected,
+            solvingMode: word.solvingMode,
+            length: word.length,
+            x: word.x,
+            y: word.y
+        };
+        return jsonWord;
+    });
+    function mapClues(clues) {
+        return clues.map(function (clue) {
+            var jsonClue = {
+                format: clue.format,
+                number: clue.number,
+                text: clue.text,
+                wordId: clue.wordId
+            };
+            return jsonClue;
+        });
+    }
+    var clueProviders = crosswordModel.clueProviders.map(function (cp) {
+        var jsonClueProvider = {
+            name: cp.name,
+            acrossClues: mapClues(cp.acrossClues),
+            downClues: mapClues(cp.downClues)
+        };
+        return jsonClueProvider;
+    });
+    var crosswordModelJson = {
+        datePublished: crosswordModel.datePublished.toString(),
+        id: crosswordModel.id,
+        solvingMode: crosswordModel.solvingMode,
+        title: crosswordModel.title,
+        grid: grid,
+        words: words,
+        clueProviders: clueProviders
+    };
+    return crosswordModelJson;
+}
+exports.ConvertCrosswordModelToJson = ConvertCrosswordModelToJson;
 function ConvertCrosswordJsonToModel(crosswordJson) {
     var crosswordModel = {
         id: crosswordJson.id,

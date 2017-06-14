@@ -34,6 +34,7 @@ button {
     transition: fill 2s
 }
 
+
 .solveCheatTextFilament.on {
     fill: red
 }
@@ -44,6 +45,9 @@ button {
 #solveBulb {
     cursor: pointer
 }
+
+
+
 
 
 

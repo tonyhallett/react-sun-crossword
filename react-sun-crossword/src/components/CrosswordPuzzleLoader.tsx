@@ -2089,6 +2089,7 @@ export class CrosswordPuzzleLoader extends React.Component<undefined, CrosswordS
         return model;
     }
     render() {
-        return <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel}  />
+
+            return <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel} />
     }
 }

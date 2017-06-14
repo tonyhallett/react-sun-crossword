@@ -109,7 +109,6 @@ var CrosswordPuzzle = (function (_super) {
     };
     CrosswordPuzzle.prototype.performSelection = function (square, wordSelectMode) {
         if (wordSelectMode === void 0) { wordSelectMode = WordSelectMode.select; }
-        console.log(square);
         var requiresRender = false;
         if (square.letter !== "") {
             var previousSelectedWord = this.props.crosswordModel.selectedWord;

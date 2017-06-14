@@ -71,7 +71,6 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, undef
         this.performSelection(square);
     }
     performSelection(square: Square, wordSelectMode = WordSelectMode.select) {
-        console.log(square);
         var requiresRender = false;
         if (square.letter !== "") {
             var previousSelectedWord = this.props.crosswordModel.selectedWord;

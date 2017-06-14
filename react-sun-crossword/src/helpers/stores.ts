@@ -7,7 +7,7 @@ export interface CrosswordPuzzleJsonStore extends CrosswordPuzzleStore {
 
 }
 export interface CrosswordPuzzleDataStore extends CrosswordPuzzleStore {
-
+    saveCrosswordAsync(crossword: CrosswordModelJson): Promise<{}>
 }
 export interface CrosswordPuzzleChooseDetail {
     inStore: boolean // isNew the same

@@ -131,7 +131,64 @@ export interface CrosswordModelJsonSquare {
 
 
 
-
+export function ConvertCrosswordModelToJson(crosswordModel: CrosswordModel): CrosswordModelJson {
+    //dates different types
+    var grid = crosswordModel.grid.map(function (row) {
+        return row.map(function (square: Square) {
+            var jsonSquare: CrosswordModelJsonSquare = {
+                autoSolved: square.autoSolved,
+                guess: square.guess,
+                letter: square.letter,
+                number: square.number,
+                selected: square.selected,
+                wordSelected: square.wordSelected,
+                solvingMode: square.solvingMode
+            }
+            return jsonSquare
+        });
+    });
+    var words = crosswordModel.words.map(function (word: IWord) {
+        var jsonWord: CrosswordModelJsonWord = {
+            id: word.id,
+            isAcross: word.isAcross,
+            selected: word.selected,
+            solvingMode: word.solvingMode,
+            length: word.length,
+            x: word.x,
+            y:word.y
+        }
+        return jsonWord;
+    });
+    function mapClues(clues: Clue[]): CrosswordModelJsonClue[] {
+        return clues.map(function (clue: Clue) {
+            var jsonClue: CrosswordModelJsonClue = {
+                format: clue.format,
+                number: clue.number,
+                text: clue.text,
+                wordId:clue.wordId
+            } 
+            return jsonClue;
+        })
+    }
+    var clueProviders = crosswordModel.clueProviders.map(function (cp: ClueProvider) {
+        var jsonClueProvider: CrosswordModelJsonClueProvider = {
+            name: cp.name,
+            acrossClues: mapClues(cp.acrossClues),
+            downClues: mapClues(cp.downClues)
+        }
+        return jsonClueProvider;
+    });
+    var crosswordModelJson: CrosswordModelJson = {
+        datePublished: crosswordModel.datePublished.toString(),
+        id: crosswordModel.id,
+        solvingMode: crosswordModel.solvingMode,
+        title: crosswordModel.title,
+        grid:grid,
+        words: words,
+        clueProviders: clueProviders
+    }
+    return crosswordModelJson;
+}
 export function ConvertCrosswordJsonToModel(crosswordJson: CrosswordModelJson): CrosswordModel{
     var crosswordModel: CrosswordModel = {
         id: crosswordJson.id,
@@ -237,4 +294,12 @@ export function ConvertCrosswordJsonToModel(crosswordJson: CrosswordModelJson): 
     //console.log(crosswordModel);
     return crosswordModel;
 }
+
+export interface CrosswordLookupJson {
+    id: string
+    title: string
+    datePublished: string
+}
+
+//var lookupJson = { id: crossword.id, datePublished: crossword.datePublished, title: crossword.title };
 
