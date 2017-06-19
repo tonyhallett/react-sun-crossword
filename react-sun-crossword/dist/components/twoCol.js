@@ -19,13 +19,11 @@ var TwoCol = (function (_super) {
         var leftStyle = {
             float: 'left',
             width: leftPercent + '%',
-            height: '100%',
             overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
         };
         var rightStyle = {
             float: 'left',
             width: rightPercent + '%',
-            height: '100%',
             overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
         };
         var left = React.createElement("div", { style: leftStyle }, this.props.leftContent);

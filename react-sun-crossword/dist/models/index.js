@@ -196,4 +196,5 @@ function ConvertCrosswordJsonToModel(crosswordJson) {
     return crosswordModel;
 }
 exports.ConvertCrosswordJsonToModel = ConvertCrosswordJsonToModel;
+//var lookupJson = { id: crossword.id, datePublished: crossword.datePublished, title: crossword.title };
 //# sourceMappingURL=index.js.map

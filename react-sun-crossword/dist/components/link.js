@@ -19,7 +19,8 @@ var NonNavigatableLink = (function (_super) {
     NonNavigatableLink.prototype.render = function () {
         var linkBackgroundColorCss = this.props.transparentBackground ? "background-color:transparent" : "";
         var linkTextDecoration = this.props.removeUnderline ? "text-decoration:none" : "text-decoration:underline";
-        var linkAdditionCss = [linkBackgroundColorCss, linkTextDecoration];
+        var linkRemoveOutline = this.props.removeOutline ? "outline:none" : "";
+        var linkAdditionCss = [linkBackgroundColorCss, linkTextDecoration, linkRemoveOutline];
         var linkCss = "color:" + this.props.color + ";";
         for (var i = 0; i < linkAdditionCss.length; i++) {
             var linkAdditional = linkAdditionCss[i];
@@ -41,6 +42,7 @@ NonNavigatableLink.defaultProps = {
     color: "#2196F3",
     transparentBackground: true,
     removeUnderline: true,
+    removeOutline: true
 };
 NonNavigatableLink.idCount = 0;
 NonNavigatableLink.idName = "nonNavigatableLink";

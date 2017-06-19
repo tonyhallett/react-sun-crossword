@@ -8,16 +8,19 @@ import { TwoCol } from "./twoCol";
 import { CrosswordPuzzleChooseDetail, CrosswordPuzzleJsonStore, CrosswordPuzzleDataStore} from "../helpers/stores";
 import { crosswordPuzzleDataStore } from "../helpers/crosswordPuzzleDataStore"
 import { crosswordPuzzleJsonStore } from "../helpers/crosswordPuzzleJsonStore"
-import { EmailLogOn, EmailLogOnComp, ButtonProps } from "./emailLogOn";
+import {  EmailLogOnComp, ButtonProps } from "./emailLogOn";
 import { auth } from '../helpers/firebaseApp'
 import Button = require('muicss/lib/react/button');
-import { database } from "../helpers/firebaseApp";
+import { connectedDatabase, UserSaveDetails } from "../helpers/connectedDatabase";
 import 'firebase/database';
+import { CrosswordPuzzleChooser } from "./crosswordPuzzleChooser";
+import { MuiButton } from "./muiButton";
+
 
 interface MuiButtonProps extends ButtonProps{
     color:string
 }
-class MuiButton extends React.Component<MuiButtonProps, null>{
+class MuiButtonWrapper extends React.Component<MuiButtonProps, null>{
     constructor(props) {
         super(props);
     }
@@ -32,160 +35,73 @@ class MuiButton extends React.Component<MuiButtonProps, null>{
 interface CrosswordPuzzleAppState {
     crosswordModel: CrosswordModel,
     userLoggedIn: string,
-    //chooseDetailsJson: CrosswordPuzzleChooseDetail[]
-    //chooseDetailsStore: CrosswordPuzzleChooseDetail[]
-    //jsonSelectedCrossword: CrosswordPuzzleChooseDetail,
-    //storeSelectedCrossword: CrosswordPuzzleChooseDetail,
-    //jsonCrosswordsLoading: boolean,
-    //storeCrosswordsLoading: boolean,
-    //firebaseConnected:boolean
 }
 export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzzleAppState> {
-    //these are not going to change so no need for being props
-    crosswordPuzzleJsonStore: CrosswordPuzzleJsonStore
-    crosswordPuzzleDataStore: CrosswordPuzzleDataStore
-    currentCrosswordInStore=false
     constructor(props) {
         super(props);
-        this.crosswordPuzzleJsonStore = crosswordPuzzleJsonStore;
-        this.crosswordPuzzleDataStore = crosswordPuzzleDataStore;
         this.state = { crosswordModel: null, userLoggedIn: null};
-        
     }
     componentDidMount() {
         auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
-        //this.setChoices();
     }
-    /*
-    filterDetails(storeDetails: CrosswordPuzzleChooseDetail[], jsonDetails: CrosswordPuzzleChooseDetail[]) {
-        return jsonDetails.filter(function (jsDetail) {
-            var match = true;
-            for (var j = 0; j < storeDetails.length; j++) {
-                if (storeDetails[j].id === jsDetail.id) {
-                    match = false;
-                    break;
-                }
-            }
-            return match;
-        });
-
+    
+    crosswordSelected = (selectedCrossword: CrosswordModelJson) => {
+        var crosswordModel = ConvertCrosswordJsonToModel(selectedCrossword);
+        
+        this.setState({ crosswordModel: crosswordModel });
     }
-    setChoices(jsonSelectedCrossword: CrosswordPuzzleChooseDetail=null, storeSelectedCrossword: CrosswordPuzzleChooseDetail=null) {
-        var self = this;
-        if (this.state.userLoggedIn) {
-            this.setState({ jsonCrosswordsLoading: true,storeCrosswordsLoading:true });
-            Promise.all([crosswordPuzzleJsonStore.getDetailsAsync(), crosswordPuzzleDataStore.getDetailsAsync()]).then(function (combinedDetails) {
-
-                var publicDetails = combinedDetails[0];
-                var userDetails = combinedDetails[1];
-                var publicOnlyDetails = self.filterDetails(userDetails, publicDetails);
-                self.setState({ chooseDetailsJson: publicOnlyDetails, chooseDetailsStore: userDetails, jsonSelectedCrossword: jsonSelectedCrossword, storeSelectedCrossword: storeSelectedCrossword });
-            }).catch(function (err) {
-                //to do - a ui for this
-                console.log("Error getting public and saved crosswords: " + err.message);
-                window.setTimeout(function () {
-                    //clear the error message then
-                    console.log("trying again for public and saved");
-                    self.setChoices();
-                }, 1000);
-            }).then(function () {
-                self.setState({ jsonCrosswordsLoading: false, storeCrosswordsLoading: false });
-            });
-
-        } else {
-            this.setState({ jsonCrosswordsLoading: true });
-           
-            crosswordPuzzleJsonStore.getDetailsAsync().then(function (details) {
-                console.log("Have received the public details");
-                self.setState({ chooseDetailsJson: details, chooseDetailsStore: null, jsonSelectedCrossword: jsonSelectedCrossword, storeSelectedCrossword: storeSelectedCrossword });
-            }).catch(function (err) {
-                //to do 
-                console.log("Error getting public crosswords: " + err.message); 
-                //conditionally on the error message - 
-                window.setTimeout(function () {
-                    //clear the error message then
-                    console.log("trying again for public");
-                    self.setChoices();
-                }, 1000);
-            }).then(function () {
-                self.setState({ jsonCrosswordsLoading: false });
-            });
-        }
-    }
-    jsonCrosswordSelected = (crossword: CrosswordPuzzleChooseDetail) => {
-        this.setState({ jsonSelectedCrossword: crossword })
-    }
-    storeCrosswordSelected = (crossword: CrosswordPuzzleChooseDetail) => {
-        this.setState({ storeSelectedCrossword:crossword})
-    }
-    jsonCrosswordChosen = () => {
-        this.crosswordChosen(this.state.jsonSelectedCrossword);
-    }
-    storeCrosswordChosen= () => {
-        this.crosswordChosen(this.state.storeSelectedCrossword);
-    }
-    //this will only be visible if signed in
     saveUserCrossword = () => {
-        //will be done by the store
-        console.log("trying to save crossword for : " + auth.currentUser.displayName);
+        
         var modelJson = ConvertCrosswordModelToJson(this.state.crosswordModel);
-
-        var rerender = !this.currentCrosswordInStore;
-        var self = this;
-        this.crosswordPuzzleDataStore.saveCrosswordAsync(modelJson).then(function () {
-            self.currentCrosswordInStore = true;
-            if (rerender) {
-                console.log("re-rendering")
-                self.setChoices(null, self.state.jsonSelectedCrossword);
-            }
-        }).catch(function () {
-            //to do
-            console.log("!!!! error saving crossword to store")
+        connectedDatabase.saveUserCrossword(this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails:UserSaveDetails) {
+            //will now know not dirty
+        }).catch(function (err) {
+            //should be firebase error
+            //logic to be done later
         });
-
+        
     }
-    crosswordChosen = (crosswordDetail: CrosswordPuzzleChooseDetail) => {
-        var self = this;
-        crosswordDetail.getAsync().then(function (chosenCrossword) {
-            //do saving here - if necessary - will then need dirty management
-            var crosswordModel = ConvertCrosswordJsonToModel(chosenCrossword);
-            self.currentCrosswordInStore = crosswordDetail.inStore;
-            console.log("current crossword in store: " + self.currentCrosswordInStore);
-            var jsonSelectedCrossword: CrosswordPuzzleChooseDetail = null;
-            var storeSelectedCrossword: CrosswordPuzzleChooseDetail = null;
-            if (self.currentCrosswordInStore) {
-                storeSelectedCrossword = crosswordDetail;
-            } else {
-                jsonSelectedCrossword = crosswordDetail
-            }
-            self.setState({ crosswordModel: crosswordModel, jsonSelectedCrossword: jsonSelectedCrossword,storeSelectedCrossword:storeSelectedCrossword });
-        });
-
-    }
-    */
     onAuthStateChanged(user: firebase.User) {
+
         var loggedIn = user !== null;
-        this.setState({ userLoggedIn: user.uid })
-        //this.setChoices();
+        if (loggedIn) {
+            this.setState({ userLoggedIn: user.uid })
+        } else{
+            this.setState({ userLoggedIn: null })
+        }
     }
     //going to have to deal with saving of old one here
 
     
     
     render() {
-        //<button disabled={!this.state.userLoggedIn} onClick={this.saveUserCrossword}>Click to save</button>
-        //<CrosswordPuzzleChooser storeCrosswordsLoading={this.state.storeCrosswordsLoading} jsonCrosswordsLoading={this.state.jsonCrosswordsLoading} userLoggedIn={this.state.userLoggedIn} jsonCrosswordSelected={this.jsonCrosswordSelected} storeCrosswordSelected={this.storeCrosswordSelected} storeCrosswordChosen={this.storeCrosswordChosen} jsonCrosswordChosen={this.jsonCrosswordChosen} jsonSelectedCrossword={this.state.jsonSelectedCrossword} storeSelectedCrossword={this.state.storeSelectedCrossword} chooseDetailsJson={this.state.chooseDetailsJson} chooseDetailsStore={this.state.chooseDetailsStore} />
-        var leftContent = <div>
-            
+        //explicit height allows room for the Select 
+        var leftContent = <div style={{ minHeight: "1000px" }}>
+            <CrosswordPuzzleChooser userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} /> 
             </div>
         var rightContent = <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel} />
         if (this.state.crosswordModel === null) {
             rightContent=<div/>
         }
-        return <TwoCol leftContent={leftContent} rightContent={rightContent}>
+        return <div >
             
-        </TwoCol>
-        
+            <MuiButton disabled={false} buttonStyle={{padding:"50px", backgroundColor: "green", color: "white" }}>My Mui</MuiButton>
+            <button disabled={!this.state.userLoggedIn} onClick={this.saveUserCrossword}>Click to save</button>
+
+            <TwoCol leftContent={leftContent} rightContent={rightContent}>
+            
+            </TwoCol>
+            </div>
+
+       
+        //return <div>
+        //    <div style={{width:"500px"}}>
+        //        <CrosswordPuzzleChooser userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} />
+        //    </div>
+        //    {this.state.crosswordModel ? <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel} /> : null}
+        //    <button disabled={!this.state.userLoggedIn} onClick={this.saveUserCrossword}>Click to save</button>
+
+        //     </div>
     }
     
 }
@@ -289,5 +205,6 @@ export class CrosswordPuzzleChooserOld extends React.Component<CrosswordPuzzleCh
 
             
         </div>
+        
     }
 }

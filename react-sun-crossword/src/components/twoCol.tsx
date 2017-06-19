@@ -42,13 +42,13 @@ export class TwoCol extends React.Component<TwoColProps, undefined> {
         var leftStyle: React.CSSProperties = {
             float: 'left',
             width: leftPercent + '%',
-            height: '100%',
+            
             overflow: this.props.colOverflow ? this.props.colOverflow:'hidden'
         }
         var rightStyle: React.CSSProperties = {
             float: 'left',
             width: rightPercent + '%',
-            height: '100%',
+            
             overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
         }
         var left = <div style={leftStyle}>{this.props.leftContent}</div>;

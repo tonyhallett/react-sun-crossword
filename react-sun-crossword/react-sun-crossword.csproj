@@ -69,7 +69,7 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="firebaseui.css" />
-    <Content Include="mui.min.css" />
+    <Content Include="muiBtn.css" />
     <Content Include="packages.config" />
     <Content Include="package.json" />
     <None Include="src\sunCrosswordJsons\23825.json" />
@@ -103,6 +103,7 @@
     <TypeScriptCompile Include="src\components\Lighbulbs.tsx" />
     <TypeScriptCompile Include="src\components\lightbulb.tsx" />
     <TypeScriptCompile Include="src\components\link.tsx" />
+    <TypeScriptCompile Include="src\components\muiButton.tsx" />
     <TypeScriptCompile Include="src\components\solveButton.tsx" />
     <TypeScriptCompile Include="src\components\twoCol.tsx" />
     <TypeScriptCompile Include="src\helpers\connectedDatabase.ts" />

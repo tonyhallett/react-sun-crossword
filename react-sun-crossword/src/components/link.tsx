@@ -4,6 +4,7 @@ export interface NonNavigatableLinkProps {
     text:string,
     color?: string,
     removeUnderline?: boolean,
+    removeOutline?:boolean,
     transparentBackground?: boolean,
     clicked:()=>void
     
@@ -14,6 +15,7 @@ export class NonNavigatableLink extends React.Component<NonNavigatableLinkProps,
         color: "#2196F3",
         transparentBackground: true,
         removeUnderline: true,
+        removeOutline:true
     };
     public static idCount = 0
     public static readonly idName = "nonNavigatableLink"
@@ -29,7 +31,8 @@ export class NonNavigatableLink extends React.Component<NonNavigatableLinkProps,
     render() {
         var linkBackgroundColorCss = this.props.transparentBackground ? "background-color:transparent" : "";
         var linkTextDecoration = this.props.removeUnderline ? "text-decoration:none" : "text-decoration:underline";
-        var linkAdditionCss = [linkBackgroundColorCss, linkTextDecoration];
+        var linkRemoveOutline = this.props.removeOutline ? "outline:none" : "";
+        var linkAdditionCss = [linkBackgroundColorCss, linkTextDecoration, linkRemoveOutline];
         var linkCss = "color:" + this.props.color + ";"
         for (var i = 0; i < linkAdditionCss.length; i++) {
             var linkAdditional = linkAdditionCss[i];

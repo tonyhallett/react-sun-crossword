@@ -1,6 +1,7 @@
 ﻿import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { auth } from '../helpers/firebaseApp';
-import * as firebaseui from 'firebaseui'
+
 import * as firebase from 'firebase'
 import { Divider } from "./divider";
 import { NonNavigatableLink } from "./link";
@@ -10,9 +11,10 @@ export interface ButtonProps {
     onClick: () => void;
     text: string,
     disabled?: boolean,
-    style?: React.CSSProperties
+    style?: React.CSSProperties,
+    
 }
-class WrappedButton extends React.Component<ButtonProps, null>{
+export class WrappedButton extends React.Component<ButtonProps, null>{
     public static defaultProps: Partial<ButtonProps> = {
         style: {
             borderRadius:"8px",padding:"5px"
@@ -46,6 +48,9 @@ export class EmailLogOnComp extends React.Component<EmailLogOnCompProps, EmailLo
         waitingAutoLogOnMessage: "Attempting auto login....."
     };
     user: firebase.User = null;
+    unsubscribe: any
+    timeout: number
+    willUnmountCalled:boolean=false
     constructor(props) {
         super(props);
         var initialState = LogInState.loggedOut;
@@ -56,21 +61,28 @@ export class EmailLogOnComp extends React.Component<EmailLogOnCompProps, EmailLo
     }
     componentDidMount() {
         var self = this;
-        window.setTimeout(function () {
+        this.timeout = window.setTimeout(function () {
             if (!self.props.auth.currentUser) {
                 self.setState({ logInState: LogInState.loggedOut });
-            }
+            }            
         }, this.props.reLoginWait);
 
-        this.props.auth.onAuthStateChanged(function (user) {
-            var newState = LogInState.loggedOut;
-            if (user) {
-                newState = LogInState.loggedIn
+        this.unsubscribe = this.props.auth.onAuthStateChanged(function (user) {
+            if (!self.willUnmountCalled) {
+                var newState = LogInState.loggedOut;
+                if (user) {
+                    newState = LogInState.loggedIn
+                }
+                self.user = user;
+                self.setState({ logInState: newState })
             }
-            self.user = user;
-            self.setState({logInState:newState})
+            
         })
-
+    }
+    componentWillUnmount() {
+        this.willUnmountCalled = true;
+        this.unsubscribe();
+        window.clearTimeout(this.timeout);
     }
     render() {
         var renderScreen: JSX.Element
@@ -412,41 +424,3 @@ class EmailSignInScreen extends React.Component<EmailSignInScreenProps, EmailSig
 
 
 
-export interface EmailLogOnProps {
-
-}
-export class EmailLogOn extends React.Component<EmailLogOnProps, null> {
-    containerId = "emailLogOnContainer"
-    div: HTMLDivElement
-    constructor(props) {
-        super(props);
-
-    }
-    render() {
-        return <div ref={(div) => this.div=div} id={this.containerId} />
-    }
-    componentDidMount() {
-        var self = this;
-        var ui = new firebaseui.auth.AuthUI(auth);
-        var uiConfig = {
-            signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-            callbacks: {
-                signInSuccess: function (currentUser, credential, redirectUrl) {
-                    return false;
-                }
-            }
-        }
-        ui.start('#' + this.containerId, uiConfig);
-        var self = this;
-        auth.onAuthStateChanged(function (user) {
-            var uid = null;
-            var loggedIn = user !== null;
-            if (loggedIn) {
-                //self.div.style.display = "none";
-                uid = user.uuid;
-            }
-        });
-        
-
-    }
-}

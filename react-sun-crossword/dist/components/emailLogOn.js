@@ -13,9 +13,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 var React = require("react");
-var firebaseApp_1 = require("../helpers/firebaseApp");
-var firebaseui = require("firebaseui");
-var firebase = require("firebase");
 var divider_1 = require("./divider");
 var link_1 = require("./link");
 var autoComplete_1 = require("./autoComplete");
@@ -34,6 +31,7 @@ WrappedButton.defaultProps = {
         borderRadius: "8px", padding: "5px"
     }
 };
+exports.WrappedButton = WrappedButton;
 var LogInState;
 (function (LogInState) {
     LogInState[LogInState["waitingForAuto"] = 0] = "waitingForAuto";
@@ -47,6 +45,7 @@ var EmailLogOnComp = (function (_super) {
     function EmailLogOnComp(props) {
         var _this = _super.call(this, props) || this;
         _this.user = null;
+        _this.willUnmountCalled = false;
         var initialState = LogInState.loggedOut;
         if (_this.props.reLoginWait > 0) {
             initialState = LogInState.waitingForAuto;
@@ -56,19 +55,26 @@ var EmailLogOnComp = (function (_super) {
     }
     EmailLogOnComp.prototype.componentDidMount = function () {
         var self = this;
-        window.setTimeout(function () {
+        this.timeout = window.setTimeout(function () {
             if (!self.props.auth.currentUser) {
                 self.setState({ logInState: LogInState.loggedOut });
             }
         }, this.props.reLoginWait);
-        this.props.auth.onAuthStateChanged(function (user) {
-            var newState = LogInState.loggedOut;
-            if (user) {
-                newState = LogInState.loggedIn;
+        this.unsubscribe = this.props.auth.onAuthStateChanged(function (user) {
+            if (!self.willUnmountCalled) {
+                var newState = LogInState.loggedOut;
+                if (user) {
+                    newState = LogInState.loggedIn;
+                }
+                self.user = user;
+                self.setState({ logInState: newState });
             }
-            self.user = user;
-            self.setState({ logInState: newState });
         });
+    };
+    EmailLogOnComp.prototype.componentWillUnmount = function () {
+        this.willUnmountCalled = true;
+        this.unsubscribe();
+        window.clearTimeout(this.timeout);
     };
     EmailLogOnComp.prototype.render = function () {
         var renderScreen;
@@ -348,40 +354,4 @@ EmailSignInScreen.defaultProps = {
     passwordHeader: "Password ( 6+ )",
     signInButtonType: WrappedButton
 };
-var EmailLogOn = (function (_super) {
-    __extends(EmailLogOn, _super);
-    function EmailLogOn(props) {
-        var _this = _super.call(this, props) || this;
-        _this.containerId = "emailLogOnContainer";
-        return _this;
-    }
-    EmailLogOn.prototype.render = function () {
-        var _this = this;
-        return React.createElement("div", { ref: function (div) { return _this.div = div; }, id: this.containerId });
-    };
-    EmailLogOn.prototype.componentDidMount = function () {
-        var self = this;
-        var ui = new firebaseui.auth.AuthUI(firebaseApp_1.auth);
-        var uiConfig = {
-            signInOptions: [firebase.auth.EmailAuthProvider.PROVIDER_ID],
-            callbacks: {
-                signInSuccess: function (currentUser, credential, redirectUrl) {
-                    return false;
-                }
-            }
-        };
-        ui.start('#' + this.containerId, uiConfig);
-        var self = this;
-        firebaseApp_1.auth.onAuthStateChanged(function (user) {
-            var uid = null;
-            var loggedIn = user !== null;
-            if (loggedIn) {
-                //self.div.style.display = "none";
-                uid = user.uuid;
-            }
-        });
-    };
-    return EmailLogOn;
-}(React.Component));
-exports.EmailLogOn = EmailLogOn;
 //# sourceMappingURL=emailLogOn.js.map
