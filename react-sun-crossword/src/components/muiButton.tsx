@@ -2,7 +2,13 @@
 import * as Color from "Color";
 
 export interface MuiButtonProps {
-    disabled:boolean
+    lightenPercentage?:number
+    disabled?: boolean,
+    disabledCursor?: string
+    disabledColor?:string,
+    disabledBackgroundColor?: string,
+    disabledDesaturatePercentage?: number,
+    disabledLightenPercentage?:number,
     rippleColour?: string,
     disabledOpacity?: number,
     boxShadowRaised?: string,
@@ -30,29 +36,46 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
     public static readonly idName = "muiButton"
     private id: string
     public static defaultProps: Partial<MuiButtonProps> = {
+        disabled: false,
+        disabledCursor:"not-allowed",
         rippleColour: "white",
         disabledOpacity: 0.6,
+        disabledDesaturatePercentage: 0,
+        disabledLightenPercentage: 0,
+        
+        lightenPercentage: 0.5,
         boxShadowRaised: "0 0px 2px rgba(0,0,0, 0.12),0 2px 2px rgba(0,0,0, 0.20);",
         boxShadowActive: "0 0px 4px rgba(0,0,0, 0.12), 1px 3px 4px rgba(0,0,0, 0.20);",
         buttonStyle: {},
         rippleContainerStyle: { position: "absolute",top: 0,left: 0,display: "block",height: "100%",width: "100%",overflow: "hidden",zIndex:0,pointerEvents:"none"},
+
     };
     private static defaultButtonStyle: React.CSSProperties = {
         outline: "none",
         transition: "all 0.2s ease-in-out",
-        borderRadius: "2px",
+        borderRadius: "5px",
         border: "none",
-        backgroundColor: "yellow",
-        padding:"5px"
+        backgroundColor: "white",
+        color:"black",
+        padding: "10px",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+        userSelect: "none",
+        position: "relative",
+        cursor:"pointer"
     }
     private rippleEl: HTMLSpanElement
     private buttonEl: HTMLButtonElement
-    private backgroundColor:string
+    private buttonStyle: React.CSSProperties
+    private backgroundColor: string
+    private color:string
+    private cursor: string;
     constructor(props) {
         super(props);
         this.id = MuiButton.idName + (MuiButton.idCount++).toString();
-        var mergedStyle = this.objectAssign(MuiButton.defaultButtonStyle, this.props.buttonStyle);
-        var dynamicStylePropertyNames = ["backgroundColor"];
+        var mergedStyle = this.objectAssign({},MuiButton.defaultButtonStyle, this.props.buttonStyle);
+        var dynamicStylePropertyNames = ["backgroundColor","cursor","color"];
 
         dynamicStylePropertyNames.forEach(function (pName) {
             var styleValue = mergedStyle[pName];
@@ -131,13 +154,15 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
     isTouchEvent(ev: React.TouchEvent<HTMLButtonElement> | React.MouseEvent<HTMLButtonElement>): ev is React.TouchEvent<HTMLButtonElement>{
         return ev.type === 'touchstart' || ev.type === 'touchend';
     }
-    showRipple(ev: React.TouchEvent<HTMLButtonElement>|React.MouseEvent<HTMLButtonElement>) {
-        var buttonEl = this.buttonEl;
+    showRipple(ev: React.TouchEvent<HTMLButtonElement> | React.MouseEvent<HTMLButtonElement>) {
+        if (this.ignoreMouseRippleDueToTouch) return;
+        
 
         // de-dupe touch events
-        if ('ontouchstart' in buttonEl && ev.type === 'mousedown') return;
+        //if ('ontouchstart' in buttonEl && ev.type === 'mousedown') return;
 
         // get (x, y) position of click
+        var buttonEl = this.buttonEl;
         var offset = this.offset(this.buttonEl);
             
 
@@ -156,13 +181,14 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
         var radius = Math.sqrt(offset.width * offset.width + offset.height * offset.height);
 
         // add ripple to state
-        console.log("**************** Setting ripple")
+        //console.log("**************** Setting ripple")
         var ripple: MuiRipple= {
             top: Math.round(clickEv.pageY - offset.top - radius) + 'px',
             left: Math.round(clickEv.pageX - offset.left - radius) + 'px',
             diameter: radius * 2 + 'px',
             isAnimating:false
         }
+        //console.log(ripple);
         this.setState({ ripple: ripple });
     }
     hideRipple(ev: React.TouchEvent<HTMLButtonElement> |React.MouseEvent<HTMLButtonElement>) {
@@ -170,8 +196,8 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
             ripple: null
         });
     }
+    ignoreMouseRippleDueToTouch=false
     onMouseDownCB = (ev: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("onMouseDown");
         this.showRipple(ev);
 
         // execute callback
@@ -179,7 +205,7 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
         fn && fn(ev);
     }
     onMouseUpCB = (ev: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("onMouseUp");
+        this.ignoreMouseRippleDueToTouch = false;
         this.hideRipple(ev);
 
         // execute callback
@@ -187,23 +213,22 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
         fn && fn(ev);
     }
     onMouseLeaveCB = (ev: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("onMouseLeave");
+        this.ignoreMouseRippleDueToTouch = false;
         this.hideRipple(ev);
 
         // execute callback
         var fn = this.props.onMouseLeave;
         fn && fn(ev);
     }
-    onTouchStartCB=(ev: React.TouchEvent<HTMLButtonElement>)=> {
-        console.log("onTouchStart");
+    onTouchStartCB = (ev: React.TouchEvent<HTMLButtonElement>) => {
         this.showRipple(ev);
 
         // execute callback
         var fn = this.props.onTouchStart;
         fn && fn(ev);
     }
-    onTouchEndCB=(ev: React.TouchEvent<HTMLButtonElement>)=> {
-        console.log("onTouchEnd");
+    onTouchEndCB = (ev: React.TouchEvent<HTMLButtonElement>) => {
+        this.ignoreMouseRippleDueToTouch = true;
         this.hideRipple(ev);
 
         // execute callback
@@ -211,9 +236,9 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
         fn && fn(ev);
 
     }
-    private buttonStyle: React.CSSProperties
     
-    objectAssign(target, varArgs) { // .length of function is 2
+    
+    objectAssign(target, ...varArgs) { // .length of function is 2
         'use strict';
         if (target == null) { // TypeError if undefined or null
             throw new TypeError('Cannot convert undefined or null to object');
@@ -235,7 +260,12 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
         }
         return to;
     };
-
+    getRGBString(colour: Color.Color):string {
+        var rgbArray = colour.rgb().array().map(function (num) {
+            return Math.round(num);
+        })
+        return "rgb(" + rgbArray[0] + "," + rgbArray[1] + "," + rgbArray[2] + ")";
+    }
     render() {
         var rippleStyle = {};
         var rippleMainClass = 'mui-ripple'
@@ -259,39 +289,67 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
         
         var backgroundColor = this.backgroundColor;
         var bgColourColour = Color(backgroundColor);
-        var lightenColour: Color.Color = bgColourColour.lighten(0.5);
-        var lightenRBGArray = lightenColour.rgb().array();
-        var lightenColorRGB = "rgb(" + lightenRBGArray[0] + "," + lightenRBGArray[1] + "," + lightenRBGArray[2] + ")";
+        var lightenColour: Color.Color = bgColourColour.lighten(this.props.lightenPercentage);
+        var lightenColorRGB = this.getRGBString(lightenColour);
         var thisButtonHoverOrFocusSelector = buttonSelector + ":hover," + buttonSelector + ":focus";
         var thisButtonHoverOrFocusOrActiveSelector = thisButtonHoverOrFocusSelector + "," + buttonSelector+":active";
         var hoverFocusBoxShadowRaisedCss = thisButtonHoverOrFocusSelector + "{ box-shadow:" + this.props.boxShadowRaised + "}";
         var thisButtonActiveHoverSelector = buttonSelector + ":active:hover";
         var activeHoverBoxShadowActiveCss = thisButtonActiveHoverSelector + "{ box-shadow:" + this.props.boxShadowActive + "}";
         var hoverFocusActiveLighterBackgroundCss = thisButtonHoverOrFocusOrActiveSelector + "{ background-color:" + lightenColorRGB + "}";
+
         var thisButtonDisabledSelector = buttonSelector + ":disabled";
-        //could have this as a prop
-        //need to look up the cursor in the scss
-        var disabledCss = thisButtonDisabledSelector + "{ box-shadow:none;pointer-events:none;cursor:not-allowed;" + "opacity:" + this.props.disabledOpacity + "}";
-        var backgroundColorCss = buttonSelector + "{background-color:" + this.backgroundColor + "}";
-        var rippleSelector = buttonSelector + "." + rippleMainClass;
-        var rippleNormalCss = rippleSelector + "{position: absolute, top: 0, left: 0, borderRadius: 50%, pointer-events: none, transform: scale(.0001, .0001), background-color: white}";
-        var rippleActiveSelector = rippleSelector + "." + rippleActiveClass;
+        //later allow passing in the disabled css but that will mean no style={}
+
+        //this is a change to mui - have removed pointer-events:none as effects the cursor:not allowed
+        var disabledCssFixed = "box-shadow:none;cursor:" + this.props.disabledCursor + ";";
+        var disabledVisualCss="";
+        var colourSpecified = false;
+
+        var disabledBackgroundColor=Color(backgroundColor);
+        if (this.props.disabledBackgroundColor) {
+            disabledBackgroundColor = Color(this.props.disabledBackgroundColor);
+            colourSpecified = true;
+        }
+        if (this.props.disabledDesaturatePercentage !== 0) {
+            colourSpecified = true;
+            disabledBackgroundColor = disabledBackgroundColor.desaturate(this.props.disabledDesaturatePercentage);
+        }
+        if (this.props.disabledLightenPercentage) {
+            colourSpecified = true;
+            disabledBackgroundColor = disabledBackgroundColor.lighten(this.props.disabledLightenPercentage);
+        }
+        
+        disabledVisualCss += "background-color:" + this.getRGBString(disabledBackgroundColor) + ";";
+        if (this.props.disabledColor) {
+            disabledVisualCss += "color:" + this.props.disabledColor +";"
+        }
+        if (!colourSpecified || this.props.disabledOpacity !== MuiButton.defaultProps.disabledOpacity){
+            disabledVisualCss += "opacity:" + this.props.disabledOpacity +";";
+        }
+        var disabledCss = thisButtonDisabledSelector + "{" + disabledCssFixed + disabledVisualCss + "}";
+        
+        var buttonCss = buttonSelector + "{background-color:" + this.backgroundColor + ";cursor:" + this.cursor + ";color:" + this.color  +"}";
+        var rippleSelector = buttonSelector + " ." + rippleMainClass;
+        var rippleNormalCss = rippleSelector + "{position: absolute; top: 0; left: 0; border-radius: 50%; pointer-events: none; transform: scale(.0001, .0001); background-color: white}";
+        var rippleActiveSelector = buttonSelector + " ." + rippleActiveClass;
         var rippleAnimatingSelector = rippleSelector + "." + rippleIsAnimatingClass;
         var rippleActiveCss = rippleActiveSelector + "{opacity:0.3}"
         var rippleAnimatingCss = rippleAnimatingSelector + "{transform:none;transition:transform .3s cubic-bezier(0,0,.2,1),width .3s cubic-bezier(0,0,.2,1),height .3s cubic-bezier(0,0,.2,1),opacity .3s cubic-bezier(0,0,.2,1)}"
 
-        var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + hoverFocusActiveLighterBackgroundCss + disabledCss + backgroundColorCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
-
+        var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + hoverFocusActiveLighterBackgroundCss + disabledCss + buttonCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
+        
         return <button disabled={this.props.disabled} style={this.buttonStyle} id={this.id} ref={(btn) => this.buttonEl = btn} onTouchStart={this.onTouchStartCB} onTouchEnd={this.onTouchEndCB} onMouseDown={this.onMouseDownCB} onMouseUp={this.onMouseUpCB} onMouseLeave={this.onMouseLeaveCB}>
-            <style dangerouslySetInnerHTML={{
-                __html: muiCss
-            }} />
-
-            {this.props.children}
+                {this.props.children}
+                <style dangerouslySetInnerHTML={{
+                    __html: muiCss
+                }} />
             <span style={this.props.rippleContainerStyle} className="mui-btn__ripple-container">
                 <span style={rippleStyle} className={rippleCls} ref={(span) => { this.rippleEl = span }}></span>
             </span>
-        </button>
+            
+            </button>
+           
 
     }
 }

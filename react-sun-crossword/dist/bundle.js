@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 152);
+/******/ 	return __webpack_require__(__webpack_require__.s = 148);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -381,11 +381,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(105)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(100)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(104)();
+  module.exports = __webpack_require__(99)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
@@ -821,7 +821,7 @@ function reject(error) {
 
 
 var React = __webpack_require__(0);
-var factory = __webpack_require__(68);
+var factory = __webpack_require__(67);
 
 // Hack to grab NoopUpdateQueue from isomorphic React
 var ReactNoopUpdateQueue = new React.Component().updater;
@@ -909,6 +909,161 @@ function clone(obj) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * 
+ */
+
+function makeEmptyFunction(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+ * This function accepts and discards inputs; it has no side effects. This is
+ * primarily useful idiomatically for overridable function endpoints which
+ * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+ */
+var emptyFunction = function emptyFunction() {};
+
+emptyFunction.thatReturns = makeEmptyFunction;
+emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+emptyFunction.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+module.exports = emptyFunction;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2014-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+
+
+
+var emptyFunction = __webpack_require__(10);
+
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var warning = emptyFunction;
+
+if (process.env.NODE_ENV !== 'production') {
+  (function () {
+    var printWarning = function printWarning(format) {
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      var argIndex = 0;
+      var message = 'Warning: ' + format.replace(/%s/g, function () {
+        return args[argIndex++];
+      });
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    };
+
+    warning = function warning(condition, format) {
+      if (format === undefined) {
+        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+      }
+
+      if (format.indexOf('Failed Composite propType: ') === 0) {
+        return; // Ignore CompositeComponent proptype check.
+      }
+
+      if (!condition) {
+        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+          args[_key2 - 2] = arguments[_key2];
+        }
+
+        printWarning.apply(undefined, [format].concat(args));
+      }
+    };
+  })();
+}
+
+module.exports = warning;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*! @license Firebase v4.1.1
+Build: rev-ca0d1df
+Terms: https://firebase.google.com/terms/ */
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _firebase_app = __webpack_require__(70);
+
+// Export a single instance of firebase app
+var firebase = (0, _firebase_app.createFirebaseNamespace)(); /**
+                                                             * Copyright 2017 Google Inc.
+                                                             *
+                                                             * Licensed under the Apache License, Version 2.0 (the "License");
+                                                             * you may not use this file except in compliance with the License.
+                                                             * You may obtain a copy of the License at
+                                                             *
+                                                             *   http://www.apache.org/licenses/LICENSE-2.0
+                                                             *
+                                                             * Unless required by applicable law or agreed to in writing, software
+                                                             * distributed under the License is distributed on an "AS IS" BASIS,
+                                                             * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                                                             * See the License for the specific language governing permissions and
+                                                             * limitations under the License.
+                                                             */
+// Import the createFirebaseNamespace function
+exports.default = firebase;
+module.exports = exports['default'];
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /*!
   Copyright (c) 2016 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -941,11 +1096,11 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDom = __webpack_require__(34);
+var _reactDom = __webpack_require__(35);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactInputAutosize = __webpack_require__(121);
+var _reactInputAutosize = __webpack_require__(116);
 
 var _reactInputAutosize2 = _interopRequireDefault(_reactInputAutosize);
 
@@ -953,7 +1108,7 @@ var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _utilsDefaultArrowRenderer = __webpack_require__(127);
+var _utilsDefaultArrowRenderer = __webpack_require__(122);
 
 var _utilsDefaultArrowRenderer2 = _interopRequireDefault(_utilsDefaultArrowRenderer);
 
@@ -965,27 +1120,27 @@ var _utilsDefaultMenuRenderer = __webpack_require__(54);
 
 var _utilsDefaultMenuRenderer2 = _interopRequireDefault(_utilsDefaultMenuRenderer);
 
-var _utilsDefaultClearRenderer = __webpack_require__(128);
+var _utilsDefaultClearRenderer = __webpack_require__(123);
 
 var _utilsDefaultClearRenderer2 = _interopRequireDefault(_utilsDefaultClearRenderer);
 
-var _Async = __webpack_require__(122);
+var _Async = __webpack_require__(117);
 
 var _Async2 = _interopRequireDefault(_Async);
 
-var _AsyncCreatable = __webpack_require__(123);
+var _AsyncCreatable = __webpack_require__(118);
 
 var _AsyncCreatable2 = _interopRequireDefault(_AsyncCreatable);
 
-var _Creatable = __webpack_require__(124);
+var _Creatable = __webpack_require__(119);
 
 var _Creatable2 = _interopRequireDefault(_Creatable);
 
-var _Option = __webpack_require__(125);
+var _Option = __webpack_require__(120);
 
 var _Option2 = _interopRequireDefault(_Option);
 
-var _Value = __webpack_require__(126);
+var _Value = __webpack_require__(121);
 
 var _Value2 = _interopRequireDefault(_Value);
 
@@ -2153,168 +2308,13 @@ exports['default'] = Select;
 module.exports = exports['default'];
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * 
- */
-
-function makeEmptyFunction(arg) {
-  return function () {
-    return arg;
-  };
-}
-
-/**
- * This function accepts and discards inputs; it has no side effects. This is
- * primarily useful idiomatically for overridable function endpoints which
- * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
- */
-var emptyFunction = function emptyFunction() {};
-
-emptyFunction.thatReturns = makeEmptyFunction;
-emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
-emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
-emptyFunction.thatReturnsNull = makeEmptyFunction(null);
-emptyFunction.thatReturnsThis = function () {
-  return this;
-};
-emptyFunction.thatReturnsArgument = function (arg) {
-  return arg;
-};
-
-module.exports = emptyFunction;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2014-2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- */
-
-
-
-var emptyFunction = __webpack_require__(11);
-
-/**
- * Similar to invariant but only logs a warning if the condition is not met.
- * This can be used to log issues in development environments in critical
- * paths. Removing the logging code for production environments will keep the
- * same logic and follow the same code paths.
- */
-
-var warning = emptyFunction;
-
-if (process.env.NODE_ENV !== 'production') {
-  (function () {
-    var printWarning = function printWarning(format) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    };
-
-    warning = function warning(condition, format) {
-      if (format === undefined) {
-        throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-      }
-
-      if (format.indexOf('Failed Composite propType: ') === 0) {
-        return; // Ignore CompositeComponent proptype check.
-      }
-
-      if (!condition) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
-          args[_key2 - 2] = arguments[_key2];
-        }
-
-        printWarning.apply(undefined, [format].concat(args));
-      }
-    };
-  })();
-}
-
-module.exports = warning;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/*! @license Firebase v4.1.1
-Build: rev-ca0d1df
-Terms: https://firebase.google.com/terms/ */
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _firebase_app = __webpack_require__(71);
-
-// Export a single instance of firebase app
-var firebase = (0, _firebase_app.createFirebaseNamespace)(); /**
-                                                             * Copyright 2017 Google Inc.
-                                                             *
-                                                             * Licensed under the Apache License, Version 2.0 (the "License");
-                                                             * you may not use this file except in compliance with the License.
-                                                             * You may obtain a copy of the License at
-                                                             *
-                                                             *   http://www.apache.org/licenses/LICENSE-2.0
-                                                             *
-                                                             * Unless required by applicable law or agreed to in writing, software
-                                                             * distributed under the License is distributed on an "AS IS" BASIS,
-                                                             * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                             * See the License for the specific language governing permissions and
-                                                             * limitations under the License.
-                                                             */
-// Import the createFirebaseNamespace function
-exports.default = firebase;
-module.exports = exports['default'];
-
-
-/***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Color = __webpack_require__(35);
+var Color = __webpack_require__(36);
 //these all have the same initial lightness but in rgb which is not ideal
 //the values are too dark - so is there a way 
 //to provide as hsl !
@@ -3382,7 +3382,7 @@ if (typeof global !== 'undefined') {
         throw new Error('polyfill failed because global object is unavailable in this environment');
     }
 }
-var PromiseImpl = scope.Promise || __webpack_require__(80);
+var PromiseImpl = scope.Promise || __webpack_require__(79);
 var local = exports.local = {
     Promise: PromiseImpl,
     GoogPromise: PromiseImpl
@@ -3650,13 +3650,13 @@ exports.fromResourceString = fromResourceString;
 exports.toResourceString = toResourceString;
 exports.metadataValidator = metadataValidator;
 
-var _json = __webpack_require__(87);
+var _json = __webpack_require__(86);
 
 var json = _interopRequireWildcard(_json);
 
 var _location = __webpack_require__(19);
 
-var _path = __webpack_require__(46);
+var _path = __webpack_require__(47);
 
 var path = _interopRequireWildcard(_path);
 
@@ -4140,8 +4140,58 @@ module.exports = ReactPropTypesSecret;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var firebase = __webpack_require__(73);
+var React = __webpack_require__(0);
+var muiButton_1 = __webpack_require__(144);
+var MuiButtonWrapper = (function (_super) {
+    __extends(MuiButtonWrapper, _super);
+    function MuiButtonWrapper() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        //wrap in div and handle click from that ?
+        _this.onMouseUp = function () {
+            _this.props.onClick();
+        };
+        return _this;
+    }
+    MuiButtonWrapper.prototype.render = function () {
+        //important consideration at a later point
+        //if the consumer of this wrapper wanted to also pass onMouseUp
+        //moot point as functionally is only used for onClick and the remainder is just styling
+        return React.createElement(muiButton_1.MuiButton, __assign({}, this.props, { disabled: this.props.disabled, onMouseUp: this.onMouseUp }),
+            "  ",
+            this.props.text);
+    };
+    return MuiButtonWrapper;
+}(React.Component));
+exports.MuiButtonWrapper = MuiButtonWrapper;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var firebase = __webpack_require__(72);
 var appToExport = firebase.initializeApp({
     apiKey: "AIzaSyBHE9S_e2-OeQ1_2_MY_heKj1Ex0Yh-j-Y",
     databaseURL: "https://react-sun-crossword.firebaseio.com/",
@@ -4152,7 +4202,7 @@ exports.app = appToExport;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4167,20 +4217,20 @@ exports.KEYUP = 'keyup';
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var colorString = __webpack_require__(67);
-var convert = __webpack_require__(65);
+var colorString = __webpack_require__(66);
+var convert = __webpack_require__(64);
 
 var _slice = [].slice;
 
@@ -4659,11 +4709,11 @@ module.exports = Color;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var cssKeywords = __webpack_require__(37);
+var cssKeywords = __webpack_require__(38);
 
 // NOTE: conversions should only return primitive values (i.e. arrays, or
 //       values that give correct `typeof` results).
@@ -5526,7 +5576,7 @@ convert.rgb.gray = function (rgb) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -5681,13 +5731,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var prefix = __webpack_require__(102)
-var toCamelCase = __webpack_require__(134)
+var prefix = __webpack_require__(97)
+var toCamelCase = __webpack_require__(129)
 var cache = { 'float': 'cssFloat' }
-var addPxToStyle = __webpack_require__(64)
+var addPxToStyle = __webpack_require__(63)
 
 function style (element, property, value) {
   var camel = cache[property]
@@ -5748,7 +5798,7 @@ module.exports.get = function (element, properties) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6032,7 +6082,7 @@ function noop() {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*! @license Firebase v4.1.1
@@ -6063,7 +6113,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE. */
 
 (function() {
-            var firebase = __webpack_require__(13);
+            var firebase = __webpack_require__(12);
             var g,aa=this;function n(a){return void 0!==a}function ba(){}function ca(a){a.Vb=function(){return a.Ye?a.Ye:a.Ye=new a}}
 function da(a){var b=typeof a;if("object"==b)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return b;var c=Object.prototype.toString.call(a);if("[object Window]"==c)return"object";if("[object Array]"==c||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==c||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";
 else if("function"==b&&"undefined"==typeof a.call)return"object";return b}function ea(a){return"array"==da(a)}function fa(a){var b=da(a);return"array"==b||"object"==b&&"number"==typeof a.length}function p(a){return"string"==typeof a}function ga(a){return"number"==typeof a}function ha(a){return"function"==da(a)}function ia(a){var b=typeof a;return"object"==b&&null!=a||"function"==b}function ja(a,b,c){return a.call.apply(a.bind,arguments)}
@@ -6302,7 +6352,7 @@ d;return d.Ya},{Reference:U,Query:X,Database:Pg,enableLogging:Sb,INTERNAL:Z,TEST
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6339,11 +6389,11 @@ var _errors2 = __webpack_require__(17);
 
 var _errors3 = _interopRequireDefault(_errors2);
 
-var _tokenManager = __webpack_require__(79);
+var _tokenManager = __webpack_require__(78);
 
 var _tokenManager2 = _interopRequireDefault(_tokenManager);
 
-var _notificationPermission = __webpack_require__(43);
+var _notificationPermission = __webpack_require__(44);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
@@ -6541,7 +6591,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6583,7 +6633,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6620,7 +6670,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6678,7 +6728,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6715,7 +6765,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _fs = __webpack_require__(86);
+var _fs = __webpack_require__(85);
 
 var fs = _interopRequireWildcard(_fs);
 
@@ -6843,7 +6893,7 @@ var FbsBlob = exports.FbsBlob = function () {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6932,7 +6982,7 @@ function lastComponent(path) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6965,7 +7015,7 @@ var _array = __webpack_require__(27);
 
 var array = _interopRequireWildcard(_array);
 
-var _blob = __webpack_require__(45);
+var _blob = __webpack_require__(46);
 
 var _error = __webpack_require__(4);
 
@@ -6979,7 +7029,7 @@ var _object = __webpack_require__(9);
 
 var object = _interopRequireWildcard(_object);
 
-var _requestinfo = __webpack_require__(90);
+var _requestinfo = __webpack_require__(89);
 
 var _type = __webpack_require__(2);
 
@@ -7285,7 +7335,7 @@ function continueResumableUpload(location, authWrapper, url, blob, chunkSize, ma
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7361,7 +7411,7 @@ function taskStateFromInternalTaskState(state) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7401,7 +7451,7 @@ var ErrorCode = exports.ErrorCode = undefined;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7440,7 +7490,7 @@ var _args = __webpack_require__(26);
 
 var args = _interopRequireWildcard(_args);
 
-var _blob = __webpack_require__(45);
+var _blob = __webpack_require__(46);
 
 var _error = __webpack_require__(4);
 
@@ -7456,11 +7506,11 @@ var _object = __webpack_require__(9);
 
 var object = _interopRequireWildcard(_object);
 
-var _path = __webpack_require__(46);
+var _path = __webpack_require__(47);
 
 var path = _interopRequireWildcard(_path);
 
-var _requests = __webpack_require__(47);
+var _requests = __webpack_require__(48);
 
 var requests = _interopRequireWildcard(_requests);
 
@@ -7472,7 +7522,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _task = __webpack_require__(95);
+var _task = __webpack_require__(94);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -7706,411 +7756,6 @@ var Reference = exports.Reference = function () {
 
     return Reference;
 }();
-
-
-/***/ }),
-/* 51 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * MUI CSS/JS jqLite module
- * @module lib/jqLite
- */
-
-
-
-
-/**
- * Add a class to an element.
- * @param {Element} element - The DOM element.
- * @param {string} cssClasses - Space separated list of class names.
- */
-function jqLiteAddClass(element, cssClasses) {
-  if (!cssClasses || !element.setAttribute) return;
-
-  var existingClasses = _getExistingClasses(element),
-      splitClasses = cssClasses.split(' '),
-      cssClass;
-
-  for (var i=0; i < splitClasses.length; i++) {
-    cssClass = splitClasses[i].trim();
-    if (existingClasses.indexOf(' ' + cssClass + ' ') === -1) {
-      existingClasses += cssClass + ' ';
-    }
-  }
-  
-  element.setAttribute('class', existingClasses.trim());
-}
-
-
-/**
- * Get or set CSS properties.
- * @param {Element} element - The DOM element.
- * @param {string} [name] - The property name.
- * @param {string} [value] - The property value.
- */
-function jqLiteCss(element, name, value) {
-  // Return full style object
-  if (name === undefined) {
-    return getComputedStyle(element);
-  }
-
-  var nameType = jqLiteType(name);
-
-  // Set multiple values
-  if (nameType === 'object') {
-    for (var key in name) element.style[_camelCase(key)] = name[key];
-    return;
-  }
-
-  // Set a single value
-  if (nameType === 'string' && value !== undefined) {
-    element.style[_camelCase(name)] = value;
-  }
-
-  var styleObj = getComputedStyle(element),
-      isArray = (jqLiteType(name) === 'array');
-
-  // Read single value
-  if (!isArray) return _getCurrCssProp(element, name, styleObj);
-
-  // Read multiple values
-  var outObj = {},
-      key;
-
-  for (var i=0; i < name.length; i++) {
-    key = name[i];
-    outObj[key] = _getCurrCssProp(element, key, styleObj);
-  }
-
-  return outObj;
-}
-
-
-/**
- * Check if element has class.
- * @param {Element} element - The DOM element.
- * @param {string} cls - The class name string.
- */
-function jqLiteHasClass(element, cls) {
-  if (!cls || !element.getAttribute) return false;
-  return (_getExistingClasses(element).indexOf(' ' + cls + ' ') > -1);
-}
-
-
-/**
- * Return the type of a variable.
- * @param {} somevar - The JavaScript variable.
- */
-function jqLiteType(somevar) {
-  // handle undefined
-  if (somevar === undefined) return 'undefined';
-
-  // handle others (of type [object <Type>])
-  var typeStr = Object.prototype.toString.call(somevar);
-  if (typeStr.indexOf('[object ') === 0) {
-    return typeStr.slice(8, -1).toLowerCase();
-  } else {
-    throw new Error("MUI: Could not understand type: " + typeStr);
-  }    
-}
-
-
-/**
- * Attach an event handler to a DOM element
- * @param {Element} element - The DOM element.
- * @param {string} events - Space separated event names.
- * @param {Function} callback - The callback function.
- * @param {Boolean} useCapture - Use capture flag.
- */
-function jqLiteOn(element, events, callback, useCapture) {
-  useCapture = (useCapture === undefined) ? false : useCapture;
-
-  var cache = element._muiEventCache = element._muiEventCache || {};  
-
-  events.split(' ').map(function(event) {
-    // add to DOM
-    element.addEventListener(event, callback, useCapture);
-
-    // add to cache
-    cache[event] = cache[event] || [];
-    cache[event].push([callback, useCapture]);
-  });
-}
-
-
-/**
- * Remove an event handler from a DOM element
- * @param {Element} element - The DOM element.
- * @param {string} events - Space separated event names.
- * @param {Function} callback - The callback function.
- * @param {Boolean} useCapture - Use capture flag.
- */
-function jqLiteOff(element, events, callback, useCapture) {
-  useCapture = (useCapture === undefined) ? false : useCapture;
-
-  // remove from cache
-  var cache = element._muiEventCache = element._muiEventCache || {},
-      argsList,
-      args,
-      i;
-
-  events.split(' ').map(function(event) {
-    argsList = cache[event] || [];
-
-    i = argsList.length;
-    while (i--) {
-      args = argsList[i];
-
-      // remove all events if callback is undefined
-      if (callback === undefined ||
-          (args[0] === callback && args[1] === useCapture)) {
-
-        // remove from cache
-        argsList.splice(i, 1);
-        
-        // remove from DOM
-        element.removeEventListener(event, args[0], args[1]);
-      }
-    }
-  });
-}
-
-
-/**
- * Attach an event hander which will only execute once per element per event
- * @param {Element} element - The DOM element.
- * @param {string} events - Space separated event names.
- * @param {Function} callback - The callback function.
- * @param {Boolean} useCapture - Use capture flag.
- */
-function jqLiteOne(element, events, callback, useCapture) {
-  events.split(' ').map(function(event) {
-    jqLiteOn(element, event, function onFn(ev) {
-      // execute callback
-      if (callback) callback.apply(this, arguments);
-
-      // remove wrapper
-      jqLiteOff(element, event, onFn, useCapture);
-    }, useCapture);
-  });
-}
-
-
-/**
- * Get or set horizontal scroll position
- * @param {Element} element - The DOM element
- * @param {number} [value] - The scroll position
- */
-function jqLiteScrollLeft(element, value) {
-  var win = window;
-
-  // get
-  if (value === undefined) {
-    if (element === win) {
-      var docEl = document.documentElement;
-      return (win.pageXOffset || docEl.scrollLeft) - (docEl.clientLeft || 0);
-    } else {
-      return element.scrollLeft;
-    }
-  }
-
-  // set
-  if (element === win) win.scrollTo(value, jqLiteScrollTop(win));
-  else element.scrollLeft = value;
-}
-
-
-/**
- * Get or set vertical scroll position
- * @param {Element} element - The DOM element
- * @param {number} value - The scroll position
- */
-function jqLiteScrollTop(element, value) {
-  var win = window;
-
-  // get
-  if (value === undefined) {
-    if (element === win) {
-      var docEl = document.documentElement;
-      return (win.pageYOffset || docEl.scrollTop) - (docEl.clientTop || 0);
-    } else {
-      return element.scrollTop;
-    }
-  }
-
-  // set
-  if (element === win) win.scrollTo(jqLiteScrollLeft(win), value);
-  else element.scrollTop = value;
-}
-
-
-/**
- * Return object representing top/left offset and element height/width.
- * @param {Element} element - The DOM element.
- */
-function jqLiteOffset(element) {
-  var win = window,
-      rect = element.getBoundingClientRect(),
-      scrollTop = jqLiteScrollTop(win),
-      scrollLeft = jqLiteScrollLeft(win);
-
-  return {
-    top: rect.top + scrollTop,
-    left: rect.left + scrollLeft,
-    height: rect.height,
-    width: rect.width
-  };
-}
-
-
-/**
- * Attach a callback to the DOM ready event listener
- * @param {Function} fn - The callback function.
- */
-function jqLiteReady(fn) {
-  var done = false,
-      top = true,
-      doc = document,
-      win = doc.defaultView,
-      root = doc.documentElement,
-      add = doc.addEventListener ? 'addEventListener' : 'attachEvent',
-      rem = doc.addEventListener ? 'removeEventListener' : 'detachEvent',
-      pre = doc.addEventListener ? '' : 'on';
-
-  var init = function(e) {
-    if (e.type == 'readystatechange' && doc.readyState != 'complete') {
-      return;
-    }
-
-    (e.type == 'load' ? win : doc)[rem](pre + e.type, init, false);
-    if (!done && (done = true)) fn.call(win, e.type || e);
-  };
-
-  var poll = function() {
-    try { root.doScroll('left'); } catch(e) { setTimeout(poll, 50); return; }
-    init('poll');
-  };
-
-  if (doc.readyState == 'complete') {
-    fn.call(win, 'lazy');
-  } else {
-    if (doc.createEventObject && root.doScroll) {
-      try { top = !win.frameElement; } catch(e) { }
-      if (top) poll();
-    }
-    doc[add](pre + 'DOMContentLoaded', init, false);
-    doc[add](pre + 'readystatechange', init, false);
-    win[add](pre + 'load', init, false);
-  }
-}
-
-
-/**
- * Remove classes from a DOM element
- * @param {Element} element - The DOM element.
- * @param {string} cssClasses - Space separated list of class names.
- */
-function jqLiteRemoveClass(element, cssClasses) {
-  if (!cssClasses || !element.setAttribute) return;
-
-  var existingClasses = _getExistingClasses(element),
-      splitClasses = cssClasses.split(' '),
-      cssClass;
-  
-  for (var i=0; i < splitClasses.length; i++) {
-    cssClass = splitClasses[i].trim();
-    while (existingClasses.indexOf(' ' + cssClass + ' ') >= 0) {
-      existingClasses = existingClasses.replace(' ' + cssClass + ' ', ' ');
-    }
-  }
-
-  element.setAttribute('class', existingClasses.trim());
-}
-
-
-// ------------------------------
-// Utilities
-// ------------------------------
-var SPECIAL_CHARS_REGEXP = /([\:\-\_]+(.))/g,
-    MOZ_HACK_REGEXP = /^moz([A-Z])/,
-    ESCAPE_REGEXP = /([.*+?^=!:${}()|\[\]\/\\])/g;
-
-
-function _getExistingClasses(element) {
-  var classes = (element.getAttribute('class') || '').replace(/[\n\t]/g, '');
-  return ' ' + classes + ' ';
-}
-
-
-function _camelCase(name) {
-  return name.
-    replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
-      return offset ? letter.toUpperCase() : letter;
-    }).
-    replace(MOZ_HACK_REGEXP, 'Moz$1');
-}
-
-
-function _escapeRegExp(string) {
-  return string.replace(ESCAPE_REGEXP, "\\$1");
-}
-
-
-function _getCurrCssProp(elem, name, computed) {
-  var ret;
-
-  // try computed style
-  ret = computed.getPropertyValue(name);
-
-  // try style attribute (if element is not attached to document)
-  if (ret === '' && !elem.ownerDocument) ret = elem.style[_camelCase(name)];
-
-  return ret;
-}
-
-
-/**
- * Module API
- */
-module.exports = {
-  /** Add classes */
-  addClass: jqLiteAddClass,
-
-  /** Get or set CSS properties */
-  css: jqLiteCss,
-
-  /** Check for class */
-  hasClass: jqLiteHasClass,
-
-  /** Remove event handlers */
-  off: jqLiteOff,
-
-  /** Return offset values */
-  offset: jqLiteOffset,
-
-  /** Add event handlers */
-  on: jqLiteOn,
-
-  /** Add an execute-once event handler */
-  one: jqLiteOne,
-
-  /** DOM ready event handler */
-  ready: jqLiteReady,
-
-  /** Remove classes */
-  removeClass: jqLiteRemoveClass,
-
-  /** Check JavaScript variable instance type */
-  type: jqLiteType,
-
-  /** Get or set horizontal scroll position */
-  scrollLeft: jqLiteScrollLeft,
-
-  /** Get or set vertical scroll position */
-  scrollTop: jqLiteScrollTop
-};
 
 
 /***/ }),
@@ -8440,377 +8085,8 @@ function reset() {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var divider_1 = __webpack_require__(144);
-var link_1 = __webpack_require__(147);
-var autoComplete_1 = __webpack_require__(137);
-var WrappedButton = (function (_super) {
-    __extends(WrappedButton, _super);
-    function WrappedButton(props) {
-        return _super.call(this, props) || this;
-    }
-    WrappedButton.prototype.render = function () {
-        return React.createElement("button", { disabled: this.props.disabled, style: this.props.style, onClick: this.props.onClick }, this.props.text);
-    };
-    return WrappedButton;
-}(React.Component));
-WrappedButton.defaultProps = {
-    style: {
-        borderRadius: "8px", padding: "5px"
-    }
-};
-exports.WrappedButton = WrappedButton;
-var LogInState;
-(function (LogInState) {
-    LogInState[LogInState["waitingForAuto"] = 0] = "waitingForAuto";
-    LogInState[LogInState["loggingIn"] = 1] = "loggingIn";
-    LogInState[LogInState["loggedIn"] = 2] = "loggedIn";
-    LogInState[LogInState["loggedOut"] = 3] = "loggedOut";
-    LogInState[LogInState["creatingAccount"] = 4] = "creatingAccount";
-})(LogInState || (LogInState = {}));
-var EmailLogOnComp = (function (_super) {
-    __extends(EmailLogOnComp, _super);
-    function EmailLogOnComp(props) {
-        var _this = _super.call(this, props) || this;
-        _this.user = null;
-        _this.willUnmountCalled = false;
-        var initialState = LogInState.loggedOut;
-        if (_this.props.reLoginWait > 0) {
-            initialState = LogInState.waitingForAuto;
-        }
-        _this.state = { logInState: initialState };
-        return _this;
-    }
-    EmailLogOnComp.prototype.componentDidMount = function () {
-        var self = this;
-        this.timeout = window.setTimeout(function () {
-            if (!self.props.auth.currentUser) {
-                self.setState({ logInState: LogInState.loggedOut });
-            }
-        }, this.props.reLoginWait);
-        this.unsubscribe = this.props.auth.onAuthStateChanged(function (user) {
-            if (!self.willUnmountCalled) {
-                var newState = LogInState.loggedOut;
-                if (user) {
-                    newState = LogInState.loggedIn;
-                }
-                self.user = user;
-                self.setState({ logInState: newState });
-            }
-        });
-    };
-    EmailLogOnComp.prototype.componentWillUnmount = function () {
-        this.willUnmountCalled = true;
-        this.unsubscribe();
-        window.clearTimeout(this.timeout);
-    };
-    EmailLogOnComp.prototype.render = function () {
-        var renderScreen;
-        switch (this.state.logInState) {
-            case LogInState.waitingForAuto:
-                renderScreen = React.createElement("div", { style: { padding: "10px" } },
-                    React.createElement("div", null, this.props.waitingAutoLogOnMessage));
-                break;
-            case LogInState.loggedIn:
-                renderScreen = React.createElement(EmailScreenWithError, null,
-                    React.createElement(EmailLoggedInScreen, { signOutTitle: this.props.signOutTitle, auth: this.props.auth }));
-                break;
-            case LogInState.loggedOut:
-                renderScreen = React.createElement(EmailLoggedOutScreen, { signInButtonProps: this.props.signInButtonProps, signInButtonType: this.props.signInButtonType, focusColor: this.props.focusColor, isSignIn: true, validatePassword: this.props.validatePassword, validateEmail: this.props.validateEmail, auth: this.props.auth });
-                break;
-        }
-        return React.createElement("div", null,
-            " ",
-            renderScreen);
-    };
-    return EmailLogOnComp;
-}(React.Component));
-EmailLogOnComp.defaultProps = {
-    waitingAutoLogOnMessage: "Attempting auto login....."
-};
-exports.EmailLogOnComp = EmailLogOnComp;
-var EmailLoggedInScreen = (function (_super) {
-    __extends(EmailLoggedInScreen, _super);
-    function EmailLoggedInScreen(props) {
-        var _this = _super.call(this, props) || this;
-        _this.logOut = function () {
-            var self = _this;
-            _this.props.auth.signOut().catch(function (err) {
-                var firebaseError = err;
-                self.props.errored(firebaseError);
-            });
-        };
-        return _this;
-    }
-    EmailLoggedInScreen.prototype.render = function () {
-        return React.createElement("div", { style: { fontWeight: "bold", padding: "10px" } },
-            React.createElement("span", { style: { marginRight: "5px" } },
-                React.createElement(link_1.NonNavigatableLink, { text: this.props.signOutTitle, clicked: this.logOut })),
-            React.createElement("span", null, this.props.auth.currentUser.email));
-    };
-    return EmailLoggedInScreen;
-}(React.Component));
-EmailLoggedInScreen.defaultProps = {
-    signOutTitle: "Sign out:"
-};
-var EmailLoggedOutScreen = (function (_super) {
-    __extends(EmailLoggedOutScreen, _super);
-    function EmailLoggedOutScreen(props) {
-        return _super.call(this, props) || this;
-    }
-    EmailLoggedOutScreen.prototype.render = function () {
-        return React.createElement(EmailScreenWithError, null,
-            React.createElement(EmailSignInScreen, __assign({}, this.props)));
-    };
-    return EmailLoggedOutScreen;
-}(React.Component));
-var EmailScreenWithError = (function (_super) {
-    __extends(EmailScreenWithError, _super);
-    function EmailScreenWithError(props) {
-        var _this = _super.call(this, props) || this;
-        _this.errored = function (error) {
-            _this.setState({ error: _this.getErrorMessage(error) });
-        };
-        _this.state = { error: "" };
-        return _this;
-    }
-    EmailScreenWithError.prototype.getErrorMessage = function (error) {
-        var errorMessage = "";
-        if (error) {
-            var errorCode = error.code;
-            switch (errorCode) {
-                case "auth/invalid-email":
-                    errorMessage = "Email address is invalid"; //is that firebase database rule against the email field ?
-                    break;
-                case "auth/user-disabled":
-                    errorMessage = "Your account has been disabled";
-                    break;
-                case "auth/user-not-found":
-                    errorMessage = "The email address has not been found.";
-                    break;
-                case "auth/wrong-password":
-                    errorMessage = "Incorrect password";
-                    break;
-                case "auth/email-already-in-use":
-                    errorMessage = "Please create account with different email as it already is in use.";
-                    break;
-                case "auth/weak-password":
-                    //cannot find documentation on what constitutes a weak/strong password
-                    errorMessage = "Password weak. Use a stronger password";
-                    break;
-                case "auth/network-request-failed":
-                    errorMessage = "There is an issue with your network connection";
-                    break;
-                case "auth/too-many-requests":
-                    errorMessage = "Unusual activity.........";
-                    break;
-                case "auth/unauthorized-domain":
-                    errorMessage = "I have been an idiot and not authorized the domain";
-                    break;
-            }
-        }
-        return errorMessage;
-    };
-    EmailScreenWithError.prototype.render = function () {
-        return React.createElement("div", { style: { margin: "0px 0px 10px 0px" } },
-            React.cloneElement(this.props.children, { errored: this.errored }),
-            React.createElement("div", { style: { paddingLeft: "10px", paddingRight: "10px" } },
-                React.createElement("div", { style: { display: this.state.error.length > 0 ? "initial" : "none" } },
-                    React.createElement(divider_1.Divider, null),
-                    React.createElement("br", null),
-                    React.createElement("div", { className: "logonErrorBox", style: { width: "100%", color: "red" } }, this.state.error))));
-    };
-    return EmailScreenWithError;
-}(React.Component));
-var EmailSignInScreen = (function (_super) {
-    __extends(EmailSignInScreen, _super);
-    function EmailSignInScreen(props) {
-        var _this = _super.call(this, props) || this;
-        //this does not get done on auto complete
-        _this.passwordChange = function (event) {
-            var password = event.target.value;
-            _this.props.errored(null);
-            _this.setState({ password: password, passwordValid: _this.props.validatePassword(password), passwordSet: true });
-        };
-        _this.emailChange = function (event) {
-            _this.props.errored(null);
-            var emailValue = event.target.value;
-            var emailValid = _this.props.validateEmail(emailValue);
-            _this.setState({ email: emailValue, emailValid: emailValid, emailSet: true });
-        };
-        _this.signInOrCreateAccount = function () {
-            //now that the button has been pressed can validate password
-            var validPassword = true;
-            if (!_this.validatedPassword) {
-                validPassword = _this.props.validatePassword(_this.passwordElement.value);
-                _this.validatedPassword = true;
-                if (!validPassword) {
-                    _this.setState({ passwordValid: false }); //not necessary?
-                }
-            }
-            if (validPassword) {
-                var self = _this;
-                if (self.state.isSignIn) {
-                    _this.props.auth.signInWithEmailAndPassword(_this.state.email, _this.state.password).catch(function (err) {
-                        var firebaseError = err;
-                        self.signInError(firebaseError);
-                    });
-                }
-                else {
-                    _this.props.auth.createUserWithEmailAndPassword(_this.state.email, _this.state.password).catch(function (err) {
-                        var firebaseError = err;
-                        self.signInError(firebaseError);
-                    });
-                }
-            }
-        };
-        _this.switch = function () {
-            _this.props.errored(null);
-            _this.setState(function (prevState) {
-                return { isSignIn: !prevState.isSignIn };
-            });
-        };
-        _this.passwordFocused = function () {
-            _this.setState({ passwordIsFocused: true });
-        };
-        _this.passwordBlurred = function () {
-            _this.setState({ passwordIsFocused: false });
-        };
-        _this.emailFocused = function () {
-            _this.setState({ emailIsFocused: true });
-        };
-        _this.emailBlurred = function () {
-            _this.setState({ emailIsFocused: false });
-        };
-        _this.state = { passwordSet: false, emailSet: false, emailValid: true, email: "", password: "", passwordValid: true, isSignIn: _this.props.isSignIn, emailIsFocused: false, passwordIsFocused: false };
-        return _this;
-    }
-    EmailSignInScreen.prototype.signInError = function (firebaseError) {
-        var errorCode = firebaseError.code;
-        var errorMessage;
-        var errorFocusElement;
-        var emailInError = false;
-        var passwordInError = false;
-        switch (errorCode) {
-            case "auth/invalid-email":
-                errorFocusElement = this.emailElement;
-                emailInError = true;
-                break;
-            case "auth/user-not-found":
-                errorFocusElement = this.emailElement;
-                emailInError = true;
-                break;
-            case "auth/wrong-password":
-                errorFocusElement = this.passwordElement;
-                passwordInError = true;
-                break;
-            case "auth/email-already-in-use":
-                errorFocusElement = this.passwordElement;
-                passwordInError = true;
-                break;
-            case "auth/weak-password":
-                errorFocusElement = this.passwordElement;
-                passwordInError = true;
-                break;
-        }
-        if (errorFocusElement) {
-            errorFocusElement.focus();
-        }
-        this.props.errored(firebaseError);
-        this.setState({ emailValid: !emailInError, passwordValid: !passwordInError });
-    };
-    EmailSignInScreen.prototype.render = function () {
-        var _this = this;
-        var title = this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle;
-        var emailBorderColor = this.props.errorColor;
-        var emailBoxShadow = "";
-        var passwordBorderColor = this.props.errorColor;
-        var focusBoxShadow = "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1)";
-        if (this.state.emailIsFocused) {
-            emailBoxShadow = focusBoxShadow;
-        }
-        if (this.state.emailValid) {
-            if (this.state.emailIsFocused) {
-                emailBorderColor = this.props.focusColor;
-            }
-            else {
-                emailBorderColor = this.props.emailPasswordBorderColor;
-            }
-        }
-        if (this.state.passwordValid) {
-            if (this.state.passwordIsFocused) {
-                passwordBorderColor = this.props.focusColor;
-            }
-            else {
-                passwordBorderColor = this.props.emailPasswordBorderColor;
-            }
-        }
-        var ButtonType = this.props.signInButtonType;
-        var labelStyle = { marginBottom: "7px" };
-        //could create AutoCompleteLabelInput for consistency
-        return React.createElement("div", { style: { padding: "10px" } },
-            React.createElement("div", { style: { fontWeight: "bold", marginBottom: "5px" } },
-                React.createElement("span", null, title + " / "),
-                React.createElement(link_1.NonNavigatableLink, { clicked: this.switch, removeUnderline: true, text: this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle })),
-            React.createElement(divider_1.Divider, null),
-            React.createElement("br", null),
-            React.createElement("label", { style: labelStyle }, this.props.emailHeader),
-            React.createElement(autoComplete_1.AutoComplete, { autoCompletedWait: 500, containerStyle: { marginBottom: "10px" } },
-                React.createElement("input", { onBlur: this.emailBlurred, onFocus: this.emailFocused, ref: function (input) { return _this.emailElement = input; }, spellCheck: false, style: { borderRadius: "2px", padding: "5px", borderColor: emailBorderColor }, type: "email", name: "emailLogon", value: this.state.email, autoComplete: "on", onChange: this.emailChange })),
-            React.createElement("label", { style: labelStyle }, this.props.passwordHeader),
-            React.createElement(autoComplete_1.AutoComplete, { containerStyle: { marginBottom: "10px" } },
-                React.createElement("input", { onBlur: this.passwordBlurred, onFocus: this.passwordFocused, ref: function (input) { return _this.passwordElement = input; }, style: { outline: "none", borderRadius: "2px", padding: "5px", borderColor: passwordBorderColor }, type: "password", name: "password", autoComplete: "password", value: this.state.password, onChange: this.passwordChange })),
-            React.createElement(ButtonType, __assign({}, this.props.signInButtonProps, { disabled: !(this.state.emailSet && this.state.emailValid && this.state.passwordValid), onClick: this.signInOrCreateAccount, text: this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle })));
-    };
-    return EmailSignInScreen;
-}(React.Component));
-EmailSignInScreen.defaultProps = {
-    validateEmail: function (email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-    },
-    validatePassword: function (password) {
-        return password.length >= 6;
-    },
-    signInTitle: "Sign in:",
-    createNewAccountTitle: "Create new account",
-    isSignIn: true,
-    focusColor: "blue",
-    errorColor: "red",
-    emailPasswordBorderColor: "initial",
-    emailHeader: "Email",
-    passwordHeader: "Password ( 6+ )",
-    signInButtonType: WrappedButton
-};
-
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var firebaseApp_1 = __webpack_require__(32);
+var firebaseApp_1 = __webpack_require__(33);
 var FirebaseDatabase = (function () {
     function FirebaseDatabase() {
         var connectedRef = firebaseApp_1.database.ref(".info/connected");
@@ -8907,7 +8183,7 @@ exports.connectedDatabase = new FirebaseDatabase();
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8922,33 +8198,24 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var crosswordPuzzle_1 = __webpack_require__(142);
-var Select = __webpack_require__(10);
+var crosswordPuzzle_1 = __webpack_require__(137);
 var twoCol_1 = __webpack_require__(23);
-var emailLogOn_1 = __webpack_require__(59);
-var firebaseApp_1 = __webpack_require__(32);
-var Button = __webpack_require__(100);
-var connectedDatabase_1 = __webpack_require__(60);
-__webpack_require__(40);
-var crosswordPuzzleChooser_1 = __webpack_require__(143);
-var muiButton_1 = __webpack_require__(148);
-var MuiButtonWrapper = (function (_super) {
-    __extends(MuiButtonWrapper, _super);
-    function MuiButtonWrapper(props) {
-        var _this = _super.call(this, props) || this;
-        _this.muiMouseDown = function () {
-            _this.props.onClick();
-        };
-        return _this;
-    }
-    MuiButtonWrapper.prototype.render = function () {
-        return React.createElement(Button, { disabled: this.props.disabled, color: this.props.color, onMouseDown: this.muiMouseDown }, this.props.text);
-    };
-    return MuiButtonWrapper;
-}(React.Component));
+var firebaseApp_1 = __webpack_require__(33);
+var connectedDatabase_1 = __webpack_require__(59);
+__webpack_require__(41);
+var crosswordPuzzleChooser_1 = __webpack_require__(138);
+var muiWrappedButton_1 = __webpack_require__(32);
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
     function CrosswordPuzzleApp(props) {
@@ -8983,16 +8250,30 @@ var CrosswordPuzzleApp = (function (_super) {
     };
     //going to have to deal with saving of old one here
     CrosswordPuzzleApp.prototype.render = function () {
+        var primaryColour = "#f2e090";
+        var buttonStyle = {
+            backgroundColor: primaryColour,
+            color: "gray"
+        };
+        var buttonProps = {
+            buttonStyle: buttonStyle,
+            disabledBackgroundColor: "#667799",
+            disabledColor: "white",
+            lightenPercentage: 0.1
+        };
+        var selectChooserProps = {
+            ButtonType: muiWrappedButton_1.MuiButtonWrapper,
+            buttonProps: buttonProps
+        };
         //explicit height allows room for the Select 
         var leftContent = React.createElement("div", { style: { minHeight: "1000px" } },
-            React.createElement(crosswordPuzzleChooser_1.CrosswordPuzzleChooser, { userLoggedIn: this.state.userLoggedIn, crosswordSelected: this.crosswordSelected }));
+            React.createElement(crosswordPuzzleChooser_1.CrosswordPuzzleChooser, { emailLogOnStyleProps: { signInButtonProps: buttonProps, dividerColor: primaryColour }, selectChooserProps: selectChooserProps, userLoggedIn: this.state.userLoggedIn, crosswordSelected: this.crosswordSelected }));
         var rightContent = React.createElement(crosswordPuzzle_1.CrosswordPuzzleKeyEvents, { crosswordModel: this.state.crosswordModel });
         if (this.state.crosswordModel === null) {
             rightContent = React.createElement("div", null);
         }
         return React.createElement("div", null,
-            React.createElement(muiButton_1.MuiButton, { disabled: false, buttonStyle: { padding: "50px", backgroundColor: "green", color: "white" } }, "My Mui"),
-            React.createElement("button", { disabled: !this.state.userLoggedIn, onClick: this.saveUserCrossword }, "Click to save"),
+            React.createElement(muiWrappedButton_1.MuiButtonWrapper, __assign({ disabled: !this.state.userLoggedIn || this.state.crosswordModel === null, text: "Click to save", onClick: this.saveUserCrossword }, buttonProps)),
             React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent }));
         //return <div>
         //    <div style={{width:"500px"}}>
@@ -9005,86 +8286,10 @@ var CrosswordPuzzleApp = (function (_super) {
     return CrosswordPuzzleApp;
 }(React.Component));
 exports.CrosswordPuzzleApp = CrosswordPuzzleApp;
-var CrosswordPuzzleChooserOld = (function (_super) {
-    __extends(CrosswordPuzzleChooserOld, _super);
-    function CrosswordPuzzleChooserOld(props) {
-        var _this = _super.call(this, props) || this;
-        _this.jsonOptionChange = function (option) {
-            _this.props.jsonCrosswordSelected(_this.optionToDetail(option));
-        };
-        _this.storeOptionChange = function (option) {
-            _this.props.storeCrosswordSelected(_this.optionToDetail(option));
-        };
-        _this.savedOnFocus = function () {
-            _this.setState({ savedSelectFocused: true });
-        };
-        _this.savedOnBlur = function () {
-            _this.setState({ savedSelectFocused: false });
-        };
-        _this.publicOnFocus = function () {
-            _this.setState({ publicSelectFocused: true });
-        };
-        _this.publicOnBlur = function () {
-            _this.setState({ publicSelectFocused: false });
-        };
-        _this.state = { publicSelectFocused: false, savedSelectFocused: false };
-        return _this;
-    }
-    CrosswordPuzzleChooserOld.prototype.mapToOptions = function (chooseDetails) {
-        if (chooseDetails) {
-            return chooseDetails.map(function (chooseDetail) {
-                return { label: chooseDetail.title, value: chooseDetail.id, _chooseDetail: chooseDetail };
-            });
-        }
-        else {
-            return [];
-        }
-    };
-    CrosswordPuzzleChooserOld.prototype.optionToDetail = function (option) {
-        var selectedDetail;
-        if (option) {
-            selectedDetail = option._chooseDetail;
-        }
-        else {
-            selectedDetail = null;
-        }
-        return selectedDetail;
-    };
-    CrosswordPuzzleChooserOld.prototype.render = function () {
-        var jsonOptions = this.mapToOptions(this.props.chooseDetailsJson);
-        var storeOptions = this.mapToOptions(this.props.chooseDetailsStore);
-        var displayWhenLoggedOut = this.props.userLoggedIn ? "none" : "block";
-        var displayWhenLoggedIn = this.props.userLoggedIn ? "block" : "none";
-        var borderColor = "grey";
-        var unfocusedBorderColor = borderColor;
-        var focusedBorderColor = "blue";
-        var fieldsetBorder = "1px " + borderColor + " solid";
-        var placeholderTextColour = "rgb(51,51,51)";
-        var placeholderDisabledTextColour = "grey";
-        var signInTitle = "Sign in";
-        var savedSelectPlaceholderText = this.props.userLoggedIn ? "Select saved crosswords:" : signInTitle + " to access saved crosswords:";
-        var savedSelectPlaceholder = React.createElement("div", { style: { color: this.props.userLoggedIn ? placeholderTextColour : placeholderDisabledTextColour } }, savedSelectPlaceholderText);
-        var publicSelectPlaceholder = React.createElement("div", { style: { color: placeholderTextColour } }, "Select public crossword:");
-        return React.createElement("div", { style: { height: "700px" } },
-            React.createElement("h2", null, "Select a crossword"),
-            React.createElement("fieldset", { style: { borderRadius: "8px", border: fieldsetBorder } },
-                React.createElement("legend", null, "Saved crosswords:"),
-                React.createElement("div", { style: { borderRadius: "8px", marginBottom: "10px", border: fieldsetBorder } },
-                    React.createElement(emailLogOn_1.EmailLogOnComp, { signInButtonProps: { style: { color: "red", outlineWidth: "0px" } }, focusColor: focusedBorderColor, signInTitle: signInTitle, signOutTitle: "Sign out", reLoginWait: 1000, auth: firebaseApp_1.auth })),
-                React.createElement(Select, { isLoading: this.props.storeCrosswordsLoading, placeholder: savedSelectPlaceholder, onFocus: this.savedOnFocus, onBlur: this.savedOnBlur, style: { borderColor: this.state.savedSelectFocused ? focusedBorderColor : unfocusedBorderColor }, disabled: !this.props.userLoggedIn, options: storeOptions, value: this.props.storeSelectedCrossword !== null ? this.props.storeSelectedCrossword.id : null, onChange: this.storeOptionChange }),
-                React.createElement(Button, { color: "accent", disabled: this.props.storeSelectedCrossword === null, onMouseUp: this.props.storeCrosswordChosen }, "Play crossword")),
-            React.createElement("fieldset", { style: { borderRadius: "8px", border: fieldsetBorder } },
-                React.createElement("legend", null, "Public crosswords:"),
-                React.createElement(Select, { isLoading: this.props.jsonCrosswordsLoading, placeholder: publicSelectPlaceholder, onFocus: this.publicOnFocus, onBlur: this.publicOnBlur, style: { borderColor: this.state.publicSelectFocused ? focusedBorderColor : unfocusedBorderColor }, options: jsonOptions, value: this.props.jsonSelectedCrossword !== null ? this.props.jsonSelectedCrossword.id : null, onChange: this.jsonOptionChange }),
-                React.createElement(Button, { color: "accent", disabled: this.props.jsonSelectedCrossword === null, onMouseUp: this.props.jsonCrosswordChosen }, "Play crossword")));
-    };
-    return CrosswordPuzzleChooserOld;
-}(React.Component));
-exports.CrosswordPuzzleChooserOld = CrosswordPuzzleChooserOld;
 
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -9277,7 +8482,7 @@ exports.CrosswordPuzzleChooserOld = CrosswordPuzzleChooserOld;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(1)))
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -9330,13 +8535,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(62);
+__webpack_require__(61);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports) {
 
 /* The following list is defined in React's core */
@@ -9382,11 +8587,11 @@ module.exports = function(name, value) {
 };
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(36);
-var route = __webpack_require__(66);
+var conversions = __webpack_require__(37);
+var route = __webpack_require__(65);
 
 var convert = {};
 
@@ -9466,10 +8671,10 @@ module.exports = convert;
 
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(36);
+var conversions = __webpack_require__(37);
 
 /*
 	this function routes a model to all other models.
@@ -9570,12 +8775,12 @@ module.exports = function (fromModel) {
 
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(37);
-var swizzle = __webpack_require__(132);
+var colorNames = __webpack_require__(38);
+var swizzle = __webpack_require__(127);
 
 var reverseNames = {};
 
@@ -9809,7 +9014,7 @@ function hexDouble(num) {
 
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9825,13 +9030,13 @@ function hexDouble(num) {
 
 
 
-var _assign = __webpack_require__(101);
+var _assign = __webpack_require__(96);
 
-var emptyObject = __webpack_require__(69);
+var emptyObject = __webpack_require__(68);
 var _invariant = __webpack_require__(6);
 
 if (process.env.NODE_ENV !== 'production') {
-  var warning = __webpack_require__(12);
+  var warning = __webpack_require__(11);
 }
 
 var MIXINS_KEY = 'mixins';
@@ -10541,7 +9746,7 @@ module.exports = factory;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10567,7 +9772,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10668,7 +9873,7 @@ function patchProperty(obj, prop, value) {
 
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10701,13 +9906,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.createFirebaseNamespace = createFirebaseNamespace;
 
-var _subscribe = __webpack_require__(39);
+var _subscribe = __webpack_require__(40);
 
 var _errors = __webpack_require__(24);
 
 var _shared_promise = __webpack_require__(25);
 
-var _deep_copy = __webpack_require__(70);
+var _deep_copy = __webpack_require__(69);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11071,14 +10276,14 @@ var appErrors = new _errors.ErrorFactory('app', 'Firebase', errors);
 
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*! @license Firebase v4.1.1
 Build: rev-ca0d1df
 Terms: https://firebase.google.com/terms/ */
 
-var firebase = __webpack_require__(13);
+var firebase = __webpack_require__(12);
 (function(){(function(){var h,aa=aa||{},k=this,m=function(a){return"string"==typeof a},ba=function(a){return"boolean"==typeof a},ca=function(a){return"number"==typeof a},da=function(){},ea=function(a){var b=typeof a;if("object"==b)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return b;var c=Object.prototype.toString.call(a);if("[object Window]"==c)return"object";if("[object Array]"==c||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";
 if("[object Function]"==c||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";else if("function"==b&&"undefined"==typeof a.call)return"object";return b},fa=function(a){return null===a},ga=function(a){return"array"==ea(a)},ha=function(a){var b=ea(a);return"array"==b||"object"==b&&"number"==typeof a.length},p=function(a){return"function"==ea(a)},ia=function(a){var b=typeof a;return"object"==b&&null!=a||"function"==
 b},ja=function(a,b,c){return a.call.apply(a.bind,arguments)},ka=function(a,b,c){if(!a)throw Error();if(2<arguments.length){var d=Array.prototype.slice.call(arguments,2);return function(){var c=Array.prototype.slice.call(arguments);Array.prototype.unshift.apply(c,d);return a.apply(b,c)}}return function(){return a.apply(b,arguments)}},q=function(a,b,c){q=Function.prototype.bind&&-1!=Function.prototype.bind.toString().indexOf("native code")?ja:ka;return q.apply(null,arguments)},la=function(a,b){var c=
@@ -11350,7 +10555,7 @@ c){a=new T(a);c({INTERNAL:{getUid:q(a.getUid,a),getToken:q(a.getIdToken,a),addAu
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11364,29 +10569,29 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _app = __webpack_require__(13);
+var _app = __webpack_require__(12);
 
 var _app2 = _interopRequireDefault(_app);
 
-__webpack_require__(72);
+__webpack_require__(71);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Import instance of FirebaseApp from ./app
 var Storage, XMLHttpRequest;
 
-__webpack_require__(40);
-__webpack_require__(81);
+__webpack_require__(41);
+__webpack_require__(80);
 var AsyncStorage;
 
-__webpack_require__(74);
+__webpack_require__(73);
 // Export the single instance of firebase
 exports.default = _app2.default;
 module.exports = exports['default'];
 
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11416,15 +10621,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.registerMessaging = registerMessaging;
 
-var _windowController = __webpack_require__(76);
+var _windowController = __webpack_require__(75);
 
 var _windowController2 = _interopRequireDefault(_windowController);
 
-var _swController = __webpack_require__(75);
+var _swController = __webpack_require__(74);
 
 var _swController2 = _interopRequireDefault(_swController);
 
-var _app = __webpack_require__(13);
+var _app = __webpack_require__(12);
 
 var _app2 = _interopRequireDefault(_app);
 
@@ -11446,7 +10651,7 @@ registerMessaging(_app2.default);
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11479,7 +10684,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _controllerInterface = __webpack_require__(41);
+var _controllerInterface = __webpack_require__(42);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -11487,11 +10692,11 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(44);
+var _workerPageMessage = __webpack_require__(45);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
-var _fcmDetails = __webpack_require__(42);
+var _fcmDetails = __webpack_require__(43);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -11823,7 +11028,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11856,7 +11061,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _controllerInterface = __webpack_require__(41);
+var _controllerInterface = __webpack_require__(42);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -11864,19 +11069,19 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(44);
+var _workerPageMessage = __webpack_require__(45);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
-var _defaultSw = __webpack_require__(78);
+var _defaultSw = __webpack_require__(77);
 
 var _defaultSw2 = _interopRequireDefault(_defaultSw);
 
-var _notificationPermission = __webpack_require__(43);
+var _notificationPermission = __webpack_require__(44);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
-var _subscribe = __webpack_require__(39);
+var _subscribe = __webpack_require__(40);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12223,7 +11428,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12265,7 +11470,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12301,7 +11506,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12338,11 +11543,11 @@ var _errors2 = __webpack_require__(17);
 
 var _errors3 = _interopRequireDefault(_errors2);
 
-var _arrayBufferToBase = __webpack_require__(77);
+var _arrayBufferToBase = __webpack_require__(76);
 
 var _arrayBufferToBase2 = _interopRequireDefault(_arrayBufferToBase);
 
-var _fcmDetails = __webpack_require__(42);
+var _fcmDetails = __webpack_require__(43);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -12722,7 +11927,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(setImmediate) {(function (root) {
@@ -12959,10 +12164,10 @@ module.exports = exports['default'];
 
 })(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(63).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(62).setImmediate))
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12979,15 +12184,15 @@ exports.registerStorage = registerStorage;
 
 var _string = __webpack_require__(29);
 
-var _taskenums = __webpack_require__(48);
+var _taskenums = __webpack_require__(49);
 
-var _xhriopool = __webpack_require__(93);
+var _xhriopool = __webpack_require__(92);
 
-var _reference = __webpack_require__(50);
+var _reference = __webpack_require__(51);
 
-var _service = __webpack_require__(94);
+var _service = __webpack_require__(93);
 
-var _app = __webpack_require__(13);
+var _app = __webpack_require__(12);
 
 var _app2 = _interopRequireDefault(_app);
 
@@ -13031,7 +12236,7 @@ registerStorage(_app2.default);
 
 
 /***/ }),
-/* 82 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13088,7 +12293,7 @@ function async(f) {
 
 
 /***/ }),
-/* 83 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13113,7 +12318,7 @@ var _error2 = __webpack_require__(4);
 
 var errorsExports = _interopRequireWildcard(_error2);
 
-var _failrequest = __webpack_require__(85);
+var _failrequest = __webpack_require__(84);
 
 var _location = __webpack_require__(19);
 
@@ -13121,7 +12326,7 @@ var _promise_external = __webpack_require__(7);
 
 var promiseimpl = _interopRequireWildcard(_promise_external);
 
-var _requestmap = __webpack_require__(91);
+var _requestmap = __webpack_require__(90);
 
 var _type = __webpack_require__(2);
 
@@ -13269,7 +12474,7 @@ var AuthWrapper = exports.AuthWrapper = function () {
 
 
 /***/ }),
-/* 84 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13400,7 +12605,7 @@ function stop(id) {
 
 
 /***/ }),
-/* 85 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13458,7 +12663,7 @@ var FailRequest = exports.FailRequest = function () {
 
 
 /***/ }),
-/* 86 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13538,7 +12743,7 @@ function sliceBlob(blob, start, end) {
 
 
 /***/ }),
-/* 87 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13593,7 +12798,7 @@ function jsonObjectOrNull(s) {
 
 
 /***/ }),
-/* 88 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13652,7 +12857,7 @@ var Observer = exports.Observer = function Observer(nextOrObserver, opt_error, o
 
 
 /***/ }),
-/* 89 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13696,7 +12901,7 @@ var _array = __webpack_require__(27);
 
 var array = _interopRequireWildcard(_array);
 
-var _backoff = __webpack_require__(84);
+var _backoff = __webpack_require__(83);
 
 var backoff = _interopRequireWildcard(_backoff);
 
@@ -13720,7 +12925,7 @@ var _url = __webpack_require__(30);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
-var _xhrio = __webpack_require__(49);
+var _xhrio = __webpack_require__(50);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -13924,7 +13129,7 @@ function makeRequest(requestInfo, authToken, pool) {
 
 
 /***/ }),
-/* 90 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13970,7 +13175,7 @@ handler, timeout) {
 
 
 /***/ }),
-/* 91 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14064,7 +13269,7 @@ var RequestMap = exports.RequestMap = function () {
 
 
 /***/ }),
-/* 92 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14112,7 +13317,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _xhrio = __webpack_require__(49);
+var _xhrio = __webpack_require__(50);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -14262,7 +13467,7 @@ var NetworkXhrIo = exports.NetworkXhrIo = function () {
 
 
 /***/ }),
-/* 93 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14294,7 +13499,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-var _xhrio_network = __webpack_require__(92);
+var _xhrio_network = __webpack_require__(91);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -14318,7 +13523,7 @@ var XhrIoPool = exports.XhrIoPool = function () {
 
 
 /***/ }),
-/* 94 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14354,7 +13559,7 @@ var _args = __webpack_require__(26);
 
 var args = _interopRequireWildcard(_args);
 
-var _authwrapper = __webpack_require__(83);
+var _authwrapper = __webpack_require__(82);
 
 var _location = __webpack_require__(19);
 
@@ -14362,11 +13567,11 @@ var _promise_external = __webpack_require__(7);
 
 var fbsPromiseImpl = _interopRequireWildcard(_promise_external);
 
-var _request = __webpack_require__(89);
+var _request = __webpack_require__(88);
 
 var RequestExports = _interopRequireWildcard(_request);
 
-var _reference = __webpack_require__(50);
+var _reference = __webpack_require__(51);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -14508,7 +13713,7 @@ var ServiceInternals = exports.ServiceInternals = function () {
 
 
 /***/ }),
-/* 95 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14543,13 +13748,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _taskenums = __webpack_require__(48);
+var _taskenums = __webpack_require__(49);
 
 var fbsTaskEnums = _interopRequireWildcard(_taskenums);
 
-var _observer = __webpack_require__(88);
+var _observer = __webpack_require__(87);
 
-var _tasksnapshot = __webpack_require__(96);
+var _tasksnapshot = __webpack_require__(95);
 
 var _args = __webpack_require__(26);
 
@@ -14559,7 +13764,7 @@ var _array = __webpack_require__(27);
 
 var fbsArray = _interopRequireWildcard(_array);
 
-var _async = __webpack_require__(82);
+var _async = __webpack_require__(81);
 
 var _error = __webpack_require__(4);
 
@@ -14569,7 +13774,7 @@ var _promise_external = __webpack_require__(7);
 
 var fbsPromiseimpl = _interopRequireWildcard(_promise_external);
 
-var _requests = __webpack_require__(47);
+var _requests = __webpack_require__(48);
 
 var fbsRequests = _interopRequireWildcard(_requests);
 
@@ -15150,7 +14355,7 @@ var UploadTask = exports.UploadTask = function () {
 
 
 /***/ }),
-/* 96 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15201,670 +14406,7 @@ var UploadTaskSnapshot = exports.UploadTaskSnapshot = function () {
 
 
 /***/ }),
-/* 97 */
-/***/ (function(module, exports) {
-
-/**
- * MUI config module
- * @module config
- */
-
-/** Define module API */
-module.exports = {
-  /** Use debug mode */
-  debug: true
-};
-
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * MUI CSS/JS utilities module
- * @module lib/util
- */
-
-
-
-
-var config = __webpack_require__(97),
-    jqLite = __webpack_require__(51),
-    scrollLock = 0,
-    scrollLockCls = 'mui-scroll-lock',
-    scrollLockPos,
-    scrollStyleEl,
-    scrollEventHandler,
-    _scrollBarWidth,
-    _supportsPointerEvents;
-
-
-scrollEventHandler = function(ev) {
-  // stop propagation on window scroll events
-  if (!ev.target.tagName) ev.stopImmediatePropagation();
-}
-
-
-/**
- * Logging function
- */
-function logFn() {
-  var win = window;
-  
-  if (config.debug && typeof win.console !== "undefined") {
-    try {
-      win.console.log.apply(win.console, arguments);
-    } catch (a) {
-      var e = Array.prototype.slice.call(arguments);
-      win.console.log(e.join("\n"));
-    }
-  }
-}
-
-
-/**
- * Load CSS text in new stylesheet
- * @param {string} cssText - The css text.
- */
-function loadStyleFn(cssText) {
-  var doc = document,
-      head;
-  
-  // copied from jQuery 
-  head = doc.head ||
-    doc.getElementsByTagName('head')[0] ||
-    doc.documentElement;
-  
-  var e = doc.createElement('style');
-  e.type = 'text/css';
-  
-  if (e.styleSheet) e.styleSheet.cssText = cssText;
-  else e.appendChild(doc.createTextNode(cssText));
-  
-  // add to document
-  head.insertBefore(e, head.firstChild);
-  
-  return e;
-}
-
-
-/**
- * Raise an error
- * @param {string} msg - The error message.
- */
-function raiseErrorFn(msg, useConsole) {
-  if (useConsole) {
-    if (typeof console !== 'undefined') console.error('MUI Warning: ' + msg);
-  } else {
-    throw new Error('MUI: ' + msg);
-  }
-}
-
-
-/**
- * Convert Classname object, with class as key and true/false as value, to an
- * class string.
- * @param  {Object} classes The classes
- * @return {String}         class string
- */
-function classNamesFn(classes) {
-  var cs = '';
-  for (var i in classes) {
-    cs += (classes[i]) ? i + ' ' : '';
-  }
-  return cs.trim();
-}
-
-
-/**
- * Check if client supports pointer events.
- */
-function supportsPointerEventsFn() {
-  // check cache
-  if (_supportsPointerEvents !== undefined) return _supportsPointerEvents;
-  
-  var element = document.createElement('x');
-  element.style.cssText = 'pointer-events:auto';
-  _supportsPointerEvents = (element.style.pointerEvents === 'auto');
-  return _supportsPointerEvents;
-}
-
-
-/**
- * Create callback closure.
- * @param {Object} instance - The object instance.
- * @param {String} funcName - The name of the callback function.
- */
-function callbackFn(instance, funcName) {
-  return function() {instance[funcName].apply(instance, arguments);};
-}
-
-
-/**
- * Dispatch event.
- * @param {Element} element - The DOM element.
- * @param {String} eventType - The event type.
- * @param {Boolean} bubbles=true - If true, event bubbles.
- * @param {Boolean} cancelable=true = If true, event is cancelable
- * @param {Object} [data] - Data to add to event object
- */
-function dispatchEventFn(element, eventType, bubbles, cancelable, data) {
-  var ev = document.createEvent('HTMLEvents'),
-      bubbles = (bubbles !== undefined) ? bubbles : true,
-       cancelable = (cancelable !== undefined) ? cancelable : true,
-       k;
-
-  ev.initEvent(eventType, bubbles, cancelable);
-  
-  // add data to event object
-  if (data) for (k in data) ev[k] = data[k];
-  
-  // dispatch
-  if (element) element.dispatchEvent(ev);
-  
-  return ev;
-}
-
-
-/**
- * Turn on window scroll lock.
- */
-function enableScrollLockFn() {
-  // increment counter
-  scrollLock += 1;
-  
-  // add lock
-  if (scrollLock === 1) {
-    var doc = document,
-        win = window,
-        htmlEl = doc.documentElement,
-        bodyEl = doc.body,
-        scrollBarWidth = getScrollBarWidth(),
-        cssProps,
-        cssStr,
-        x;
-
-    // define scroll lock class dynamically
-    cssProps = ['overflow:hidden'];
-
-    if (scrollBarWidth) {
-      // scrollbar-y
-      if (htmlEl.scrollHeight > htmlEl.clientHeight) {
-        x = parseInt(jqLite.css(bodyEl, 'padding-right')) + scrollBarWidth;
-        cssProps.push('padding-right:' + x + 'px');
-      }
-    
-      // scrollbar-x
-      if (htmlEl.scrollWidth > htmlEl.clientWidth) {
-        x = parseInt(jqLite.css(bodyEl, 'padding-bottom')) + scrollBarWidth;
-        cssProps.push('padding-bottom:' + x + 'px');
-      }
-    }
-
-    // define css class dynamically
-    cssStr = '.' + scrollLockCls + '{';
-    cssStr += cssProps.join(' !important;') + ' !important;}';
-    scrollStyleEl = loadStyleFn(cssStr);
-
-    // cancel 'scroll' event listener callbacks
-    jqLite.on(win, 'scroll', scrollEventHandler, true);
-
-    // add scroll lock
-    scrollLockPos = {left: jqLite.scrollLeft(win), top: jqLite.scrollTop(win)};
-    jqLite.addClass(bodyEl, scrollLockCls);
-  }
-}
-
-
-/**
- * Turn off window scroll lock.
- * @param {Boolean} resetPos - Reset scroll position to original value.
- */
-function disableScrollLockFn(resetPos) {
-  // ignore
-  if (scrollLock === 0) return;
-
-  // decrement counter
-  scrollLock -= 1;
-
-  // remove lock 
-  if (scrollLock === 0) {
-    // remove scroll lock and delete style element
-    jqLite.removeClass(document.body, scrollLockCls);
-    scrollStyleEl.parentNode.removeChild(scrollStyleEl);
-
-    // restore scroll position
-    if (resetPos) window.scrollTo(scrollLockPos.left, scrollLockPos.top);
-
-    // restore scroll event listeners
-    jqLite.off(window, 'scroll', scrollEventHandler, true);
-  }
-}
-
-/**
- * Return scroll bar width.
- */
-var getScrollBarWidth = function() {
-  // check cache
-  if (_scrollBarWidth !== undefined) return _scrollBarWidth;
-  
-  // calculate scroll bar width
-  var doc = document,
-      bodyEl = doc.body,
-      el = doc.createElement('div');
-
-  el.innerHTML = '<div style="width:50px;height:50px;position:absolute;' + 
-    'left:-50px;top:-50px;overflow:auto;"><div style="width:1px;' + 
-    'height:100px;"></div></div>';
-  el = el.firstChild;
-  bodyEl.appendChild(el);
-  _scrollBarWidth = el.offsetWidth - el.clientWidth;
-  bodyEl.removeChild(el);
-
-  return _scrollBarWidth;
-}
-
-
-/**
- * requestAnimationFrame polyfilled
- * @param {Function} callback - The callback function
- */
-function requestAnimationFrameFn(callback) {
-  var fn = window.requestAnimationFrame;
-  if (fn) fn(callback);
-  else setTimeout(callback, 0);
-}
-
-
-/**
- * Define the module API
- */
-module.exports = {
-  /** Create callback closures */
-  callback: callbackFn,
-  
-  /** Classnames object to string */
-  classNames: classNamesFn,
-
-  /** Disable scroll lock */
-  disableScrollLock: disableScrollLockFn,
-
-  /** Dispatch event */
-  dispatchEvent: dispatchEventFn,
-  
-  /** Enable scroll lock */
-  enableScrollLock: enableScrollLockFn,
-
-  /** Log messages to the console when debug is turned on */
-  log: logFn,
-
-  /** Load CSS text as new stylesheet */
-  loadStyle: loadStyleFn,
-
-  /** Raise MUI error */
-  raiseError: raiseErrorFn,
-
-  /** Request animation frame */
-  requestAnimationFrame: requestAnimationFrameFn,
-
-  /** Support Pointer Events check */
-  supportsPointerEvents: supportsPointerEventsFn
-};
-
-
-/***/ }),
-/* 99 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
-  if (true) {
-    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-  } else if (typeof exports === "object") {
-    factory(exports);
-  } else {
-    factory(root.babelHelpers = {});
-  }
-})(this, function (global) {
-  var babelHelpers = global;
-
-  babelHelpers.classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-
-  babelHelpers.createClass = function () {
-    function defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    return function (Constructor, protoProps, staticProps) {
-      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) defineProperties(Constructor, staticProps);
-      return Constructor;
-    };
-  }();
-
-  babelHelpers.extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  babelHelpers.inherits = function (subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true
-      }
-    });
-    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-  };
-
-  babelHelpers.interopRequireDefault = function (obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  };
-
-  babelHelpers.interopRequireWildcard = function (obj) {
-    if (obj && obj.__esModule) {
-      return obj;
-    } else {
-      var newObj = {};
-
-      if (obj != null) {
-        for (var key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-        }
-      }
-
-      newObj.default = obj;
-      return newObj;
-    }
-  };
-
-  babelHelpers.objectWithoutProperties = function (obj, keys) {
-    var target = {};
-
-    for (var i in obj) {
-      if (keys.indexOf(i) >= 0) continue;
-      if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
-      target[i] = obj[i];
-    }
-
-    return target;
-  };
-
-  babelHelpers.possibleConstructorReturn = function (self, call) {
-    if (!self) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-  };
-});
-
-/***/ }),
-/* 100 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var babelHelpers = __webpack_require__(99);
-/**
- * MUI React button module
- * @module react/button
- */
-
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _react = __webpack_require__(0);
-
-var _react2 = babelHelpers.interopRequireDefault(_react);
-
-var _jqLite = __webpack_require__(51);
-
-var jqLite = babelHelpers.interopRequireWildcard(_jqLite);
-
-var _util = __webpack_require__(98);
-
-var util = babelHelpers.interopRequireWildcard(_util);
-
-
-var btnClass = 'mui-btn',
-    btnAttrs = { color: 1, variant: 1, size: 1 };
-
-/**
- * Button element
- * @class
- */
-
-var Button = function (_React$Component) {
-  babelHelpers.inherits(Button, _React$Component);
-
-  function Button(props) {
-    babelHelpers.classCallCheck(this, Button);
-
-    var _this = babelHelpers.possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).call(this, props));
-
-    _this.state = {
-      ripple: null
-    };
-
-
-    var cb = util.callback;
-    _this.onMouseDownCB = cb(_this, 'onMouseDown');
-    _this.onMouseUpCB = cb(_this, 'onMouseUp');
-    _this.onMouseLeaveCB = cb(_this, 'onMouseLeave');
-    _this.onTouchStartCB = cb(_this, 'onTouchStart');
-    _this.onTouchEndCB = cb(_this, 'onTouchEnd');
-    return _this;
-  }
-
-  babelHelpers.createClass(Button, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      // disable MUI js
-      var el = this.refs.buttonEl;
-      el._muiDropdown = true;
-      el._muiRipple = true;
-    }
-  }, {
-    key: 'onMouseDown',
-    value: function onMouseDown(ev) {
-      this.showRipple(ev);
-
-      // execute callback
-      var fn = this.props.onMouseDown;
-      fn && fn(ev);
-    }
-  }, {
-    key: 'onMouseUp',
-    value: function onMouseUp(ev) {
-      this.hideRipple(ev);
-
-      // execute callback
-      var fn = this.props.onMouseUp;
-      fn && fn(ev);
-    }
-  }, {
-    key: 'onMouseLeave',
-    value: function onMouseLeave(ev) {
-      this.hideRipple(ev);
-
-      // execute callback
-      var fn = this.props.onMouseLeave;
-      fn && fn(ev);
-    }
-  }, {
-    key: 'onTouchStart',
-    value: function onTouchStart(ev) {
-      this.showRipple(ev);
-
-      // execute callback
-      var fn = this.props.onTouchStart;
-      fn && fn(ev);
-    }
-  }, {
-    key: 'onTouchEnd',
-    value: function onTouchEnd(ev) {
-      this.hideRipple(ev);
-
-      // execute callback
-      var fn = this.props.onTouchEnd;
-      fn && fn(ev);
-    }
-  }, {
-    key: 'showRipple',
-    value: function showRipple(ev) {
-      var buttonEl = this.refs.buttonEl;
-
-      // de-dupe touch events
-      if ('ontouchstart' in buttonEl && ev.type === 'mousedown') return;
-
-      // get (x, y) position of click
-      var offset = jqLite.offset(this.refs.buttonEl),
-          clickEv = void 0;
-
-      if (ev.type === 'touchstart' && ev.touches) clickEv = ev.touches[0];else clickEv = ev;
-
-      // calculate radius
-      var radius = Math.sqrt(offset.width * offset.width + offset.height * offset.height);
-
-      // add ripple to state
-      this.setState({
-        ripple: {
-          top: Math.round(clickEv.pageY - offset.top - radius) + 'px',
-          left: Math.round(clickEv.pageX - offset.left - radius) + 'px',
-          diameter: radius * 2 + 'px'
-        }
-      });
-    }
-  }, {
-    key: 'hideRipple',
-    value: function hideRipple(ev) {
-      this.setState({
-        ripple: null
-      });
-    }
-  }, {
-    key: 'componentDidUpdate',
-    value: function componentDidUpdate(prevProps, prevState) {
-      var _this2 = this;
-
-      var ripple = this.state.ripple;
-
-      // trigger ripple animation
-      if (ripple && !prevState.ripple) {
-        util.requestAnimationFrame(function () {
-          ripple.isAnimating = true;
-          _this2.setState({ ripple: ripple });
-        });
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var cls = btnClass,
-          rippleCls = 'mui-ripple',
-          rippleStyle = void 0,
-          k = void 0,
-          v = void 0;
-
-      var ripple = this.state.ripple;
-      var _props = this.props,
-          color = _props.color,
-          size = _props.size,
-          variant = _props.variant,
-          reactProps = babelHelpers.objectWithoutProperties(_props, ['color', 'size', 'variant']);
-
-      // button attributes
-
-      for (k in btnAttrs) {
-        v = this.props[k];
-        if (v !== 'default') cls += ' ' + btnClass + '--' + v;
-      }
-
-      // ripple attributes
-      if (ripple) {
-        rippleCls += ' mui--is-visible';
-
-        // handle animation
-        if (ripple.isAnimating) rippleCls += ' mui--is-animating';
-
-        // style attrs
-        rippleStyle = {
-          width: ripple.diameter,
-          height: ripple.diameter,
-          top: ripple.top,
-          left: ripple.left
-        };
-      }
-
-      return _react2.default.createElement(
-        'button',
-        babelHelpers.extends({}, reactProps, {
-          ref: 'buttonEl',
-          className: cls + ' ' + this.props.className,
-          onMouseUp: this.onMouseUpCB,
-          onMouseDown: this.onMouseDownCB,
-          onMouseLeave: this.onMouseLeaveCB,
-          onTouchStart: this.onTouchStartCB,
-          onTouchEnd: this.onTouchEndCB
-        }),
-        this.props.children,
-        _react2.default.createElement(
-          'span',
-          { className: 'mui-btn__ripple-container' },
-          _react2.default.createElement('span', { ref: 'rippleEl', className: rippleCls, style: rippleStyle })
-        )
-      );
-    }
-  }]);
-  return Button;
-}(_react2.default.Component);
-
-/** Define module API */
-
-
-Button.defaultProps = {
-  className: '',
-  color: 'default',
-  size: 'default',
-  variant: 'default'
-};
-exports.default = Button;
-module.exports = exports['default'];
-
-/***/ }),
-/* 101 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15961,7 +14503,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 102 */
+/* 97 */
 /***/ (function(module, exports) {
 
 var div = null
@@ -15997,7 +14539,7 @@ module.exports = function prefixStyle (prop) {
 
 
 /***/ }),
-/* 103 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16014,7 +14556,7 @@ module.exports = function prefixStyle (prop) {
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
-  var warning = __webpack_require__(12);
+  var warning = __webpack_require__(11);
   var ReactPropTypesSecret = __webpack_require__(52);
   var loggedTypeFailures = {};
 }
@@ -16066,7 +14608,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 104 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16081,7 +14623,7 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(11);
+var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
 
 module.exports = function() {
@@ -16127,7 +14669,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 105 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16142,12 +14684,12 @@ module.exports = function() {
 
 
 
-var emptyFunction = __webpack_require__(11);
+var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
-var warning = __webpack_require__(12);
+var warning = __webpack_require__(11);
 
 var ReactPropTypesSecret = __webpack_require__(52);
-var checkPropTypes = __webpack_require__(103);
+var checkPropTypes = __webpack_require__(98);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -16613,10 +15155,10 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 106 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(107)
+/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(102)
   , root = typeof window === 'undefined' ? global : window
   , vendors = ['moz', 'webkit']
   , suffix = 'AnimationFrame'
@@ -16692,7 +15234,7 @@ module.exports.polyfill = function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 107 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
@@ -16734,7 +15276,7 @@ module.exports.polyfill = function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 108 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16817,7 +15359,7 @@ function renderThumbVerticalDefault(_ref4) {
 }
 
 /***/ }),
-/* 109 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16831,43 +15373,43 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _raf2 = __webpack_require__(106);
+var _raf2 = __webpack_require__(101);
 
 var _raf3 = _interopRequireDefault(_raf2);
 
-var _domCss = __webpack_require__(38);
+var _domCss = __webpack_require__(39);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
 var _react = __webpack_require__(0);
 
-var _propTypes = __webpack_require__(120);
+var _propTypes = __webpack_require__(115);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _isString = __webpack_require__(115);
+var _isString = __webpack_require__(110);
 
 var _isString2 = _interopRequireDefault(_isString);
 
-var _getScrollbarWidth = __webpack_require__(114);
+var _getScrollbarWidth = __webpack_require__(109);
 
 var _getScrollbarWidth2 = _interopRequireDefault(_getScrollbarWidth);
 
-var _returnFalse = __webpack_require__(116);
+var _returnFalse = __webpack_require__(111);
 
 var _returnFalse2 = _interopRequireDefault(_returnFalse);
 
-var _getInnerWidth = __webpack_require__(113);
+var _getInnerWidth = __webpack_require__(108);
 
 var _getInnerWidth2 = _interopRequireDefault(_getInnerWidth);
 
-var _getInnerHeight = __webpack_require__(112);
+var _getInnerHeight = __webpack_require__(107);
 
 var _getInnerHeight2 = _interopRequireDefault(_getInnerHeight);
 
-var _styles = __webpack_require__(110);
+var _styles = __webpack_require__(105);
 
-var _defaultRenderElements = __webpack_require__(108);
+var _defaultRenderElements = __webpack_require__(103);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -17599,7 +16141,7 @@ Scrollbars.defaultProps = {
 };
 
 /***/ }),
-/* 110 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17676,7 +16218,7 @@ var disableSelectStyleReset = exports.disableSelectStyleReset = {
 };
 
 /***/ }),
-/* 111 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17687,7 +16229,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Scrollbars = undefined;
 
-var _Scrollbars = __webpack_require__(109);
+var _Scrollbars = __webpack_require__(104);
 
 var _Scrollbars2 = _interopRequireDefault(_Scrollbars);
 
@@ -17697,7 +16239,7 @@ exports["default"] = _Scrollbars2["default"];
 exports.Scrollbars = _Scrollbars2["default"];
 
 /***/ }),
-/* 112 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17718,7 +16260,7 @@ function getInnerHeight(el) {
 }
 
 /***/ }),
-/* 113 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17739,7 +16281,7 @@ function getInnerWidth(el) {
 }
 
 /***/ }),
-/* 114 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17750,7 +16292,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = getScrollbarWidth;
 
-var _domCss = __webpack_require__(38);
+var _domCss = __webpack_require__(39);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
@@ -17781,7 +16323,7 @@ function getScrollbarWidth() {
 }
 
 /***/ }),
-/* 115 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17796,7 +16338,7 @@ function isString(maybe) {
 }
 
 /***/ }),
-/* 116 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17811,7 +16353,7 @@ function returnFalse() {
 }
 
 /***/ }),
-/* 117 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17828,7 +16370,7 @@ function returnFalse() {
 
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
-  var warning = __webpack_require__(12);
+  var warning = __webpack_require__(11);
   var ReactPropTypesSecret = __webpack_require__(31);
   var loggedTypeFailures = {};
 }
@@ -17880,7 +16422,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 118 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17895,7 +16437,7 @@ module.exports = checkPropTypes;
 
 
 
-var emptyFunction = __webpack_require__(11);
+var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
 var ReactPropTypesSecret = __webpack_require__(31);
 
@@ -17946,7 +16488,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 119 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17961,12 +16503,12 @@ module.exports = function() {
 
 
 
-var emptyFunction = __webpack_require__(11);
+var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
-var warning = __webpack_require__(12);
+var warning = __webpack_require__(11);
 
 var ReactPropTypesSecret = __webpack_require__(31);
-var checkPropTypes = __webpack_require__(117);
+var checkPropTypes = __webpack_require__(112);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -18466,7 +17008,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 120 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -18493,17 +17035,17 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(119)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(114)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(118)();
+  module.exports = __webpack_require__(113)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 121 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18674,7 +17216,7 @@ var AutosizeInput = createClass({
 module.exports = AutosizeInput;
 
 /***/ }),
-/* 122 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18706,7 +17248,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _Select = __webpack_require__(10);
+var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
@@ -18950,7 +17492,7 @@ function defaultChildren(props) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 123 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18968,7 +17510,7 @@ var _createReactClass = __webpack_require__(8);
 
 var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
-var _Select = __webpack_require__(10);
+var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
@@ -19021,7 +17563,7 @@ var AsyncCreatable = (0, _createReactClass2['default'])({
 module.exports = AsyncCreatable;
 
 /***/ }),
-/* 124 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19045,7 +17587,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _Select = __webpack_require__(10);
+var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
@@ -19355,7 +17897,7 @@ function shouldKeyDownEventCreateNewOption(_ref6) {
 module.exports = Creatable;
 
 /***/ }),
-/* 125 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19478,7 +18020,7 @@ var Option = (0, _createReactClass2['default'])({
 module.exports = Option;
 
 /***/ }),
-/* 126 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19598,7 +18140,7 @@ var Value = (0, _createReactClass2['default'])({
 module.exports = Value;
 
 /***/ }),
-/* 127 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19628,7 +18170,7 @@ function arrowRenderer(_ref) {
 module.exports = exports["default"];
 
 /***/ }),
-/* 128 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19656,7 +18198,7 @@ function clearRenderer() {
 module.exports = exports['default'];
 
 /***/ }),
-/* 129 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19674,7 +18216,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _propTypes3 = __webpack_require__(57);
 
-var _UncontrolledTabs = __webpack_require__(130);
+var _UncontrolledTabs = __webpack_require__(125);
 
 var _UncontrolledTabs2 = _interopRequireDefault(_UncontrolledTabs);
 
@@ -19808,7 +18350,7 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 130 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20167,7 +18709,7 @@ UncontrolledTabs.propTypes = process.env.NODE_ENV !== "production" ? {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 131 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20176,7 +18718,7 @@ UncontrolledTabs.propTypes = process.env.NODE_ENV !== "production" ? {
 exports.__esModule = true;
 exports.resetIdCounter = exports.Tabs = exports.TabPanel = exports.TabList = exports.Tab = undefined;
 
-var _Tabs = __webpack_require__(129);
+var _Tabs = __webpack_require__(124);
 
 var _Tabs2 = _interopRequireDefault(_Tabs);
 
@@ -20203,13 +18745,13 @@ exports.Tabs = _Tabs2.default;
 exports.resetIdCounter = _uuid.reset;
 
 /***/ }),
-/* 132 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isArrayish = __webpack_require__(133);
+var isArrayish = __webpack_require__(128);
 
 var concat = Array.prototype.concat;
 var slice = Array.prototype.slice;
@@ -20239,7 +18781,7 @@ swizzle.wrap = function (fn) {
 
 
 /***/ }),
-/* 133 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20257,11 +18799,11 @@ module.exports = function isArrayish(obj) {
 
 
 /***/ }),
-/* 134 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var space = __webpack_require__(136)
+var space = __webpack_require__(131)
 
 /**
  * Export.
@@ -20284,7 +18826,7 @@ function toCamelCase(string) {
 
 
 /***/ }),
-/* 135 */
+/* 130 */
 /***/ (function(module, exports) {
 
 
@@ -20357,11 +18899,11 @@ function uncamelize(string) {
 
 
 /***/ }),
-/* 136 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var clean = __webpack_require__(135)
+var clean = __webpack_require__(130)
 
 /**
  * Export.
@@ -20384,7 +18926,7 @@ function toSpaceCase(string) {
 
 
 /***/ }),
-/* 137 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20511,7 +19053,7 @@ exports.AutoComplete = AutoComplete;
 
 
 /***/ }),
-/* 138 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20529,8 +19071,8 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var formatWord_1 = __webpack_require__(145);
-var clueNumber_1 = __webpack_require__(139);
+var formatWord_1 = __webpack_require__(141);
+var clueNumber_1 = __webpack_require__(134);
 var twoCol_1 = __webpack_require__(23);
 var commonStyling_1 = __webpack_require__(14);
 var ClueContainer = (function (_super) {
@@ -20659,7 +19201,7 @@ exports.GroupedClue = GroupedClue;
 
 
 /***/ }),
-/* 139 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20692,7 +19234,7 @@ exports.ClueNumber = ClueNumber;
 
 
 /***/ }),
-/* 140 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20709,10 +19251,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var react_tabs_1 = __webpack_require__(131);
+var react_tabs_1 = __webpack_require__(126);
 var twoCol_1 = __webpack_require__(23);
-var clueContainer_1 = __webpack_require__(138);
-var react_custom_scrollbars_1 = __webpack_require__(111);
+var clueContainer_1 = __webpack_require__(133);
+var react_custom_scrollbars_1 = __webpack_require__(106);
 var CroswordClues = (function (_super) {
     __extends(CroswordClues, _super);
     function CroswordClues() {
@@ -20859,7 +19401,7 @@ exports.AcrossOrDownClues = AcrossOrDownClues;
 
 
 /***/ }),
-/* 141 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20876,7 +19418,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var square_1 = __webpack_require__(149);
+var square_1 = __webpack_require__(145);
 var commonStyling_1 = __webpack_require__(14);
 // State is never set so we use the 'undefined' type.
 var Crossword = (function (_super) {
@@ -20910,7 +19452,7 @@ exports.Crossword = Crossword;
 
 
 /***/ }),
-/* 142 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20928,11 +19470,11 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var crossword_1 = __webpack_require__(141);
-var KeyEvents = __webpack_require__(153);
+var crossword_1 = __webpack_require__(136);
+var KeyEvents = __webpack_require__(149);
 var twoCol_1 = __webpack_require__(23);
-var clues_1 = __webpack_require__(140);
-var lightbulb_1 = __webpack_require__(146);
+var clues_1 = __webpack_require__(135);
+var lightbulb_1 = __webpack_require__(142);
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -21359,7 +19901,7 @@ exports.CrosswordPuzzleKeyEvents = KeyEvents.keyHandler({
 
 
 /***/ }),
-/* 143 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21384,11 +19926,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var connectedDatabase_1 = __webpack_require__(60);
-var emailLogOn_1 = __webpack_require__(59);
-var firebaseApp_1 = __webpack_require__(32);
-var Select = __webpack_require__(10);
-exports.Select = __webpack_require__(10);
+var connectedDatabase_1 = __webpack_require__(59);
+var emailLogOn_1 = __webpack_require__(140);
+var firebaseApp_1 = __webpack_require__(33);
+var Select = __webpack_require__(13);
+exports.Select = __webpack_require__(13);
+var muiWrappedButton_1 = __webpack_require__(32);
 function displayNameHOC(Component, displayName) {
     var DisplayNameComponent = (function (_super) {
         __extends(DisplayNameComponent, _super);
@@ -21404,7 +19947,6 @@ function displayNameHOC(Component, displayName) {
     cc.displayName = displayName;
     return cc;
 }
-//need real ones !
 var DefaultDatabaseDisconnectedMessageComponent = (function (_super) {
     __extends(DefaultDatabaseDisconnectedMessageComponent, _super);
     function DefaultDatabaseDisconnectedMessageComponent() {
@@ -21445,13 +19987,13 @@ var DefaultSelectChooser = (function (_super) {
         var Button = displayNameHOC(this.props.ButtonType, "Button");
         return React.createElement("div", null,
             React.createElement(Select, { value: this.state.selectedValue, onChange: this.optionChange, disabled: this.props.disabled, isLoading: this.props.isLoadingLookups, placeholder: this.props.placeholderText, options: this.mapOptions() }),
-            React.createElement(Button, __assign({}, this.props.buttonProps, { text: "Play Crossword", onClick: this.buttonClicked, disabled: this.props.disabled || !this.state.selectedValue })));
+            React.createElement("div", { style: { paddingTop: "10px" } },
+                React.createElement(Button, __assign({}, this.props.buttonProps, { text: "Play Crossword", onClick: this.buttonClicked, disabled: this.props.disabled || !this.state.selectedValue }))));
     };
     return DefaultSelectChooser;
 }(React.Component));
 DefaultSelectChooser.defaultProps = {
-    ButtonType: emailLogOn_1.WrappedButton,
-    buttonProps: { style: { marginTop: "5px", borderRadius: "8px", padding: "5px" } }
+    ButtonType: muiWrappedButton_1.MuiButtonWrapper
 };
 exports.DefaultSelectChooser = DefaultSelectChooser;
 var DefaultSelectChooserContainer = (function (_super) {
@@ -21572,12 +20114,12 @@ var CrosswordPuzzleChooser = (function (_super) {
         var SelectChooser = displayNameHOC(this.props.SelectChooser, "SelectChooser"); //!important to do this for intellisense even without the displayNameHOC
         var SelectChooserContainer = displayNameHOC(this.props.SelectChooserContainer, "SelectChooserContainer");
         return React.createElement("div", null,
-            React.createElement(this.props.DatabaseDisconnectedMessageComponent, __assign({}, this.props.databaseDisconnectedMessageComponentProps, { disconnectedMessage: this.state.databaseDisconnected ? this.props.disconnectedMessage : "" })),
+            React.createElement(this.props.DatabaseDisconnectedMessageComponent, __assign({}, this.props.databaseDisconnectedMessageComponentProps, { disconnectedMessage: this.state.databaseDisconnected ? this.props.disconnectedMessage : "\u200B" })),
             React.createElement(SelectChooserContainer, { isPublic: true, header: this.props.publicSelectChooserHeader },
                 React.createElement(SelectChooser, __assign({ placeholderText: this.props.placeholderSelectWording + " public crosswords: ", lookupSelected: this.publicLookupSelected, crosswordLookups: this.state.publicCrosswordLookups, isLoadingLookups: this.state.publicLookupsLoading, isPublic: true, disabled: this.state.databaseDisconnected }, this.props.selectChooserProps))),
             React.createElement(SelectChooserContainer, { isPublic: false, header: this.props.userSelectChooserHeader },
                 React.createElement(SelectChooser, __assign({ placeholderText: (this.props.placeholderSelectWording + " saved crosswords: ") + (this.props.userLoggedIn ? "" : this.props.emailSignInWording + " " + this.props.userPlaceholderSignedOutWording), lookupSelected: this.userLookupSelected, crosswordLookups: this.state.userCrosswordLookups, isLoadingLookups: this.state.userLookupsLoading, isPublic: false, disabled: this.state.databaseDisconnected || (this.props.userLoggedIn === null) }, this.props.selectChooserProps)),
-                React.createElement(emailLogOn_1.EmailLogOnComp, { signInButtonProps: { style: { color: "red", outlineWidth: "0px" } }, focusColor: 'blue', signInTitle: this.props.emailSignInWording, signOutTitle: this.props.emailSignOutWording, reLoginWait: 1000, auth: firebaseApp_1.auth })));
+                React.createElement(emailLogOn_1.EmailLogOnComp, __assign({ signInTitle: this.props.emailSignInWording, signOutTitle: this.props.emailSignOutWording, reLoginWait: 1000, auth: firebaseApp_1.auth }, this.props.emailLogOnStyleProps))));
     };
     return CrosswordPuzzleChooser;
 }(React.Component));
@@ -21597,7 +20139,7 @@ exports.CrosswordPuzzleChooser = CrosswordPuzzleChooser;
 
 
 /***/ }),
-/* 144 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21631,7 +20173,700 @@ exports.Divider = Divider;
 
 
 /***/ }),
-/* 145 */
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var divider_1 = __webpack_require__(139);
+var link_1 = __webpack_require__(143);
+var autoComplete_1 = __webpack_require__(132);
+var muiWrappedButton_1 = __webpack_require__(32);
+var EmailScreenWithError = (function (_super) {
+    __extends(EmailScreenWithError, _super);
+    function EmailScreenWithError(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { error: "" };
+        return _this;
+    }
+    EmailScreenWithError.prototype.getErrorMessage = function (error) {
+        var errorMessage = "";
+        if (error) {
+            var errorCode = error.code;
+            switch (errorCode) {
+                case "auth/invalid-email":
+                    errorMessage = "Email address is invalid"; //is that firebase database rule against the email field ?
+                    break;
+                case "auth/user-disabled":
+                    errorMessage = "Your account has been disabled";
+                    break;
+                case "auth/user-not-found":
+                    errorMessage = "The email address has not been found.";
+                    break;
+                case "auth/wrong-password":
+                    errorMessage = "Incorrect password";
+                    break;
+                case "auth/email-already-in-use":
+                    errorMessage = "Please create account with different email as it already is in use.";
+                    break;
+                case "auth/weak-password":
+                    //cannot find documentation on what constitutes a weak/strong password
+                    errorMessage = "Password weak. Use a stronger password";
+                    break;
+                case "auth/network-request-failed":
+                    errorMessage = "There is an issue with your network connection";
+                    break;
+                case "auth/too-many-requests":
+                    errorMessage = "Unusual activity.........";
+                    break;
+                case "auth/unauthorized-domain":
+                    errorMessage = "I have been an idiot and not authorized the domain";
+                    break;
+            }
+        }
+        return errorMessage;
+    };
+    EmailScreenWithError.prototype.render = function () {
+        return React.createElement("div", { style: { margin: "0px 0px 10px 0px" } },
+            React.createElement("div", null,
+                React.createElement("div", { style: { display: this.props.error ? "initial" : "none" } },
+                    React.createElement(divider_1.Divider, { color: this.props.dividerColour }),
+                    React.createElement("br", null),
+                    React.createElement("div", { className: "logonErrorBox", style: { width: "100%", color: "red" } }, this.getErrorMessage(this.props.error)))));
+    };
+    return EmailScreenWithError;
+}(React.Component));
+var LogInState;
+(function (LogInState) {
+    LogInState[LogInState["waitingForAuto"] = 0] = "waitingForAuto";
+    LogInState[LogInState["loggingIn"] = 1] = "loggingIn";
+    LogInState[LogInState["loggedIn"] = 2] = "loggedIn";
+    LogInState[LogInState["loggedOut"] = 3] = "loggedOut";
+    LogInState[LogInState["creatingAccount"] = 4] = "creatingAccount";
+})(LogInState || (LogInState = {}));
+var EmailLogOnComp = (function (_super) {
+    __extends(EmailLogOnComp, _super);
+    function EmailLogOnComp(props) {
+        var _this = _super.call(this, props) || this;
+        _this.user = null;
+        _this.willUnmountCalled = false;
+        var initialState = LogInState.loggedOut;
+        if (_this.props.reLoginWait > 0) {
+            initialState = LogInState.waitingForAuto;
+        }
+        _this.state = { logInState: initialState };
+        return _this;
+    }
+    EmailLogOnComp.prototype.componentDidMount = function () {
+        var self = this;
+        this.timeout = window.setTimeout(function () {
+            if (!self.props.auth.currentUser) {
+                self.setState({ logInState: LogInState.loggedOut });
+            }
+        }, this.props.reLoginWait);
+        this.unsubscribe = this.props.auth.onAuthStateChanged(function (user) {
+            if (!self.willUnmountCalled) {
+                var newState = LogInState.loggedOut;
+                if (user) {
+                    newState = LogInState.loggedIn;
+                }
+                self.user = user;
+                self.setState({ logInState: newState });
+            }
+        });
+    };
+    EmailLogOnComp.prototype.componentWillUnmount = function () {
+        this.willUnmountCalled = true;
+        this.unsubscribe();
+        window.clearTimeout(this.timeout);
+    };
+    EmailLogOnComp.prototype.render = function () {
+        var container = React.createElement(EmailLogOnContainer, { dividerColour: this.props.dividerColour });
+        switch (this.state.logInState) {
+            case LogInState.waitingForAuto:
+                return React.createElement(EmailWaitingForAuto, { emailLogOnContainer: container, waitingAutoLogOnMessage: this.props.waitingAutoLogOnMessage });
+            //break;
+            case LogInState.loggedIn:
+                return React.createElement(EmailLoggedInScreen, { emailLogOnContainer: container, auth: this.props.auth, signOutTitle: this.props.signOutTitle, linkColor: this.props.linkColor });
+            //break;
+            case LogInState.loggedOut:
+                //break;
+                return React.createElement(EmailSignInScreen, { emailLogOnContainer: container, dividerColour: this.props.dividerColour, signInButtonProps: this.props.signInButtonProps, signInButtonType: this.props.signInButtonType, focusColor: this.props.focusColor, isSignIn: true, validatePassword: this.props.validatePassword, validateEmail: this.props.validateEmail, auth: this.props.auth });
+        }
+    };
+    return EmailLogOnComp;
+}(React.Component));
+EmailLogOnComp.defaultProps = {
+    waitingAutoLogOnMessage: "Attempting auto login....."
+};
+exports.EmailLogOnComp = EmailLogOnComp;
+var EmailWaitingForAuto = (function (_super) {
+    __extends(EmailWaitingForAuto, _super);
+    function EmailWaitingForAuto() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    EmailWaitingForAuto.prototype.render = function () {
+        var logOnContainerProps = {
+            headerContent: {
+                header: React.createElement("div", null, this.props.waitingAutoLogOnMessage)
+            }
+        };
+        return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
+    };
+    return EmailWaitingForAuto;
+}(React.Component));
+var EmailLogOnContainer = (function (_super) {
+    __extends(EmailLogOnContainer, _super);
+    function EmailLogOnContainer(props) {
+        return _super.call(this, props) || this;
+        //this.state = { error: null };
+    }
+    EmailLogOnContainer.prototype.render = function () {
+        console.log(this.props.error);
+        //styling to add
+        return React.createElement("div", null,
+            React.createElement("div", null, this.props.headerContent.header),
+            React.createElement("div", null, this.props.headerContent.content),
+            React.createElement(EmailScreenWithError, { dividerColour: this.props.dividerColour, error: this.props.error }));
+    };
+    return EmailLogOnContainer;
+}(React.Component));
+var EmailSignInScreen = (function (_super) {
+    __extends(EmailSignInScreen, _super);
+    function EmailSignInScreen(props) {
+        var _this = _super.call(this, props) || this;
+        //this does not get done on auto complete
+        _this.passwordChange = function (event) {
+            var password = event.target.value;
+            _this.setState({ error: null, password: password, passwordValid: _this.props.validatePassword(password), passwordSet: true });
+        };
+        _this.emailChange = function (event) {
+            var emailValue = event.target.value;
+            var emailValid = _this.props.validateEmail(emailValue);
+            _this.setState({ error: null, email: emailValue, emailValid: emailValid, emailSet: true });
+        };
+        _this.signInOrCreateAccount = function () {
+            //now that the button has been pressed can validate password
+            var validPassword = true;
+            if (!_this.validatedPassword) {
+                validPassword = _this.props.validatePassword(_this.passwordElement.value);
+                _this.validatedPassword = true;
+                if (!validPassword) {
+                    _this.setState({ passwordValid: false }); //not necessary?
+                }
+            }
+            if (validPassword) {
+                var self = _this;
+                if (self.state.isSignIn) {
+                    _this.props.auth.signInWithEmailAndPassword(_this.state.email, _this.state.password).catch(function (err) {
+                        var firebaseError = err;
+                        self.signInError(firebaseError);
+                    });
+                }
+                else {
+                    _this.props.auth.createUserWithEmailAndPassword(_this.state.email, _this.state.password).catch(function (err) {
+                        var firebaseError = err;
+                        self.signInError(firebaseError);
+                    });
+                }
+            }
+        };
+        _this.switch = function () {
+            _this.setState(function (prevState) {
+                return { isSignIn: !prevState.isSignIn, error: null };
+            });
+        };
+        _this.passwordFocused = function () {
+            _this.setState({ passwordIsFocused: true });
+        };
+        _this.passwordBlurred = function () {
+            _this.setState({ passwordIsFocused: false });
+        };
+        _this.emailFocused = function () {
+            _this.setState({ emailIsFocused: true });
+        };
+        _this.emailBlurred = function () {
+            _this.setState({ emailIsFocused: false });
+        };
+        _this.state = { error: null, passwordSet: false, emailSet: false, emailValid: true, email: "", password: "", passwordValid: true, isSignIn: _this.props.isSignIn, emailIsFocused: false, passwordIsFocused: false };
+        return _this;
+    }
+    EmailSignInScreen.prototype.signInError = function (firebaseError) {
+        var errorCode = firebaseError.code;
+        var errorMessage;
+        var errorFocusElement;
+        var emailInError = false;
+        var passwordInError = false;
+        switch (errorCode) {
+            case "auth/invalid-email":
+                errorFocusElement = this.emailElement;
+                emailInError = true;
+                break;
+            case "auth/user-not-found":
+                errorFocusElement = this.emailElement;
+                emailInError = true;
+                break;
+            case "auth/wrong-password":
+                errorFocusElement = this.passwordElement;
+                passwordInError = true;
+                break;
+            case "auth/email-already-in-use":
+                errorFocusElement = this.passwordElement;
+                passwordInError = true;
+                break;
+            case "auth/weak-password":
+                errorFocusElement = this.passwordElement;
+                passwordInError = true;
+                break;
+        }
+        if (errorFocusElement) {
+            errorFocusElement.focus();
+        }
+        this.setState({ emailValid: !emailInError, passwordValid: !passwordInError, error: firebaseError });
+    };
+    EmailSignInScreen.prototype.render = function () {
+        var _this = this;
+        var title = this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle;
+        var emailBorderColor = this.props.errorColor;
+        var emailBoxShadow = "";
+        var passwordBorderColor = this.props.errorColor;
+        var focusBoxShadow = "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1)";
+        if (this.state.emailIsFocused) {
+            emailBoxShadow = focusBoxShadow;
+        }
+        if (this.state.emailValid) {
+            if (this.state.emailIsFocused) {
+                emailBorderColor = this.props.focusColor;
+            }
+            else {
+                emailBorderColor = this.props.emailPasswordBorderColor;
+            }
+        }
+        if (this.state.passwordValid) {
+            if (this.state.passwordIsFocused) {
+                passwordBorderColor = this.props.focusColor;
+            }
+            else {
+                passwordBorderColor = this.props.emailPasswordBorderColor;
+            }
+        }
+        var ButtonType = this.props.signInButtonType;
+        var labelStyle = { marginBottom: "7px" };
+        var logOnContainerProps = {
+            headerContent: {
+                header: React.createElement("div", { style: { fontWeight: "bold", marginBottom: "5px" } },
+                    React.createElement("span", null, title + " / "),
+                    React.createElement(link_1.NonNavigatableLink, { clicked: this.switch, removeUnderline: true, text: this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle })),
+                content: React.createElement("div", null,
+                    React.createElement("label", { style: labelStyle }, this.props.emailHeader),
+                    React.createElement(autoComplete_1.AutoComplete, { autoCompletedWait: 500, containerStyle: { marginBottom: "10px" } },
+                        React.createElement("input", { onBlur: this.emailBlurred, onFocus: this.emailFocused, ref: function (input) { return _this.emailElement = input; }, spellCheck: false, style: { borderRadius: "2px", padding: "5px", borderColor: emailBorderColor }, type: "email", name: "emailLogon", value: this.state.email, autoComplete: "on", onChange: this.emailChange })),
+                    React.createElement("label", { style: labelStyle }, this.props.passwordHeader),
+                    React.createElement(autoComplete_1.AutoComplete, { containerStyle: { marginBottom: "10px" } },
+                        React.createElement("input", { onBlur: this.passwordBlurred, onFocus: this.passwordFocused, ref: function (input) { return _this.passwordElement = input; }, style: { outline: "none", borderRadius: "2px", padding: "5px", borderColor: passwordBorderColor }, type: "password", name: "password", autoComplete: "password", value: this.state.password, onChange: this.passwordChange })),
+                    React.createElement(ButtonType, __assign({}, this.props.signInButtonProps, { disabled: !(this.state.emailSet && this.state.emailValid && this.state.passwordValid), onClick: this.signInOrCreateAccount, text: this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle })))
+            }, error: this.state.error
+        };
+        return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
+    };
+    return EmailSignInScreen;
+}(React.Component));
+EmailSignInScreen.defaultProps = {
+    validateEmail: function (email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    },
+    validatePassword: function (password) {
+        return password.length >= 6;
+    },
+    signInTitle: "Sign in:",
+    createNewAccountTitle: "Create new account",
+    isSignIn: true,
+    focusColor: "blue",
+    errorColor: "red",
+    emailPasswordBorderColor: "initial",
+    emailHeader: "Email",
+    passwordHeader: "Password ( 6+ )",
+    signInButtonType: muiWrappedButton_1.MuiButtonWrapper
+};
+var EmailLoggedInScreen = (function (_super) {
+    __extends(EmailLoggedInScreen, _super);
+    function EmailLoggedInScreen(props) {
+        var _this = _super.call(this, props) || this;
+        _this.logOut = function () {
+            var self = _this;
+            _this.props.auth.signOut().catch(function (err) {
+                var firebaseError = err;
+                this.setState({ error: err });
+            });
+        };
+        _this.state = { error: null };
+        return _this;
+    }
+    EmailLoggedInScreen.prototype.render = function () {
+        var logOnContainerProps = {
+            headerContent: {
+                header: React.createElement("div", null,
+                    React.createElement("span", { style: { marginRight: "5px" } },
+                        React.createElement(link_1.NonNavigatableLink, { color: this.props.linkColor, text: this.props.signOutTitle, clicked: this.logOut })),
+                    React.createElement("span", null, this.props.auth.currentUser.email))
+            }, error: this.state.error
+        };
+        return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
+    };
+    return EmailLoggedInScreen;
+}(React.Component));
+EmailLoggedInScreen.defaultProps = {
+    signOutTitle: "Sign out:"
+};
+/*
+interface EmailScreenWithErrorProps {
+    dividerColour?: string
+}
+interface EmailScreenWithErrorState {
+    error: string
+}
+class EmailScreenWithError extends React.Component<EmailScreenWithErrorProps, EmailScreenWithErrorState> {
+    constructor(props) {
+        super(props);
+        this.state = { error: "" };
+    }
+    errored = (error: firebase.auth.Error) => {
+        this.setState({ error: this.getErrorMessage(error) })
+    }
+    getErrorMessage(error: firebase.auth.Error) {
+        var errorMessage = "";
+        if (error) {
+            var errorCode = error.code;
+
+            switch (errorCode) {
+                case "auth/invalid-email":
+                    errorMessage = "Email address is invalid";//is that firebase database rule against the email field ?
+                    break;
+                case "auth/user-disabled":
+                    errorMessage = "Your account has been disabled";
+                    break;
+                case "auth/user-not-found":
+                    errorMessage = "The email address has not been found.";
+                    break;
+                case "auth/wrong-password":
+                    errorMessage = "Incorrect password";
+                    break;
+                case "auth/email-already-in-use":
+                    errorMessage = "Please create account with different email as it already is in use.";
+                    break;
+                case "auth/weak-password":
+                    //cannot find documentation on what constitutes a weak/strong password
+                    errorMessage = "Password weak. Use a stronger password";
+                    break;
+                case "auth/network-request-failed":
+                    errorMessage = "There is an issue with your network connection";
+                    break;
+                case "auth/too-many-requests":
+                    errorMessage = "Unusual activity.........";
+                    break;
+                case "auth/unauthorized-domain":
+                    errorMessage = "I have been an idiot and not authorized the domain";
+                    break;
+
+            }
+        }
+        
+        return errorMessage;
+    }
+    render() {
+        return <div style={{margin:"0px 0px 10px 0px"}}>
+            {React.cloneElement(this.props.children as React.ReactElement<any>, { errored: this.errored })}
+            <div>
+                <div style={{ display: this.state.error.length > 0 ? "initial" : "none" }}>
+                    <Divider color={this.props.dividerColour} />
+                    <br />
+                    <div className="logonErrorBox" style={{ width: "100%", color: "red" }}>{this.state.error}</div>
+                </div>
+            </div>
+            </div>
+    }
+}
+*/
+/*
+class EmailLoggedOutScreen extends React.Component<EmailSignInScreenProps, null> {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return <EmailScreenWithError dividerColour={this.props.dividerColour}>
+            <EmailSignInScreen {...this.props} />
+        </EmailScreenWithError>
+    }
+}
+*/
+/*
+interface EmailLoggedInScreenStyleProps {
+    linkColor?: string
+}
+interface EmailLoggedInScreenProps extends EmailErroredProps, EmailLoggedInScreenStyleProps {
+    auth: firebase.auth.Auth,
+    signOutTitle?: string
+}
+class EmailLoggedInScreen extends React.Component<EmailLoggedInScreenProps, null> {
+    public static defaultProps: Partial<EmailLoggedInScreenProps> = {
+        signOutTitle: "Sign out:"
+    };
+    constructor(props) {
+        super(props);
+    }
+    logOut = () => {
+        var self = this;
+        this.props.auth.signOut().catch(function (err) {
+            var firebaseError = (err as any) as firebase.auth.Error;
+            self.props.errored(firebaseError);
+        });
+    }
+    render() {
+        return <div style={{ fontWeight: "bold", padding: "10px" }}>
+            <span style={{ marginRight: "5px" }}><NonNavigatableLink color={this.props.linkColor} text={this.props.signOutTitle} clicked={this.logOut} /></span>
+            <span>{this.props.auth.currentUser.email}</span>
+        </div>
+    }
+}
+
+
+interface EmailSignInScreenStyleProps {
+    focusColor?: string,
+    errorColor?: string,
+    emailPasswordBorderColor?: string,
+    signInButtonType?: React.ComponentClass<SimpleButtonProps>,
+    signInButtonProps?: {},
+    
+}
+interface EmailSignInScreenProps extends EmailSignInScreenStyleProps, EmailErroredProps {
+    auth: firebase.auth.Auth
+    validateEmail?: (email: string) => boolean,
+    validatePassword?:(password:string)=>boolean
+    isSignIn?: boolean,//should handle prop change if was allowing container to change....
+    signInTitle?: string,
+    emailHeader?: string,
+    passwordHeader?:string,
+    createNewAccountTitle?: string,
+    dividerColour?: string
+    
+}
+interface EmailSignInScreenState {
+    email: string,
+    password: string,
+    passwordSet: boolean,
+    emailSet:boolean,
+    emailValid: boolean,
+    passwordValid: boolean,
+    isSignIn: boolean,
+    passwordIsFocused:boolean,
+    emailIsFocused: boolean,
+    
+}
+class EmailSignInScreen extends React.Component<EmailSignInScreenProps, EmailSignInScreenState> {
+    public static defaultProps: Partial<EmailSignInScreenProps> = {
+        validateEmail: function (email: string) {
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        },
+        validatePassword: function (password: string) {
+            return password.length >= 6
+        },
+        signInTitle: "Sign in:",
+        createNewAccountTitle: "Create new account",
+        isSignIn: true,
+        focusColor: "blue",
+        errorColor: "red",
+        emailPasswordBorderColor: "initial",
+        emailHeader: "Email",
+        passwordHeader: "Password ( 6+ )",
+        signInButtonType: MuiButtonWrapper
+
+    };
+    constructor(props) {
+        super(props);
+        this.state = { passwordSet: false, emailSet: false, emailValid: true, email: "", password: "", passwordValid: true, isSignIn: this.props.isSignIn, emailIsFocused: false, passwordIsFocused: false }
+    }
+    emailPasswordPreviousValue:string
+    passwordElement: HTMLInputElement;
+    emailElement: HTMLInputElement;
+    //this does not get done on auto complete
+    passwordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        var password = event.target.value;
+        this.props.errored(null);
+        this.setState({ password: password, passwordValid: this.props.validatePassword(password),passwordSet:true })
+    }
+    emailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.props.errored(null);
+        var emailValue = event.target.value;
+        var emailValid = this.props.validateEmail(emailValue);
+        this.setState({ email: emailValue, emailValid: emailValid,emailSet:true })
+    }
+    validatedPassword:boolean
+    signInOrCreateAccount = () => {
+        //now that the button has been pressed can validate password
+        var validPassword = true;
+        if (!this.validatedPassword) {
+            validPassword = this.props.validatePassword(this.passwordElement.value);
+            this.validatedPassword = true;
+            if (!validPassword) {
+                this.setState({ passwordValid: false });//not necessary?
+            }
+        }
+        if (validPassword) {
+            var self = this;
+            if (self.state.isSignIn) {
+                this.props.auth.signInWithEmailAndPassword(this.state.email, this.state.password).catch(function (err) {
+                    var firebaseError = (err as any) as firebase.auth.Error;
+                    self.signInError(firebaseError);
+                });
+            } else {
+                this.props.auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function (err) {
+                    var firebaseError = (err as any) as firebase.auth.Error;
+                    self.signInError(firebaseError);
+                });
+            }
+            
+        }
+        
+    }
+    signInError(firebaseError: firebase.auth.Error) {
+        var errorCode = firebaseError.code;
+        var errorMessage: string;
+        var errorFocusElement: HTMLElement;
+        var emailInError = false;
+        var passwordInError = false;
+        switch (errorCode) {
+            case "auth/invalid-email":
+                errorFocusElement = this.emailElement;
+                emailInError = true;
+                break;
+            case "auth/user-not-found":
+                errorFocusElement = this.emailElement;
+                emailInError = true;
+                break;
+            case "auth/wrong-password":
+                errorFocusElement = this.passwordElement;
+                passwordInError = true;
+                break;
+            case "auth/email-already-in-use":
+                errorFocusElement = this.passwordElement;
+                passwordInError = true;
+                break;
+            case "auth/weak-password":
+                errorFocusElement = this.passwordElement;
+                passwordInError = true;
+                break;
+        }
+        if (errorFocusElement) {
+            errorFocusElement.focus();
+        }
+        this.props.errored(firebaseError);
+        this.setState({ emailValid: !emailInError, passwordValid: !passwordInError })
+    }
+    switch=() =>{
+        this.props.errored(null);
+        this.setState(function (prevState: EmailSignInScreenState) {
+            return { isSignIn: !prevState.isSignIn }
+        });
+    }
+    passwordFocused = () => {
+        this.setState({ passwordIsFocused: true })
+    }
+    passwordBlurred = () => {
+        this.setState({ passwordIsFocused: false })
+    }
+    emailFocused = () => {
+        this.setState({ emailIsFocused: true })
+    }
+    emailBlurred = () => {
+        this.setState({emailIsFocused:false})
+    }
+
+    render() {
+        var title = this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle;
+        var emailBorderColor = this.props.errorColor;
+        var emailBoxShadow = "";
+        var passwordBorderColor= this.props.errorColor;
+        var focusBoxShadow = "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1)"
+        if (this.state.emailIsFocused) {
+            emailBoxShadow = focusBoxShadow;
+        }
+        if (this.state.emailValid) {
+            if (this.state.emailIsFocused) {
+                emailBorderColor = this.props.focusColor;
+            } else {
+                emailBorderColor = this.props.emailPasswordBorderColor;
+            }
+        }
+
+        if (this.state.passwordValid) {
+            if (this.state.passwordIsFocused) {
+                passwordBorderColor = this.props.focusColor;
+            } else {
+                passwordBorderColor = this.props.emailPasswordBorderColor
+            }
+        }
+        
+        var ButtonType = this.props.signInButtonType;
+
+        var labelStyle = { marginBottom: "7px" }
+        //could create AutoCompleteLabelInput for consistency
+        return <div style={{ padding: "10px 0px 10px 0px" }}>
+            
+            <div style={{ fontWeight: "bold", marginBottom: "5px" }}><span>{title + " / "}</span>
+                <NonNavigatableLink clicked={this.switch} removeUnderline={true} text={this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle} />
+               
+            </div>
+
+            <Divider color={this.props.dividerColour} />
+            <br />
+            
+
+            <label style={labelStyle}>{this.props.emailHeader}</label>
+            <AutoComplete  autoCompletedWait={500} containerStyle={{ marginBottom: "10px" }}>
+                <input onBlur={this.emailBlurred} onFocus={this.emailFocused} ref={(input) => this.emailElement = input} spellCheck={false} style={{ borderRadius: "2px", padding: "5px", borderColor: emailBorderColor }} type="email" name="emailLogon" value={this.state.email} autoComplete="on" onChange={this.emailChange} />
+            </AutoComplete>
+            
+            <label style={labelStyle}>{this.props.passwordHeader}</label>
+            <AutoComplete containerStyle={{ marginBottom: "10px" }}>
+                <input onBlur={this.passwordBlurred} onFocus={this.passwordFocused} ref={(input) => this.passwordElement = input} style={{ outline: "none", borderRadius: "2px", padding: "5px", borderColor: passwordBorderColor }} type="password" name="password" autoComplete="password" value={this.state.password} onChange={this.passwordChange} />
+            </AutoComplete>
+            
+
+            <ButtonType {...this.props.signInButtonProps} disabled={!(this.state.emailSet && this.state.emailValid && this.state.passwordValid)} onClick={this.signInOrCreateAccount} text={this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle} />
+        </div>
+    }
+}
+
+
+
+*/
+
+
+/***/ }),
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21737,7 +20972,7 @@ exports.ClueLetter = ClueLetter;
 
 
 /***/ }),
-/* 146 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21873,7 +21108,7 @@ exports.Lightbulb = Lightbulb;
 
 
 /***/ }),
-/* 147 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21935,7 +21170,7 @@ exports.NonNavigatableLink = NonNavigatableLink;
 
 
 /***/ }),
-/* 148 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21952,49 +21187,48 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var Color = __webpack_require__(35);
+var Color = __webpack_require__(36);
 var MuiButton = (function (_super) {
     __extends(MuiButton, _super);
     function MuiButton(props) {
         var _this = _super.call(this, props) || this;
+        _this.ignoreMouseRippleDueToTouch = false;
         _this.onMouseDownCB = function (ev) {
-            console.log("onMouseDown");
             _this.showRipple(ev);
             // execute callback
             var fn = _this.props.onMouseDown;
             fn && fn(ev);
         };
         _this.onMouseUpCB = function (ev) {
-            console.log("onMouseUp");
+            _this.ignoreMouseRippleDueToTouch = false;
             _this.hideRipple(ev);
             // execute callback
             var fn = _this.props.onMouseUp;
             fn && fn(ev);
         };
         _this.onMouseLeaveCB = function (ev) {
-            console.log("onMouseLeave");
+            _this.ignoreMouseRippleDueToTouch = false;
             _this.hideRipple(ev);
             // execute callback
             var fn = _this.props.onMouseLeave;
             fn && fn(ev);
         };
         _this.onTouchStartCB = function (ev) {
-            console.log("onTouchStart");
             _this.showRipple(ev);
             // execute callback
             var fn = _this.props.onTouchStart;
             fn && fn(ev);
         };
         _this.onTouchEndCB = function (ev) {
-            console.log("onTouchEnd");
+            _this.ignoreMouseRippleDueToTouch = true;
             _this.hideRipple(ev);
             // execute callback
             var fn = _this.props.onTouchEnd;
             fn && fn(ev);
         };
         _this.id = MuiButton.idName + (MuiButton.idCount++).toString();
-        var mergedStyle = _this.objectAssign(MuiButton.defaultButtonStyle, _this.props.buttonStyle);
-        var dynamicStylePropertyNames = ["backgroundColor"];
+        var mergedStyle = _this.objectAssign({}, MuiButton.defaultButtonStyle, _this.props.buttonStyle);
+        var dynamicStylePropertyNames = ["backgroundColor", "cursor", "color"];
         dynamicStylePropertyNames.forEach(function (pName) {
             var styleValue = mergedStyle[pName];
             this[pName] = styleValue;
@@ -22072,11 +21306,12 @@ var MuiButton = (function (_super) {
         return ev.type === 'touchstart' || ev.type === 'touchend';
     };
     MuiButton.prototype.showRipple = function (ev) {
-        var buttonEl = this.buttonEl;
-        // de-dupe touch events
-        if ('ontouchstart' in buttonEl && ev.type === 'mousedown')
+        if (this.ignoreMouseRippleDueToTouch)
             return;
+        // de-dupe touch events
+        //if ('ontouchstart' in buttonEl && ev.type === 'mousedown') return;
         // get (x, y) position of click
+        var buttonEl = this.buttonEl;
         var offset = this.offset(this.buttonEl);
         //looks like their code is incorrect-ish
         //s/b var clickEv: Touch | React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement> = void 0
@@ -22092,13 +21327,14 @@ var MuiButton = (function (_super) {
         // calculate radius
         var radius = Math.sqrt(offset.width * offset.width + offset.height * offset.height);
         // add ripple to state
-        console.log("**************** Setting ripple");
+        //console.log("**************** Setting ripple")
         var ripple = {
             top: Math.round(clickEv.pageY - offset.top - radius) + 'px',
             left: Math.round(clickEv.pageX - offset.left - radius) + 'px',
             diameter: radius * 2 + 'px',
             isAnimating: false
         };
+        //console.log(ripple);
         this.setState({ ripple: ripple });
     };
     MuiButton.prototype.hideRipple = function (ev) {
@@ -22106,8 +21342,12 @@ var MuiButton = (function (_super) {
             ripple: null
         });
     };
-    MuiButton.prototype.objectAssign = function (target, varArgs) {
+    MuiButton.prototype.objectAssign = function (target) {
         'use strict';
+        var varArgs = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            varArgs[_i - 1] = arguments[_i];
+        }
         if (target == null) {
             throw new TypeError('Cannot convert undefined or null to object');
         }
@@ -22126,6 +21366,12 @@ var MuiButton = (function (_super) {
         return to;
     };
     ;
+    MuiButton.prototype.getRGBString = function (colour) {
+        var rgbArray = colour.rgb().array().map(function (num) {
+            return Math.round(num);
+        });
+        return "rgb(" + rgbArray[0] + "," + rgbArray[1] + "," + rgbArray[2] + ")";
+    };
     MuiButton.prototype.render = function () {
         var _this = this;
         var rippleStyle = {};
@@ -22148,9 +21394,8 @@ var MuiButton = (function (_super) {
         var buttonSelector = "#" + this.id;
         var backgroundColor = this.backgroundColor;
         var bgColourColour = Color(backgroundColor);
-        var lightenColour = bgColourColour.lighten(0.5);
-        var lightenRBGArray = lightenColour.rgb().array();
-        var lightenColorRGB = "rgb(" + lightenRBGArray[0] + "," + lightenRBGArray[1] + "," + lightenRBGArray[2] + ")";
+        var lightenColour = bgColourColour.lighten(this.props.lightenPercentage);
+        var lightenColorRGB = this.getRGBString(lightenColour);
         var thisButtonHoverOrFocusSelector = buttonSelector + ":hover," + buttonSelector + ":focus";
         var thisButtonHoverOrFocusOrActiveSelector = thisButtonHoverOrFocusSelector + "," + buttonSelector + ":active";
         var hoverFocusBoxShadowRaisedCss = thisButtonHoverOrFocusSelector + "{ box-shadow:" + this.props.boxShadowRaised + "}";
@@ -22158,22 +21403,45 @@ var MuiButton = (function (_super) {
         var activeHoverBoxShadowActiveCss = thisButtonActiveHoverSelector + "{ box-shadow:" + this.props.boxShadowActive + "}";
         var hoverFocusActiveLighterBackgroundCss = thisButtonHoverOrFocusOrActiveSelector + "{ background-color:" + lightenColorRGB + "}";
         var thisButtonDisabledSelector = buttonSelector + ":disabled";
-        //could have this as a prop
-        //need to look up the cursor in the scss
-        var disabledCss = thisButtonDisabledSelector + "{ box-shadow:none;pointer-events:none;cursor:not-allowed;" + "opacity:" + this.props.disabledOpacity + "}";
-        var backgroundColorCss = buttonSelector + "{background-color:" + this.backgroundColor + "}";
-        var rippleSelector = buttonSelector + "." + rippleMainClass;
-        var rippleNormalCss = rippleSelector + "{position: absolute, top: 0, left: 0, borderRadius: 50%, pointer-events: none, transform: scale(.0001, .0001), background-color: white}";
-        var rippleActiveSelector = rippleSelector + "." + rippleActiveClass;
+        //later allow passing in the disabled css but that will mean no style={}
+        //this is a change to mui - have removed pointer-events:none as effects the cursor:not allowed
+        var disabledCssFixed = "box-shadow:none;cursor:" + this.props.disabledCursor + ";";
+        var disabledVisualCss = "";
+        var colourSpecified = false;
+        var disabledBackgroundColor = Color(backgroundColor);
+        if (this.props.disabledBackgroundColor) {
+            disabledBackgroundColor = Color(this.props.disabledBackgroundColor);
+            colourSpecified = true;
+        }
+        if (this.props.disabledDesaturatePercentage !== 0) {
+            colourSpecified = true;
+            disabledBackgroundColor = disabledBackgroundColor.desaturate(this.props.disabledDesaturatePercentage);
+        }
+        if (this.props.disabledLightenPercentage) {
+            colourSpecified = true;
+            disabledBackgroundColor = disabledBackgroundColor.lighten(this.props.disabledLightenPercentage);
+        }
+        disabledVisualCss += "background-color:" + this.getRGBString(disabledBackgroundColor) + ";";
+        if (this.props.disabledColor) {
+            disabledVisualCss += "color:" + this.props.disabledColor + ";";
+        }
+        if (!colourSpecified || this.props.disabledOpacity !== MuiButton.defaultProps.disabledOpacity) {
+            disabledVisualCss += "opacity:" + this.props.disabledOpacity + ";";
+        }
+        var disabledCss = thisButtonDisabledSelector + "{" + disabledCssFixed + disabledVisualCss + "}";
+        var buttonCss = buttonSelector + "{background-color:" + this.backgroundColor + ";cursor:" + this.cursor + ";color:" + this.color + "}";
+        var rippleSelector = buttonSelector + " ." + rippleMainClass;
+        var rippleNormalCss = rippleSelector + "{position: absolute; top: 0; left: 0; border-radius: 50%; pointer-events: none; transform: scale(.0001, .0001); background-color: white}";
+        var rippleActiveSelector = buttonSelector + " ." + rippleActiveClass;
         var rippleAnimatingSelector = rippleSelector + "." + rippleIsAnimatingClass;
         var rippleActiveCss = rippleActiveSelector + "{opacity:0.3}";
         var rippleAnimatingCss = rippleAnimatingSelector + "{transform:none;transition:transform .3s cubic-bezier(0,0,.2,1),width .3s cubic-bezier(0,0,.2,1),height .3s cubic-bezier(0,0,.2,1),opacity .3s cubic-bezier(0,0,.2,1)}";
-        var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + hoverFocusActiveLighterBackgroundCss + disabledCss + backgroundColorCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
+        var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + hoverFocusActiveLighterBackgroundCss + disabledCss + buttonCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
         return React.createElement("button", { disabled: this.props.disabled, style: this.buttonStyle, id: this.id, ref: function (btn) { return _this.buttonEl = btn; }, onTouchStart: this.onTouchStartCB, onTouchEnd: this.onTouchEndCB, onMouseDown: this.onMouseDownCB, onMouseUp: this.onMouseUpCB, onMouseLeave: this.onMouseLeaveCB },
+            this.props.children,
             React.createElement("style", { dangerouslySetInnerHTML: {
                     __html: muiCss
                 } }),
-            this.props.children,
             React.createElement("span", { style: this.props.rippleContainerStyle, className: "mui-btn__ripple-container" },
                 React.createElement("span", { style: rippleStyle, className: rippleCls, ref: function (span) { _this.rippleEl = span; } })));
     };
@@ -22182,8 +21450,13 @@ var MuiButton = (function (_super) {
 MuiButton.idCount = 0;
 MuiButton.idName = "muiButton";
 MuiButton.defaultProps = {
+    disabled: false,
+    disabledCursor: "not-allowed",
     rippleColour: "white",
     disabledOpacity: 0.6,
+    disabledDesaturatePercentage: 0,
+    disabledLightenPercentage: 0,
+    lightenPercentage: 0.5,
     boxShadowRaised: "0 0px 2px rgba(0,0,0, 0.12),0 2px 2px rgba(0,0,0, 0.20);",
     boxShadowActive: "0 0px 4px rgba(0,0,0, 0.12), 1px 3px 4px rgba(0,0,0, 0.20);",
     buttonStyle: {},
@@ -22192,16 +21465,23 @@ MuiButton.defaultProps = {
 MuiButton.defaultButtonStyle = {
     outline: "none",
     transition: "all 0.2s ease-in-out",
-    borderRadius: "2px",
+    borderRadius: "5px",
     border: "none",
-    backgroundColor: "yellow",
-    padding: "5px"
+    backgroundColor: "white",
+    color: "black",
+    padding: "10px",
+    WebkitUserSelect: "none",
+    MozUserSelect: "none",
+    msUserSelect: "none",
+    userSelect: "none",
+    position: "relative",
+    cursor: "pointer"
 };
 exports.MuiButton = MuiButton;
 
 
 /***/ }),
-/* 149 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22220,8 +21500,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import  Radium  =require('radium')
 var index_1 = __webpack_require__(15);
-var squareLetter_1 = __webpack_require__(150);
-var squareNumber_1 = __webpack_require__(151);
+var squareLetter_1 = __webpack_require__(146);
+var squareNumber_1 = __webpack_require__(147);
 var commonStyling_1 = __webpack_require__(14);
 //@Radium
 var Square = (function (_super) {
@@ -22307,7 +21587,7 @@ exports.Square = Square;
 
 
 /***/ }),
-/* 150 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22340,7 +21620,7 @@ exports.SquareLetter = SquareLetter;
 
 
 /***/ }),
-/* 151 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22373,7 +21653,7 @@ exports.SquareNumber = SquareNumber;
 
 
 /***/ }),
-/* 152 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22383,8 +21663,8 @@ exports.SquareNumber = SquareNumber;
 // https://github.com/Microsoft/TypeScript/wiki/JSX
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(34);
-var crosswordPuzzleApp_1 = __webpack_require__(61);
+var ReactDOM = __webpack_require__(35);
+var crosswordPuzzleApp_1 = __webpack_require__(60);
 //ReactDOM.render(
 //    <CrosswordPuzzleLoader/>,
 //    document.getElementById("example")
@@ -22394,7 +21674,7 @@ ReactDOM.render(React.createElement(crosswordPuzzleApp_1.CrosswordPuzzleApp, nul
 
 
 /***/ }),
-/* 153 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22424,8 +21704,8 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import {canUseDOM} from 'exenv';
-var constants_1 = __webpack_require__(33);
-var utils_1 = __webpack_require__(154);
+var constants_1 = __webpack_require__(34);
+var utils_1 = __webpack_require__(150);
 function keyModifiersAny() {
     return {
         altKey: true,
@@ -22696,18 +21976,18 @@ exports.keyToggleHandler = keyHandleDecorator(utils_1.matchesKeyboardEvent);
 /**
  * Constants
  */
-__export(__webpack_require__(33));
+__export(__webpack_require__(34));
 
 
 /***/ }),
-/* 154 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 /* @flow */
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = __webpack_require__(33);
+var constants_1 = __webpack_require__(34);
 /**
  * Constants.
  */

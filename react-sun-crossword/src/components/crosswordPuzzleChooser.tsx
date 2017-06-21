@@ -1,12 +1,14 @@
 ﻿import * as React from "react";
 import { connectedDatabase } from "../helpers/connectedDatabase"
 import { CrosswordLookupJson, CrosswordModelJson } from "../models/index";
-import { EmailLogOnComp, ButtonProps, WrappedButton } from "./emailLogOn";
+import { EmailLogOnComp, EmailLogOnCompProps} from "./emailLogOn";
 import { auth } from '../helpers/firebaseApp'
 import Select = require("react-select")
 
 export import Select = require("react-select")
-export { ButtonProps } from "./emailLogOn"; 
+import { SimpleButtonProps } from "./simpleButtonProps";
+import { MuiButtonWrapper } from "./muiWrappedButton";
+
 
 function displayNameHOC<P>(Component: React.ComponentClass<P>, displayName: string): React.ComponentClass<P> {
 
@@ -21,41 +23,17 @@ function displayNameHOC<P>(Component: React.ComponentClass<P>, displayName: stri
     return cc;
 }
 
-export interface CrosswordPuzzleChooserProps {
-    disconnectedMessage?: string,
-    DatabaseDisconnectedMessageComponent?: React.ComponentClass<DatabaseDisconnectedMessageProps>,
-    databaseDisconnectedMessageComponentProps?: any
-    SelectChooser?: React.ComponentClass<SelectChooserProps>
-    selectChooserProps?: any,
-    SelectChooserContainer?: React.ComponentClass<SelectChooserContainerProps>
-    selectChooserContainerProps?: any,
-    publicSelectChooserHeader?:string
-    userSelectChooserHeader?: string
-    userLoggedIn: string,
-    crosswordSelected: (crosswordModelJson: CrosswordModelJson) => void,
-    placeholderSelectWording?:string,
-    userPlaceholderSignedOutWording?: string,
-    emailSignInWording?: string,
-    emailSignOutWording?: string
-    
-}
-interface CrosswordPuzzleChooserState {
-    databaseDisconnected: boolean,
-    publicLookupsLoading: boolean,
-    userLookupsLoading: boolean,
-    publicCrosswordLookups: CrosswordLookupJson[],
-    userCrosswordLookups: CrosswordLookupJson[]
-}
-//need real ones !
 class DefaultDatabaseDisconnectedMessageComponent extends React.Component<DatabaseDisconnectedMessageProps, {}>{
     render() {
         return <div>{this.props.disconnectedMessage}</div>
     }
 }
-
-export interface DefaultSelectChooserProps extends SelectChooserProps {
-    ButtonType?: React.ComponentClass<ButtonProps>
-    buttonProps?:any
+export interface DefaultSelectChooserButtonProps {
+    ButtonType?: React.ComponentClass<SimpleButtonProps>
+    buttonProps?: any
+}
+export interface DefaultSelectChooserProps extends SelectChooserProps, DefaultSelectChooserButtonProps {
+    
 }
 interface DefaultSelectChooserState {
     selectedValue:string
@@ -63,8 +41,8 @@ interface DefaultSelectChooserState {
 export class DefaultSelectChooser extends React.Component<DefaultSelectChooserProps, DefaultSelectChooserState>{
     
     public static defaultProps: Partial<DefaultSelectChooserProps> = {
-        ButtonType:WrappedButton,
-        buttonProps: { style: { marginTop:"5px", borderRadius: "8px", padding: "5px"}}
+        ButtonType: MuiButtonWrapper
+       
     };
     constructor(props) {
         super(props);
@@ -93,7 +71,9 @@ export class DefaultSelectChooser extends React.Component<DefaultSelectChooserPr
         var Button = displayNameHOC(this.props.ButtonType, "Button");
         return <div>
             <Select value={this.state.selectedValue} onChange={this.optionChange} disabled={this.props.disabled} isLoading={this.props.isLoadingLookups} placeholder={this.props.placeholderText} options={this.mapOptions()} />
-            <Button {...this.props.buttonProps} text="Play Crossword" onClick={this.buttonClicked} disabled={this.props.disabled || !this.state.selectedValue} />
+            <div style={{paddingTop:"10px"}}>
+                <Button {...this.props.buttonProps} text="Play Crossword" onClick={this.buttonClicked} disabled={this.props.disabled || !this.state.selectedValue} />
+            </div>
             </div>
     }
 }
@@ -112,6 +92,35 @@ class DefaultSelectChooserContainer extends React.Component<SelectChooserContain
             {content}
             </fieldset>
     }
+}
+
+
+export interface CrosswordPuzzleChooserProps {
+    disconnectedMessage?: string,
+    DatabaseDisconnectedMessageComponent?: React.ComponentClass<DatabaseDisconnectedMessageProps>,
+    databaseDisconnectedMessageComponentProps?: any,
+    emailLogOnStyleProps?: any,
+    emailSignInWording?: string,
+    emailSignOutWording?: string
+    SelectChooser?: React.ComponentClass<SelectChooserProps>
+    selectChooserProps?: any,
+    SelectChooserContainer?: React.ComponentClass<SelectChooserContainerProps>
+    selectChooserContainerProps?: any,
+    publicSelectChooserHeader?: string
+    userSelectChooserHeader?: string
+    userLoggedIn: string,
+    crosswordSelected: (crosswordModelJson: CrosswordModelJson) => void,
+    placeholderSelectWording?: string,
+    userPlaceholderSignedOutWording?: string,
+    
+
+}
+interface CrosswordPuzzleChooserState {
+    databaseDisconnected: boolean,
+    publicLookupsLoading: boolean,
+    userLookupsLoading: boolean,
+    publicCrosswordLookups: CrosswordLookupJson[],
+    userCrosswordLookups: CrosswordLookupJson[]
 }
 
 export class CrosswordPuzzleChooser extends React.Component<CrosswordPuzzleChooserProps, CrosswordPuzzleChooserState> {
@@ -228,13 +237,13 @@ export class CrosswordPuzzleChooser extends React.Component<CrosswordPuzzleChoos
         var SelectChooserContainer = displayNameHOC(this.props.SelectChooserContainer, "SelectChooserContainer");
 
         return <div>
-            <this.props.DatabaseDisconnectedMessageComponent {...this.props.databaseDisconnectedMessageComponentProps} disconnectedMessage={this.state.databaseDisconnected ? this.props.disconnectedMessage : ""} />
+            <this.props.DatabaseDisconnectedMessageComponent {...this.props.databaseDisconnectedMessageComponentProps} disconnectedMessage={this.state.databaseDisconnected ? this.props.disconnectedMessage : "\u200B"} />
             <SelectChooserContainer isPublic={true} header={this.props.publicSelectChooserHeader}>
                 <SelectChooser  placeholderText={this.props.placeholderSelectWording + " public crosswords: " }  lookupSelected={this.publicLookupSelected} crosswordLookups={this.state.publicCrosswordLookups} isLoadingLookups={this.state.publicLookupsLoading} isPublic={true} disabled={this.state.databaseDisconnected} {...this.props.selectChooserProps} />
             </SelectChooserContainer>
             <SelectChooserContainer isPublic={false} header={this.props.userSelectChooserHeader}>
                 <SelectChooser placeholderText={(this.props.placeholderSelectWording + " saved crosswords: ") + (this.props.userLoggedIn ? "" : this.props.emailSignInWording + " " + this.props.userPlaceholderSignedOutWording)} lookupSelected={this.userLookupSelected} crosswordLookups={this.state.userCrosswordLookups} isLoadingLookups={this.state.userLookupsLoading} isPublic={false} disabled={this.state.databaseDisconnected || (this.props.userLoggedIn === null)} {...this.props.selectChooserProps} />
-                <EmailLogOnComp signInButtonProps={{ style: { color: "red", outlineWidth: "0px" } }} focusColor='blue' signInTitle={this.props.emailSignInWording} signOutTitle={this.props.emailSignOutWording} reLoginWait={1000} auth={auth} ></EmailLogOnComp>
+                <EmailLogOnComp signInTitle={this.props.emailSignInWording} signOutTitle={this.props.emailSignOutWording} reLoginWait={1000} auth={auth}  {...this.props.emailLogOnStyleProps}  ></EmailLogOnComp>
             </SelectChooserContainer>
         </div>
     }
