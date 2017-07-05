@@ -16,137 +16,14 @@ var React = require("react");
 var divider_1 = require("./divider");
 var link_1 = require("./link");
 var autoComplete_1 = require("./autoComplete");
-var WrappedButton = (function (_super) {
-    __extends(WrappedButton, _super);
-    function WrappedButton(props) {
+var muiWrappedButton_1 = require("./muiWrappedButton");
+var javascriptPolyfills_1 = require("../helpers/javascriptPolyfills");
+var EmailErrorScreen = (function (_super) {
+    __extends(EmailErrorScreen, _super);
+    function EmailErrorScreen(props) {
         return _super.call(this, props) || this;
     }
-    WrappedButton.prototype.render = function () {
-        return React.createElement("button", { disabled: this.props.disabled, style: this.props.style, onClick: this.props.onClick }, this.props.text);
-    };
-    return WrappedButton;
-}(React.Component));
-WrappedButton.defaultProps = {
-    style: {
-        borderRadius: "8px", padding: "5px"
-    }
-};
-exports.WrappedButton = WrappedButton;
-var LogInState;
-(function (LogInState) {
-    LogInState[LogInState["waitingForAuto"] = 0] = "waitingForAuto";
-    LogInState[LogInState["loggingIn"] = 1] = "loggingIn";
-    LogInState[LogInState["loggedIn"] = 2] = "loggedIn";
-    LogInState[LogInState["loggedOut"] = 3] = "loggedOut";
-    LogInState[LogInState["creatingAccount"] = 4] = "creatingAccount";
-})(LogInState || (LogInState = {}));
-var EmailLogOnComp = (function (_super) {
-    __extends(EmailLogOnComp, _super);
-    function EmailLogOnComp(props) {
-        var _this = _super.call(this, props) || this;
-        _this.user = null;
-        _this.willUnmountCalled = false;
-        var initialState = LogInState.loggedOut;
-        if (_this.props.reLoginWait > 0) {
-            initialState = LogInState.waitingForAuto;
-        }
-        _this.state = { logInState: initialState };
-        return _this;
-    }
-    EmailLogOnComp.prototype.componentDidMount = function () {
-        var self = this;
-        this.timeout = window.setTimeout(function () {
-            if (!self.props.auth.currentUser) {
-                self.setState({ logInState: LogInState.loggedOut });
-            }
-        }, this.props.reLoginWait);
-        this.unsubscribe = this.props.auth.onAuthStateChanged(function (user) {
-            if (!self.willUnmountCalled) {
-                var newState = LogInState.loggedOut;
-                if (user) {
-                    newState = LogInState.loggedIn;
-                }
-                self.user = user;
-                self.setState({ logInState: newState });
-            }
-        });
-    };
-    EmailLogOnComp.prototype.componentWillUnmount = function () {
-        this.willUnmountCalled = true;
-        this.unsubscribe();
-        window.clearTimeout(this.timeout);
-    };
-    EmailLogOnComp.prototype.render = function () {
-        var renderScreen;
-        switch (this.state.logInState) {
-            case LogInState.waitingForAuto:
-                renderScreen = React.createElement("div", { style: { padding: "10px" } },
-                    React.createElement("div", null, this.props.waitingAutoLogOnMessage));
-                break;
-            case LogInState.loggedIn:
-                renderScreen = React.createElement(EmailScreenWithError, null,
-                    React.createElement(EmailLoggedInScreen, { signOutTitle: this.props.signOutTitle, auth: this.props.auth }));
-                break;
-            case LogInState.loggedOut:
-                renderScreen = React.createElement(EmailLoggedOutScreen, { signInButtonProps: this.props.signInButtonProps, signInButtonType: this.props.signInButtonType, focusColor: this.props.focusColor, isSignIn: true, validatePassword: this.props.validatePassword, validateEmail: this.props.validateEmail, auth: this.props.auth });
-                break;
-        }
-        return React.createElement("div", null,
-            " ",
-            renderScreen);
-    };
-    return EmailLogOnComp;
-}(React.Component));
-EmailLogOnComp.defaultProps = {
-    waitingAutoLogOnMessage: "Attempting auto login....."
-};
-exports.EmailLogOnComp = EmailLogOnComp;
-var EmailLoggedInScreen = (function (_super) {
-    __extends(EmailLoggedInScreen, _super);
-    function EmailLoggedInScreen(props) {
-        var _this = _super.call(this, props) || this;
-        _this.logOut = function () {
-            var self = _this;
-            _this.props.auth.signOut().catch(function (err) {
-                var firebaseError = err;
-                self.props.errored(firebaseError);
-            });
-        };
-        return _this;
-    }
-    EmailLoggedInScreen.prototype.render = function () {
-        return React.createElement("div", { style: { fontWeight: "bold", padding: "10px" } },
-            React.createElement("span", { style: { marginRight: "5px" } },
-                React.createElement(link_1.NonNavigatableLink, { text: this.props.signOutTitle, clicked: this.logOut })),
-            React.createElement("span", null, this.props.auth.currentUser.email));
-    };
-    return EmailLoggedInScreen;
-}(React.Component));
-EmailLoggedInScreen.defaultProps = {
-    signOutTitle: "Sign out:"
-};
-var EmailLoggedOutScreen = (function (_super) {
-    __extends(EmailLoggedOutScreen, _super);
-    function EmailLoggedOutScreen(props) {
-        return _super.call(this, props) || this;
-    }
-    EmailLoggedOutScreen.prototype.render = function () {
-        return React.createElement(EmailScreenWithError, null,
-            React.createElement(EmailSignInScreen, __assign({}, this.props)));
-    };
-    return EmailLoggedOutScreen;
-}(React.Component));
-var EmailScreenWithError = (function (_super) {
-    __extends(EmailScreenWithError, _super);
-    function EmailScreenWithError(props) {
-        var _this = _super.call(this, props) || this;
-        _this.errored = function (error) {
-            _this.setState({ error: _this.getErrorMessage(error) });
-        };
-        _this.state = { error: "" };
-        return _this;
-    }
-    EmailScreenWithError.prototype.getErrorMessage = function (error) {
+    EmailErrorScreen.prototype.getErrorMessage = function (error) {
         var errorMessage = "";
         if (error) {
             var errorCode = error.code;
@@ -183,16 +60,115 @@ var EmailScreenWithError = (function (_super) {
         }
         return errorMessage;
     };
-    EmailScreenWithError.prototype.render = function () {
-        return React.createElement("div", { style: { margin: "0px 0px 10px 0px" } },
-            React.cloneElement(this.props.children, { errored: this.errored }),
-            React.createElement("div", { style: { paddingLeft: "10px", paddingRight: "10px" } },
-                React.createElement("div", { style: { display: this.state.error.length > 0 ? "initial" : "none" } },
-                    React.createElement(divider_1.Divider, null),
-                    React.createElement("br", null),
-                    React.createElement("div", { className: "logonErrorBox", style: { width: "100%", color: "red" } }, this.state.error))));
+    EmailErrorScreen.prototype.render = function () {
+        var defaultStyle = { width: "100%", color: "red" };
+        var style = javascriptPolyfills_1.objectAssign({}, defaultStyle, this.props.errorStyle);
+        return React.createElement("div", { style: style }, this.getErrorMessage(this.props.error));
     };
-    return EmailScreenWithError;
+    return EmailErrorScreen;
+}(React.Component));
+EmailErrorScreen.defaultProps = {
+    errorStyle: {}
+};
+var LogInState;
+(function (LogInState) {
+    LogInState[LogInState["waitingForAuto"] = 0] = "waitingForAuto";
+    LogInState[LogInState["loggingIn"] = 1] = "loggingIn";
+    LogInState[LogInState["loggedIn"] = 2] = "loggedIn";
+    LogInState[LogInState["loggedOut"] = 3] = "loggedOut";
+    LogInState[LogInState["creatingAccount"] = 4] = "creatingAccount";
+})(LogInState || (LogInState = {}));
+var EmailLogOnComp = (function (_super) {
+    __extends(EmailLogOnComp, _super);
+    function EmailLogOnComp(props) {
+        var _this = _super.call(this, props) || this;
+        _this.user = null;
+        _this.willUnmountCalled = false;
+        var initialState = LogInState.loggedOut;
+        if (_this.props.autoLoginWait > 0) {
+            initialState = LogInState.waitingForAuto;
+        }
+        _this.state = { logInState: initialState };
+        return _this;
+    }
+    EmailLogOnComp.prototype.componentDidMount = function () {
+        var self = this;
+        this.timeout = window.setTimeout(function () {
+            if (!self.props.auth.currentUser) {
+                self.setState({ logInState: LogInState.loggedOut });
+            }
+        }, this.props.autoLoginWait);
+        this.unsubscribe = this.props.auth.onAuthStateChanged(function (user) {
+            if (!self.willUnmountCalled) {
+                var newState = LogInState.loggedOut;
+                if (user) {
+                    newState = LogInState.loggedIn;
+                }
+                self.user = user;
+                self.setState({ logInState: newState });
+            }
+        });
+    };
+    EmailLogOnComp.prototype.componentWillUnmount = function () {
+        this.willUnmountCalled = true;
+        this.unsubscribe();
+        window.clearTimeout(this.timeout);
+    };
+    EmailLogOnComp.prototype.render = function () {
+        var container = React.createElement(EmailLogOnContainer, { errorStyle: this.props.errorStyle, dividerColour: this.props.dividerColour });
+        switch (this.state.logInState) {
+            case LogInState.waitingForAuto:
+                return React.createElement(EmailWaitingForAuto, { emailLogOnContainer: container, waitingAutoLogOnMessage: this.props.waitingAutoLogOnMessage });
+            case LogInState.loggedIn:
+                //return <EmailLoggedInScreen emailLogOnContainer={container} auth={this.props.auth} signOutTitle={this.props.signOutTitle} linkProps={this.props.linkProps} />
+                return React.createElement(EmailLoggedInScreen, __assign({ emailLogOnContainer: container }, this.props));
+            case LogInState.loggedOut:
+                //return <EmailSignInScreen emailLogOnContainer={container} auth={this.props.auth} linkProps={this.props.linkProps} signInButtonProps={this.props.signInButtonProps} signInButtonType={this.props.signInButtonType}  signInInputFocusColor={this.props.signInInputFocusColor} isSignIn={true} validatePassword={this.props.validatePassword} validateEmail={this.props.validateEmail} />
+                return React.createElement(EmailSignInScreen, __assign({ emailLogOnContainer: container, isSignIn: true }, this.props));
+        }
+    };
+    return EmailLogOnComp;
+}(React.Component));
+EmailLogOnComp.defaultProps = {
+    waitingAutoLogOnMessage: "Attempting auto login.....",
+    autoLoginWait: 1000
+};
+exports.EmailLogOnComp = EmailLogOnComp;
+var EmailLogOnContainer = (function (_super) {
+    __extends(EmailLogOnContainer, _super);
+    function EmailLogOnContainer(props) {
+        return _super.call(this, props) || this;
+    }
+    EmailLogOnContainer.prototype.getDivider = function () {
+        return React.createElement(divider_1.Divider, { additionalStyle: { marginTop: "5px", marginBottom: "5px" }, color: this.props.dividerColour });
+    };
+    EmailLogOnContainer.prototype.render = function () {
+        //styling to add
+        return React.createElement("div", null,
+            this.getDivider(),
+            React.createElement("div", { style: this.props.containerHeaderStyle }, this.props.headerContent.header),
+            this.props.headerContent.content && this.getDivider(),
+            React.createElement("div", { style: this.props.containerContentStyle }, this.props.headerContent.content),
+            this.props.error && this.getDivider(),
+            React.createElement(EmailErrorScreen, { errorStyle: this.props.errorStyle, error: this.props.error }),
+            this.getDivider());
+    };
+    return EmailLogOnContainer;
+}(React.Component));
+var EmailWaitingForAuto = (function (_super) {
+    __extends(EmailWaitingForAuto, _super);
+    function EmailWaitingForAuto() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    EmailWaitingForAuto.prototype.render = function () {
+        var logOnContainerProps = {
+            headerContent: {
+                header: React.createElement("div", null, this.props.waitingAutoLogOnMessage)
+            }
+        };
+        return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
+    };
+    return EmailWaitingForAuto;
 }(React.Component));
 var EmailSignInScreen = (function (_super) {
     __extends(EmailSignInScreen, _super);
@@ -201,14 +177,12 @@ var EmailSignInScreen = (function (_super) {
         //this does not get done on auto complete
         _this.passwordChange = function (event) {
             var password = event.target.value;
-            _this.props.errored(null);
-            _this.setState({ password: password, passwordValid: _this.props.validatePassword(password), passwordSet: true });
+            _this.setState({ error: null, password: password, passwordValid: _this.props.validatePassword(password), passwordSet: true });
         };
         _this.emailChange = function (event) {
-            _this.props.errored(null);
             var emailValue = event.target.value;
             var emailValid = _this.props.validateEmail(emailValue);
-            _this.setState({ email: emailValue, emailValid: emailValid, emailSet: true });
+            _this.setState({ error: null, email: emailValue, emailValid: emailValid, emailSet: true });
         };
         _this.signInOrCreateAccount = function () {
             //now that the button has been pressed can validate password
@@ -237,9 +211,8 @@ var EmailSignInScreen = (function (_super) {
             }
         };
         _this.switch = function () {
-            _this.props.errored(null);
             _this.setState(function (prevState) {
-                return { isSignIn: !prevState.isSignIn };
+                return { isSignIn: !prevState.isSignIn, error: null };
             });
         };
         _this.passwordFocused = function () {
@@ -254,7 +227,7 @@ var EmailSignInScreen = (function (_super) {
         _this.emailBlurred = function () {
             _this.setState({ emailIsFocused: false });
         };
-        _this.state = { passwordSet: false, emailSet: false, emailValid: true, email: "", password: "", passwordValid: true, isSignIn: _this.props.isSignIn, emailIsFocused: false, passwordIsFocused: false };
+        _this.state = { error: null, passwordSet: false, emailSet: false, emailValid: true, email: "", password: "", passwordValid: true, isSignIn: _this.props.isSignIn, emailIsFocused: false, passwordIsFocused: false };
         return _this;
     }
     EmailSignInScreen.prototype.signInError = function (firebaseError) {
@@ -288,51 +261,48 @@ var EmailSignInScreen = (function (_super) {
         if (errorFocusElement) {
             errorFocusElement.focus();
         }
-        this.props.errored(firebaseError);
-        this.setState({ emailValid: !emailInError, passwordValid: !passwordInError });
+        this.setState({ emailValid: !emailInError, passwordValid: !passwordInError, error: firebaseError });
     };
     EmailSignInScreen.prototype.render = function () {
         var _this = this;
         var title = this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle;
-        var emailBorderColor = this.props.errorColor;
+        var emailBorderColor = this.props.signInInputErrorColor;
         var emailBoxShadow = "";
-        var passwordBorderColor = this.props.errorColor;
-        var focusBoxShadow = "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1)";
-        if (this.state.emailIsFocused) {
-            emailBoxShadow = focusBoxShadow;
-        }
+        var passwordBorderColor = this.props.signInInputErrorColor;
         if (this.state.emailValid) {
             if (this.state.emailIsFocused) {
-                emailBorderColor = this.props.focusColor;
+                emailBorderColor = this.props.signInInputFocusColor;
             }
             else {
-                emailBorderColor = this.props.emailPasswordBorderColor;
+                emailBorderColor = this.props.signInInputBorderColor;
             }
         }
         if (this.state.passwordValid) {
             if (this.state.passwordIsFocused) {
-                passwordBorderColor = this.props.focusColor;
+                passwordBorderColor = this.props.signInInputFocusColor;
             }
             else {
-                passwordBorderColor = this.props.emailPasswordBorderColor;
+                passwordBorderColor = this.props.signInInputBorderColor;
             }
         }
         var ButtonType = this.props.signInButtonType;
         var labelStyle = { marginBottom: "7px" };
-        //could create AutoCompleteLabelInput for consistency
-        return React.createElement("div", { style: { padding: "10px" } },
-            React.createElement("div", { style: { fontWeight: "bold", marginBottom: "5px" } },
-                React.createElement("span", null, title + " / "),
-                React.createElement(link_1.NonNavigatableLink, { clicked: this.switch, removeUnderline: true, text: this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle })),
-            React.createElement(divider_1.Divider, null),
-            React.createElement("br", null),
-            React.createElement("label", { style: labelStyle }, this.props.emailHeader),
-            React.createElement(autoComplete_1.AutoComplete, { autoCompletedWait: 500, containerStyle: { marginBottom: "10px" } },
-                React.createElement("input", { onBlur: this.emailBlurred, onFocus: this.emailFocused, ref: function (input) { return _this.emailElement = input; }, spellCheck: false, style: { borderRadius: "2px", padding: "5px", borderColor: emailBorderColor }, type: "email", name: "emailLogon", value: this.state.email, autoComplete: "on", onChange: this.emailChange })),
-            React.createElement("label", { style: labelStyle }, this.props.passwordHeader),
-            React.createElement(autoComplete_1.AutoComplete, { containerStyle: { marginBottom: "10px" } },
-                React.createElement("input", { onBlur: this.passwordBlurred, onFocus: this.passwordFocused, ref: function (input) { return _this.passwordElement = input; }, style: { outline: "none", borderRadius: "2px", padding: "5px", borderColor: passwordBorderColor }, type: "password", name: "password", autoComplete: "password", value: this.state.password, onChange: this.passwordChange })),
-            React.createElement(ButtonType, __assign({}, this.props.signInButtonProps, { disabled: !(this.state.emailSet && this.state.emailValid && this.state.passwordValid), onClick: this.signInOrCreateAccount, text: this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle })));
+        var logOnContainerProps = {
+            headerContent: {
+                header: React.createElement("div", { style: this.props.signInHeaderStyle },
+                    React.createElement("span", { style: this.props.signInTitleStyle }, title + " / "),
+                    React.createElement(link_1.NonNavigatableLink, __assign({ clicked: this.switch, text: this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle }, this.props.linkProps))),
+                content: React.createElement("div", null,
+                    React.createElement("label", { style: labelStyle }, this.props.emailHeader),
+                    React.createElement(autoComplete_1.AutoComplete, __assign({ autoCompletedWait: 500, containerStyle: { marginBottom: "10px" } }, this.props.autoCompleteStyle),
+                        React.createElement("input", { onBlur: this.emailBlurred, onFocus: this.emailFocused, ref: function (input) { return _this.emailElement = input; }, spellCheck: false, style: { borderRadius: "2px", padding: "5px", borderColor: emailBorderColor }, type: "email", name: "emailLogon", value: this.state.email, autoComplete: "on", onChange: this.emailChange })),
+                    React.createElement("label", { style: labelStyle }, this.props.passwordHeader),
+                    React.createElement(autoComplete_1.AutoComplete, __assign({ containerStyle: { marginBottom: "10px" } }, this.props.autoCompleteStyle),
+                        React.createElement("input", { onBlur: this.passwordBlurred, onFocus: this.passwordFocused, ref: function (input) { return _this.passwordElement = input; }, style: { outline: "none", borderRadius: "2px", padding: "5px", borderColor: passwordBorderColor }, type: "password", name: "password", autoComplete: "password", value: this.state.password, onChange: this.passwordChange })),
+                    React.createElement(ButtonType, __assign({}, this.props.signInButtonProps, { disabled: !(this.state.emailSet && this.state.emailValid && this.state.passwordValid), onClick: this.signInOrCreateAccount, text: this.props.signInButtonTextIsSubmit ? "Submit" : this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle })))
+            }, error: this.state.error
+        };
+        return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
     };
     return EmailSignInScreen;
 }(React.Component));
@@ -344,14 +314,46 @@ EmailSignInScreen.defaultProps = {
     validatePassword: function (password) {
         return password.length >= 6;
     },
-    signInTitle: "Sign in:",
+    signInTitle: "Sign in",
     createNewAccountTitle: "Create new account",
     isSignIn: true,
-    focusColor: "blue",
-    errorColor: "red",
-    emailPasswordBorderColor: "initial",
+    signInInputFocusColor: "blue",
+    signInInputErrorColor: "red",
+    signInInputBorderColor: "initial",
     emailHeader: "Email",
     passwordHeader: "Password ( 6+ )",
-    signInButtonType: WrappedButton
+    signInButtonType: muiWrappedButton_1.MuiButtonWrapper,
+    signInButtonTextIsSubmit: true,
+};
+var EmailLoggedInScreen = (function (_super) {
+    __extends(EmailLoggedInScreen, _super);
+    function EmailLoggedInScreen(props) {
+        var _this = _super.call(this, props) || this;
+        _this.logOut = function () {
+            var self = _this;
+            _this.props.auth.signOut().catch(function (err) {
+                var firebaseError = err;
+                this.setState({ error: err });
+            });
+        };
+        _this.state = { error: null };
+        return _this;
+    }
+    EmailLoggedInScreen.prototype.render = function () {
+        var logOnContainerProps = {
+            headerContent: {
+                header: React.createElement("div", { style: this.props.loggedInHeaderStyle },
+                    React.createElement("span", { style: this.props.signOutStyle },
+                        React.createElement(link_1.NonNavigatableLink, __assign({ text: this.props.signOutTitle, clicked: this.logOut }, this.props.linkProps))),
+                    React.createElement("span", { style: this.props.loggedInUserEmailStyle }, this.props.auth.currentUser.email))
+            }, error: this.state.error
+        };
+        return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
+    };
+    return EmailLoggedInScreen;
+}(React.Component));
+EmailLoggedInScreen.defaultProps = {
+    signOutTitle: "Sign out:",
+    signOutStyle: { marginRight: "5px" }
 };
 //# sourceMappingURL=emailLogOn.js.map

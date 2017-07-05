@@ -2,7 +2,9 @@
     id: string
     title: string
     //to look at..................
-    datePublished: Date
+    datePublished: Date,
+    dateStarted: Date,
+    duration:number,
     clueProviders: ClueProvider[],
     grid: Square[][],
     selectedSquare: Square,
@@ -94,6 +96,8 @@ export interface CrosswordModelJson {
     title: string
     //to look at..................
     datePublished: string
+    dateStarted: string
+    duration:number
     clueProviders: CrosswordModelJsonClueProvider[]
     words: CrosswordModelJsonWord[]
     grid: CrosswordModelJsonSquare[][]
@@ -180,6 +184,8 @@ export function ConvertCrosswordModelToJson(crosswordModel: CrosswordModel): Cro
     });
     var crosswordModelJson: CrosswordModelJson = {
         datePublished: crosswordModel.datePublished.toString(),
+        dateStarted: crosswordModel.dateStarted.toString(),
+        duration: crosswordModel.duration,
         id: crosswordModel.id,
         solvingMode: crosswordModel.solvingMode,
         title: crosswordModel.title,
@@ -190,7 +196,10 @@ export function ConvertCrosswordModelToJson(crosswordModel: CrosswordModel): Cro
     return crosswordModelJson;
 }
 export function ConvertCrosswordJsonToModel(crosswordJson: CrosswordModelJson): CrosswordModel{
+    var dateStarted: Date = crosswordJson.dateStarted ? new Date(crosswordJson.dateStarted) : null;
     var crosswordModel: CrosswordModel = {
+        dateStarted: dateStarted,
+        duration: crosswordJson.duration,
         id: crosswordJson.id,
         datePublished: new Date(crosswordJson.datePublished),
         title: crosswordJson.title,
@@ -301,5 +310,11 @@ export interface CrosswordLookupJson {
     datePublished: string
 }
 
-//var lookupJson = { id: crossword.id, datePublished: crossword.datePublished, title: crossword.title };
-
+export function getClueSolution(clue: Clue) {
+    var clueSolution = "";
+    var squares = clue.word.squares;
+    squares.forEach(function (sq) {
+        clueSolution += sq.letter;
+    })
+    return clueSolution;
+}

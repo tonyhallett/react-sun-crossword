@@ -86,8 +86,8 @@ class DefaultSelectChooserContainer extends React.Component<SelectChooserContain
             content=<div>{this.props.children[1]}{this.props.children[0]}</div>
 
         }
-        
-        return <fieldset>
+
+        return <fieldset style={{ borderRadius: "5px", borderColor: "#2F4F4F" }}>
             <legend>{this.props.header}</legend>
             {content}
             </fieldset>
@@ -112,8 +112,6 @@ export interface CrosswordPuzzleChooserProps {
     crosswordSelected: (crosswordModelJson: CrosswordModelJson) => void,
     placeholderSelectWording?: string,
     userPlaceholderSignedOutWording?: string,
-    
-
 }
 interface CrosswordPuzzleChooserState {
     databaseDisconnected: boolean,
@@ -243,7 +241,7 @@ export class CrosswordPuzzleChooser extends React.Component<CrosswordPuzzleChoos
             </SelectChooserContainer>
             <SelectChooserContainer isPublic={false} header={this.props.userSelectChooserHeader}>
                 <SelectChooser placeholderText={(this.props.placeholderSelectWording + " saved crosswords: ") + (this.props.userLoggedIn ? "" : this.props.emailSignInWording + " " + this.props.userPlaceholderSignedOutWording)} lookupSelected={this.userLookupSelected} crosswordLookups={this.state.userCrosswordLookups} isLoadingLookups={this.state.userLookupsLoading} isPublic={false} disabled={this.state.databaseDisconnected || (this.props.userLoggedIn === null)} {...this.props.selectChooserProps} />
-                <EmailLogOnComp signInTitle={this.props.emailSignInWording} signOutTitle={this.props.emailSignOutWording} reLoginWait={1000} auth={auth}  {...this.props.emailLogOnStyleProps}  ></EmailLogOnComp>
+                <EmailLogOnComp signInTitle={this.props.emailSignInWording} signOutTitle={this.props.emailSignOutWording} auth={auth}  {...this.props.emailLogOnStyleProps}  ></EmailLogOnComp>
             </SelectChooserContainer>
         </div>
     }

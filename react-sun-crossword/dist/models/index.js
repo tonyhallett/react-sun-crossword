@@ -86,6 +86,8 @@ function ConvertCrosswordModelToJson(crosswordModel) {
     });
     var crosswordModelJson = {
         datePublished: crosswordModel.datePublished.toString(),
+        dateStarted: crosswordModel.dateStarted.toString(),
+        duration: crosswordModel.duration,
         id: crosswordModel.id,
         solvingMode: crosswordModel.solvingMode,
         title: crosswordModel.title,
@@ -97,7 +99,10 @@ function ConvertCrosswordModelToJson(crosswordModel) {
 }
 exports.ConvertCrosswordModelToJson = ConvertCrosswordModelToJson;
 function ConvertCrosswordJsonToModel(crosswordJson) {
+    var dateStarted = crosswordJson.dateStarted ? new Date(crosswordJson.dateStarted) : null;
     var crosswordModel = {
+        dateStarted: dateStarted,
+        duration: crosswordJson.duration,
         id: crosswordJson.id,
         datePublished: new Date(crosswordJson.datePublished),
         title: crosswordJson.title,
@@ -196,5 +201,4 @@ function ConvertCrosswordJsonToModel(crosswordJson) {
     return crosswordModel;
 }
 exports.ConvertCrosswordJsonToModel = ConvertCrosswordJsonToModel;
-//var lookupJson = { id: crossword.id, datePublished: crossword.datePublished, title: crossword.title };
 //# sourceMappingURL=index.js.map

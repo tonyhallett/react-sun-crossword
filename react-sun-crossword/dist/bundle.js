@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 148);
+/******/ 	return __webpack_require__(__webpack_require__.s = 153);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -381,11 +381,11 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(100)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(101)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(99)();
+  module.exports = __webpack_require__(100)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
@@ -821,7 +821,7 @@ function reject(error) {
 
 
 var React = __webpack_require__(0);
-var factory = __webpack_require__(67);
+var factory = __webpack_require__(68);
 
 // Hack to grab NoopUpdateQueue from isomorphic React
 var ReactNoopUpdateQueue = new React.Component().updater;
@@ -1036,7 +1036,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _firebase_app = __webpack_require__(70);
+var _firebase_app = __webpack_require__(71);
 
 // Export a single instance of firebase app
 var firebase = (0, _firebase_app.createFirebaseNamespace)(); /**
@@ -1096,11 +1096,11 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDom = __webpack_require__(35);
+var _reactDom = __webpack_require__(36);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactInputAutosize = __webpack_require__(116);
+var _reactInputAutosize = __webpack_require__(117);
 
 var _reactInputAutosize2 = _interopRequireDefault(_reactInputAutosize);
 
@@ -1108,39 +1108,39 @@ var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _utilsDefaultArrowRenderer = __webpack_require__(122);
+var _utilsDefaultArrowRenderer = __webpack_require__(123);
 
 var _utilsDefaultArrowRenderer2 = _interopRequireDefault(_utilsDefaultArrowRenderer);
 
-var _utilsDefaultFilterOptions = __webpack_require__(53);
+var _utilsDefaultFilterOptions = __webpack_require__(54);
 
 var _utilsDefaultFilterOptions2 = _interopRequireDefault(_utilsDefaultFilterOptions);
 
-var _utilsDefaultMenuRenderer = __webpack_require__(54);
+var _utilsDefaultMenuRenderer = __webpack_require__(55);
 
 var _utilsDefaultMenuRenderer2 = _interopRequireDefault(_utilsDefaultMenuRenderer);
 
-var _utilsDefaultClearRenderer = __webpack_require__(123);
+var _utilsDefaultClearRenderer = __webpack_require__(124);
 
 var _utilsDefaultClearRenderer2 = _interopRequireDefault(_utilsDefaultClearRenderer);
 
-var _Async = __webpack_require__(117);
+var _Async = __webpack_require__(118);
 
 var _Async2 = _interopRequireDefault(_Async);
 
-var _AsyncCreatable = __webpack_require__(118);
+var _AsyncCreatable = __webpack_require__(119);
 
 var _AsyncCreatable2 = _interopRequireDefault(_AsyncCreatable);
 
-var _Creatable = __webpack_require__(119);
+var _Creatable = __webpack_require__(120);
 
 var _Creatable2 = _interopRequireDefault(_Creatable);
 
-var _Option = __webpack_require__(120);
+var _Option = __webpack_require__(121);
 
 var _Option2 = _interopRequireDefault(_Option);
 
-var _Value = __webpack_require__(121);
+var _Value = __webpack_require__(122);
 
 var _Value2 = _interopRequireDefault(_Value);
 
@@ -2314,7 +2314,7 @@ module.exports = exports['default'];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Color = __webpack_require__(36);
+var Color = __webpack_require__(37);
 //these all have the same initial lightness but in rgb which is not ideal
 //the values are too dark - so is there a way 
 //to provide as hsl !
@@ -2465,6 +2465,8 @@ function ConvertCrosswordModelToJson(crosswordModel) {
     });
     var crosswordModelJson = {
         datePublished: crosswordModel.datePublished.toString(),
+        dateStarted: crosswordModel.dateStarted.toString(),
+        duration: crosswordModel.duration,
         id: crosswordModel.id,
         solvingMode: crosswordModel.solvingMode,
         title: crosswordModel.title,
@@ -2476,7 +2478,10 @@ function ConvertCrosswordModelToJson(crosswordModel) {
 }
 exports.ConvertCrosswordModelToJson = ConvertCrosswordModelToJson;
 function ConvertCrosswordJsonToModel(crosswordJson) {
+    var dateStarted = crosswordJson.dateStarted ? new Date(crosswordJson.dateStarted) : null;
     var crosswordModel = {
+        dateStarted: dateStarted,
+        duration: crosswordJson.duration,
         id: crosswordJson.id,
         datePublished: new Date(crosswordJson.datePublished),
         title: crosswordJson.title,
@@ -2575,7 +2580,15 @@ function ConvertCrosswordJsonToModel(crosswordJson) {
     return crosswordModel;
 }
 exports.ConvertCrosswordJsonToModel = ConvertCrosswordJsonToModel;
-//var lookupJson = { id: crossword.id, datePublished: crossword.datePublished, title: crossword.title };
+function getClueSolution(clue) {
+    var clueSolution = "";
+    var squares = clue.word.squares;
+    squares.forEach(function (sq) {
+        clueSolution += sq.letter;
+    });
+    return clueSolution;
+}
+exports.getClueSolution = getClueSolution;
 
 
 /***/ }),
@@ -3382,7 +3395,7 @@ if (typeof global !== 'undefined') {
         throw new Error('polyfill failed because global object is unavailable in this environment');
     }
 }
-var PromiseImpl = scope.Promise || __webpack_require__(79);
+var PromiseImpl = scope.Promise || __webpack_require__(80);
 var local = exports.local = {
     Promise: PromiseImpl,
     GoogPromise: PromiseImpl
@@ -3650,13 +3663,13 @@ exports.fromResourceString = fromResourceString;
 exports.toResourceString = toResourceString;
 exports.metadataValidator = metadataValidator;
 
-var _json = __webpack_require__(86);
+var _json = __webpack_require__(87);
 
 var json = _interopRequireWildcard(_json);
 
 var _location = __webpack_require__(19);
 
-var _path = __webpack_require__(47);
+var _path = __webpack_require__(48);
 
 var path = _interopRequireWildcard(_path);
 
@@ -4160,7 +4173,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var muiButton_1 = __webpack_require__(144);
+var muiButton_1 = __webpack_require__(145);
 var MuiButtonWrapper = (function (_super) {
     __extends(MuiButtonWrapper, _super);
     function MuiButtonWrapper() {
@@ -4191,7 +4204,7 @@ exports.MuiButtonWrapper = MuiButtonWrapper;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var firebase = __webpack_require__(72);
+var firebase = __webpack_require__(73);
 var appToExport = firebase.initializeApp({
     apiKey: "AIzaSyBHE9S_e2-OeQ1_2_MY_heKj1Ex0Yh-j-Y",
     databaseURL: "https://react-sun-crossword.firebaseio.com/",
@@ -4208,6 +4221,40 @@ exports.app = appToExport;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+function objectAssign(target) {
+    'use strict';
+    var varArgs = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        varArgs[_i - 1] = arguments[_i];
+    }
+    if (target == null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+    }
+    var to = Object(target);
+    for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+        if (nextSource != null) {
+            for (var nextKey in nextSource) {
+                // Avoid bugs when hasOwnProperty is shadowed
+                if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                    to[nextKey] = nextSource[nextKey];
+                }
+            }
+        }
+    }
+    return to;
+}
+exports.objectAssign = objectAssign;
+;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Key event names.
  */
@@ -4217,20 +4264,20 @@ exports.KEYUP = 'keyup';
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var colorString = __webpack_require__(66);
-var convert = __webpack_require__(64);
+var colorString = __webpack_require__(67);
+var convert = __webpack_require__(65);
 
 var _slice = [].slice;
 
@@ -4709,11 +4756,11 @@ module.exports = Color;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var cssKeywords = __webpack_require__(38);
+var cssKeywords = __webpack_require__(39);
 
 // NOTE: conversions should only return primitive values (i.e. arrays, or
 //       values that give correct `typeof` results).
@@ -5576,7 +5623,7 @@ convert.rgb.gray = function (rgb) {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -5731,13 +5778,13 @@ module.exports = {
 };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var prefix = __webpack_require__(97)
-var toCamelCase = __webpack_require__(129)
+var prefix = __webpack_require__(98)
+var toCamelCase = __webpack_require__(130)
 var cache = { 'float': 'cssFloat' }
-var addPxToStyle = __webpack_require__(63)
+var addPxToStyle = __webpack_require__(64)
 
 function style (element, property, value) {
   var camel = cache[property]
@@ -5798,7 +5845,7 @@ module.exports.get = function (element, properties) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6082,7 +6129,7 @@ function noop() {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*! @license Firebase v4.1.1
@@ -6352,7 +6399,7 @@ d;return d.Ya},{Reference:U,Query:X,Database:Pg,enableLogging:Sb,INTERNAL:Z,TEST
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6389,11 +6436,11 @@ var _errors2 = __webpack_require__(17);
 
 var _errors3 = _interopRequireDefault(_errors2);
 
-var _tokenManager = __webpack_require__(78);
+var _tokenManager = __webpack_require__(79);
 
 var _tokenManager2 = _interopRequireDefault(_tokenManager);
 
-var _notificationPermission = __webpack_require__(44);
+var _notificationPermission = __webpack_require__(45);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
@@ -6591,7 +6638,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6633,7 +6680,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6670,7 +6717,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6728,7 +6775,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6765,7 +6812,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _fs = __webpack_require__(85);
+var _fs = __webpack_require__(86);
 
 var fs = _interopRequireWildcard(_fs);
 
@@ -6893,7 +6940,7 @@ var FbsBlob = exports.FbsBlob = function () {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6982,7 +7029,7 @@ function lastComponent(path) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7015,7 +7062,7 @@ var _array = __webpack_require__(27);
 
 var array = _interopRequireWildcard(_array);
 
-var _blob = __webpack_require__(46);
+var _blob = __webpack_require__(47);
 
 var _error = __webpack_require__(4);
 
@@ -7029,7 +7076,7 @@ var _object = __webpack_require__(9);
 
 var object = _interopRequireWildcard(_object);
 
-var _requestinfo = __webpack_require__(89);
+var _requestinfo = __webpack_require__(90);
 
 var _type = __webpack_require__(2);
 
@@ -7335,7 +7382,7 @@ function continueResumableUpload(location, authWrapper, url, blob, chunkSize, ma
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7411,7 +7458,7 @@ function taskStateFromInternalTaskState(state) {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7451,7 +7498,7 @@ var ErrorCode = exports.ErrorCode = undefined;
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7490,7 +7537,7 @@ var _args = __webpack_require__(26);
 
 var args = _interopRequireWildcard(_args);
 
-var _blob = __webpack_require__(46);
+var _blob = __webpack_require__(47);
 
 var _error = __webpack_require__(4);
 
@@ -7506,11 +7553,11 @@ var _object = __webpack_require__(9);
 
 var object = _interopRequireWildcard(_object);
 
-var _path = __webpack_require__(47);
+var _path = __webpack_require__(48);
 
 var path = _interopRequireWildcard(_path);
 
-var _requests = __webpack_require__(48);
+var _requests = __webpack_require__(49);
 
 var requests = _interopRequireWildcard(_requests);
 
@@ -7522,7 +7569,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _task = __webpack_require__(94);
+var _task = __webpack_require__(95);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -7759,7 +7806,7 @@ var Reference = exports.Reference = function () {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7780,7 +7827,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7788,7 +7835,7 @@ module.exports = ReactPropTypesSecret;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _stripDiacritics = __webpack_require__(55);
+var _stripDiacritics = __webpack_require__(56);
 
 var _stripDiacritics2 = _interopRequireDefault(_stripDiacritics);
 
@@ -7828,7 +7875,7 @@ function filterOptions(options, filterValue, excludeOptions, props) {
 module.exports = filterOptions;
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7895,7 +7942,7 @@ function menuRenderer(_ref) {
 module.exports = menuRenderer;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7911,7 +7958,7 @@ module.exports = function stripDiacritics(str) {
 };
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7960,7 +8007,7 @@ function getPanelsCount(children) {
 }
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8060,7 +8107,7 @@ function selectedIndexPropType(props, propName, componentName, location, propFul
 }
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8080,7 +8127,7 @@ function reset() {
 }
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8183,7 +8230,7 @@ exports.connectedDatabase = new FirebaseDatabase();
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8209,24 +8256,29 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var crosswordPuzzle_1 = __webpack_require__(137);
+var crosswordPuzzle_1 = __webpack_require__(138);
 var twoCol_1 = __webpack_require__(23);
 var firebaseApp_1 = __webpack_require__(33);
-var connectedDatabase_1 = __webpack_require__(59);
-__webpack_require__(41);
-var crosswordPuzzleChooser_1 = __webpack_require__(138);
+var connectedDatabase_1 = __webpack_require__(60);
+__webpack_require__(42);
+var crosswordPuzzleChooser_1 = __webpack_require__(139);
 var muiWrappedButton_1 = __webpack_require__(32);
+var stopwatchController_1 = __webpack_require__(149);
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
     function CrosswordPuzzleApp(props) {
         var _this = _super.call(this, props) || this;
         _this.crosswordSelected = function (selectedCrossword) {
             var crosswordModel = index_1.ConvertCrosswordJsonToModel(selectedCrossword);
+            if (!crosswordModel.dateStarted) {
+                crosswordModel.dateStarted = new Date();
+            }
             _this.setState({ crosswordModel: crosswordModel });
         };
         _this.saveUserCrossword = function () {
             var modelJson = index_1.ConvertCrosswordModelToJson(_this.state.crosswordModel);
-            connectedDatabase_1.connectedDatabase.saveUserCrossword(_this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails) {
+            modelJson.duration = _this.stopwatchController.getDuration().totalMs;
+            connectedDatabase_1.connectedDatabase.saveUserCrossword(_this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, dateStarted: modelJson.dateStarted, duration: modelJson.duration, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails) {
                 //will now know not dirty
             }).catch(function (err) {
                 //should be firebase error
@@ -8248,17 +8300,17 @@ var CrosswordPuzzleApp = (function (_super) {
             this.setState({ userLoggedIn: null });
         }
     };
-    //going to have to deal with saving of old one here
     CrosswordPuzzleApp.prototype.render = function () {
-        var primaryColour = "#f2e090";
+        var _this = this;
+        var primaryColour = "gold";
         var buttonStyle = {
             backgroundColor: primaryColour,
-            color: "gray"
+            color: "#2F4F4F"
         };
         var buttonProps = {
             buttonStyle: buttonStyle,
-            disabledBackgroundColor: "#667799",
-            disabledColor: "white",
+            disabledBackgroundColor: "#f9f9f9",
+            disabledColor: "#2F4F4F",
             lightenPercentage: 0.1
         };
         var selectChooserProps = {
@@ -8273,8 +8325,42 @@ var CrosswordPuzzleApp = (function (_super) {
             rightContent = React.createElement("div", null);
         }
         return React.createElement("div", null,
+            this.state.crosswordModel &&
+                React.createElement(stopwatchController_1.StopwatchController, { ref: function (sw) { _this.stopwatchController = sw; }, startDuration: this.state.crosswordModel.duration },
+                    React.createElement(stopwatchController_1.DemoStopwatchDisplay, null)),
             React.createElement(muiWrappedButton_1.MuiButtonWrapper, __assign({ disabled: !this.state.userLoggedIn || this.state.crosswordModel === null, text: "Click to save", onClick: this.saveUserCrossword }, buttonProps)),
             React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent }));
+        //{height:"200px"}
+        /*
+            Element queries
+             <Bounded />
+            <ElementQuery queries={{ sm: { maxWidth: 200 }, lg: { minWidth: 201 }, hasHeight: {minHeight:1} }}>
+                <Matches sm>Small</Matches>
+                <Matches lg>Large</Matches>
+                <Matches hasHeight>Has height !</Matches>
+            </ElementQuery>
+            <ElementQueries/>
+        */
+        /*
+              <ElementQuery queries={{ sm: { maxWidth: 499 }, medium: { minWidth: 500,maxWidth:1000 },large: {minWidth: 1001}}}>
+                <Matches sm>
+                        <Keyboard width={250} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
+                </Matches>
+                <Matches medium>
+                    <Keyboard keyboardColour="#F8F8F8" buttonColour="gray" buttonBackgroundColour="yellow" width={500} bottomOfScreen={false} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
+                </Matches>
+                <Matches large>
+                    <Keyboard keyboardColour="#F8F8F8" buttonBackgroundColour="orange"width={1000} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
+                </Matches>
+
+            </ElementQuery>
+        */
+        /*
+        return <div style={{ minWidth: "500px", maxWidth:"1000px" }}>
+            <ExpandableKeyboard keyboardColour="gray" buttonBackgroundColour="orange"  backspacePressed={() => { }} keyPressed={() => { }} />
+          
+            </div>
+       */
         //return <div>
         //    <div style={{width:"500px"}}>
         //        <CrosswordPuzzleChooser userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} />
@@ -8289,7 +8375,7 @@ exports.CrosswordPuzzleApp = CrosswordPuzzleApp;
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -8482,7 +8568,7 @@ exports.CrosswordPuzzleApp = CrosswordPuzzleApp;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), __webpack_require__(1)))
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -8535,13 +8621,13 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(61);
+__webpack_require__(62);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports) {
 
 /* The following list is defined in React's core */
@@ -8587,11 +8673,11 @@ module.exports = function(name, value) {
 };
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(37);
-var route = __webpack_require__(65);
+var conversions = __webpack_require__(38);
+var route = __webpack_require__(66);
 
 var convert = {};
 
@@ -8671,10 +8757,10 @@ module.exports = convert;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(37);
+var conversions = __webpack_require__(38);
 
 /*
 	this function routes a model to all other models.
@@ -8775,12 +8861,12 @@ module.exports = function (fromModel) {
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(38);
-var swizzle = __webpack_require__(127);
+var colorNames = __webpack_require__(39);
+var swizzle = __webpack_require__(128);
 
 var reverseNames = {};
 
@@ -9014,7 +9100,7 @@ function hexDouble(num) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9030,9 +9116,9 @@ function hexDouble(num) {
 
 
 
-var _assign = __webpack_require__(96);
+var _assign = __webpack_require__(97);
 
-var emptyObject = __webpack_require__(68);
+var emptyObject = __webpack_require__(69);
 var _invariant = __webpack_require__(6);
 
 if (process.env.NODE_ENV !== 'production') {
@@ -9746,7 +9832,7 @@ module.exports = factory;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9772,7 +9858,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9873,7 +9959,7 @@ function patchProperty(obj, prop, value) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9906,13 +9992,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.createFirebaseNamespace = createFirebaseNamespace;
 
-var _subscribe = __webpack_require__(40);
+var _subscribe = __webpack_require__(41);
 
 var _errors = __webpack_require__(24);
 
 var _shared_promise = __webpack_require__(25);
 
-var _deep_copy = __webpack_require__(69);
+var _deep_copy = __webpack_require__(70);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -10276,7 +10362,7 @@ var appErrors = new _errors.ErrorFactory('app', 'Firebase', errors);
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*! @license Firebase v4.1.1
@@ -10555,7 +10641,7 @@ c){a=new T(a);c({INTERNAL:{getUid:q(a.getUid,a),getToken:q(a.getIdToken,a),addAu
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10573,25 +10659,25 @@ var _app = __webpack_require__(12);
 
 var _app2 = _interopRequireDefault(_app);
 
-__webpack_require__(71);
+__webpack_require__(72);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Import instance of FirebaseApp from ./app
 var Storage, XMLHttpRequest;
 
-__webpack_require__(41);
-__webpack_require__(80);
+__webpack_require__(42);
+__webpack_require__(81);
 var AsyncStorage;
 
-__webpack_require__(73);
+__webpack_require__(74);
 // Export the single instance of firebase
 exports.default = _app2.default;
 module.exports = exports['default'];
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10621,11 +10707,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.registerMessaging = registerMessaging;
 
-var _windowController = __webpack_require__(75);
+var _windowController = __webpack_require__(76);
 
 var _windowController2 = _interopRequireDefault(_windowController);
 
-var _swController = __webpack_require__(74);
+var _swController = __webpack_require__(75);
 
 var _swController2 = _interopRequireDefault(_swController);
 
@@ -10651,7 +10737,7 @@ registerMessaging(_app2.default);
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10684,7 +10770,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _controllerInterface = __webpack_require__(42);
+var _controllerInterface = __webpack_require__(43);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -10692,11 +10778,11 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(45);
+var _workerPageMessage = __webpack_require__(46);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
-var _fcmDetails = __webpack_require__(43);
+var _fcmDetails = __webpack_require__(44);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -11028,7 +11114,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11061,7 +11147,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _controllerInterface = __webpack_require__(42);
+var _controllerInterface = __webpack_require__(43);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -11069,19 +11155,19 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(45);
+var _workerPageMessage = __webpack_require__(46);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
-var _defaultSw = __webpack_require__(77);
+var _defaultSw = __webpack_require__(78);
 
 var _defaultSw2 = _interopRequireDefault(_defaultSw);
 
-var _notificationPermission = __webpack_require__(44);
+var _notificationPermission = __webpack_require__(45);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
-var _subscribe = __webpack_require__(40);
+var _subscribe = __webpack_require__(41);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11428,7 +11514,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11470,7 +11556,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11506,7 +11592,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11543,11 +11629,11 @@ var _errors2 = __webpack_require__(17);
 
 var _errors3 = _interopRequireDefault(_errors2);
 
-var _arrayBufferToBase = __webpack_require__(76);
+var _arrayBufferToBase = __webpack_require__(77);
 
 var _arrayBufferToBase2 = _interopRequireDefault(_arrayBufferToBase);
 
-var _fcmDetails = __webpack_require__(43);
+var _fcmDetails = __webpack_require__(44);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -11927,7 +12013,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(setImmediate) {(function (root) {
@@ -12164,10 +12250,10 @@ module.exports = exports['default'];
 
 })(this);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(62).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(63).setImmediate))
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12184,13 +12270,13 @@ exports.registerStorage = registerStorage;
 
 var _string = __webpack_require__(29);
 
-var _taskenums = __webpack_require__(49);
+var _taskenums = __webpack_require__(50);
 
-var _xhriopool = __webpack_require__(92);
+var _xhriopool = __webpack_require__(93);
 
-var _reference = __webpack_require__(51);
+var _reference = __webpack_require__(52);
 
-var _service = __webpack_require__(93);
+var _service = __webpack_require__(94);
 
 var _app = __webpack_require__(12);
 
@@ -12236,7 +12322,7 @@ registerStorage(_app2.default);
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12293,7 +12379,7 @@ function async(f) {
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12318,7 +12404,7 @@ var _error2 = __webpack_require__(4);
 
 var errorsExports = _interopRequireWildcard(_error2);
 
-var _failrequest = __webpack_require__(84);
+var _failrequest = __webpack_require__(85);
 
 var _location = __webpack_require__(19);
 
@@ -12326,7 +12412,7 @@ var _promise_external = __webpack_require__(7);
 
 var promiseimpl = _interopRequireWildcard(_promise_external);
 
-var _requestmap = __webpack_require__(90);
+var _requestmap = __webpack_require__(91);
 
 var _type = __webpack_require__(2);
 
@@ -12474,7 +12560,7 @@ var AuthWrapper = exports.AuthWrapper = function () {
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12605,7 +12691,7 @@ function stop(id) {
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12663,7 +12749,7 @@ var FailRequest = exports.FailRequest = function () {
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12743,7 +12829,7 @@ function sliceBlob(blob, start, end) {
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12798,7 +12884,7 @@ function jsonObjectOrNull(s) {
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12857,7 +12943,7 @@ var Observer = exports.Observer = function Observer(nextOrObserver, opt_error, o
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12901,7 +12987,7 @@ var _array = __webpack_require__(27);
 
 var array = _interopRequireWildcard(_array);
 
-var _backoff = __webpack_require__(83);
+var _backoff = __webpack_require__(84);
 
 var backoff = _interopRequireWildcard(_backoff);
 
@@ -12925,7 +13011,7 @@ var _url = __webpack_require__(30);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
-var _xhrio = __webpack_require__(50);
+var _xhrio = __webpack_require__(51);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -13129,7 +13215,7 @@ function makeRequest(requestInfo, authToken, pool) {
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13175,7 +13261,7 @@ handler, timeout) {
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13269,7 +13355,7 @@ var RequestMap = exports.RequestMap = function () {
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13317,7 +13403,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _xhrio = __webpack_require__(50);
+var _xhrio = __webpack_require__(51);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -13467,7 +13553,7 @@ var NetworkXhrIo = exports.NetworkXhrIo = function () {
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13499,7 +13585,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-var _xhrio_network = __webpack_require__(91);
+var _xhrio_network = __webpack_require__(92);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -13523,7 +13609,7 @@ var XhrIoPool = exports.XhrIoPool = function () {
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13559,7 +13645,7 @@ var _args = __webpack_require__(26);
 
 var args = _interopRequireWildcard(_args);
 
-var _authwrapper = __webpack_require__(82);
+var _authwrapper = __webpack_require__(83);
 
 var _location = __webpack_require__(19);
 
@@ -13567,11 +13653,11 @@ var _promise_external = __webpack_require__(7);
 
 var fbsPromiseImpl = _interopRequireWildcard(_promise_external);
 
-var _request = __webpack_require__(88);
+var _request = __webpack_require__(89);
 
 var RequestExports = _interopRequireWildcard(_request);
 
-var _reference = __webpack_require__(51);
+var _reference = __webpack_require__(52);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -13713,7 +13799,7 @@ var ServiceInternals = exports.ServiceInternals = function () {
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13748,13 +13834,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _taskenums = __webpack_require__(49);
+var _taskenums = __webpack_require__(50);
 
 var fbsTaskEnums = _interopRequireWildcard(_taskenums);
 
-var _observer = __webpack_require__(87);
+var _observer = __webpack_require__(88);
 
-var _tasksnapshot = __webpack_require__(95);
+var _tasksnapshot = __webpack_require__(96);
 
 var _args = __webpack_require__(26);
 
@@ -13764,7 +13850,7 @@ var _array = __webpack_require__(27);
 
 var fbsArray = _interopRequireWildcard(_array);
 
-var _async = __webpack_require__(81);
+var _async = __webpack_require__(82);
 
 var _error = __webpack_require__(4);
 
@@ -13774,7 +13860,7 @@ var _promise_external = __webpack_require__(7);
 
 var fbsPromiseimpl = _interopRequireWildcard(_promise_external);
 
-var _requests = __webpack_require__(48);
+var _requests = __webpack_require__(49);
 
 var fbsRequests = _interopRequireWildcard(_requests);
 
@@ -14355,7 +14441,7 @@ var UploadTask = exports.UploadTask = function () {
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14406,7 +14492,7 @@ var UploadTaskSnapshot = exports.UploadTaskSnapshot = function () {
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14503,7 +14589,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports) {
 
 var div = null
@@ -14539,7 +14625,7 @@ module.exports = function prefixStyle (prop) {
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14557,7 +14643,7 @@ module.exports = function prefixStyle (prop) {
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(11);
-  var ReactPropTypesSecret = __webpack_require__(52);
+  var ReactPropTypesSecret = __webpack_require__(53);
   var loggedTypeFailures = {};
 }
 
@@ -14608,7 +14694,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14669,7 +14755,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14688,8 +14774,8 @@ var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(11);
 
-var ReactPropTypesSecret = __webpack_require__(52);
-var checkPropTypes = __webpack_require__(98);
+var ReactPropTypesSecret = __webpack_require__(53);
+var checkPropTypes = __webpack_require__(99);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -15155,10 +15241,10 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(102)
+/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(103)
   , root = typeof window === 'undefined' ? global : window
   , vendors = ['moz', 'webkit']
   , suffix = 'AnimationFrame'
@@ -15234,7 +15320,7 @@ module.exports.polyfill = function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
@@ -15276,7 +15362,7 @@ module.exports.polyfill = function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15359,7 +15445,7 @@ function renderThumbVerticalDefault(_ref4) {
 }
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15373,43 +15459,43 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _raf2 = __webpack_require__(101);
+var _raf2 = __webpack_require__(102);
 
 var _raf3 = _interopRequireDefault(_raf2);
 
-var _domCss = __webpack_require__(39);
+var _domCss = __webpack_require__(40);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
 var _react = __webpack_require__(0);
 
-var _propTypes = __webpack_require__(115);
+var _propTypes = __webpack_require__(116);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _isString = __webpack_require__(110);
+var _isString = __webpack_require__(111);
 
 var _isString2 = _interopRequireDefault(_isString);
 
-var _getScrollbarWidth = __webpack_require__(109);
+var _getScrollbarWidth = __webpack_require__(110);
 
 var _getScrollbarWidth2 = _interopRequireDefault(_getScrollbarWidth);
 
-var _returnFalse = __webpack_require__(111);
+var _returnFalse = __webpack_require__(112);
 
 var _returnFalse2 = _interopRequireDefault(_returnFalse);
 
-var _getInnerWidth = __webpack_require__(108);
+var _getInnerWidth = __webpack_require__(109);
 
 var _getInnerWidth2 = _interopRequireDefault(_getInnerWidth);
 
-var _getInnerHeight = __webpack_require__(107);
+var _getInnerHeight = __webpack_require__(108);
 
 var _getInnerHeight2 = _interopRequireDefault(_getInnerHeight);
 
-var _styles = __webpack_require__(105);
+var _styles = __webpack_require__(106);
 
-var _defaultRenderElements = __webpack_require__(103);
+var _defaultRenderElements = __webpack_require__(104);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -16141,7 +16227,7 @@ Scrollbars.defaultProps = {
 };
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16218,7 +16304,7 @@ var disableSelectStyleReset = exports.disableSelectStyleReset = {
 };
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16229,7 +16315,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Scrollbars = undefined;
 
-var _Scrollbars = __webpack_require__(104);
+var _Scrollbars = __webpack_require__(105);
 
 var _Scrollbars2 = _interopRequireDefault(_Scrollbars);
 
@@ -16239,7 +16325,7 @@ exports["default"] = _Scrollbars2["default"];
 exports.Scrollbars = _Scrollbars2["default"];
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16260,7 +16346,7 @@ function getInnerHeight(el) {
 }
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16281,7 +16367,7 @@ function getInnerWidth(el) {
 }
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16292,7 +16378,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = getScrollbarWidth;
 
-var _domCss = __webpack_require__(39);
+var _domCss = __webpack_require__(40);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
@@ -16323,7 +16409,7 @@ function getScrollbarWidth() {
 }
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16338,7 +16424,7 @@ function isString(maybe) {
 }
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16353,7 +16439,7 @@ function returnFalse() {
 }
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16422,7 +16508,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16488,7 +16574,7 @@ module.exports = function() {
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16508,7 +16594,7 @@ var invariant = __webpack_require__(6);
 var warning = __webpack_require__(11);
 
 var ReactPropTypesSecret = __webpack_require__(31);
-var checkPropTypes = __webpack_require__(112);
+var checkPropTypes = __webpack_require__(113);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -17008,7 +17094,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -17035,17 +17121,17 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(114)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(115)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(113)();
+  module.exports = __webpack_require__(114)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17216,7 +17302,7 @@ var AutosizeInput = createClass({
 module.exports = AutosizeInput;
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17252,7 +17338,7 @@ var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _utilsStripDiacritics = __webpack_require__(55);
+var _utilsStripDiacritics = __webpack_require__(56);
 
 var _utilsStripDiacritics2 = _interopRequireDefault(_utilsStripDiacritics);
 
@@ -17492,7 +17578,7 @@ function defaultChildren(props) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17563,7 +17649,7 @@ var AsyncCreatable = (0, _createReactClass2['default'])({
 module.exports = AsyncCreatable;
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17591,11 +17677,11 @@ var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _utilsDefaultFilterOptions = __webpack_require__(53);
+var _utilsDefaultFilterOptions = __webpack_require__(54);
 
 var _utilsDefaultFilterOptions2 = _interopRequireDefault(_utilsDefaultFilterOptions);
 
-var _utilsDefaultMenuRenderer = __webpack_require__(54);
+var _utilsDefaultMenuRenderer = __webpack_require__(55);
 
 var _utilsDefaultMenuRenderer2 = _interopRequireDefault(_utilsDefaultMenuRenderer);
 
@@ -17897,7 +17983,7 @@ function shouldKeyDownEventCreateNewOption(_ref6) {
 module.exports = Creatable;
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18020,7 +18106,7 @@ var Option = (0, _createReactClass2['default'])({
 module.exports = Option;
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18140,7 +18226,7 @@ var Value = (0, _createReactClass2['default'])({
 module.exports = Value;
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18170,7 +18256,7 @@ function arrowRenderer(_ref) {
 module.exports = exports["default"];
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18198,7 +18284,7 @@ function clearRenderer() {
 module.exports = exports['default'];
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18214,13 +18300,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes3 = __webpack_require__(57);
+var _propTypes3 = __webpack_require__(58);
 
-var _UncontrolledTabs = __webpack_require__(125);
+var _UncontrolledTabs = __webpack_require__(126);
 
 var _UncontrolledTabs2 = _interopRequireDefault(_UncontrolledTabs);
 
-var _count = __webpack_require__(56);
+var _count = __webpack_require__(57);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18350,7 +18436,7 @@ Tabs.propTypes = process.env.NODE_ENV !== "production" ? {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18372,11 +18458,11 @@ var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _uuid = __webpack_require__(58);
+var _uuid = __webpack_require__(59);
 
 var _uuid2 = _interopRequireDefault(_uuid);
 
-var _propTypes3 = __webpack_require__(57);
+var _propTypes3 = __webpack_require__(58);
 
 var _Tab = __webpack_require__(20);
 
@@ -18390,7 +18476,7 @@ var _TabPanel = __webpack_require__(22);
 
 var _TabPanel2 = _interopRequireDefault(_TabPanel);
 
-var _count = __webpack_require__(56);
+var _count = __webpack_require__(57);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18709,7 +18795,7 @@ UncontrolledTabs.propTypes = process.env.NODE_ENV !== "production" ? {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18718,7 +18804,7 @@ UncontrolledTabs.propTypes = process.env.NODE_ENV !== "production" ? {
 exports.__esModule = true;
 exports.resetIdCounter = exports.Tabs = exports.TabPanel = exports.TabList = exports.Tab = undefined;
 
-var _Tabs = __webpack_require__(124);
+var _Tabs = __webpack_require__(125);
 
 var _Tabs2 = _interopRequireDefault(_Tabs);
 
@@ -18734,7 +18820,7 @@ var _TabPanel = __webpack_require__(22);
 
 var _TabPanel2 = _interopRequireDefault(_TabPanel);
 
-var _uuid = __webpack_require__(58);
+var _uuid = __webpack_require__(59);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18745,13 +18831,13 @@ exports.Tabs = _Tabs2.default;
 exports.resetIdCounter = _uuid.reset;
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isArrayish = __webpack_require__(128);
+var isArrayish = __webpack_require__(129);
 
 var concat = Array.prototype.concat;
 var slice = Array.prototype.slice;
@@ -18781,7 +18867,7 @@ swizzle.wrap = function (fn) {
 
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18799,11 +18885,11 @@ module.exports = function isArrayish(obj) {
 
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var space = __webpack_require__(131)
+var space = __webpack_require__(132)
 
 /**
  * Export.
@@ -18826,7 +18912,7 @@ function toCamelCase(string) {
 
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports) {
 
 
@@ -18899,11 +18985,11 @@ function uncamelize(string) {
 
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var clean = __webpack_require__(130)
+var clean = __webpack_require__(131)
 
 /**
  * Export.
@@ -18926,7 +19012,7 @@ function toSpaceCase(string) {
 
 
 /***/ }),
-/* 132 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19053,7 +19139,7 @@ exports.AutoComplete = AutoComplete;
 
 
 /***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19071,8 +19157,8 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var formatWord_1 = __webpack_require__(141);
-var clueNumber_1 = __webpack_require__(134);
+var formatWord_1 = __webpack_require__(142);
+var clueNumber_1 = __webpack_require__(135);
 var twoCol_1 = __webpack_require__(23);
 var commonStyling_1 = __webpack_require__(14);
 var ClueContainer = (function (_super) {
@@ -19201,7 +19287,7 @@ exports.GroupedClue = GroupedClue;
 
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19234,7 +19320,7 @@ exports.ClueNumber = ClueNumber;
 
 
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19251,10 +19337,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var react_tabs_1 = __webpack_require__(126);
+var react_tabs_1 = __webpack_require__(127);
 var twoCol_1 = __webpack_require__(23);
-var clueContainer_1 = __webpack_require__(133);
-var react_custom_scrollbars_1 = __webpack_require__(106);
+var clueContainer_1 = __webpack_require__(134);
+var react_custom_scrollbars_1 = __webpack_require__(107);
 var CroswordClues = (function (_super) {
     __extends(CroswordClues, _super);
     function CroswordClues() {
@@ -19401,7 +19487,7 @@ exports.AcrossOrDownClues = AcrossOrDownClues;
 
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19418,7 +19504,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var square_1 = __webpack_require__(145);
+var square_1 = __webpack_require__(146);
 var commonStyling_1 = __webpack_require__(14);
 // State is never set so we use the 'undefined' type.
 var Crossword = (function (_super) {
@@ -19452,7 +19538,7 @@ exports.Crossword = Crossword;
 
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19470,11 +19556,14 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var crossword_1 = __webpack_require__(136);
-var KeyEvents = __webpack_require__(149);
+var crossword_1 = __webpack_require__(137);
+var KeyEvents = __webpack_require__(154);
 var twoCol_1 = __webpack_require__(23);
-var clues_1 = __webpack_require__(135);
-var lightbulb_1 = __webpack_require__(142);
+var clues_1 = __webpack_require__(136);
+var lightbulb_1 = __webpack_require__(143);
+var recogniseMe_1 = __webpack_require__(151);
+var numberStrings_1 = __webpack_require__(150);
+var stringHelpers_1 = __webpack_require__(152);
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -19486,6 +19575,82 @@ var CrosswordPuzzle = (function (_super) {
     __extends(CrosswordPuzzle, _super);
     function CrosswordPuzzle(props) {
         var _this = _super.call(this, props) || this;
+        _this.commands = [];
+        //to delete with state
+        _this.testCommand = function () {
+            recogniseMe_1.recogniseMe.trigger([_this.state.testCommand], []);
+        };
+        //speech recognition callbacks  **************************** do inline ?
+        _this.navWord = function (context) {
+            var numberAcrossDown = context.parameters[0];
+            var split = numberAcrossDown.split(" ");
+            var numberString;
+            var acrossOrDown;
+            if (split.length === 2) {
+                var numberString = split[0];
+                var acrossOrDown = split[1];
+            }
+            else {
+                var numberString = split[0] + " " + split[1];
+                var acrossOrDown = split[2];
+            }
+            acrossOrDown = acrossOrDown.toLowerCase();
+            var number;
+            if (numberString.length < 3) {
+                number = parseInt(numberString);
+            }
+            else {
+                number = numberStrings_1.numberStringToNumber(numberString);
+            }
+            var isAcross = acrossOrDown == "across" ? true : false;
+            var wordSelectMode = isAcross ? WordSelectMode.across : WordSelectMode.down;
+            //this is not ideal !
+            var cp = _this.props.crosswordModel.clueProviders[0];
+            var clues = cp.downClues;
+            if (isAcross) {
+                clues = cp.acrossClues;
+            }
+            var word = clues.filter(function (clue) {
+                return clue.number === number.toString();
+            })[0].word;
+            _this.performSelection(word.squares[0], wordSelectMode);
+        };
+        _this.solveWordLength = function (context) {
+            console.log("In solve word length");
+            var self = _this;
+            var command = context.command;
+            _this.performSelection(command.square, command.acrossOrDownMode);
+            var words = context.parameters[0];
+            var guess = words.replace(" ", "");
+            guess.split("").forEach(function (letter) {
+                self.keyGuess(null, letter);
+            });
+        };
+        _this.solveWordExact = function (context) {
+            var self = _this;
+            var command = context.command;
+            _this.performSelection(command.square, command.acrossOrDownMode);
+            command.guess.split("").forEach(function (letter) {
+                self.keyGuess(null, letter);
+            });
+        };
+        _this.navDirectionRecognised = function (context) {
+            var direction = context.parameters[0].toLowerCase();
+            switch (direction) {
+                case "left":
+                    _this.arrowLeft();
+                    break;
+                case "right":
+                    _this.arrowRight();
+                    break;
+                case "down":
+                    _this.arrowDown();
+                    break;
+                case "up":
+                    _this.arrowUp();
+                    break;
+            }
+        };
         //this context lost otherwise
         _this.squareSelected = function (rowColIndices) {
             var square = _this.props.crosswordModel.grid[rowColIndices.row][rowColIndices.col];
@@ -19531,9 +19696,20 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
+        _this.testCommandChanged = function (evt) {
+            _this.setState({ testCommand: evt.target.value });
+        };
         _this.autoSolve = true;
+        _this.solveExact = false;
+        _this.state = { testCommand: "" };
         return _this;
     }
+    CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
+        this.setUpRecognition(nextProps.crosswordModel);
+    };
+    CrosswordPuzzle.prototype.componentDidMount = function () {
+        this.setUpRecognition(this.props.crosswordModel);
+    };
     CrosswordPuzzle.prototype._mapGrid = function (grid) {
         var _this = this;
         var self = this;
@@ -19545,6 +19721,170 @@ var CrosswordPuzzle = (function (_super) {
             });
         });
         return mappedGrid;
+    };
+    //*****************************************************************
+    //need to clear from before
+    //LP - should consider when clearing that another comnponent may also be adding commands
+    CrosswordPuzzle.prototype.recogniseNavigationCommands = function (crosswordModel) {
+        this.recogniseCommand(this.getNavigationDirectionCommand());
+        this.recogniseCommand(this.getNavigateToWordCommand(crosswordModel.clueProviders[0]));
+    };
+    CrosswordPuzzle.prototype.recogniseSolveCommands = function (clueProviders) {
+        function getWordLengths(format) {
+            var parts = format.split(",");
+            if (parts.length === 1) {
+                parts = format.split("-");
+            }
+            return parts.map(function (p) {
+                return parseInt(p);
+            });
+        }
+        //LP ( might only want to solve with one of the ClueProviders - cryptic or coffee time - through option pass in just the one
+        function createSolveCommands(cps, numClueProviders, numClues, isAcross) {
+            var acrossOrDownWord = isAcross ? "across" : "down";
+            var wordSelectMode = isAcross ? WordSelectMode.across : WordSelectMode.down;
+            var solveCommands = [];
+            for (var i = 0; i < numClues; i++) {
+                var formats = [];
+                var clueProviderSolveCommands = [];
+                for (var j = 0; j < numClueProviders; j++) {
+                    var cp = cps[j];
+                    var cpClues = isAcross ? cp.acrossClues : cp.downClues;
+                    var cpClue = cpClues[i];
+                    var cpFormat = cpClue.format;
+                    var clueProviderSolveCommand;
+                    if (formats.indexOf(cpFormat) === -1) {
+                        formats.push(cpFormat);
+                        var wordLengths = getWordLengths(cpFormat);
+                        var regExprPrefix = "^" + solveWord + " " + "(?:" + cpClue.number + "|" + numberStrings_1.numberToNumberString(cpClue.number) + ")" + " " + acrossOrDownWord + " (?:with)?\\s?";
+                        if (self.solveExact) {
+                            var clueSolution = index_1.getClueSolution(cpClue);
+                            var wordMatch = stringHelpers_1.wordsFromSquashedWords(clueSolution, wordLengths);
+                            var regExprString = regExprPrefix + wordMatch + "$";
+                            clueProviderSolveCommand = {
+                                description: "Solve exact: " + acrossOrDownWord + " " + cpClue.number,
+                                regExpr: new RegExp(regExprString, "i"),
+                                callback: self.solveWordExact,
+                                guess: clueSolution,
+                                square: null,
+                                acrossOrDownMode: null
+                            };
+                        }
+                        else {
+                            //is it necessary to group the alternation ?
+                            var formatsPart = "(";
+                            for (var k = 0; k < wordLengths.length; k++) {
+                                formatsPart += "[a-z]{" + wordLengths[k] + "}";
+                                if (k !== wordLengths.length - 1) {
+                                    formatsPart += " ";
+                                }
+                            }
+                            var wordLengthRegEexp = regExprPrefix + formatsPart + ")$";
+                            clueProviderSolveCommand = {
+                                description: "Solve word length: " + acrossOrDownWord + " " + cpClue.number,
+                                regExpr: new RegExp(wordLengthRegEexp, "i"),
+                                callback: self.solveWordLength,
+                                acrossOrDownMode: null,
+                                square: null
+                            };
+                        }
+                        clueProviderSolveCommand.square = cpClue.word.squares[0];
+                        clueProviderSolveCommand.acrossOrDownMode = wordSelectMode;
+                        clueProviderSolveCommand["providerName"] = cp.name;
+                        clueProviderSolveCommands.push(clueProviderSolveCommand);
+                    }
+                }
+                if (clueProviderSolveCommands.length > 1) {
+                    clueProviderSolveCommands.forEach(function (command) {
+                        command.description += " " + command["providerName"];
+                        solveCommands.push(command);
+                    });
+                }
+                else {
+                    solveCommands.push(clueProviderSolveCommands[0]);
+                }
+            }
+            return solveCommands;
+        }
+        var self = this;
+        var solveWord = "(?:guess|answer|solve)";
+        var numClueProviders = clueProviders.length;
+        var numAcrossClues = clueProviders[0].acrossClues.length;
+        var numDownClues = clueProviders[0].downClues.length;
+        var acrossSolveCommands = createSolveCommands(clueProviders, numClueProviders, numAcrossClues, true);
+        var downSolveCommands = createSolveCommands(clueProviders, numClueProviders, numDownClues, false);
+        this.recogniseCommands(acrossSolveCommands.concat(downSolveCommands));
+    };
+    CrosswordPuzzle.prototype.getNavigationDirectionCommand = function () {
+        return {
+            callback: this.navDirectionRecognised,
+            description: "Navigation direction",
+            regExpr: /^(left|right|up|down)$/
+        };
+    };
+    CrosswordPuzzle.prototype.getNavigateToWordCommand = function (cp) {
+        //1 across | one down | 2 across | two across etc
+        function appendWordAlternativesForAcrossOrDownClues(clues, isAcross, command) {
+            var acrossOrDown = isAcross ? "across" : "down";
+            for (var i = 0; i < clues.length; i++) {
+                var clue = clues[i];
+                var clueNumber = numberStrings_1.numberToNumberString(clue.number);
+                command += clueNumber + " " + acrossOrDown + "|" + clue.number + " " + acrossOrDown;
+                if (i !== clues.length - 1) {
+                    command += "|";
+                }
+            }
+            return command;
+        }
+        var navWordCommandString = "^(";
+        navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.acrossClues, true, navWordCommandString);
+        navWordCommandString += "|";
+        navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.downClues, false, navWordCommandString);
+        navWordCommandString += ")$";
+        return {
+            callback: this.navWord,
+            description: "Navigate to word",
+            regExpr: new RegExp(navWordCommandString, "i")
+        };
+    };
+    CrosswordPuzzle.prototype.recogniseCommands = function (commands) {
+        recogniseMe_1.recogniseMe.addCommands(commands);
+        this.commands = this.commands.concat(commands);
+    };
+    CrosswordPuzzle.prototype.recogniseCommand = function (command) {
+        recogniseMe_1.recogniseMe.addCommands(command);
+        this.commands.push(command);
+    };
+    CrosswordPuzzle.prototype.removeCommands = function () {
+        recogniseMe_1.recogniseMe.removeCommands(this.commands.map(function (command) {
+            return command.description;
+        }));
+        this.commands = [];
+    };
+    CrosswordPuzzle.prototype.resetRecognition = function () {
+        this.removeCommands();
+    };
+    CrosswordPuzzle.prototype.debugResultNoMatch = function () {
+        //if sticking with this then can type the type
+        if (!this.canRecognise) {
+            //put synthesis in
+            recogniseMe_1.recogniseMe.addCallback("resultNoMatch", function (results) {
+                console.log("Result no match*************");
+                results.forEach(function (result) { return console.log(result); });
+                console.log("Result no match*************");
+            });
+        }
+    };
+    CrosswordPuzzle.prototype.setUpRecognition = function (crosswordModel) {
+        if (recogniseMe_1.recogniseMe) {
+            this.resetRecognition();
+            this.debugResultNoMatch(); //to delete later
+            this.recogniseNavigationCommands(crosswordModel);
+            this.recogniseSolveCommands(crosswordModel.clueProviders);
+            recogniseMe_1.recogniseMe.setLanguage("en-GB");
+            this.canRecognise = true;
+            recogniseMe_1.recogniseMe.start();
+        }
     };
     CrosswordPuzzle.prototype._selectWord = function (selectedWord) {
         if (this.props.crosswordModel.selectedWord !== selectedWord) {
@@ -19831,8 +20171,6 @@ var CrosswordPuzzle = (function (_super) {
             return clueProps;
         });
     };
-    CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
-    };
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -19855,7 +20193,9 @@ var CrosswordPuzzle = (function (_super) {
                 React.createElement("span", { onClick: this.globalCheatClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
-                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))));
+                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))),
+            React.createElement("input", { type: "text", onChange: this.testCommandChanged, value: this.state.testCommand }),
+            React.createElement("button", { onClick: this.testCommand }, "Test command"));
         var rightContent = React.createElement(clues_1.CroswordClues, { clueSelected: this.clueSelected, grouping: true, clueProviders: mappedClueProviders });
         return React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent });
     };
@@ -19901,7 +20241,7 @@ exports.CrosswordPuzzleKeyEvents = KeyEvents.keyHandler({
 
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19926,8 +20266,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var connectedDatabase_1 = __webpack_require__(59);
-var emailLogOn_1 = __webpack_require__(140);
+var connectedDatabase_1 = __webpack_require__(60);
+var emailLogOn_1 = __webpack_require__(141);
 var firebaseApp_1 = __webpack_require__(33);
 var Select = __webpack_require__(13);
 exports.Select = __webpack_require__(13);
@@ -20011,7 +20351,7 @@ var DefaultSelectChooserContainer = (function (_super) {
                 this.props.children[1],
                 this.props.children[0]);
         }
-        return React.createElement("fieldset", null,
+        return React.createElement("fieldset", { style: { borderRadius: "5px", borderColor: "#2F4F4F" } },
             React.createElement("legend", null, this.props.header),
             content);
     };
@@ -20119,7 +20459,7 @@ var CrosswordPuzzleChooser = (function (_super) {
                 React.createElement(SelectChooser, __assign({ placeholderText: this.props.placeholderSelectWording + " public crosswords: ", lookupSelected: this.publicLookupSelected, crosswordLookups: this.state.publicCrosswordLookups, isLoadingLookups: this.state.publicLookupsLoading, isPublic: true, disabled: this.state.databaseDisconnected }, this.props.selectChooserProps))),
             React.createElement(SelectChooserContainer, { isPublic: false, header: this.props.userSelectChooserHeader },
                 React.createElement(SelectChooser, __assign({ placeholderText: (this.props.placeholderSelectWording + " saved crosswords: ") + (this.props.userLoggedIn ? "" : this.props.emailSignInWording + " " + this.props.userPlaceholderSignedOutWording), lookupSelected: this.userLookupSelected, crosswordLookups: this.state.userCrosswordLookups, isLoadingLookups: this.state.userLookupsLoading, isPublic: false, disabled: this.state.databaseDisconnected || (this.props.userLoggedIn === null) }, this.props.selectChooserProps)),
-                React.createElement(emailLogOn_1.EmailLogOnComp, __assign({ signInTitle: this.props.emailSignInWording, signOutTitle: this.props.emailSignOutWording, reLoginWait: 1000, auth: firebaseApp_1.auth }, this.props.emailLogOnStyleProps))));
+                React.createElement(emailLogOn_1.EmailLogOnComp, __assign({ signInTitle: this.props.emailSignInWording, signOutTitle: this.props.emailSignOutWording, auth: firebaseApp_1.auth }, this.props.emailLogOnStyleProps))));
     };
     return CrosswordPuzzleChooser;
 }(React.Component));
@@ -20139,7 +20479,7 @@ exports.CrosswordPuzzleChooser = CrosswordPuzzleChooser;
 
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20156,24 +20496,32 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
+var javascriptPolyfills_1 = __webpack_require__(34);
 var Divider = (function (_super) {
     __extends(Divider, _super);
     function Divider(props) {
         return _super.call(this, props) || this;
     }
     Divider.prototype.render = function () {
-        return React.createElement("div", { style: { display: "block", height: "1px", backgroundColor: this.props.color } });
+        var style = {
+            display: "block",
+            height: this.props.pixelHeight + "px",
+            backgroundColor: this.props.color
+        };
+        style = javascriptPolyfills_1.objectAssign({}, style, this.props.additionalStyle);
+        return React.createElement("div", { style: style });
     };
     return Divider;
 }(React.Component));
 Divider.defaultProps = {
-    color: "rgba(0,0,0,.12)"
+    color: "rgba(0,0,0,.12)",
+    pixelHeight: 1
 };
 exports.Divider = Divider;
 
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20198,18 +20546,17 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var divider_1 = __webpack_require__(139);
-var link_1 = __webpack_require__(143);
-var autoComplete_1 = __webpack_require__(132);
+var divider_1 = __webpack_require__(140);
+var link_1 = __webpack_require__(144);
+var autoComplete_1 = __webpack_require__(133);
 var muiWrappedButton_1 = __webpack_require__(32);
-var EmailScreenWithError = (function (_super) {
-    __extends(EmailScreenWithError, _super);
-    function EmailScreenWithError(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = { error: "" };
-        return _this;
+var javascriptPolyfills_1 = __webpack_require__(34);
+var EmailErrorScreen = (function (_super) {
+    __extends(EmailErrorScreen, _super);
+    function EmailErrorScreen(props) {
+        return _super.call(this, props) || this;
     }
-    EmailScreenWithError.prototype.getErrorMessage = function (error) {
+    EmailErrorScreen.prototype.getErrorMessage = function (error) {
         var errorMessage = "";
         if (error) {
             var errorCode = error.code;
@@ -20246,16 +20593,16 @@ var EmailScreenWithError = (function (_super) {
         }
         return errorMessage;
     };
-    EmailScreenWithError.prototype.render = function () {
-        return React.createElement("div", { style: { margin: "0px 0px 10px 0px" } },
-            React.createElement("div", null,
-                React.createElement("div", { style: { display: this.props.error ? "initial" : "none" } },
-                    React.createElement(divider_1.Divider, { color: this.props.dividerColour }),
-                    React.createElement("br", null),
-                    React.createElement("div", { className: "logonErrorBox", style: { width: "100%", color: "red" } }, this.getErrorMessage(this.props.error)))));
+    EmailErrorScreen.prototype.render = function () {
+        var defaultStyle = { width: "100%", color: "red" };
+        var style = javascriptPolyfills_1.objectAssign({}, defaultStyle, this.props.errorStyle);
+        return React.createElement("div", { style: style }, this.getErrorMessage(this.props.error));
     };
-    return EmailScreenWithError;
+    return EmailErrorScreen;
 }(React.Component));
+EmailErrorScreen.defaultProps = {
+    errorStyle: {}
+};
 var LogInState;
 (function (LogInState) {
     LogInState[LogInState["waitingForAuto"] = 0] = "waitingForAuto";
@@ -20271,7 +20618,7 @@ var EmailLogOnComp = (function (_super) {
         _this.user = null;
         _this.willUnmountCalled = false;
         var initialState = LogInState.loggedOut;
-        if (_this.props.reLoginWait > 0) {
+        if (_this.props.autoLoginWait > 0) {
             initialState = LogInState.waitingForAuto;
         }
         _this.state = { logInState: initialState };
@@ -20283,7 +20630,7 @@ var EmailLogOnComp = (function (_super) {
             if (!self.props.auth.currentUser) {
                 self.setState({ logInState: LogInState.loggedOut });
             }
-        }, this.props.reLoginWait);
+        }, this.props.autoLoginWait);
         this.unsubscribe = this.props.auth.onAuthStateChanged(function (user) {
             if (!self.willUnmountCalled) {
                 var newState = LogInState.loggedOut;
@@ -20301,25 +20648,46 @@ var EmailLogOnComp = (function (_super) {
         window.clearTimeout(this.timeout);
     };
     EmailLogOnComp.prototype.render = function () {
-        var container = React.createElement(EmailLogOnContainer, { dividerColour: this.props.dividerColour });
+        var container = React.createElement(EmailLogOnContainer, { errorStyle: this.props.errorStyle, dividerColour: this.props.dividerColour });
         switch (this.state.logInState) {
             case LogInState.waitingForAuto:
                 return React.createElement(EmailWaitingForAuto, { emailLogOnContainer: container, waitingAutoLogOnMessage: this.props.waitingAutoLogOnMessage });
-            //break;
             case LogInState.loggedIn:
-                return React.createElement(EmailLoggedInScreen, { emailLogOnContainer: container, auth: this.props.auth, signOutTitle: this.props.signOutTitle, linkColor: this.props.linkColor });
-            //break;
+                //return <EmailLoggedInScreen emailLogOnContainer={container} auth={this.props.auth} signOutTitle={this.props.signOutTitle} linkProps={this.props.linkProps} />
+                return React.createElement(EmailLoggedInScreen, __assign({ emailLogOnContainer: container }, this.props));
             case LogInState.loggedOut:
-                //break;
-                return React.createElement(EmailSignInScreen, { emailLogOnContainer: container, dividerColour: this.props.dividerColour, signInButtonProps: this.props.signInButtonProps, signInButtonType: this.props.signInButtonType, focusColor: this.props.focusColor, isSignIn: true, validatePassword: this.props.validatePassword, validateEmail: this.props.validateEmail, auth: this.props.auth });
+                //return <EmailSignInScreen emailLogOnContainer={container} auth={this.props.auth} linkProps={this.props.linkProps} signInButtonProps={this.props.signInButtonProps} signInButtonType={this.props.signInButtonType}  signInInputFocusColor={this.props.signInInputFocusColor} isSignIn={true} validatePassword={this.props.validatePassword} validateEmail={this.props.validateEmail} />
+                return React.createElement(EmailSignInScreen, __assign({ emailLogOnContainer: container, isSignIn: true }, this.props));
         }
     };
     return EmailLogOnComp;
 }(React.Component));
 EmailLogOnComp.defaultProps = {
-    waitingAutoLogOnMessage: "Attempting auto login....."
+    waitingAutoLogOnMessage: "Attempting auto login.....",
+    autoLoginWait: 1000
 };
 exports.EmailLogOnComp = EmailLogOnComp;
+var EmailLogOnContainer = (function (_super) {
+    __extends(EmailLogOnContainer, _super);
+    function EmailLogOnContainer(props) {
+        return _super.call(this, props) || this;
+    }
+    EmailLogOnContainer.prototype.getDivider = function () {
+        return React.createElement(divider_1.Divider, { additionalStyle: { marginTop: "5px", marginBottom: "5px" }, color: this.props.dividerColour });
+    };
+    EmailLogOnContainer.prototype.render = function () {
+        //styling to add
+        return React.createElement("div", null,
+            this.getDivider(),
+            React.createElement("div", { style: this.props.containerHeaderStyle }, this.props.headerContent.header),
+            this.props.headerContent.content && this.getDivider(),
+            React.createElement("div", { style: this.props.containerContentStyle }, this.props.headerContent.content),
+            this.props.error && this.getDivider(),
+            React.createElement(EmailErrorScreen, { errorStyle: this.props.errorStyle, error: this.props.error }),
+            this.getDivider());
+    };
+    return EmailLogOnContainer;
+}(React.Component));
 var EmailWaitingForAuto = (function (_super) {
     __extends(EmailWaitingForAuto, _super);
     function EmailWaitingForAuto() {
@@ -20334,22 +20702,6 @@ var EmailWaitingForAuto = (function (_super) {
         return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
     };
     return EmailWaitingForAuto;
-}(React.Component));
-var EmailLogOnContainer = (function (_super) {
-    __extends(EmailLogOnContainer, _super);
-    function EmailLogOnContainer(props) {
-        return _super.call(this, props) || this;
-        //this.state = { error: null };
-    }
-    EmailLogOnContainer.prototype.render = function () {
-        console.log(this.props.error);
-        //styling to add
-        return React.createElement("div", null,
-            React.createElement("div", null, this.props.headerContent.header),
-            React.createElement("div", null, this.props.headerContent.content),
-            React.createElement(EmailScreenWithError, { dividerColour: this.props.dividerColour, error: this.props.error }));
-    };
-    return EmailLogOnContainer;
 }(React.Component));
 var EmailSignInScreen = (function (_super) {
     __extends(EmailSignInScreen, _super);
@@ -20447,44 +20799,40 @@ var EmailSignInScreen = (function (_super) {
     EmailSignInScreen.prototype.render = function () {
         var _this = this;
         var title = this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle;
-        var emailBorderColor = this.props.errorColor;
+        var emailBorderColor = this.props.signInInputErrorColor;
         var emailBoxShadow = "";
-        var passwordBorderColor = this.props.errorColor;
-        var focusBoxShadow = "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1)";
-        if (this.state.emailIsFocused) {
-            emailBoxShadow = focusBoxShadow;
-        }
+        var passwordBorderColor = this.props.signInInputErrorColor;
         if (this.state.emailValid) {
             if (this.state.emailIsFocused) {
-                emailBorderColor = this.props.focusColor;
+                emailBorderColor = this.props.signInInputFocusColor;
             }
             else {
-                emailBorderColor = this.props.emailPasswordBorderColor;
+                emailBorderColor = this.props.signInInputBorderColor;
             }
         }
         if (this.state.passwordValid) {
             if (this.state.passwordIsFocused) {
-                passwordBorderColor = this.props.focusColor;
+                passwordBorderColor = this.props.signInInputFocusColor;
             }
             else {
-                passwordBorderColor = this.props.emailPasswordBorderColor;
+                passwordBorderColor = this.props.signInInputBorderColor;
             }
         }
         var ButtonType = this.props.signInButtonType;
         var labelStyle = { marginBottom: "7px" };
         var logOnContainerProps = {
             headerContent: {
-                header: React.createElement("div", { style: { fontWeight: "bold", marginBottom: "5px" } },
-                    React.createElement("span", null, title + " / "),
-                    React.createElement(link_1.NonNavigatableLink, { clicked: this.switch, removeUnderline: true, text: this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle })),
+                header: React.createElement("div", { style: this.props.signInHeaderStyle },
+                    React.createElement("span", { style: this.props.signInTitleStyle }, title + " / "),
+                    React.createElement(link_1.NonNavigatableLink, __assign({ clicked: this.switch, text: this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle }, this.props.linkProps))),
                 content: React.createElement("div", null,
                     React.createElement("label", { style: labelStyle }, this.props.emailHeader),
-                    React.createElement(autoComplete_1.AutoComplete, { autoCompletedWait: 500, containerStyle: { marginBottom: "10px" } },
+                    React.createElement(autoComplete_1.AutoComplete, __assign({ autoCompletedWait: 500, containerStyle: { marginBottom: "10px" } }, this.props.autoCompleteStyle),
                         React.createElement("input", { onBlur: this.emailBlurred, onFocus: this.emailFocused, ref: function (input) { return _this.emailElement = input; }, spellCheck: false, style: { borderRadius: "2px", padding: "5px", borderColor: emailBorderColor }, type: "email", name: "emailLogon", value: this.state.email, autoComplete: "on", onChange: this.emailChange })),
                     React.createElement("label", { style: labelStyle }, this.props.passwordHeader),
-                    React.createElement(autoComplete_1.AutoComplete, { containerStyle: { marginBottom: "10px" } },
+                    React.createElement(autoComplete_1.AutoComplete, __assign({ containerStyle: { marginBottom: "10px" } }, this.props.autoCompleteStyle),
                         React.createElement("input", { onBlur: this.passwordBlurred, onFocus: this.passwordFocused, ref: function (input) { return _this.passwordElement = input; }, style: { outline: "none", borderRadius: "2px", padding: "5px", borderColor: passwordBorderColor }, type: "password", name: "password", autoComplete: "password", value: this.state.password, onChange: this.passwordChange })),
-                    React.createElement(ButtonType, __assign({}, this.props.signInButtonProps, { disabled: !(this.state.emailSet && this.state.emailValid && this.state.passwordValid), onClick: this.signInOrCreateAccount, text: this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle })))
+                    React.createElement(ButtonType, __assign({}, this.props.signInButtonProps, { disabled: !(this.state.emailSet && this.state.emailValid && this.state.passwordValid), onClick: this.signInOrCreateAccount, text: this.props.signInButtonTextIsSubmit ? "Submit" : this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle })))
             }, error: this.state.error
         };
         return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
@@ -20499,15 +20847,16 @@ EmailSignInScreen.defaultProps = {
     validatePassword: function (password) {
         return password.length >= 6;
     },
-    signInTitle: "Sign in:",
+    signInTitle: "Sign in",
     createNewAccountTitle: "Create new account",
     isSignIn: true,
-    focusColor: "blue",
-    errorColor: "red",
-    emailPasswordBorderColor: "initial",
+    signInInputFocusColor: "blue",
+    signInInputErrorColor: "red",
+    signInInputBorderColor: "initial",
     emailHeader: "Email",
     passwordHeader: "Password ( 6+ )",
-    signInButtonType: muiWrappedButton_1.MuiButtonWrapper
+    signInButtonType: muiWrappedButton_1.MuiButtonWrapper,
+    signInButtonTextIsSubmit: true,
 };
 var EmailLoggedInScreen = (function (_super) {
     __extends(EmailLoggedInScreen, _super);
@@ -20526,10 +20875,10 @@ var EmailLoggedInScreen = (function (_super) {
     EmailLoggedInScreen.prototype.render = function () {
         var logOnContainerProps = {
             headerContent: {
-                header: React.createElement("div", null,
-                    React.createElement("span", { style: { marginRight: "5px" } },
-                        React.createElement(link_1.NonNavigatableLink, { color: this.props.linkColor, text: this.props.signOutTitle, clicked: this.logOut })),
-                    React.createElement("span", null, this.props.auth.currentUser.email))
+                header: React.createElement("div", { style: this.props.loggedInHeaderStyle },
+                    React.createElement("span", { style: this.props.signOutStyle },
+                        React.createElement(link_1.NonNavigatableLink, __assign({ text: this.props.signOutTitle, clicked: this.logOut }, this.props.linkProps))),
+                    React.createElement("span", { style: this.props.loggedInUserEmailStyle }, this.props.auth.currentUser.email))
             }, error: this.state.error
         };
         return React.createElement("div", null, React.cloneElement(this.props.emailLogOnContainer, logOnContainerProps));
@@ -20537,336 +20886,13 @@ var EmailLoggedInScreen = (function (_super) {
     return EmailLoggedInScreen;
 }(React.Component));
 EmailLoggedInScreen.defaultProps = {
-    signOutTitle: "Sign out:"
+    signOutTitle: "Sign out:",
+    signOutStyle: { marginRight: "5px" }
 };
-/*
-interface EmailScreenWithErrorProps {
-    dividerColour?: string
-}
-interface EmailScreenWithErrorState {
-    error: string
-}
-class EmailScreenWithError extends React.Component<EmailScreenWithErrorProps, EmailScreenWithErrorState> {
-    constructor(props) {
-        super(props);
-        this.state = { error: "" };
-    }
-    errored = (error: firebase.auth.Error) => {
-        this.setState({ error: this.getErrorMessage(error) })
-    }
-    getErrorMessage(error: firebase.auth.Error) {
-        var errorMessage = "";
-        if (error) {
-            var errorCode = error.code;
-
-            switch (errorCode) {
-                case "auth/invalid-email":
-                    errorMessage = "Email address is invalid";//is that firebase database rule against the email field ?
-                    break;
-                case "auth/user-disabled":
-                    errorMessage = "Your account has been disabled";
-                    break;
-                case "auth/user-not-found":
-                    errorMessage = "The email address has not been found.";
-                    break;
-                case "auth/wrong-password":
-                    errorMessage = "Incorrect password";
-                    break;
-                case "auth/email-already-in-use":
-                    errorMessage = "Please create account with different email as it already is in use.";
-                    break;
-                case "auth/weak-password":
-                    //cannot find documentation on what constitutes a weak/strong password
-                    errorMessage = "Password weak. Use a stronger password";
-                    break;
-                case "auth/network-request-failed":
-                    errorMessage = "There is an issue with your network connection";
-                    break;
-                case "auth/too-many-requests":
-                    errorMessage = "Unusual activity.........";
-                    break;
-                case "auth/unauthorized-domain":
-                    errorMessage = "I have been an idiot and not authorized the domain";
-                    break;
-
-            }
-        }
-        
-        return errorMessage;
-    }
-    render() {
-        return <div style={{margin:"0px 0px 10px 0px"}}>
-            {React.cloneElement(this.props.children as React.ReactElement<any>, { errored: this.errored })}
-            <div>
-                <div style={{ display: this.state.error.length > 0 ? "initial" : "none" }}>
-                    <Divider color={this.props.dividerColour} />
-                    <br />
-                    <div className="logonErrorBox" style={{ width: "100%", color: "red" }}>{this.state.error}</div>
-                </div>
-            </div>
-            </div>
-    }
-}
-*/
-/*
-class EmailLoggedOutScreen extends React.Component<EmailSignInScreenProps, null> {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return <EmailScreenWithError dividerColour={this.props.dividerColour}>
-            <EmailSignInScreen {...this.props} />
-        </EmailScreenWithError>
-    }
-}
-*/
-/*
-interface EmailLoggedInScreenStyleProps {
-    linkColor?: string
-}
-interface EmailLoggedInScreenProps extends EmailErroredProps, EmailLoggedInScreenStyleProps {
-    auth: firebase.auth.Auth,
-    signOutTitle?: string
-}
-class EmailLoggedInScreen extends React.Component<EmailLoggedInScreenProps, null> {
-    public static defaultProps: Partial<EmailLoggedInScreenProps> = {
-        signOutTitle: "Sign out:"
-    };
-    constructor(props) {
-        super(props);
-    }
-    logOut = () => {
-        var self = this;
-        this.props.auth.signOut().catch(function (err) {
-            var firebaseError = (err as any) as firebase.auth.Error;
-            self.props.errored(firebaseError);
-        });
-    }
-    render() {
-        return <div style={{ fontWeight: "bold", padding: "10px" }}>
-            <span style={{ marginRight: "5px" }}><NonNavigatableLink color={this.props.linkColor} text={this.props.signOutTitle} clicked={this.logOut} /></span>
-            <span>{this.props.auth.currentUser.email}</span>
-        </div>
-    }
-}
-
-
-interface EmailSignInScreenStyleProps {
-    focusColor?: string,
-    errorColor?: string,
-    emailPasswordBorderColor?: string,
-    signInButtonType?: React.ComponentClass<SimpleButtonProps>,
-    signInButtonProps?: {},
-    
-}
-interface EmailSignInScreenProps extends EmailSignInScreenStyleProps, EmailErroredProps {
-    auth: firebase.auth.Auth
-    validateEmail?: (email: string) => boolean,
-    validatePassword?:(password:string)=>boolean
-    isSignIn?: boolean,//should handle prop change if was allowing container to change....
-    signInTitle?: string,
-    emailHeader?: string,
-    passwordHeader?:string,
-    createNewAccountTitle?: string,
-    dividerColour?: string
-    
-}
-interface EmailSignInScreenState {
-    email: string,
-    password: string,
-    passwordSet: boolean,
-    emailSet:boolean,
-    emailValid: boolean,
-    passwordValid: boolean,
-    isSignIn: boolean,
-    passwordIsFocused:boolean,
-    emailIsFocused: boolean,
-    
-}
-class EmailSignInScreen extends React.Component<EmailSignInScreenProps, EmailSignInScreenState> {
-    public static defaultProps: Partial<EmailSignInScreenProps> = {
-        validateEmail: function (email: string) {
-            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(email);
-        },
-        validatePassword: function (password: string) {
-            return password.length >= 6
-        },
-        signInTitle: "Sign in:",
-        createNewAccountTitle: "Create new account",
-        isSignIn: true,
-        focusColor: "blue",
-        errorColor: "red",
-        emailPasswordBorderColor: "initial",
-        emailHeader: "Email",
-        passwordHeader: "Password ( 6+ )",
-        signInButtonType: MuiButtonWrapper
-
-    };
-    constructor(props) {
-        super(props);
-        this.state = { passwordSet: false, emailSet: false, emailValid: true, email: "", password: "", passwordValid: true, isSignIn: this.props.isSignIn, emailIsFocused: false, passwordIsFocused: false }
-    }
-    emailPasswordPreviousValue:string
-    passwordElement: HTMLInputElement;
-    emailElement: HTMLInputElement;
-    //this does not get done on auto complete
-    passwordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        var password = event.target.value;
-        this.props.errored(null);
-        this.setState({ password: password, passwordValid: this.props.validatePassword(password),passwordSet:true })
-    }
-    emailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.props.errored(null);
-        var emailValue = event.target.value;
-        var emailValid = this.props.validateEmail(emailValue);
-        this.setState({ email: emailValue, emailValid: emailValid,emailSet:true })
-    }
-    validatedPassword:boolean
-    signInOrCreateAccount = () => {
-        //now that the button has been pressed can validate password
-        var validPassword = true;
-        if (!this.validatedPassword) {
-            validPassword = this.props.validatePassword(this.passwordElement.value);
-            this.validatedPassword = true;
-            if (!validPassword) {
-                this.setState({ passwordValid: false });//not necessary?
-            }
-        }
-        if (validPassword) {
-            var self = this;
-            if (self.state.isSignIn) {
-                this.props.auth.signInWithEmailAndPassword(this.state.email, this.state.password).catch(function (err) {
-                    var firebaseError = (err as any) as firebase.auth.Error;
-                    self.signInError(firebaseError);
-                });
-            } else {
-                this.props.auth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function (err) {
-                    var firebaseError = (err as any) as firebase.auth.Error;
-                    self.signInError(firebaseError);
-                });
-            }
-            
-        }
-        
-    }
-    signInError(firebaseError: firebase.auth.Error) {
-        var errorCode = firebaseError.code;
-        var errorMessage: string;
-        var errorFocusElement: HTMLElement;
-        var emailInError = false;
-        var passwordInError = false;
-        switch (errorCode) {
-            case "auth/invalid-email":
-                errorFocusElement = this.emailElement;
-                emailInError = true;
-                break;
-            case "auth/user-not-found":
-                errorFocusElement = this.emailElement;
-                emailInError = true;
-                break;
-            case "auth/wrong-password":
-                errorFocusElement = this.passwordElement;
-                passwordInError = true;
-                break;
-            case "auth/email-already-in-use":
-                errorFocusElement = this.passwordElement;
-                passwordInError = true;
-                break;
-            case "auth/weak-password":
-                errorFocusElement = this.passwordElement;
-                passwordInError = true;
-                break;
-        }
-        if (errorFocusElement) {
-            errorFocusElement.focus();
-        }
-        this.props.errored(firebaseError);
-        this.setState({ emailValid: !emailInError, passwordValid: !passwordInError })
-    }
-    switch=() =>{
-        this.props.errored(null);
-        this.setState(function (prevState: EmailSignInScreenState) {
-            return { isSignIn: !prevState.isSignIn }
-        });
-    }
-    passwordFocused = () => {
-        this.setState({ passwordIsFocused: true })
-    }
-    passwordBlurred = () => {
-        this.setState({ passwordIsFocused: false })
-    }
-    emailFocused = () => {
-        this.setState({ emailIsFocused: true })
-    }
-    emailBlurred = () => {
-        this.setState({emailIsFocused:false})
-    }
-
-    render() {
-        var title = this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle;
-        var emailBorderColor = this.props.errorColor;
-        var emailBoxShadow = "";
-        var passwordBorderColor= this.props.errorColor;
-        var focusBoxShadow = "inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1)"
-        if (this.state.emailIsFocused) {
-            emailBoxShadow = focusBoxShadow;
-        }
-        if (this.state.emailValid) {
-            if (this.state.emailIsFocused) {
-                emailBorderColor = this.props.focusColor;
-            } else {
-                emailBorderColor = this.props.emailPasswordBorderColor;
-            }
-        }
-
-        if (this.state.passwordValid) {
-            if (this.state.passwordIsFocused) {
-                passwordBorderColor = this.props.focusColor;
-            } else {
-                passwordBorderColor = this.props.emailPasswordBorderColor
-            }
-        }
-        
-        var ButtonType = this.props.signInButtonType;
-
-        var labelStyle = { marginBottom: "7px" }
-        //could create AutoCompleteLabelInput for consistency
-        return <div style={{ padding: "10px 0px 10px 0px" }}>
-            
-            <div style={{ fontWeight: "bold", marginBottom: "5px" }}><span>{title + " / "}</span>
-                <NonNavigatableLink clicked={this.switch} removeUnderline={true} text={this.state.isSignIn ? this.props.createNewAccountTitle : this.props.signInTitle} />
-               
-            </div>
-
-            <Divider color={this.props.dividerColour} />
-            <br />
-            
-
-            <label style={labelStyle}>{this.props.emailHeader}</label>
-            <AutoComplete  autoCompletedWait={500} containerStyle={{ marginBottom: "10px" }}>
-                <input onBlur={this.emailBlurred} onFocus={this.emailFocused} ref={(input) => this.emailElement = input} spellCheck={false} style={{ borderRadius: "2px", padding: "5px", borderColor: emailBorderColor }} type="email" name="emailLogon" value={this.state.email} autoComplete="on" onChange={this.emailChange} />
-            </AutoComplete>
-            
-            <label style={labelStyle}>{this.props.passwordHeader}</label>
-            <AutoComplete containerStyle={{ marginBottom: "10px" }}>
-                <input onBlur={this.passwordBlurred} onFocus={this.passwordFocused} ref={(input) => this.passwordElement = input} style={{ outline: "none", borderRadius: "2px", padding: "5px", borderColor: passwordBorderColor }} type="password" name="password" autoComplete="password" value={this.state.password} onChange={this.passwordChange} />
-            </AutoComplete>
-            
-
-            <ButtonType {...this.props.signInButtonProps} disabled={!(this.state.emailSet && this.state.emailValid && this.state.passwordValid)} onClick={this.signInOrCreateAccount} text={this.state.isSignIn ? this.props.signInTitle : this.props.createNewAccountTitle} />
-        </div>
-    }
-}
-
-
-
-*/
 
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20972,7 +20998,7 @@ exports.ClueLetter = ClueLetter;
 
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21108,7 +21134,7 @@ exports.Lightbulb = Lightbulb;
 
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21170,7 +21196,7 @@ exports.NonNavigatableLink = NonNavigatableLink;
 
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21187,7 +21213,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var Color = __webpack_require__(36);
+var Color = __webpack_require__(37);
+var javascriptPolyfills_1 = __webpack_require__(34);
 var MuiButton = (function (_super) {
     __extends(MuiButton, _super);
     function MuiButton(props) {
@@ -21227,14 +21254,6 @@ var MuiButton = (function (_super) {
             fn && fn(ev);
         };
         _this.id = MuiButton.idName + (MuiButton.idCount++).toString();
-        var mergedStyle = _this.objectAssign({}, MuiButton.defaultButtonStyle, _this.props.buttonStyle);
-        var dynamicStylePropertyNames = ["backgroundColor", "cursor", "color"];
-        dynamicStylePropertyNames.forEach(function (pName) {
-            var styleValue = mergedStyle[pName];
-            this[pName] = styleValue;
-            delete mergedStyle[pName];
-        }.bind(_this));
-        _this.buttonStyle = mergedStyle;
         _this.state = { ripple: null };
         return _this;
     }
@@ -21342,30 +21361,6 @@ var MuiButton = (function (_super) {
             ripple: null
         });
     };
-    MuiButton.prototype.objectAssign = function (target) {
-        'use strict';
-        var varArgs = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            varArgs[_i - 1] = arguments[_i];
-        }
-        if (target == null) {
-            throw new TypeError('Cannot convert undefined or null to object');
-        }
-        var to = Object(target);
-        for (var index = 1; index < arguments.length; index++) {
-            var nextSource = arguments[index];
-            if (nextSource != null) {
-                for (var nextKey in nextSource) {
-                    // Avoid bugs when hasOwnProperty is shadowed
-                    if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-                        to[nextKey] = nextSource[nextKey];
-                    }
-                }
-            }
-        }
-        return to;
-    };
-    ;
     MuiButton.prototype.getRGBString = function (colour) {
         var rgbArray = colour.rgb().array().map(function (num) {
             return Math.round(num);
@@ -21374,6 +21369,14 @@ var MuiButton = (function (_super) {
     };
     MuiButton.prototype.render = function () {
         var _this = this;
+        var mergedStyle = javascriptPolyfills_1.objectAssign({}, MuiButton.defaultButtonStyle, this.props.buttonStyle);
+        var dynamicStylePropertyNames = ["backgroundColor", "cursor", "color"];
+        dynamicStylePropertyNames.forEach(function (pName) {
+            var styleValue = mergedStyle[pName];
+            this[pName] = styleValue;
+            delete mergedStyle[pName];
+        }.bind(this));
+        this.buttonStyle = mergedStyle;
         var rippleStyle = {};
         var rippleMainClass = 'mui-ripple';
         var rippleActiveClass = 'mui--is-visible';
@@ -21431,18 +21434,23 @@ var MuiButton = (function (_super) {
         var disabledCss = thisButtonDisabledSelector + "{" + disabledCssFixed + disabledVisualCss + "}";
         var buttonCss = buttonSelector + "{background-color:" + this.backgroundColor + ";cursor:" + this.cursor + ";color:" + this.color + "}";
         var rippleSelector = buttonSelector + " ." + rippleMainClass;
-        var rippleNormalCss = rippleSelector + "{position: absolute; top: 0; left: 0; border-radius: 50%; pointer-events: none; transform: scale(.0001, .0001); background-color: white}";
+        var rippleNormalCss = rippleSelector + "{position: absolute; top: 0; left: 0; border-radius: 50%; pointer-events: none; transform: scale(.0001, .0001); background-color:" + this.props.rippleColour + "}";
         var rippleActiveSelector = buttonSelector + " ." + rippleActiveClass;
         var rippleAnimatingSelector = rippleSelector + "." + rippleIsAnimatingClass;
-        var rippleActiveCss = rippleActiveSelector + "{opacity:0.3}";
+        var rippleActiveCss = rippleActiveSelector + "{opacity:" + this.props.rippleOpacity + "}";
         var rippleAnimatingCss = rippleAnimatingSelector + "{transform:none;transition:transform .3s cubic-bezier(0,0,.2,1),width .3s cubic-bezier(0,0,.2,1),height .3s cubic-bezier(0,0,.2,1),opacity .3s cubic-bezier(0,0,.2,1)}";
-        var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + hoverFocusActiveLighterBackgroundCss + disabledCss + buttonCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
-        return React.createElement("button", { disabled: this.props.disabled, style: this.buttonStyle, id: this.id, ref: function (btn) { return _this.buttonEl = btn; }, onTouchStart: this.onTouchStartCB, onTouchEnd: this.onTouchEndCB, onMouseDown: this.onMouseDownCB, onMouseUp: this.onMouseUpCB, onMouseLeave: this.onMouseLeaveCB },
+        var rippleContainerStyle = this.props.rippleContainerStyle;
+        if (this.props.buttonStyle.borderRadius && !rippleContainerStyle.borderRadius) {
+            rippleContainerStyle.borderRadius = this.props.buttonStyle.borderRadius;
+        }
+        var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + (this.props.touchOnly ? "" : hoverFocusActiveLighterBackgroundCss) + disabledCss + buttonCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
+        return React.createElement("button", { onContextMenu: function (evt) { if (_this.props.preventContextMenu)
+                evt.preventDefault(); }, disabled: this.props.disabled, style: this.buttonStyle, id: this.id, ref: function (btn) { return _this.buttonEl = btn; }, onTouchStart: this.onTouchStartCB, onTouchEnd: this.onTouchEndCB, onMouseDown: this.onMouseDownCB, onMouseUp: this.onMouseUpCB, onMouseLeave: this.onMouseLeaveCB },
             this.props.children,
             React.createElement("style", { dangerouslySetInnerHTML: {
                     __html: muiCss
                 } }),
-            React.createElement("span", { style: this.props.rippleContainerStyle, className: "mui-btn__ripple-container" },
+            React.createElement("span", { style: rippleContainerStyle, className: "mui-btn__ripple-container" },
                 React.createElement("span", { style: rippleStyle, className: rippleCls, ref: function (span) { _this.rippleEl = span; } })));
     };
     return MuiButton;
@@ -21450,9 +21458,11 @@ var MuiButton = (function (_super) {
 MuiButton.idCount = 0;
 MuiButton.idName = "muiButton";
 MuiButton.defaultProps = {
+    touchOnly: false,
     disabled: false,
     disabledCursor: "not-allowed",
     rippleColour: "white",
+    rippleOpacity: 0.3,
     disabledOpacity: 0.6,
     disabledDesaturatePercentage: 0,
     disabledLightenPercentage: 0,
@@ -21460,7 +21470,7 @@ MuiButton.defaultProps = {
     boxShadowRaised: "0 0px 2px rgba(0,0,0, 0.12),0 2px 2px rgba(0,0,0, 0.20);",
     boxShadowActive: "0 0px 4px rgba(0,0,0, 0.12), 1px 3px 4px rgba(0,0,0, 0.20);",
     buttonStyle: {},
-    rippleContainerStyle: { position: "absolute", top: 0, left: 0, display: "block", height: "100%", width: "100%", overflow: "hidden", zIndex: 0, pointerEvents: "none" },
+    rippleContainerStyle: { WebkitUserSelect: "none", MozUserSelect: "none", msUserSelect: "none", userSelect: "none", position: "absolute", top: 0, left: 0, display: "block", height: "100%", width: "100%", overflow: "hidden", zIndex: 0, pointerEvents: "none" },
 };
 MuiButton.defaultButtonStyle = {
     outline: "none",
@@ -21481,7 +21491,7 @@ exports.MuiButton = MuiButton;
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21500,8 +21510,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import  Radium  =require('radium')
 var index_1 = __webpack_require__(15);
-var squareLetter_1 = __webpack_require__(146);
-var squareNumber_1 = __webpack_require__(147);
+var squareLetter_1 = __webpack_require__(147);
+var squareNumber_1 = __webpack_require__(148);
 var commonStyling_1 = __webpack_require__(14);
 //@Radium
 var Square = (function (_super) {
@@ -21587,7 +21597,7 @@ exports.Square = Square;
 
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21620,7 +21630,7 @@ exports.SquareLetter = SquareLetter;
 
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21653,28 +21663,971 @@ exports.SquareNumber = SquareNumber;
 
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-// A '.tsx' file enables JSX support in the TypeScript compiler, 
-// for more information see the following page on the TypeScript wiki:
-// https://github.com/Microsoft/TypeScript/wiki/JSX
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(35);
-var crosswordPuzzleApp_1 = __webpack_require__(60);
-//ReactDOM.render(
-//    <CrosswordPuzzleLoader/>,
-//    document.getElementById("example")
-//);
-//CrosswordPuzzleApp
+var Duration = (function () {
+    function Duration(ms) {
+        this.totalMs = ms;
+        this.milliseconds = (ms % 1000);
+        this.seconds = Math.floor((ms / 1000)) % 60;
+        this.minutes = Math.floor((ms / (1000 * 60))) % 60;
+        this.hours = Math.floor((ms / (1000 * 60 * 60))) % 24;
+        this.days = Math.floor((ms / (1000 * 60 * 60 * 24)));
+    }
+    Duration.increment = function (duration, ms) {
+        var totalMs = duration.totalMs + ms;
+        return new Duration(totalMs);
+    };
+    return Duration;
+}());
+exports.Duration = Duration;
+var ReportTickInterval;
+(function (ReportTickInterval) {
+    ReportTickInterval[ReportTickInterval["milliseconds"] = 0] = "milliseconds";
+    ReportTickInterval[ReportTickInterval["seconds"] = 1] = "seconds";
+    ReportTickInterval[ReportTickInterval["minutes"] = 2] = "minutes";
+    ReportTickInterval[ReportTickInterval["hours"] = 3] = "hours";
+})(ReportTickInterval = exports.ReportTickInterval || (exports.ReportTickInterval = {}));
+var StopwatchController = (function (_super) {
+    __extends(StopwatchController, _super);
+    function StopwatchController(props) {
+        var _this = _super.call(this, props) || this;
+        _this.start = function () {
+            if (!_this.state.started) {
+                _this.startTimer();
+                _this.setState({ started: true });
+            }
+        };
+        _this.stop = function () {
+            if (_this.state.started) {
+                _this.stopTimer();
+                _this.startDuration = _this.currentDuration;
+                _this.setState({ started: false });
+            }
+        };
+        //LP
+        _this.clear = function () {
+        };
+        _this.currentDuration = new Duration(_this.props.startDuration);
+        _this.startDuration = _this.currentDuration;
+        _this.setTimerInterval();
+        _this.state = { started: false, duration: _this.currentDuration };
+        return _this;
+    }
+    StopwatchController.prototype.componentWillMount = function () {
+        if (this.props.autoStart) {
+            this.startTimer();
+        }
+    };
+    StopwatchController.prototype.componentWillReceiveProps = function (nextProps) {
+        this.stopTimer();
+        this.currentDuration = new Duration(nextProps.startDuration);
+        this.startDuration = this.currentDuration;
+        this.setTimerInterval();
+        if (this.props.autoStart) {
+            this.startTimer();
+        }
+    };
+    StopwatchController.prototype.getDuration = function () {
+        return this.currentDuration;
+    };
+    StopwatchController.prototype.setTimerInterval = function () {
+        switch (this.props.reportTickInterval) {
+            case ReportTickInterval.milliseconds:
+                this.timerInterval = 1;
+                break;
+            case ReportTickInterval.seconds:
+                this.timerInterval = 1000;
+                break;
+            case ReportTickInterval.minutes:
+                this.timerInterval = 60000;
+                break;
+            case ReportTickInterval.hours:
+                this.timerInterval = 60000 * 24;
+                break;
+        }
+    };
+    StopwatchController.prototype.componentWillUnmount = function () {
+        this.stopTimer();
+    };
+    StopwatchController.prototype.updateDuration = function (ms) {
+        this.currentDuration = Duration.increment(this.startDuration, ms);
+        this.setState({ duration: this.currentDuration });
+    };
+    StopwatchController.prototype.startTimer = function () {
+        var self = this;
+        this.startTime = new Date();
+        this.cancelIntervalId = window.setInterval(function () {
+            var now = new Date();
+            var elapsed = now - self.startTime;
+            self.updateDuration(elapsed);
+        }, this.timerInterval);
+        this.setState({ started: true });
+    };
+    StopwatchController.prototype.stopTimer = function () {
+        window.clearInterval(this.cancelIntervalId);
+    };
+    StopwatchController.prototype.render = function () {
+        return React.createElement("div", null, React.cloneElement(this.props.children, { started: this.state.started, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start }));
+    };
+    return StopwatchController;
+}(React.Component));
+StopwatchController.defaultProps = {
+    autoStart: true,
+    startDuration: 0,
+    reportTickInterval: ReportTickInterval.seconds
+};
+exports.StopwatchController = StopwatchController;
+var DemoStopwatchDisplay = (function (_super) {
+    __extends(DemoStopwatchDisplay, _super);
+    function DemoStopwatchDisplay() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DemoStopwatchDisplay.prototype.render = function () {
+        var _this = this;
+        return React.createElement("div", null,
+            React.createElement("span", null, this.props.duration.days),
+            React.createElement("span", null, ":"),
+            React.createElement("span", null, this.props.duration.hours),
+            React.createElement("span", null, ":"),
+            React.createElement("span", null, this.props.duration.minutes),
+            React.createElement("span", null, ":"),
+            React.createElement("span", null, this.props.duration.seconds),
+            this.props.started ?
+                React.createElement("button", { onClick: function () { _this.props.stop(); } }, "Stop") :
+                React.createElement("button", { onClick: function () { _this.props.start(); } }, "Start"));
+    };
+    return DemoStopwatchDisplay;
+}(React.Component));
+exports.DemoStopwatchDisplay = DemoStopwatchDisplay;
+
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function numberToNumberString(num, hyphenate) {
+    if (hyphenate === void 0) { hyphenate = true; }
+    var n;
+    if (typeof num === "string") {
+        n = parseInt(num);
+    }
+    else {
+        n = num;
+    }
+    switch (n) {
+        case 1:
+            return "one";
+        case 2:
+            return "two";
+        case 3:
+            return "three";
+        case 4:
+            return "four";
+        case 5:
+            return "five";
+        case 6:
+            return "six";
+        case 7:
+            return "seven";
+        case 8:
+            return "eight";
+        case 9:
+            return "nine";
+        case 10:
+            return "ten";
+        case 11:
+            return "eleven";
+        case 12:
+            return "twelve";
+        case 13:
+            return "thirteen";
+        case 14:
+            return "fourteen";
+        case 15:
+            return "fifteen";
+        case 16:
+            return "sixteen";
+        case 17:
+            return "seventeen";
+        case 18:
+            return "eighteen";
+        case 19:
+            return "nineteen";
+        case 20:
+            return "twenty";
+        case 21:
+            return hyphenate ? "twenty-one" : "twenty one";
+        case 22:
+            return hyphenate ? "twenty-two" : "twenty two";
+        case 23:
+            return hyphenate ? "twenty-three" : "twenty three";
+        case 24:
+            return hyphenate ? "twenty-four" : "twenty four";
+        case 25:
+            return hyphenate ? "twenty-five" : "twenty five";
+        case 26:
+            return hyphenate ? "twenty-six" : "twenty six";
+        case 27:
+            return hyphenate ? "twenty-seven" : "twenty seven";
+        case 28:
+            return hyphenate ? "twenty-eight" : "twenty eight";
+        case 29:
+            return hyphenate ? "twenty-nine" : "twenty nine";
+        case 30:
+            return "thirty";
+    }
+}
+exports.numberToNumberString = numberToNumberString;
+function numberStringToNumber(numberString) {
+    numberString = numberString.toLowerCase();
+    switch (numberString) {
+        case "one":
+            return 1;
+        case "two":
+            return 2;
+        case "three":
+            return 3;
+        case "four":
+            return 4;
+        case "five":
+            return 5;
+        case "six":
+            return 6;
+        case "seven":
+            return 7;
+        case "eight":
+            return 8;
+        case "nine":
+            return 9;
+        case "ten":
+            return 10;
+        case "eleven":
+            return 11;
+        case "twelve":
+            return 12;
+        case "thirteen":
+            return 13;
+        case "fourteen":
+            return 14;
+        case "fifteen":
+            return 15;
+        case "sixteen":
+            return 16;
+        case "seventeen":
+            return 17;
+        case "eighteen":
+            return 18;
+        case "nineteen":
+            return 19;
+        case "twenty":
+            return 20;
+        case "twenty-one":
+            return 21;
+        case "twenty one":
+            return 21;
+        case "twenty-two":
+            return 22;
+        case "twenty two":
+            return 23;
+        case "twenty-three":
+            return 23;
+        case "twenty three":
+            return 23;
+        case "twenty-four":
+            return 24;
+        case "twenty four":
+            return 24;
+        case "twenty-five":
+            return 25;
+        case "twenty five":
+            return 25;
+        case "twenty-six":
+            return 26;
+        case "twenty six":
+            return 26;
+        case "twenty-seven":
+            return 27;
+        case "twenty seven":
+            return 27;
+        case "twenty-eight":
+            return 28;
+        case "twenty eight":
+            return 28;
+        case "twenty-nine":
+            return 29;
+        case "twenty nine":
+            return 29;
+        case "thirty":
+            return 30;
+    }
+}
+exports.numberStringToNumber = numberStringToNumber;
+
+
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var optionalParam = /\s*\((.*?)\)\s*/g;
+var optionalRegex = /(\(\?:[^)]+\))\?/g;
+var namedParam = /(\(\?)?:\w+/g;
+var splatParam = /\*\w+/g;
+var escapeRegExp = /[\-{}\[\]+?.,\\\^$|#]/g;
+function simpleCommandToRegExp(command) {
+    command = command.replace(escapeRegExp, '\\$&').replace(optionalParam, '(?:$1)?').replace(namedParam, function (match, optional) {
+        return optional ? match : '([^\\s]+)';
+    }).replace(splatParam, '(.*?)').replace(optionalRegex, '\\s*$1?\\s*');
+    return new RegExp('^' + command + '$', 'i');
+}
+exports.simpleCommandToRegExp = simpleCommandToRegExp;
+// Get the SpeechRecognition object, while handling browser prefixes
+var anyWindow = window;
+var SpeechRecognition = anyWindow.SpeechRecognition || anyWindow.webkitSpeechRecognition || anyWindow.mozSpeechRecognition || anyWindow.msSpeechRecognition || anyWindow.oSpeechRecognition;
+// Check browser support
+// This is done as early as possible, to make it as fast as possible for unsupported browsers
+if (SpeechRecognition) {
+    var commandsList = [];
+    var recognition;
+    var callbacks = { start: [], error: [], end: [], soundstart: [], result: [], resultMatch: [], resultNoMatch: [], errorNetwork: [], errorPermissionBlocked: [], errorPermissionDenied: [], soundend: [], audiostart: [], audioend: [], speechstart: [], speechend: [], nomatch: [], originalResult: [] };
+    var autoRestart;
+    var lastStartedAt = 0;
+    var autoRestartCount = 0;
+    var debugState = false;
+    var debugStyle = 'font-weight: bold; color: #00f;';
+    var pauseListening = false;
+    var _isListening = false;
+    // This method receives an array of callbacks to iterate over, and invokes each of them
+    var invokeCallbacks = function invokeCallbacks(callbacks) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+            args[_key - 1] = arguments[_key];
+        }
+        callbacks.forEach(function (callback) {
+            callback.callback.apply(callback.context, args);
+        });
+    };
+    var isInitialized = function isInitialized() {
+        return recognition !== undefined;
+    };
+    // method for logging in developer console when debug mode is on
+    var logMessage = function logMessage(text, extraParameters) {
+        if (text.indexOf('%c') === -1 && !extraParameters) {
+            console.log(text);
+        }
+        else {
+            console.log(text, extraParameters || debugStyle);
+        }
+    };
+    var initIfNeeded = function initIfNeeded() {
+        if (!isInitialized()) {
+            exports.recogniseMe.init([], false);
+        }
+    };
+    var registerCommand = function registerCommand(command) {
+        commandsList.push(command);
+        if (debugState) {
+            logMessage('Command successfully loaded: %c' + command.description, debugStyle);
+        }
+    };
+    //confidences new arg
+    var parseResults = function parseResults(results, confidences) {
+        invokeCallbacks(callbacks.result, results, confidences);
+        var commandText;
+        // go over each of the 5 results and alternative results received (we've set maxAlternatives to 5 above)
+        for (var i = 0; i < results.length; i++) {
+            // the text recognized
+            commandText = results[i].trim();
+            if (debugState) {
+                logMessage('Speech recognized: %c' + commandText, debugStyle);
+            }
+            // try and match recognized text to one of the commands on the list
+            for (var j = 0, l = commandsList.length; j < l; j++) {
+                var currentCommand = commandsList[j];
+                var result = currentCommand.regExpr.exec(commandText);
+                if (result) {
+                    var parameters = result.slice(1);
+                    if (debugState) {
+                        logMessage('command matched: %c' + currentCommand.description, debugStyle);
+                        if (parameters.length) {
+                            logMessage('with parameters', parameters);
+                        }
+                    }
+                    currentCommand.callback({
+                        command: currentCommand,
+                        confidence: confidences[i],
+                        parameters: parameters
+                    });
+                    //state change will go here - ignore and global option for matchMultiple
+                    invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.description, results, confidences);
+                    return;
+                }
+            }
+        }
+        invokeCallbacks(callbacks.resultNoMatch, results, confidences);
+    };
+    exports.recogniseMe = {
+        /**
+            * Initialize annyang with a list of commands to recognize.
+            *
+            * #### Examples:
+            * ````javascript
+            * var commands = {'hello :name': helloFunction};
+            * var commands2 = {'hi': helloFunction};
+            *
+            * // initialize annyang, overwriting any previously added commands
+            * annyang.init(commands, true);
+            * // adds an additional command without removing the previous commands
+            * annyang.init(commands2, false);
+            * ````
+            * As of v1.1.0 it is no longer required to call init(). Just start() listening whenever you want, and addCommands() whenever, and as often as you like.
+            *
+            * @param {Object} commands - Commands that annyang should listen to
+            * @param {boolean} [resetCommands=true] - Remove all commands before initializing?
+            * @method init
+            * @deprecated
+            * @see [Commands Object](#commands-object)
+            */
+        //need to type commands 
+        init: function init(commands, resetCommands) {
+            if (resetCommands === void 0) { resetCommands = true; }
+            // Abort previous instances of recognition already running
+            if (recognition && recognition.abort) {
+                recognition.abort();
+            }
+            // initiate SpeechRecognition
+            recognition = new SpeechRecognition();
+            // Set the max number of alternative transcripts to try and match with a command
+            recognition.maxAlternatives = 20;
+            // In HTTPS, turn off continuous mode for faster results.
+            // In HTTP,  turn on  continuous mode for much slower results, but no repeating security notices
+            recognition.continuous = window.location.protocol === 'http:';
+            // Sets the language to the default 'en-US'. This can be changed with annyang.setLanguage()
+            recognition.lang = 'en-US';
+            recognition.onstart = function () {
+                _isListening = true;
+                invokeCallbacks(callbacks.start);
+            };
+            recognition.onsoundstart = function () {
+                invokeCallbacks(callbacks.soundstart);
+            };
+            //missing event handlers for annyang - will get booleans later
+            recognition.onsoundend = function () {
+                invokeCallbacks(callbacks.soundend);
+            };
+            recognition.onaudiostart = function () {
+                invokeCallbacks(callbacks.audiostart);
+            };
+            recognition.onaudioend = function () {
+                invokeCallbacks(callbacks.audioend);
+            };
+            recognition.onspeechstart = function () {
+                invokeCallbacks(callbacks.speechstart);
+            };
+            recognition.onspeechend = function () {
+                invokeCallbacks(callbacks.speechend);
+            };
+            recognition.onnomatch = function (event) {
+                invokeCallbacks(callbacks.nomatch, event);
+            };
+            ///////////////////////////
+            recognition.onerror = function (event) {
+                invokeCallbacks(callbacks.error, event);
+                switch (event.error) {
+                    case 'network':
+                        invokeCallbacks(callbacks.errorNetwork, event);
+                        break;
+                    case 'not-allowed':
+                    case 'service-not-allowed':
+                        // if permission to use the mic is denied, turn off auto-restart
+                        autoRestart = false;
+                        // determine if permission was denied by user or automatically.
+                        if (new Date().getTime() - lastStartedAt < 200) {
+                            invokeCallbacks(callbacks.errorPermissionBlocked, event);
+                        }
+                        else {
+                            invokeCallbacks(callbacks.errorPermissionDenied, event);
+                        }
+                        break;
+                }
+            };
+            recognition.onend = function () {
+                _isListening = false;
+                invokeCallbacks(callbacks.end);
+                // annyang will auto restart if it is closed automatically and not by user action.
+                if (autoRestart) {
+                    // play nicely with the browser, and never restart annyang automatically more than once per second
+                    var timeSinceLastStart = new Date().getTime() - lastStartedAt;
+                    autoRestartCount += 1;
+                    if (autoRestartCount % 10 === 0) {
+                        if (debugState) {
+                            logMessage('Speech Recognition is repeatedly stopping and starting. See http://is.gd/annyang_restarts for tips.');
+                        }
+                    }
+                    if (timeSinceLastStart < 1000) {
+                        setTimeout(function () {
+                            exports.recogniseMe.start({ paused: pauseListening });
+                        }, 1000 - timeSinceLastStart);
+                    }
+                    else {
+                        exports.recogniseMe.start({ paused: pauseListening });
+                    }
+                }
+            };
+            recognition.onresult = function (event) {
+                if (pauseListening) {
+                    if (debugState) {
+                        logMessage('Speech heard, but annyang is paused');
+                    }
+                    return false;
+                }
+                //new line to annyang
+                invokeCallbacks(callbacks.originalResult, event);
+                // Map the results to an array
+                var SpeechRecognitionResult = event.results[event.resultIndex];
+                var results = [];
+                var confidences = []; //this is new
+                for (var k = 0; k < SpeechRecognitionResult.length; k++) {
+                    results[k] = SpeechRecognitionResult[k].transcript;
+                    confidences[k] = SpeechRecognitionResult[k].confidence;
+                }
+                //confidences argument is new
+                parseResults(results, confidences);
+            };
+            // build commands list
+            if (resetCommands) {
+                commandsList = [];
+            }
+            //this is rubbish - if pass an array through to addCommands 
+            /*
+            for (var phrase in commands) {
+                if (commands.hasOwnProperty(phrase)) {
+            */
+            //if (commands.length) {
+            //  this.addCommands(commands);
+            //}
+            //therefore changing
+            if (commands) {
+                this.addCommands(commands);
+            }
+        },
+        /**
+            * Start listening.
+            * It's a good idea to call this after adding some commands first, but not mandatory.
+            *
+            * Receives an optional options object which supports the following options:
+            *
+            * - `autoRestart`  (boolean, default: true) Should annyang restart itself if it is closed indirectly, because of silence or window conflicts?
+            * - `continuous`   (boolean) Allow forcing continuous mode on or off. Annyang is pretty smart about this, so only set this if you know what you're doing.
+            * - `paused`       (boolean, default: true) Start annyang in paused mode.
+            *
+            * #### Examples:
+            * ````javascript
+            * // Start listening, don't restart automatically
+            * annyang.start({ autoRestart: false });
+            * // Start listening, don't restart automatically, stop recognition after first phrase recognized
+            * annyang.start({ autoRestart: false, continuous: false });
+            * ````
+            * @param {Object} [options] - Optional options.
+            * @method start
+            */
+        start: function start(options) {
+            initIfNeeded();
+            options = options || {};
+            if (options.paused !== undefined) {
+                pauseListening = !!options.paused;
+            }
+            else {
+                pauseListening = false;
+            }
+            if (options.autoRestart !== undefined) {
+                autoRestart = !!options.autoRestart;
+            }
+            else {
+                autoRestart = true;
+            }
+            if (options.continuous !== undefined) {
+                recognition.continuous = !!options.continuous;
+            }
+            lastStartedAt = new Date().getTime();
+            try {
+                recognition.start();
+            }
+            catch (e) {
+                if (debugState) {
+                    logMessage(e.message);
+                }
+            }
+        },
+        /**
+            * Stop listening, and turn off mic.
+            *
+            * Alternatively, to only temporarily pause annyang responding to commands without stopping the SpeechRecognition engine or closing the mic, use pause() instead.
+            * @see [pause()](#pause)
+            *
+            * @method abort
+            */
+        abort: function abort() {
+            autoRestart = false;
+            autoRestartCount = 0;
+            if (isInitialized()) {
+                recognition.abort();
+            }
+        },
+        /**
+            * Pause listening. annyang will stop responding to commands (until the resume or start methods are called), without turning off the browser's SpeechRecognition engine or the mic.
+            *
+            * Alternatively, to stop the SpeechRecognition engine and close the mic, use abort() instead.
+            * @see [abort()](#abort)
+            *
+            * @method pause
+            */
+        pause: function pause() {
+            pauseListening = true;
+        },
+        /**
+            * Resumes listening and restores command callback execution when a result matches.
+            * If SpeechRecognition was aborted (stopped), start it.
+            *
+            * @method resume
+            */
+        resume: function resume() {
+            exports.recogniseMe.start();
+        },
+        /**
+            * Turn on output of debug messages to the console. Ugly, but super-handy!
+            *
+            * @param {boolean} [newState=true] - Turn on/off debug messages
+            * @method debug
+            */
+        debug: function debug(debugState) {
+            if (debugState === void 0) { debugState = true; }
+            debugState = debugState;
+        },
+        /**
+            * Set the language the user will speak in. If this method is not called, defaults to 'en-US'.
+            *
+            * @param {String} language - The language (locale)
+            * @method setLanguage
+            * @see [Languages](https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#what-languages-are-supported)
+            */
+        setLanguage: function setLanguage(language) {
+            initIfNeeded();
+            recognition.lang = language;
+        },
+        setMaxAlternatives: function (maxAlternatives) {
+            initIfNeeded();
+            recognition.maxAlternatives = maxAlternatives;
+        },
+        /**
+            * Add commands that annyang will respond to. Similar in syntax to init(), but doesn't remove existing commands.
+            *
+            * #### Examples:
+            * ````javascript
+            * var commands = {'hello :name': helloFunction, 'howdy': helloFunction};
+            * var commands2 = {'hi': helloFunction};
+            *
+            * annyang.addCommands(commands);
+            * annyang.addCommands(commands2);
+            * // annyang will now listen to all three commands
+            * ````
+            *
+            * @param {Object} commands - Commands that annyang should listen to
+            * @method addCommands
+            * @see [Commands Object](#commands-object)
+            */
+        addCommands: function addCommands(commands) {
+            var cb;
+            initIfNeeded();
+            var cmds;
+            if (commands instanceof Array) {
+                cmds = commands;
+            }
+            else {
+                cmds = [commands];
+            }
+            cmds.forEach(function (cmd) {
+                registerCommand(cmd);
+            });
+        },
+        /**
+            * Remove existing commands. Called with a single phrase, array of phrases, or methodically. Pass no params to remove all commands.
+            *
+            * #### Examples:
+            * ````javascript
+            * var commands = {'hello': helloFunction, 'howdy': helloFunction, 'hi': helloFunction};
+            *
+            * // Remove all existing commands
+            * annyang.removeCommands();
+            *
+            * // Add some commands
+            * annyang.addCommands(commands);
+            *
+            * // Don't respond to hello
+            * annyang.removeCommands('hello');
+            *
+            * // Don't respond to howdy or hi
+            * annyang.removeCommands(['howdy', 'hi']);
+            * ````
+            * @param {String|Array|Undefined} [commandsToRemove] - Commands to remove
+            * @method removeCommands
+            */
+        removeCommands: function removeCommands(commandsToRemove) {
+            if (commandsToRemove === undefined) {
+                commandsList = [];
+            }
+            else {
+                var cmds;
+                cmds = Array.isArray(commandsToRemove) ? commandsToRemove : [commandsToRemove];
+                commandsList = commandsList.filter(function (command) {
+                    for (var i = 0; i < cmds.length; i++) {
+                        if (commandsToRemove[i] === command.description) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+        },
+        /**
+            * Add a callback function to be called in case one of the following events happens:
+            *
+            * * `start` - Fired as soon as the browser's Speech Recognition engine starts listening
+            * * `soundstart` - Fired as soon as any sound (possibly speech) has been detected.
+            *     This will fire once per Speech Recognition starting. See https://is.gd/annyang_sound_start
+            * * `error` - Fired when the browser's Speech Recogntion engine returns an error, this generic error callback will be followed by more accurate error callbacks (both will fire if both are defined)
+            *     Callback function will be called with the error event as the first argument
+            * * `errorNetwork` - Fired when Speech Recognition fails because of a network error
+            *     Callback function will be called with the error event as the first argument
+            * * `errorPermissionBlocked` - Fired when the browser blocks the permission request to use Speech Recognition.
+            *     Callback function will be called with the error event as the first argument
+            * * `errorPermissionDenied` - Fired when the user blocks the permission request to use Speech Recognition.
+            *     Callback function will be called with the error event as the first argument
+            * * `end` - Fired when the browser's Speech Recognition engine stops
+            * * `result` - Fired as soon as some speech was identified. This generic callback will be followed by either the `resultMatch` or `resultNoMatch` callbacks.
+            *     Callback functions for to this event will be called with an array of possible phrases the user said as the first argument
+            * * `resultMatch` - Fired when annyang was able to match between what the user said and a registered command
+            *     Callback functions for this event will be called with three arguments in the following order:
+            *       * The phrase the user said that matched a command
+            *       * The command that was matched
+            *       * An array of possible alternative phrases the user might have said
+            * * `resultNoMatch` - Fired when what the user said didn't match any of the registered commands.
+            *     Callback functions for this event will be called with an array of possible phrases the user might've said as the first argument
+            *
+            * #### Examples:
+            * ````javascript
+            * annyang.addCallback('error', function() {
+            *   $('.myErrorText').text('There was an error!');
+            * });
+            *
+            * annyang.addCallback('resultMatch', function(userSaid, commandText, phrases) {
+            *   console.log(userSaid); // sample output: 'hello'
+            *   console.log(commandText); // sample output: 'hello (there)'
+            *   console.log(phrases); // sample output: ['hello', 'halo', 'yellow', 'polo', 'hello kitty']
+            * });
+            *
+            * // pass local context to a global function called notConnected
+            * annyang.addCallback('errorNetwork', notConnected, this);
+            * ````
+            * @param {String} type - Name of event that will trigger this callback
+            * @param {Function} callback - The function to call when event is triggered
+            * @param {Object} [context] - Optional context for the callback function
+            * @method addCallback
+            */
+        addCallback: function addCallback(type, callback, context) {
+            var cb;
+            if (callback instanceof String) {
+                cb = window[callback];
+            }
+            else {
+                cb = callback;
+            }
+            if (typeof cb === 'function' && callbacks[type] !== undefined) {
+                callbacks[type].push({ callback: cb, context: context || this });
+            }
+        },
+        /**
+            * Remove callbacks from events.
+            *
+            * - Pass an event name and a callback command to remove that callback command from that event type.
+            * - Pass just an event name to remove all callback commands from that event type.
+            * - Pass undefined as event name and a callback command to remove that callback command from all event types.
+            * - Pass no params to remove all callback commands from all event types.
+            *
+            * #### Examples:
+            * ````javascript
+            * annyang.addCallback('start', myFunction1);
+            * annyang.addCallback('start', myFunction2);
+            * annyang.addCallback('end', myFunction1);
+            * annyang.addCallback('end', myFunction2);
+            *
+            * // Remove all callbacks from all events:
+            * annyang.removeCallback();
+            *
+            * // Remove all callbacks attached to end event:
+            * annyang.removeCallback('end');
+            *
+            * // Remove myFunction2 from being called on start:
+            * annyang.removeCallback('start', myFunction2);
+            *
+            * // Remove myFunction1 from being called on all events:
+            * annyang.removeCallback(undefined, myFunction1);
+            * ````
+            *
+            * @param type Name of event type to remove callback from
+            * @param callback The callback function to remove
+            * @returns undefined
+            * @method removeCallback
+            */
+        removeCallback: function removeCallback(type, callback) {
+            var compareWithCallbackParameter = function compareWithCallbackParameter(cb) {
+                return cb.callback !== callback;
+            };
+            // Go over each callback type in callbacks store object
+            for (var callbackType in callbacks) {
+                if (callbacks.hasOwnProperty(callbackType)) {
+                    // if this is the type user asked to delete, or he asked to delete all, go ahead.
+                    if (type === undefined || type === callbackType) {
+                        // If user asked to delete all callbacks in this type or all types
+                        if (callback === undefined) {
+                            callbacks[callbackType] = [];
+                        }
+                        else {
+                            // Remove all matching callbacks
+                            callbacks[callbackType] = callbacks[callbackType].filter(compareWithCallbackParameter);
+                        }
+                    }
+                }
+            }
+        },
+        /**
+            * Returns true if speech recognition is currently on.
+            * Returns false if speech recognition is off or annyang is paused.
+            *
+            * @return boolean true = SpeechRecognition is on and annyang is listening
+            * @method isListening
+            */
+        isListening: function isListening() {
+            return _isListening && !pauseListening;
+        },
+        /**
+            * Returns the instance of the browser's SpeechRecognition object used by annyang.
+            * Useful in case you want direct access to the browser's Speech Recognition engine.
+            *
+            * @returns SpeechRecognition The browser's Speech Recognizer currently used by annyang
+            * @method getSpeechRecognizer
+            */
+        getSpeechRecognizer: function getSpeechRecognizer() {
+            return recognition;
+        },
+        /**
+            * Simulate speech being recognized. This will trigger the same events and behavior as when the Speech Recognition
+            * detects speech.
+            *
+            * Can accept either a string containing a single sentence, or an array containing multiple sentences to be checked
+            * in order until one of them matches a command (similar to the way Speech Recognition Alternatives are parsed)
+            *
+            * #### Examples:
+            * ````javascript
+            * annyang.trigger('Time for some thrilling heroics');
+            * annyang.trigger(
+            *     ['Time for some thrilling heroics', 'Time for some thrilling aerobics']
+            *   );
+            * ````
+            *
+            * @param string|array sentences A sentence as a string or an array of strings of possible sentences
+            * @returns undefined
+            * @method trigger
+            */
+        trigger: function trigger(sentences, confidences) {
+            if (!exports.recogniseMe.isListening()) {
+                if (debugState) {
+                    if (!_isListening) {
+                        logMessage('Cannot trigger while annyang is aborted');
+                    }
+                    else {
+                        logMessage('Speech heard, but annyang is paused');
+                    }
+                }
+                return;
+            }
+            if (!Array.isArray(sentences)) {
+                sentences = [sentences];
+            }
+            parseResults(sentences, confidences);
+        }
+    };
+}
+else {
+    console.log("No speech recognition");
+}
+
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function wordsFromSquashedWords(squashedWord, wordLengths, delimiter) {
+    if (delimiter === void 0) { delimiter = " "; }
+    var words = "";
+    var numWords = wordLengths.length;
+    var start = 0;
+    for (var i = 0; i < numWords; i++) {
+        var wordLength = wordLengths[i];
+        var word = squashedWord.substr(start, wordLength);
+        if (i !== numWords - 1) {
+            word += word;
+        }
+        words += word;
+        start += wordLength;
+    }
+    return words;
+}
+exports.wordsFromSquashedWords = wordsFromSquashedWords;
+
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var ReactDOM = __webpack_require__(36);
+var crosswordPuzzleApp_1 = __webpack_require__(61);
 ReactDOM.render(React.createElement(crosswordPuzzleApp_1.CrosswordPuzzleApp, null), document.getElementById("example"));
 
 
 /***/ }),
-/* 149 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21704,8 +22657,8 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import {canUseDOM} from 'exenv';
-var constants_1 = __webpack_require__(34);
-var utils_1 = __webpack_require__(150);
+var constants_1 = __webpack_require__(35);
+var utils_1 = __webpack_require__(155);
 function keyModifiersAny() {
     return {
         altKey: true,
@@ -21976,18 +22929,18 @@ exports.keyToggleHandler = keyHandleDecorator(utils_1.matchesKeyboardEvent);
 /**
  * Constants
  */
-__export(__webpack_require__(34));
+__export(__webpack_require__(35));
 
 
 /***/ }),
-/* 150 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 /* @flow */
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = __webpack_require__(34);
+var constants_1 = __webpack_require__(35);
 /**
  * Constants.
  */

@@ -1,13 +1,14 @@
 ﻿import * as React from "react";
 
-export interface NonNavigatableLinkProps {
-    text:string,
+export interface NonNavigatableLinkStyleProps {
     color?: string,
     removeUnderline?: boolean,
-    removeOutline?:boolean,
+    removeOutline?: boolean,
     transparentBackground?: boolean,
+}
+export interface NonNavigatableLinkProps extends NonNavigatableLinkStyleProps{
+    text:string,
     clicked:()=>void
-    
 }
 
 export class NonNavigatableLink extends React.Component<NonNavigatableLinkProps, undefined> {
@@ -29,6 +30,7 @@ export class NonNavigatableLink extends React.Component<NonNavigatableLinkProps,
         this.props.clicked();
     }
     render() {
+        
         var linkBackgroundColorCss = this.props.transparentBackground ? "background-color:transparent" : "";
         var linkTextDecoration = this.props.removeUnderline ? "text-decoration:none" : "text-decoration:underline";
         var linkRemoveOutline = this.props.removeOutline ? "outline:none" : "";

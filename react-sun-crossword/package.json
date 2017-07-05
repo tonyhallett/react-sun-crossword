@@ -17,16 +17,20 @@
     "@types/react": "^15.0.23",
     "@types/react-dom": "^15.5.0",
     "@types/react-select": "^1.0.46",
+    "@types/webspeechapi": "0.0.27",
     "color": "^1.0.3",
     "es6-promise": "^4.1.0",
     "firebase": "^4.1.1",
     "firebaseui": "^2.0.0",
     "muicss": "^0.9.16",
     "react": "^15.5.4",
+    "react-bounds": "^0.3.1",
     "react-custom-scrollbars": "^4.1.2",
     "react-dom": "^15.5.4",
+    "react-element-queries": "^0.3.0",
     "react-select": "^1.0.0-rc.5",
-    "react-tabs": "^1.0.0"
+    "react-tabs": "^1.0.0",
+    "react-touch-screen-keyboard": "^0.1.14"
   },
   "devDependencies": {
     "enzyme": "^2.8.2",

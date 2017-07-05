@@ -16,32 +16,45 @@ import 'firebase/database';
 import { CrosswordPuzzleChooser, DefaultSelectChooserButtonProps } from "./crosswordPuzzleChooser";
 import { MuiButton, MuiButtonProps } from "./muiButton";
 import { MuiButtonWrapper } from "./muiWrappedButton";
+import { DemoStopwatchDisplay, StopwatchController, Duration } from "./stopwatchController";
 
+import { Bounded, ElementQueries } from '../components/testBounds'
+import { ElementQuery, Matches, makeElementQuery } from 'react-element-queries';
+import { Keyboard } from "./keyboard";
+import { ExpandableKeyboard } from "./expandableKeyboard";
+import { recogniseMe,Command } from "../helpers/recogniseMe";
+//note that might want mediaquery as well
 
 
 
 interface CrosswordPuzzleAppState {
     crosswordModel: CrosswordModel,
+    //crosswordModelDuration:number,
     userLoggedIn: string,
 }
 export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzzleAppState> {
+
     constructor(props) {
         super(props);
-        this.state = { crosswordModel: null, userLoggedIn: null};
+        this.state = {crosswordModel: null, userLoggedIn: null};
     }
     componentDidMount() {
         auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+        
     }
     
     crosswordSelected = (selectedCrossword: CrosswordModelJson) => {
         var crosswordModel = ConvertCrosswordJsonToModel(selectedCrossword);
-        
-        this.setState({ crosswordModel: crosswordModel });
+        if (!crosswordModel.dateStarted) {
+            crosswordModel.dateStarted = new Date();
+        }
+        this.setState({ crosswordModel: crosswordModel});
     }
     saveUserCrossword = () => {
         
         var modelJson = ConvertCrosswordModelToJson(this.state.crosswordModel);
-        connectedDatabase.saveUserCrossword(this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails:UserSaveDetails) {
+        modelJson.duration = this.stopwatchController.getDuration().totalMs;
+        connectedDatabase.saveUserCrossword(this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, dateStarted: modelJson.dateStarted, duration: modelJson.duration, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails: UserSaveDetails) {
             //will now know not dirty
         }).catch(function (err) {
             //should be firebase error
@@ -61,17 +74,17 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
     //going to have to deal with saving of old one here
 
     
-    
+    stopwatchController: StopwatchController
     render() {
-        var primaryColour ="#f2e090"
+        var primaryColour ="gold"
         var buttonStyle: React.CSSProperties =  {
             backgroundColor: primaryColour,
-            color:"gray"
+            color:"#2F4F4F"
         }
         var buttonProps: MuiButtonProps = {
             buttonStyle: buttonStyle,
-            disabledBackgroundColor: "#667799",
-            disabledColor:"white",
+            disabledBackgroundColor: "#f9f9f9",
+            disabledColor:"#2F4F4F",
             lightenPercentage:0.1
         }
         var selectChooserProps: DefaultSelectChooserButtonProps = {
@@ -88,15 +101,53 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
             rightContent=<div/>
         }
         return <div >
-            
+            {this.state.crosswordModel &&
+                <StopwatchController ref={(sw) => { this.stopwatchController = sw }} startDuration={this.state.crosswordModel.duration}>
+                    <DemoStopwatchDisplay />
+                </StopwatchController>
+            }
             <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
-
             <TwoCol leftContent={leftContent} rightContent={rightContent}>
             
             </TwoCol>
             </div>
 
-       
+        //{height:"200px"}
+
+        /*
+            Element queries
+             <Bounded />
+            <ElementQuery queries={{ sm: { maxWidth: 200 }, lg: { minWidth: 201 }, hasHeight: {minHeight:1} }}>
+                <Matches sm>Small</Matches>
+                <Matches lg>Large</Matches>
+                <Matches hasHeight>Has height !</Matches>
+            </ElementQuery>
+            <ElementQueries/>
+        */
+
+        /*
+              <ElementQuery queries={{ sm: { maxWidth: 499 }, medium: { minWidth: 500,maxWidth:1000 },large: {minWidth: 1001}}}>
+                <Matches sm>
+                        <Keyboard width={250} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
+                </Matches>
+                <Matches medium>
+                    <Keyboard keyboardColour="#F8F8F8" buttonColour="gray" buttonBackgroundColour="yellow" width={500} bottomOfScreen={false} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
+                </Matches>
+                <Matches large>
+                    <Keyboard keyboardColour="#F8F8F8" buttonBackgroundColour="orange"width={1000} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
+                </Matches>
+
+            </ElementQuery>
+        */
+
+        /*
+        return <div style={{ minWidth: "500px", maxWidth:"1000px" }}>
+            <ExpandableKeyboard keyboardColour="gray" buttonBackgroundColour="orange"  backspacePressed={() => { }} keyPressed={() => { }} />
+          
+            </div>
+       */
+        
+
         //return <div>
         //    <div style={{width:"500px"}}>
         //        <CrosswordPuzzleChooser userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} />

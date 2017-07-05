@@ -1,12 +1,14 @@
 ﻿import * as React from "react";
 import * as Color from "Color";
 
-export interface AutoCompleteProps {
+export interface AutoCompleteStyleProps {
     focusShadow?: string,
-    showFocusShadow?:boolean,
+    showFocusShadow?: boolean,
     backgroundColor?: string,
-    autoCompleteColor?:string,
+    autoCompleteColor?: string,
     containerStyle?: React.CSSProperties,
+}
+export interface AutoCompleteProps extends AutoCompleteStyleProps {
     autoCompletedWait?: number,
     autoCompleted?:()=>void
 }

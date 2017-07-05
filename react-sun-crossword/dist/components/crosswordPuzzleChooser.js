@@ -18,6 +18,7 @@ var emailLogOn_1 = require("./emailLogOn");
 var firebaseApp_1 = require("../helpers/firebaseApp");
 var Select = require("react-select");
 exports.Select = require("react-select");
+var muiWrappedButton_1 = require("./muiWrappedButton");
 function displayNameHOC(Component, displayName) {
     var DisplayNameComponent = (function (_super) {
         __extends(DisplayNameComponent, _super);
@@ -33,7 +34,6 @@ function displayNameHOC(Component, displayName) {
     cc.displayName = displayName;
     return cc;
 }
-//need real ones !
 var DefaultDatabaseDisconnectedMessageComponent = (function (_super) {
     __extends(DefaultDatabaseDisconnectedMessageComponent, _super);
     function DefaultDatabaseDisconnectedMessageComponent() {
@@ -74,13 +74,13 @@ var DefaultSelectChooser = (function (_super) {
         var Button = displayNameHOC(this.props.ButtonType, "Button");
         return React.createElement("div", null,
             React.createElement(Select, { value: this.state.selectedValue, onChange: this.optionChange, disabled: this.props.disabled, isLoading: this.props.isLoadingLookups, placeholder: this.props.placeholderText, options: this.mapOptions() }),
-            React.createElement(Button, __assign({}, this.props.buttonProps, { text: "Play Crossword", onClick: this.buttonClicked, disabled: this.props.disabled || !this.state.selectedValue })));
+            React.createElement("div", { style: { paddingTop: "10px" } },
+                React.createElement(Button, __assign({}, this.props.buttonProps, { text: "Play Crossword", onClick: this.buttonClicked, disabled: this.props.disabled || !this.state.selectedValue }))));
     };
     return DefaultSelectChooser;
 }(React.Component));
 DefaultSelectChooser.defaultProps = {
-    ButtonType: emailLogOn_1.WrappedButton,
-    buttonProps: { style: { marginTop: "5px", borderRadius: "8px", padding: "5px" } }
+    ButtonType: muiWrappedButton_1.MuiButtonWrapper
 };
 exports.DefaultSelectChooser = DefaultSelectChooser;
 var DefaultSelectChooserContainer = (function (_super) {
@@ -98,7 +98,7 @@ var DefaultSelectChooserContainer = (function (_super) {
                 this.props.children[1],
                 this.props.children[0]);
         }
-        return React.createElement("fieldset", null,
+        return React.createElement("fieldset", { style: { borderRadius: "5px", borderColor: "#2F4F4F" } },
             React.createElement("legend", null, this.props.header),
             content);
     };
@@ -201,12 +201,12 @@ var CrosswordPuzzleChooser = (function (_super) {
         var SelectChooser = displayNameHOC(this.props.SelectChooser, "SelectChooser"); //!important to do this for intellisense even without the displayNameHOC
         var SelectChooserContainer = displayNameHOC(this.props.SelectChooserContainer, "SelectChooserContainer");
         return React.createElement("div", null,
-            React.createElement(this.props.DatabaseDisconnectedMessageComponent, __assign({}, this.props.databaseDisconnectedMessageComponentProps, { disconnectedMessage: this.state.databaseDisconnected ? this.props.disconnectedMessage : "" })),
+            React.createElement(this.props.DatabaseDisconnectedMessageComponent, __assign({}, this.props.databaseDisconnectedMessageComponentProps, { disconnectedMessage: this.state.databaseDisconnected ? this.props.disconnectedMessage : "\u200B" })),
             React.createElement(SelectChooserContainer, { isPublic: true, header: this.props.publicSelectChooserHeader },
                 React.createElement(SelectChooser, __assign({ placeholderText: this.props.placeholderSelectWording + " public crosswords: ", lookupSelected: this.publicLookupSelected, crosswordLookups: this.state.publicCrosswordLookups, isLoadingLookups: this.state.publicLookupsLoading, isPublic: true, disabled: this.state.databaseDisconnected }, this.props.selectChooserProps))),
             React.createElement(SelectChooserContainer, { isPublic: false, header: this.props.userSelectChooserHeader },
                 React.createElement(SelectChooser, __assign({ placeholderText: (this.props.placeholderSelectWording + " saved crosswords: ") + (this.props.userLoggedIn ? "" : this.props.emailSignInWording + " " + this.props.userPlaceholderSignedOutWording), lookupSelected: this.userLookupSelected, crosswordLookups: this.state.userCrosswordLookups, isLoadingLookups: this.state.userLookupsLoading, isPublic: false, disabled: this.state.databaseDisconnected || (this.props.userLoggedIn === null) }, this.props.selectChooserProps)),
-                React.createElement(emailLogOn_1.EmailLogOnComp, { signInButtonProps: { style: { color: "red", outlineWidth: "0px" } }, focusColor: 'blue', signInTitle: this.props.emailSignInWording, signOutTitle: this.props.emailSignOutWording, reLoginWait: 1000, auth: firebaseApp_1.auth })));
+                React.createElement(emailLogOn_1.EmailLogOnComp, __assign({ signInTitle: this.props.emailSignInWording, signOutTitle: this.props.emailSignOutWording, auth: firebaseApp_1.auth }, this.props.emailLogOnStyleProps))));
     };
     return CrosswordPuzzleChooser;
 }(React.Component));

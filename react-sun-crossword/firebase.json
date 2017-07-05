@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "public": "firebase_hosting",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

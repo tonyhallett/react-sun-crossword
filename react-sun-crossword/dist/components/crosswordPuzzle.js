@@ -11,6 +11,7 @@ var KeyEvents = require("../lib/key-handler");
 var twoCol_1 = require("./twoCol");
 var clues_1 = require("./clues");
 var lightbulb_1 = require("./lightbulb");
+var recogniseMe_1 = require("../helpers/recogniseMe");
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -22,6 +23,65 @@ var CrosswordPuzzle = (function (_super) {
     __extends(CrosswordPuzzle, _super);
     function CrosswordPuzzle(props) {
         var _this = _super.call(this, props) || this;
+        _this.testCommand = function () {
+            recogniseMe_1.recogniseMe.trigger([_this.state.testCommand], []);
+        };
+        //backspace later ?
+        _this.navDirectionRecognised = function (context) {
+            var direction = context.parameters[0].toLowerCase();
+            switch (direction) {
+                case "left":
+                    _this.arrowLeft();
+                    break;
+                case "right":
+                    _this.arrowRight();
+                    break;
+                case "down":
+                    _this.arrowDown();
+                    break;
+                case "up":
+                    _this.arrowUp();
+                    break;
+            }
+        };
+        _this.navWord = function (context) {
+            var numberAcrossDown = context.parameters[0];
+            var split = numberAcrossDown.split(" ");
+            var numberString;
+            var acrossOrDown;
+            if (split.length === 2) {
+                var numberString = split[0];
+                var acrossOrDown = split[1];
+            }
+            else {
+                var numberString = split[0] + " " + split[1];
+                var acrossOrDown = split[2];
+            }
+            acrossOrDown = acrossOrDown.toLowerCase();
+            var number;
+            if (numberString.length < 3) {
+                number = parseInt(numberString);
+            }
+            else {
+                number = _this.numberStringToNumber(numberString);
+            }
+            var isAcross = acrossOrDown == "across" ? true : false;
+            var wordSelectMode = isAcross ? WordSelectMode.across : WordSelectMode.down;
+            //this is not ideal !
+            var cp = _this.props.crosswordModel.clueProviders[0];
+            var clues = cp.downClues;
+            if (isAcross) {
+                clues = cp.acrossClues;
+            }
+            var word = clues.filter(function (clue) {
+                return clue.number === number.toString();
+            })[0].word;
+            _this.performSelection(word.squares[0], wordSelectMode);
+        };
+        _this.solveWordExact = function (context) {
+            var command = context.command;
+            console.log("In solve word exact");
+        };
         //this context lost otherwise
         _this.squareSelected = function (rowColIndices) {
             var square = _this.props.crosswordModel.grid[rowColIndices.row][rowColIndices.col];
@@ -67,9 +127,20 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
+        _this.testCommandChanged = function (evt) {
+            _this.setState({ testCommand: evt.target.value });
+        };
         _this.autoSolve = true;
+        _this.solveExact = true;
+        _this.state = { testCommand: "" };
         return _this;
     }
+    CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
+        this.setUpRecognition();
+    };
+    CrosswordPuzzle.prototype.componentDidMount = function () {
+        this.setUpRecognition();
+    };
     CrosswordPuzzle.prototype._mapGrid = function (grid) {
         var _this = this;
         var self = this;
@@ -81,6 +152,211 @@ var CrosswordPuzzle = (function (_super) {
             });
         });
         return mappedGrid;
+    };
+    CrosswordPuzzle.prototype.numberToNumberString = function (num) {
+        var n;
+        if (typeof num === "string") {
+            n = parseInt(num);
+        }
+        else {
+            n = num;
+        }
+        switch (n) {
+            case 1:
+                return "one";
+            case 2:
+                return "two";
+            case 3:
+                return "three";
+            case 4:
+                return "four";
+            case 5:
+                return "five";
+            case 6:
+                return "six";
+            case 7:
+                return "seven";
+            case 8:
+                return "eight";
+            case 9:
+                return "nine";
+            case 10:
+                return "ten";
+            case 11:
+                return "eleven";
+            case 12:
+                return "twelve";
+            case 13:
+                return "thirteen";
+            case 14:
+                return "fourteen";
+            case 15:
+                return "fifteen";
+            case 16:
+                return "sixteen";
+            case 17:
+                return "seventeen";
+            case 18:
+                return "eighteen";
+            case 19:
+                return "nineteen";
+            case 20:
+                return "twenty";
+            case 21:
+                return "twenty one";
+        }
+    };
+    CrosswordPuzzle.prototype.numberStringToNumber = function (numberString) {
+        numberString = numberString.toLowerCase();
+        switch (numberString) {
+            case "one":
+                return 1;
+            case "two":
+                return 2;
+            case "three":
+                return 3;
+            case "four":
+                return 4;
+            case "five":
+                return 5;
+            case "six":
+                return 6;
+            case "seven":
+                return 7;
+            case "eight":
+                return 8;
+            case "nine":
+                return 9;
+            case "ten":
+                return 10;
+            case "eleven":
+                return 11;
+            case "twelve":
+                return 12;
+            case "thirteen":
+                return 13;
+            case "fourteen":
+                return 14;
+            case "fifteen":
+                return 15;
+            case "sixteen":
+                return 16;
+            case "seventeen":
+                return 17;
+            case "eighteen":
+                return 18;
+            case "nineteen":
+                return 19;
+            case "twenty":
+                return 20;
+            case "twenty one":
+                return 21;
+        }
+    };
+    CrosswordPuzzle.prototype.addToWordCommand = function (clues, acrossOrDown, command) {
+        for (var i = 0; i < clues.length; i++) {
+            var clue = clues[i];
+            var clueNumber = this.numberToNumberString(clue.number);
+            command += clueNumber + " " + acrossOrDown + "|" + clue.number + " " + acrossOrDown;
+            if (i !== clues.length - 1) {
+                command += "|";
+            }
+        }
+        return command;
+    };
+    CrosswordPuzzle.prototype.setUpRecognition = function () {
+        if (recogniseMe_1.recogniseMe) {
+            var self = this;
+            this.canRecognise = true;
+            var command = {
+                callback: this.navDirectionRecognised,
+                description: "Navigation direction",
+                regExpr: /^(left|right|up|down)$/
+            };
+            //if sticking with this then can type the type
+            recogniseMe_1.recogniseMe.addCallback("resultNoMatch", function (results) {
+                console.log("Result no match*************");
+                results.forEach(function (result) { return console.log(result); });
+                console.log("Result no match*************");
+            });
+            recogniseMe_1.recogniseMe.addCommands(command);
+            //should allow the command to have additional context so do not have to find the word again
+            //only good if can have an index in the callback
+            var cp = this.props.crosswordModel.clueProviders[0];
+            var wordCommandString = "^(";
+            wordCommandString = this.addToWordCommand(cp.acrossClues, "across", wordCommandString);
+            wordCommandString += "|";
+            wordCommandString = this.addToWordCommand(cp.downClues, "down", wordCommandString);
+            wordCommandString += ")$";
+            var navWordCommand = {
+                callback: this.navWord,
+                description: "Navigate to word",
+                regExpr: new RegExp(wordCommandString, "i")
+            };
+            recogniseMe_1.recogniseMe.addCommands(navWordCommand);
+            //LP ( might only want to solve with cryptic|coffee time)
+            var cps = this.props.crosswordModel.clueProviders;
+            var numClueProviders = cps.length;
+            var numAcrossClues = cps[0].acrossClues.length;
+            var numDownClues = cps[0].downClues.length;
+            var solveWord = "guess"; //*******************************
+            var solveCommands = [];
+            for (var i = 0; i < numAcrossClues; i++) {
+                var formats = [];
+                for (var j = 0; j < numClueProviders; j++) {
+                    var cp = cps[j];
+                    var cpAcrossClue = cp.acrossClues[i];
+                    var cpFormat = cpAcrossClue.format;
+                    if (formats.indexOf(cpFormat) === -1) {
+                        formats.push(cpFormat);
+                        var parts = cpFormat.split(",");
+                        if (parts.length === 1) {
+                            parts = cpFormat.split("-");
+                        }
+                        var wordLengths = parts.map(function (p) {
+                            return parseInt(p);
+                        });
+                        var numWords = wordLengths.length;
+                        if (this.solveExact) {
+                            var clueSolution = this.getClueSolution(cpAcrossClue);
+                            var wordMatch = "";
+                            var start = 0;
+                            for (var k = 0; k < numWords; k++) {
+                                var wordLength = wordLengths[k];
+                                var word = clueSolution.substr(start, wordLength);
+                                if (k !== numWords - 1) {
+                                    word += word;
+                                }
+                                wordMatch += word;
+                                start += wordLength;
+                            }
+                            //need cp.name to be distinct but not always necessary - to return to
+                            //will add context in a moment
+                            console.log("adding solve command");
+                            solveCommands.push({
+                                description: "Solve exact " + cpAcrossClue.number + cp.name,
+                                regExpr: new RegExp("^" + solveWord + " " + cpAcrossClue.number + " across (?:with)?\s?" + wordMatch + "$", "i"),
+                                callback: this.solveWordExact
+                            });
+                        }
+                        else {
+                        }
+                    }
+                }
+            }
+            recogniseMe_1.recogniseMe.addCommands(solveCommands);
+            recogniseMe_1.recogniseMe.start();
+        }
+    };
+    CrosswordPuzzle.prototype.getClueSolution = function (clue) {
+        var clueSolution = "";
+        var squares = clue.word.squares;
+        squares.forEach(function (sq) {
+            clueSolution += sq.letter;
+        });
+        return clueSolution;
+    };
+    CrosswordPuzzle.prototype.getSolveExactCommands = function (clues, isAcross) {
     };
     CrosswordPuzzle.prototype._selectWord = function (selectedWord) {
         if (this.props.crosswordModel.selectedWord !== selectedWord) {
@@ -367,8 +643,6 @@ var CrosswordPuzzle = (function (_super) {
             return clueProps;
         });
     };
-    CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
-    };
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -391,7 +665,9 @@ var CrosswordPuzzle = (function (_super) {
                 React.createElement("span", { onClick: this.globalCheatClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
-                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))));
+                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))),
+            React.createElement("input", { type: "text", onChange: this.testCommandChanged, value: this.state.testCommand }),
+            React.createElement("button", { onClick: this.testCommand }, "Test command"));
         var rightContent = React.createElement(clues_1.CroswordClues, { clueSelected: this.clueSelected, grouping: true, clueProviders: mappedClueProviders });
         return React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent });
     };

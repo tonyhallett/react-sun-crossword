@@ -81,6 +81,7 @@
     <None Include="src\sunCrosswordJsons\23912.json" />
     <Content Include="react-select.css" />
     <Content Include="react-tabs.css" />
+    <Content Include="src\helpers\annyang.js" />
     <Content Include="src\lib\index.js" />
     <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
@@ -98,8 +99,10 @@
     <TypeScriptCompile Include="src\components\crosswordPuzzleChooser.tsx" />
     <TypeScriptCompile Include="src\components\divider.tsx" />
     <TypeScriptCompile Include="src\components\emailLogOn.tsx" />
+    <TypeScriptCompile Include="src\components\expandableKeyboard.tsx" />
     <TypeScriptCompile Include="src\components\formatWord.tsx" />
     <TypeScriptCompile Include="src\components\globalCheatButton.tsx" />
+    <TypeScriptCompile Include="src\components\keyboard.tsx" />
     <TypeScriptCompile Include="src\components\Lighbulbs.tsx" />
     <TypeScriptCompile Include="src\components\lightbulb.tsx" />
     <TypeScriptCompile Include="src\components\link.tsx" />
@@ -107,16 +110,23 @@
     <TypeScriptCompile Include="src\components\muiWrappedButton.tsx" />
     <TypeScriptCompile Include="src\components\simpleButtonProps.ts" />
     <TypeScriptCompile Include="src\components\solveButton.tsx" />
+    <TypeScriptCompile Include="src\components\stopwatchController.tsx" />
+    <TypeScriptCompile Include="src\components\testBounds.tsx" />
+    <TypeScriptCompile Include="src\components\testRecognition.tsx" />
     <TypeScriptCompile Include="src\components\twoCol.tsx" />
+    <TypeScriptCompile Include="src\definition_files\index.d.ts" />
     <TypeScriptCompile Include="src\helpers\connectedDatabase.ts" />
     <TypeScriptCompile Include="src\helpers\crosswordPuzzleDataStore.ts" />
     <TypeScriptCompile Include="src\helpers\crosswordPuzzleJsonStore.ts" />
     <TypeScriptCompile Include="src\helpers\firebaseApp.ts" />
+    <TypeScriptCompile Include="src\helpers\javascriptPolyfills.ts" />
+    <TypeScriptCompile Include="src\helpers\numberStrings.ts" />
+    <TypeScriptCompile Include="src\helpers\recogniseMe.ts" />
     <TypeScriptCompile Include="src\helpers\stores.ts" />
+    <TypeScriptCompile Include="src\helpers\stringHelpers.ts" />
     <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleInputTests.tsx" />
     <TypeScriptCompile Include="src\components\commonStyling.ts" />
     <TypeScriptCompile Include="src\components\crosswordPuzzle.tsx" />
-    <TypeScriptCompile Include="src\components\CrosswordPuzzleLoader.tsx" />
     <TypeScriptCompile Include="src\components\squareLetter.tsx" />
     <TypeScriptCompile Include="src\components\squareNumber.tsx" />
     <TypeScriptCompile Include="src\lib\constants.ts" />
@@ -126,7 +136,8 @@
     <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleSelectionTests.tsx" />
     <TypeScriptCompile Include="__not_run_tests\squareTests.tsx" />
     <TypeScriptCompile Include="__not_run_tests\sunCrosswordModelProviderTests.tsx" />
-    <TypeScriptCompile Include="__tests__\crosswordPuzzleChooserTests.tsx" />
+    <TypeScriptCompile Include="__tests__\annyangTests.ts" />
+    <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleChooserTests.tsx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
@@ -138,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dist\" />
+    <Folder Include="firebase_hosting\" />
     <Folder Include="src\__mocks__\" />
   </ItemGroup>
   <ItemGroup>
