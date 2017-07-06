@@ -35,8 +35,80 @@ export function simpleCommandToRegExp(command: string):RegExp {
     }).replace(splatParam, '(.*?)').replace(optionalRegex, '\\s*$1?\\s*');
     return new RegExp('^' + command + '$', 'i');
 }
-export type CommandOrCommands = Command|Command[]
+export type CommandOrCommands = Command | Command[]
+
+
+//export interface RecogniseMe {
+//    start: (startOptions?: StartOptions) => void
+//    abort: () => void
+//    pause: () => void
+//    resume: () => void
+
+//    isListening: () => boolean
+
+//    init: (commands?: CommandOrCommands, resetCommands?: boolean) => void
+//    addCommands: (commands: CommandOrCommands) => void
+//    removeCommands: (commands?: string|string[]) => void
+
+//    setMaxAlternatives: (maxAlternatives: number)=>void
+//    setLanguage: (language: string) => void//think that language can only be a string
+//    getSpeechRecognizer: () => SpeechRecognition
+
+
+
+//    addCallback: (type: string, callback: string|CallbackUnknown, context?: any) => void
+//    removeCallback: (type: string, callback: CallbackUnknown) => void
+    
+//    trigger: (sentences: string[], confidences: number[]) => void
+
+//    debug: (debugState?: boolean) => void
+//}
+export interface SoundResponse {
+    sound?: string
+    synthesisMessage?:string
+}
+export interface CommandState {
+    name: string,
+    isDefault?: boolean
+    enter?: (context:any) => SoundResponse
+    exit?: () => SoundResponse
+    stateTimeout?: number
+    disabled?: boolean
+    canInterrupt?: boolean
+    noMatch?: () => SoundResponse
+    commands:StateCommand[]
+}
+
+//requiresConfirmation: boolean
+//confirmationTimeout: number
+export interface CommandCallbackResponse extends SoundResponse{
+    allowFurther?: boolean
+    nextStateContext?: any
+    matches?:boolean//default true
+}
+export interface StateCommandCallbackContext {
+    command: StateCommand,
+    parameters: string[],
+    confidence: number,
+    results: string[],
+    confidences: number[],
+    stateContext:any
+}
+export interface StateCommand {
+    disabled?: boolean,
+    minConfidence?: number
+    regExp: RegExp
+    canInterrupt?: boolean
+    nextState?: string,
+    name:string,
+    callback: (context: StateCommandCallbackContext) => CommandCallbackResponse
+}
+//global settings that are CommandState and StateCommand
 export interface RecogniseMe {
+    currentState: CommandState
+    currentStateContext: any
+    setState: (name:string, context:any) => void
+
     start: (startOptions?: StartOptions) => void
     abort: () => void
     pause: () => void
@@ -44,9 +116,12 @@ export interface RecogniseMe {
 
     isListening: () => boolean
 
-    init: (commands?: CommandOrCommands, resetCommands?: boolean) => void
-    addCommands: (commands: CommandOrCommands) => void
-    removeCommands: (commands?: string|string[]) => void
+
+
+    //LP may want to remove a command from State
+    init: (commandStates: CommandState[], resetStates?: boolean) => void
+    addStates: (commandStates: CommandState[]) => void
+    removeStates:(stateNames:string[])=>void
 
     setMaxAlternatives: (maxAlternatives: number)=>void
     setLanguage: (language: string) => void//think that language can only be a string
@@ -56,7 +131,7 @@ export interface RecogniseMe {
 
     addCallback: (type: string, callback: string|CallbackUnknown, context?: any) => void
     removeCallback: (type: string, callback: CallbackUnknown) => void
-    
+
     trigger: (sentences: string[], confidences: number[]) => void
 
     debug: (debugState?: boolean) => void
@@ -77,12 +152,622 @@ interface Callbacks {
 }
 // Check browser support
 // This is done as early as possible, to make it as fast as possible for unsupported browsers
-if (SpeechRecognition) {
+//if (SpeechRecognition) {
     
 
-    var commandsList: Command[] = [];
+//    var commandsList: Command[] = [];
+//    var recognition: SpeechRecognition;
+//    var callbacks: Callbacks= { start: [], error: [], end: [], soundstart: [], result: [], resultMatch: [], resultNoMatch: [], errorNetwork: [], errorPermissionBlocked: [], errorPermissionDenied: [], soundend: [], audiostart: [], audioend: [], speechstart: [], speechend: [], nomatch: [], originalResult: [] };
+//    var autoRestart;
+//    var lastStartedAt = 0;
+//    var autoRestartCount = 0;
+//    var debugState = false;
+//    var debugStyle = 'font-weight: bold; color: #00f;';
+//    var pauseListening = false;
+//    var _isListening = false;
+
+
+//    // This method receives an array of callbacks to iterate over, and invokes each of them
+//    var invokeCallbacks = function invokeCallbacks(callbacks, ...args: any[]) {
+//        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+//            args[_key - 1] = arguments[_key];
+//        }
+
+//        callbacks.forEach(function (callback) {
+//            callback.callback.apply(callback.context, args);
+//        });
+//    };
+
+//    var isInitialized = function isInitialized() {
+//        return recognition !== undefined;
+//    };
+
+//    // method for logging in developer console when debug mode is on
+//    var logMessage = function logMessage(text, extraParameters?) {
+//        if (text.indexOf('%c') === -1 && !extraParameters) {
+//            console.log(text);
+//        } else {
+//            console.log(text, extraParameters || debugStyle);
+//        }
+//    };
+
+//    var initIfNeeded = function initIfNeeded() {
+//        if (!isInitialized()) {
+//            recogniseMe.init([], false);
+//        }
+//    };
+
+//    var registerCommand = function registerCommand(command:Command) {
+//        commandsList.push(command);
+//        if (debugState) {
+//            logMessage('Command successfully loaded: %c' + command.description, debugStyle);
+//        }
+//    };
+
+//    //confidences new arg
+//    var parseResults = function parseResults(results:string[], confidences:number[]) {
+//        invokeCallbacks(callbacks.result, results, confidences);
+//        var commandText;
+//        // go over each of the 5 results and alternative results received (we've set maxAlternatives to 5 above)
+//        for (var i = 0; i < results.length; i++) {
+//            // the text recognized
+//            commandText = results[i].trim();
+//            if (debugState) {
+//                logMessage('Speech recognized: %c' + commandText, debugStyle);
+//            }
+//            // try and match recognized text to one of the commands on the list
+//            for (var j = 0, l = commandsList.length; j < l; j++) {
+//                var currentCommand = commandsList[j];
+//                var result = currentCommand.regExpr.exec(commandText);
+//                if (result) {
+//                    var parameters = result.slice(1);
+//                    if (debugState) {
+//                        logMessage('command matched: %c' + currentCommand.description, debugStyle);
+//                        if (parameters.length) {
+//                            logMessage('with parameters', parameters);
+//                        }
+//                    }
+                    
+//                    currentCommand.callback({
+//                        command: currentCommand,
+//                        confidence: confidences[i],
+//                        parameters:parameters
+//                    })
+
+//                    //state change will go here - ignore and global option for matchMultiple
+
+
+//                    invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.description, results, confidences);
+//                    return;
+//                }
+//            }
+//        }
+//        invokeCallbacks(callbacks.resultNoMatch, results, confidences);
+//    };
+
+//    recogniseMe = {
+
+//        /**
+//            * Initialize annyang with a list of commands to recognize.
+//            *
+//            * #### Examples:
+//            * ````javascript
+//            * var commands = {'hello :name': helloFunction};
+//            * var commands2 = {'hi': helloFunction};
+//            *
+//            * // initialize annyang, overwriting any previously added commands
+//            * annyang.init(commands, true);
+//            * // adds an additional command without removing the previous commands
+//            * annyang.init(commands2, false);
+//            * ````
+//            * As of v1.1.0 it is no longer required to call init(). Just start() listening whenever you want, and addCommands() whenever, and as often as you like.
+//            *
+//            * @param {Object} commands - Commands that annyang should listen to
+//            * @param {boolean} [resetCommands=true] - Remove all commands before initializing?
+//            * @method init
+//            * @deprecated
+//            * @see [Commands Object](#commands-object)
+//            */
+//        //need to type commands 
+//        init: function init(commands,resetCommands=true) {
+                
+
+//            // Abort previous instances of recognition already running
+//            if (recognition && recognition.abort) {
+//                recognition.abort();
+//            }
+
+//            // initiate SpeechRecognition
+//            recognition = new SpeechRecognition();
+
+//            // Set the max number of alternative transcripts to try and match with a command
+//            recognition.maxAlternatives = 20;
+
+//            // In HTTPS, turn off continuous mode for faster results.
+//            // In HTTP,  turn on  continuous mode for much slower results, but no repeating security notices
+//            recognition.continuous = window.location.protocol === 'http:';
+
+//            // Sets the language to the default 'en-US'. This can be changed with annyang.setLanguage()
+//            recognition.lang = 'en-US';
+
+//            recognition.onstart = function () {
+//                _isListening = true;
+//                invokeCallbacks(callbacks.start);
+//            };
+
+//            recognition.onsoundstart = function () {
+//                invokeCallbacks(callbacks.soundstart);
+//            };
+//            //missing event handlers for annyang - will get booleans later
+//            recognition.onsoundend = function () {
+//                invokeCallbacks(callbacks.soundend);
+//            }
+//            recognition.onaudiostart = function () {
+//                invokeCallbacks(callbacks.audiostart);
+//            }
+//            recognition.onaudioend = function () {
+//                invokeCallbacks(callbacks.audioend);
+//            }
+//            recognition.onspeechstart = function () {
+//                invokeCallbacks(callbacks.speechstart);
+//            }
+//            recognition.onspeechend = function () {
+//                invokeCallbacks(callbacks.speechend);
+//            }
+//            recognition.onnomatch = function (event) {
+//                invokeCallbacks(callbacks.nomatch, event);
+//            }
+//            ///////////////////////////
+
+
+//            recognition.onerror = function (event) {
+//                invokeCallbacks(callbacks.error, event);
+//                switch (event.error) {
+//                    case 'network':
+//                        invokeCallbacks(callbacks.errorNetwork, event);
+//                        break;
+//                    case 'not-allowed':
+//                    case 'service-not-allowed':
+//                        // if permission to use the mic is denied, turn off auto-restart
+//                        autoRestart = false;
+//                        // determine if permission was denied by user or automatically.
+//                        if (new Date().getTime() - lastStartedAt < 200) {
+//                            invokeCallbacks(callbacks.errorPermissionBlocked, event);
+//                        } else {
+//                            invokeCallbacks(callbacks.errorPermissionDenied, event);
+//                        }
+//                        break;
+//                }
+//            };
+
+//            recognition.onend = function () {
+//                _isListening = false;
+//                invokeCallbacks(callbacks.end);
+//                // annyang will auto restart if it is closed automatically and not by user action.
+//                if (autoRestart) {
+//                    // play nicely with the browser, and never restart annyang automatically more than once per second
+//                    var timeSinceLastStart = new Date().getTime() - lastStartedAt;
+//                    autoRestartCount += 1;
+//                    if (autoRestartCount % 10 === 0) {
+//                        if (debugState) {
+//                            logMessage('Speech Recognition is repeatedly stopping and starting. See http://is.gd/annyang_restarts for tips.');
+//                        }
+//                    }
+//                    if (timeSinceLastStart < 1000) {
+//                        setTimeout(function () {
+//                            recogniseMe.start({ paused: pauseListening });
+//                        }, 1000 - timeSinceLastStart);
+//                    } else {
+//                        recogniseMe.start({ paused: pauseListening });
+//                    }
+//                }
+//            };
+
+//            recognition.onresult = function (event) {
+//                if (pauseListening) {
+//                    if (debugState) {
+//                        logMessage('Speech heard, but annyang is paused');
+//                    }
+//                    return false;
+//                }
+//                //new line to annyang
+//                invokeCallbacks(callbacks.originalResult, event);
+//                // Map the results to an array
+//                var SpeechRecognitionResult = event.results[event.resultIndex];
+//                var results = [];
+//                var confidences = [];//this is new
+//                for (var k = 0; k < SpeechRecognitionResult.length; k++) {
+//                    results[k] = SpeechRecognitionResult[k].transcript;
+//                    confidences[k] = SpeechRecognitionResult[k].confidence;
+//                }
+//                //confidences argument is new
+//                parseResults(results, confidences);
+//            };
+
+//            // build commands list
+//            if (resetCommands) {
+//                commandsList = [];
+//            }
+
+//            //this is rubbish - if pass an array through to addCommands 
+//            /*
+//            for (var phrase in commands) {
+//                if (commands.hasOwnProperty(phrase)) {
+//            */
+//            //if (commands.length) {
+//            //  this.addCommands(commands);
+//            //}
+
+//            //therefore changing
+//            if (commands) {
+//                this.addCommands(commands);
+//            }
+
+//        },
+
+//        /**
+//            * Start listening.
+//            * It's a good idea to call this after adding some commands first, but not mandatory.
+//            *
+//            * Receives an optional options object which supports the following options:
+//            *
+//            * - `autoRestart`  (boolean, default: true) Should annyang restart itself if it is closed indirectly, because of silence or window conflicts?
+//            * - `continuous`   (boolean) Allow forcing continuous mode on or off. Annyang is pretty smart about this, so only set this if you know what you're doing.
+//            * - `paused`       (boolean, default: true) Start annyang in paused mode.
+//            *
+//            * #### Examples:
+//            * ````javascript
+//            * // Start listening, don't restart automatically
+//            * annyang.start({ autoRestart: false });
+//            * // Start listening, don't restart automatically, stop recognition after first phrase recognized
+//            * annyang.start({ autoRestart: false, continuous: false });
+//            * ````
+//            * @param {Object} [options] - Optional options.
+//            * @method start
+//            */
+//        start: function start(options) {
+//            initIfNeeded();
+//            options = options || {};
+//            if (options.paused !== undefined) {
+//                pauseListening = !!options.paused;
+//            } else {
+//                pauseListening = false;
+//            }
+//            if (options.autoRestart !== undefined) {
+//                autoRestart = !!options.autoRestart;
+//            } else {
+//                autoRestart = true;
+//            }
+//            if (options.continuous !== undefined) {
+//                recognition.continuous = !!options.continuous;
+//            }
+
+//            lastStartedAt = new Date().getTime();
+//            try {
+//                recognition.start();
+//            } catch (e) {
+//                if (debugState) {
+//                    logMessage(e.message);
+//                }
+//            }
+//        },
+
+//        /**
+//            * Stop listening, and turn off mic.
+//            *
+//            * Alternatively, to only temporarily pause annyang responding to commands without stopping the SpeechRecognition engine or closing the mic, use pause() instead.
+//            * @see [pause()](#pause)
+//            *
+//            * @method abort
+//            */
+//        abort: function abort() {
+//            autoRestart = false;
+//            autoRestartCount = 0;
+//            if (isInitialized()) {
+//                recognition.abort();
+//            }
+//        },
+
+//        /**
+//            * Pause listening. annyang will stop responding to commands (until the resume or start methods are called), without turning off the browser's SpeechRecognition engine or the mic.
+//            *
+//            * Alternatively, to stop the SpeechRecognition engine and close the mic, use abort() instead.
+//            * @see [abort()](#abort)
+//            *
+//            * @method pause
+//            */
+//        pause: function pause() {
+//            pauseListening = true;
+//        },
+
+//        /**
+//            * Resumes listening and restores command callback execution when a result matches.
+//            * If SpeechRecognition was aborted (stopped), start it.
+//            *
+//            * @method resume
+//            */
+//        resume: function resume() {
+//            recogniseMe.start();
+//        },
+
+//        /**
+//            * Turn on output of debug messages to the console. Ugly, but super-handy!
+//            *
+//            * @param {boolean} [newState=true] - Turn on/off debug messages
+//            * @method debug
+//            */
+//        debug: function debug(debugState=true) {
+//            debugState = debugState;
+//        },
+
+//        /**
+//            * Set the language the user will speak in. If this method is not called, defaults to 'en-US'.
+//            *
+//            * @param {String} language - The language (locale)
+//            * @method setLanguage
+//            * @see [Languages](https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#what-languages-are-supported)
+//            */
+//        setLanguage: function setLanguage(language) {
+//            initIfNeeded();
+//            recognition.lang = language;
+//        },
+//        setMaxAlternatives: function (maxAlternatives: number) {
+//            initIfNeeded();
+//            recognition.maxAlternatives = maxAlternatives;
+//        },
+
+//        /**
+//            * Add commands that annyang will respond to. Similar in syntax to init(), but doesn't remove existing commands.
+//            *
+//            * #### Examples:
+//            * ````javascript
+//            * var commands = {'hello :name': helloFunction, 'howdy': helloFunction};
+//            * var commands2 = {'hi': helloFunction};
+//            *
+//            * annyang.addCommands(commands);
+//            * annyang.addCommands(commands2);
+//            * // annyang will now listen to all three commands
+//            * ````
+//            *
+//            * @param {Object} commands - Commands that annyang should listen to
+//            * @method addCommands
+//            * @see [Commands Object](#commands-object)
+//            */
+//        addCommands: function addCommands(commands) {
+//            var cb;
+//            initIfNeeded();
+//            var cmds:Command[]
+//            if (commands instanceof Array) {
+//                cmds = commands;
+//            } else {
+//                cmds=[commands]
+//            }
+//            cmds.forEach(function (cmd) {
+//                registerCommand(cmd);
+//            })
+//        },
+
+//        /**
+//            * Remove existing commands. Called with a single phrase, array of phrases, or methodically. Pass no params to remove all commands.
+//            *
+//            * #### Examples:
+//            * ````javascript
+//            * var commands = {'hello': helloFunction, 'howdy': helloFunction, 'hi': helloFunction};
+//            *
+//            * // Remove all existing commands
+//            * annyang.removeCommands();
+//            *
+//            * // Add some commands
+//            * annyang.addCommands(commands);
+//            *
+//            * // Don't respond to hello
+//            * annyang.removeCommands('hello');
+//            *
+//            * // Don't respond to howdy or hi
+//            * annyang.removeCommands(['howdy', 'hi']);
+//            * ````
+//            * @param {String|Array|Undefined} [commandsToRemove] - Commands to remove
+//            * @method removeCommands
+//            */
+//        removeCommands: function removeCommands(commandsToRemove) {
+//            if (commandsToRemove === undefined) {
+//                commandsList = [];
+//            } else {
+//                var cmds: string[];
+//                cmds = Array.isArray(commandsToRemove) ? commandsToRemove : [commandsToRemove];
+//                commandsList = commandsList.filter(function (command) {
+//                    for (var i = 0; i < cmds.length; i++) {
+//                        if (commandsToRemove[i] === command.description) {
+//                            return false;
+//                        }
+//                    }
+//                    return true;
+//                });
+//            }
+//        },
+
+//        /**
+//            * Add a callback function to be called in case one of the following events happens:
+//            *
+//            * * `start` - Fired as soon as the browser's Speech Recognition engine starts listening
+//            * * `soundstart` - Fired as soon as any sound (possibly speech) has been detected.
+//            *     This will fire once per Speech Recognition starting. See https://is.gd/annyang_sound_start
+//            * * `error` - Fired when the browser's Speech Recogntion engine returns an error, this generic error callback will be followed by more accurate error callbacks (both will fire if both are defined)
+//            *     Callback function will be called with the error event as the first argument
+//            * * `errorNetwork` - Fired when Speech Recognition fails because of a network error
+//            *     Callback function will be called with the error event as the first argument
+//            * * `errorPermissionBlocked` - Fired when the browser blocks the permission request to use Speech Recognition.
+//            *     Callback function will be called with the error event as the first argument
+//            * * `errorPermissionDenied` - Fired when the user blocks the permission request to use Speech Recognition.
+//            *     Callback function will be called with the error event as the first argument
+//            * * `end` - Fired when the browser's Speech Recognition engine stops
+//            * * `result` - Fired as soon as some speech was identified. This generic callback will be followed by either the `resultMatch` or `resultNoMatch` callbacks.
+//            *     Callback functions for to this event will be called with an array of possible phrases the user said as the first argument
+//            * * `resultMatch` - Fired when annyang was able to match between what the user said and a registered command
+//            *     Callback functions for this event will be called with three arguments in the following order:
+//            *       * The phrase the user said that matched a command
+//            *       * The command that was matched
+//            *       * An array of possible alternative phrases the user might have said
+//            * * `resultNoMatch` - Fired when what the user said didn't match any of the registered commands.
+//            *     Callback functions for this event will be called with an array of possible phrases the user might've said as the first argument
+//            *
+//            * #### Examples:
+//            * ````javascript
+//            * annyang.addCallback('error', function() {
+//            *   $('.myErrorText').text('There was an error!');
+//            * });
+//            *
+//            * annyang.addCallback('resultMatch', function(userSaid, commandText, phrases) {
+//            *   console.log(userSaid); // sample output: 'hello'
+//            *   console.log(commandText); // sample output: 'hello (there)'
+//            *   console.log(phrases); // sample output: ['hello', 'halo', 'yellow', 'polo', 'hello kitty']
+//            * });
+//            *
+//            * // pass local context to a global function called notConnected
+//            * annyang.addCallback('errorNetwork', notConnected, this);
+//            * ````
+//            * @param {String} type - Name of event that will trigger this callback
+//            * @param {Function} callback - The function to call when event is triggered
+//            * @param {Object} [context] - Optional context for the callback function
+//            * @method addCallback
+//            */
+//        addCallback: function addCallback(type, callback, context) {
+//            var cb: any;
+//            if (callback instanceof String){
+//                cb=window[callback] 
+//            } else {
+//                cb = callback;
+//            }
+
+//            if (typeof cb === 'function' && callbacks[type] !== undefined) {
+//                callbacks[type].push({ callback: cb as CallbackUnknown, context: context || this });
+//            }
+//        },
+
+//        /**
+//            * Remove callbacks from events.
+//            *
+//            * - Pass an event name and a callback command to remove that callback command from that event type.
+//            * - Pass just an event name to remove all callback commands from that event type.
+//            * - Pass undefined as event name and a callback command to remove that callback command from all event types.
+//            * - Pass no params to remove all callback commands from all event types.
+//            *
+//            * #### Examples:
+//            * ````javascript
+//            * annyang.addCallback('start', myFunction1);
+//            * annyang.addCallback('start', myFunction2);
+//            * annyang.addCallback('end', myFunction1);
+//            * annyang.addCallback('end', myFunction2);
+//            *
+//            * // Remove all callbacks from all events:
+//            * annyang.removeCallback();
+//            *
+//            * // Remove all callbacks attached to end event:
+//            * annyang.removeCallback('end');
+//            *
+//            * // Remove myFunction2 from being called on start:
+//            * annyang.removeCallback('start', myFunction2);
+//            *
+//            * // Remove myFunction1 from being called on all events:
+//            * annyang.removeCallback(undefined, myFunction1);
+//            * ````
+//            *
+//            * @param type Name of event type to remove callback from
+//            * @param callback The callback function to remove
+//            * @returns undefined
+//            * @method removeCallback
+//            */
+//        removeCallback: function removeCallback(type, callback) {
+//            var compareWithCallbackParameter = function compareWithCallbackParameter(cb) {
+//                return cb.callback !== callback;
+//            };
+//            // Go over each callback type in callbacks store object
+//            for (var callbackType in callbacks) {
+//                if (callbacks.hasOwnProperty(callbackType)) {
+//                    // if this is the type user asked to delete, or he asked to delete all, go ahead.
+//                    if (type === undefined || type === callbackType) {
+//                        // If user asked to delete all callbacks in this type or all types
+//                        if (callback === undefined) {
+//                            callbacks[callbackType] = [];
+//                        } else {
+//                            // Remove all matching callbacks
+//                            callbacks[callbackType] = callbacks[callbackType].filter(compareWithCallbackParameter);
+//                        }
+//                    }
+//                }
+//            }
+//        },
+
+//        /**
+//            * Returns true if speech recognition is currently on.
+//            * Returns false if speech recognition is off or annyang is paused.
+//            *
+//            * @return boolean true = SpeechRecognition is on and annyang is listening
+//            * @method isListening
+//            */
+//        isListening: function isListening() {
+//            return _isListening && !pauseListening;
+//        },
+
+//        /**
+//            * Returns the instance of the browser's SpeechRecognition object used by annyang.
+//            * Useful in case you want direct access to the browser's Speech Recognition engine.
+//            *
+//            * @returns SpeechRecognition The browser's Speech Recognizer currently used by annyang
+//            * @method getSpeechRecognizer
+//            */
+//        getSpeechRecognizer: function getSpeechRecognizer() {
+//            return recognition;
+//        },
+
+//        /**
+//            * Simulate speech being recognized. This will trigger the same events and behavior as when the Speech Recognition
+//            * detects speech.
+//            *
+//            * Can accept either a string containing a single sentence, or an array containing multiple sentences to be checked
+//            * in order until one of them matches a command (similar to the way Speech Recognition Alternatives are parsed)
+//            *
+//            * #### Examples:
+//            * ````javascript
+//            * annyang.trigger('Time for some thrilling heroics');
+//            * annyang.trigger(
+//            *     ['Time for some thrilling heroics', 'Time for some thrilling aerobics']
+//            *   );
+//            * ````
+//            *
+//            * @param string|array sentences A sentence as a string or an array of strings of possible sentences
+//            * @returns undefined
+//            * @method trigger
+//            */
+//        trigger: function trigger(sentences: string[], confidences: number[]) {
+//            if (!recogniseMe.isListening()) {
+//                if (debugState) {
+//                    if (!_isListening) {
+//                        logMessage('Cannot trigger while annyang is aborted');
+//                    } else {
+//                        logMessage('Speech heard, but annyang is paused');
+//                    }
+//                }
+//                return;
+//            }
+
+//            if (!Array.isArray(sentences)) {
+//                sentences = [sentences];
+//            }
+//            parseResults(sentences, confidences);
+//        }
+//    };
+//} else {
+//    console.log("No speech recognition")
+//}
+
+if (SpeechRecognition) {
+
+
+    var commandStates:CommandState[]=[]
+
     var recognition: SpeechRecognition;
-    var callbacks: Callbacks= { start: [], error: [], end: [], soundstart: [], result: [], resultMatch: [], resultNoMatch: [], errorNetwork: [], errorPermissionBlocked: [], errorPermissionDenied: [], soundend: [], audiostart: [], audioend: [], speechstart: [], speechend: [], nomatch: [], originalResult: [] };
+    var callbacks: Callbacks = { enteredState:[], start: [], error: [], end: [], soundstart: [], result: [], resultMatch: [], resultNoMatch: [], errorNetwork: [], errorPermissionBlocked: [], errorPermissionDenied: [], soundend: [], audiostart: [], audioend: [], speechstart: [], speechend: [], nomatch: [], originalResult: [] };
     var autoRestart;
     var lastStartedAt = 0;
     var autoRestartCount = 0;
@@ -122,56 +807,207 @@ if (SpeechRecognition) {
         }
     };
 
-    var registerCommand = function registerCommand(command:Command) {
-        commandsList.push(command);
-        if (debugState) {
-            logMessage('Command successfully loaded: %c' + command.description, debugStyle);
-        }
-    };
+    var defaultState: CommandState;
 
-    //confidences new arg
-    var parseResults = function parseResults(results:string[], confidences:number[]) {
+    var defaultDisabled = function defaultDisabled(testObj: CommandState | StateCommand) {
+        testObj.disabled= testObj.disabled === undefined ? false : testObj.disabled;
+    }
+    var noopNull = function () { return null; }
+    var setDefaults = function (commandState: CommandState) {
+        commandState.isDefault = commandState.isDefault === undefined ? false : commandState.isDefault;
+        commandState.enter = commandState.enter === undefined ? noopNull : commandState.enter;
+        commandState.exit = commandState.exit === undefined ? noopNull : commandState.exit;
+        commandState.stateTimeout = commandState.stateTimeout === undefined ? 0 : commandState.stateTimeout;
+        defaultDisabled(commandState)
+        commandState.canInterrupt = commandState.canInterrupt === undefined ? (commandState.isDefault ? false : true) : commandState.canInterrupt;
+        commandState.noMatch = commandState.noMatch === undefined ? noopNull : commandState.noMatch;
+        commandState.commands.forEach(function (command) {
+            defaultDisabled(command);
+            command.minConfidence = command.minConfidence === undefined ? 0 : command.minConfidence;
+            command.canInterrupt = command.canInterrupt === undefined ? (commandState.isDefault ? true : false) : command.canInterrupt;
+            command.nextState = command.nextState === undefined ? commandState.name : command.nextState;
+        })
+    }
+    var commandStateByName = function commandStateByName(stateName: string):CommandState {
+        var state: CommandState;
+        for (var i = 0; i < commandStates.length; i++) {
+            var commandState = commandStates[i];
+            if (commandState.name === stateName) {
+                state = commandState;
+                break;
+            }
+        }
+        return state;
+    }
+    var parseResults = function parseResults(results: string[], confidences: number[]) {
+        function commandTransitionsToActiveState(command: StateCommand) {
+            return !commandStateByName(command.nextState).disabled;
+        }
         invokeCallbacks(callbacks.result, results, confidences);
+
+        var currentState = recogniseMe.currentState;
+        var currentStateName = currentState.name;
+
+        var interruptCommands: StateCommand[] = []
+        //will want to improve the processing instead of doing this on each recognition
+
+        if (currentState.canInterrupt) {
+            commandStates.forEach(function (commandState) {
+                if (!commandState.disabled && commandState !== recogniseMe.currentState) {
+                    commandState.commands.forEach(function (command) {
+                        var canInterrupt = command.canInterrupt === undefined ? (commandState === defaultState ? true : false) : command.canInterrupt;
+                        if (!command.disabled && command.canInterrupt && commandTransitionsToActiveState(command)) {
+                            interruptCommands.push(command);
+                        }
+                    })
+                }
+            })
+        }
+        var currentStateCommands: StateCommand[] = [];
+        if (!currentState.disabled)) {
+            currentStateCommands = recogniseMe.currentState.commands.filter(function (cmd) {
+                return !cmd.disabled && commandTransitionsToActiveState(cmd)
+            });
+        }
+
+        var commands = interruptCommands.concat(currentStateCommands)
         var commandText;
-        // go over each of the 5 results and alternative results received (we've set maxAlternatives to 5 above)
+
         for (var i = 0; i < results.length; i++) {
-            // the text recognized
+
             commandText = results[i].trim();
+            var confidence = confidences[i];
             if (debugState) {
                 logMessage('Speech recognized: %c' + commandText, debugStyle);
             }
-            // try and match recognized text to one of the commands on the list
-            for (var j = 0, l = commandsList.length; j < l; j++) {
-                var currentCommand = commandsList[j];
-                var result = currentCommand.regExpr.exec(commandText);
-                if (result) {
-                    var parameters = result.slice(1);
-                    if (debugState) {
-                        logMessage('command matched: %c' + currentCommand.description, debugStyle);
-                        if (parameters.length) {
-                            logMessage('with parameters', parameters);
+            
+            for (var j = 0, l = commands.length; j < l; j++) {
+                var currentCommand = commands[j];
+                var minConfidence = currentCommand.minConfidence;
+                if (minConfidence=== 0 || minConfidence > confidence) {
+                    var result = currentCommand.regExp.exec(commandText);
+                    if (result) {
+                        var parameters = result.slice(1);
+                        if (debugState) {
+                            logMessage('command matched: %c' + currentCommand.name, debugStyle);
+                            if (parameters.length) {
+                                logMessage('with parameters', parameters);
+                            }
                         }
+                        
+                        var cbResponse=currentCommand.callback({
+                            command: currentCommand,
+                            confidence: confidences[i],
+                            parameters: parameters,
+                            results:results,
+                            confidences: confidences,
+                            stateContext: recogniseMe.currentStateContext
+                        })
+                        doSoundResponse(cbResponse);
+
+                        //confirmation to do - will need a confirmation state with all information for proceeding
+
+                        var nextStateContext = cbResponse.nextStateContext;
+
+                        if (cbResponse.matches) {
+                            if (currentCommand.nextState === currentStateName) {
+                                clearStateTimeout();
+                                if (nextStateContext) {//when staying in same state do not need to maintain state 
+                                    recogniseMe.currentStateContext = nextStateContext;
+                                }
+                            } else {
+                                exitState(recogniseMe.currentState);
+                                var newState = commandStateByName(currentCommand.nextState);
+                                recogniseMe.currentState = newState;
+                                recogniseMe.currentStateContext = nextStateContext;
+                                enterState(newState, nextStateContext);
+                            }
+
+                            if (!(cbResponse.allowFurther === undefined ? false : cbResponse.allowFurther)) {
+                                return;
+                            }
+                        }
+                        
+                        
+                        
+                        
+                        
+                        
+
+                        //invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.description, results, confidences);
+                        
+                        
                     }
-                    
-                    currentCommand.callback({
-                        command: currentCommand,
-                        confidence: confidences[i],
-                        parameters:parameters
-                    })
-
-                    //state change will go here - ignore and global option for matchMultiple
-
-
-                    invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.description, results, confidences);
-                    return;
                 }
+                
             }
         }
+        doSoundResponse(recogniseMe.currentState.noMatch());//could pass in the results and confidences
         invokeCallbacks(callbacks.resultNoMatch, results, confidences);
     };
 
-    recogniseMe = {
+    var doSoundResponse = function (response: SoundResponse) {
+        if (response) {
+            if (response.sound) {
+                playSound(response.sound);
+            }
+            if (response.synthesisMessage) {
+                speak(response.synthesisMessage);
+            }
+        }
+        
+    }
+    var playSound = function (sound: string) {
+        var audio = new Audio(sound);
+        audio.play();
+    }
+    var speak = function (speak: string) {//*************** to do
 
+    }
+    var stateTimeoutIdentifier: number
+
+    var clearStateTimeout = function clearStateTimeout() {
+        //can you just clear with a bad interval or undefined/null ? n- have a clear method
+        if (stateTimeoutIdentifier) {
+            clearTimeout(stateTimeoutIdentifier);
+            stateTimeoutIdentifier = null;
+        }
+    }
+    //event ?
+    var exitState = function (state: CommandState) {
+        clearStateTimeout();
+        doSoundResponse(recogniseMe.currentState.exit());
+    }
+    var enterState = function (state: CommandState,context:any) {
+        
+        doSoundResponse(state.enter(context));
+        invokeCallbacks(callbacks.enteredState,state.name,context)
+        if (!state.isDefault) {
+            if (state.stateTimeout) {
+                stateTimeoutIdentifier=setTimeout(function () {
+                    //to do ******************* exit and enter the default state
+                }, state.stateTimeout)
+            }
+        }
+    }
+   
+    //will want state change callback
+    recogniseMe = {
+        currentState: null,
+        currentStateContext: null,
+        setState: function setState(name:string,context:any) {
+            var state = commandStates.filter(function (state) {
+                return state.name === name;
+            })[0];
+            if (recogniseMe.currentState) {
+                exitState(recogniseMe.currentState);
+            }
+
+            //this should be in enter state but because of hoisting/........
+            recogniseMe.currentState = state;
+            recogniseMe.currentStateContext = context
+            enterState(state,context);
+        },
         /**
             * Initialize annyang with a list of commands to recognize.
             *
@@ -194,8 +1030,8 @@ if (SpeechRecognition) {
             * @see [Commands Object](#commands-object)
             */
         //need to type commands 
-        init: function init(commands,resetCommands=true) {
-                
+        init: function init(commandStates, resetStates = true) {
+            
 
             // Abort previous instances of recognition already running
             if (recognition && recognition.abort) {
@@ -239,7 +1075,20 @@ if (SpeechRecognition) {
             recognition.onspeechend = function () {
                 invokeCallbacks(callbacks.speechend);
             }
+            //should this be a boolean for this 'type' of no match
             recognition.onnomatch = function (event) {
+                var currentState = recogniseMe.currentState;
+                if (currentState && currentState.noMatch) {
+                    var response = currentState.noMatch();
+                    if (response) {
+                        if (response.synthesisMessage) {
+                            speak(response.synthesisMessage);
+                        }
+                        if (response.sound) {
+                            playSound(response.sound)
+                        }
+                    }
+                }
                 invokeCallbacks(callbacks.nomatch, event);
             }
             ///////////////////////////
@@ -309,23 +1158,12 @@ if (SpeechRecognition) {
                 parseResults(results, confidences);
             };
 
-            // build commands list
-            if (resetCommands) {
-                commandsList = [];
+            if (resetStates) {
+                commandStates = [];
             }
 
-            //this is rubbish - if pass an array through to addCommands 
-            /*
-            for (var phrase in commands) {
-                if (commands.hasOwnProperty(phrase)) {
-            */
-            //if (commands.length) {
-            //  this.addCommands(commands);
-            //}
-
-            //therefore changing
-            if (commands) {
-                this.addCommands(commands);
+            if (commandStates) {
+                recogniseMe.addStates(commandStates);
             }
 
         },
@@ -421,7 +1259,7 @@ if (SpeechRecognition) {
             * @param {boolean} [newState=true] - Turn on/off debug messages
             * @method debug
             */
-        debug: function debug(debugState=true) {
+        debug: function debug(debugState = true) {
             debugState = debugState;
         },
 
@@ -441,125 +1279,65 @@ if (SpeechRecognition) {
             recognition.maxAlternatives = maxAlternatives;
         },
 
-        /**
-            * Add commands that annyang will respond to. Similar in syntax to init(), but doesn't remove existing commands.
-            *
-            * #### Examples:
-            * ````javascript
-            * var commands = {'hello :name': helloFunction, 'howdy': helloFunction};
-            * var commands2 = {'hi': helloFunction};
-            *
-            * annyang.addCommands(commands);
-            * annyang.addCommands(commands2);
-            * // annyang will now listen to all three commands
-            * ````
-            *
-            * @param {Object} commands - Commands that annyang should listen to
-            * @method addCommands
-            * @see [Commands Object](#commands-object)
-            */
-        addCommands: function addCommands(commands) {
-            var cb;
-            initIfNeeded();
-            var cmds:Command[]
-            if (commands instanceof Array) {
-                cmds = commands;
-            } else {
-                cmds=[commands]
-            }
-            cmds.forEach(function (cmd) {
-                registerCommand(cmd);
-            })
-        },
+        
 
-        /**
-            * Remove existing commands. Called with a single phrase, array of phrases, or methodically. Pass no params to remove all commands.
-            *
-            * #### Examples:
-            * ````javascript
-            * var commands = {'hello': helloFunction, 'howdy': helloFunction, 'hi': helloFunction};
-            *
-            * // Remove all existing commands
-            * annyang.removeCommands();
-            *
-            * // Add some commands
-            * annyang.addCommands(commands);
-            *
-            * // Don't respond to hello
-            * annyang.removeCommands('hello');
-            *
-            * // Don't respond to howdy or hi
-            * annyang.removeCommands(['howdy', 'hi']);
-            * ````
-            * @param {String|Array|Undefined} [commandsToRemove] - Commands to remove
-            * @method removeCommands
-            */
-        removeCommands: function removeCommands(commandsToRemove) {
-            if (commandsToRemove === undefined) {
-                commandsList = [];
+        addStates: function addStates(cmdStates: CommandState[]) {
+            initIfNeeded();
+            
+            cmdStates.forEach(function (commandState) {
+                setDefaults(commandState)
+                commandStates.push(commandState);
+                if (commandState.isDefault) {
+                    defaultState = commandState;
+                }
+
+                if (debugState) {
+                    logMessage('CommandState successfully loaded: %c' + commandState.name, debugStyle);
+                }
+            })
+            if (defaultState && !recogniseMe.currentState) {
+                recogniseMe.currentState = defaultState;
+                enterState(defaultState, { name: defaultState.name,context:{} });
+            }
+        },
+        removeStates: function removeStates(statesToRemove) {
+            if (statesToRemove === undefined) {
+                commandStates = [];
+                recogniseMe.currentState = null;
+                recogniseMe.currentStateContext = null;
             } else {
-                var cmds: string[];
-                cmds = Array.isArray(commandsToRemove) ? commandsToRemove : [commandsToRemove];
-                commandsList = commandsList.filter(function (command) {
-                    for (var i = 0; i < cmds.length; i++) {
-                        if (commandsToRemove[i] === command.description) {
+                var exitCurrentState = false;
+                var stateNames = Array.isArray(statesToRemove) ? statesToRemove : [statesToRemove];
+                var defaultState: CommandState;
+                commandStates = commandStates.filter(function (state) {
+                    if (state.isDefault) {//could have a var for it
+                        defaultState = state;
+                    }
+                    for (var i = 0; i < stateNames.length; i++) {
+                        if (stateNames[i] === state.name) {
+                            if (state.name === recogniseMe.currentState.name) {
+                                exitCurrentState = true;
+                            }
                             return false;
                         }
                     }
                     return true;
                 });
+                if (exitCurrentState) {
+                    exitState(recogniseMe.currentState);
+                    if (defaultState) {
+                        recogniseMe.currentState = defaultState;
+                        recogniseMe.currentStateContext = {};
+                        enterState(defaultState, { name: defaultState.name, context: {} });
+                    }
+                }
             }
         },
 
-        /**
-            * Add a callback function to be called in case one of the following events happens:
-            *
-            * * `start` - Fired as soon as the browser's Speech Recognition engine starts listening
-            * * `soundstart` - Fired as soon as any sound (possibly speech) has been detected.
-            *     This will fire once per Speech Recognition starting. See https://is.gd/annyang_sound_start
-            * * `error` - Fired when the browser's Speech Recogntion engine returns an error, this generic error callback will be followed by more accurate error callbacks (both will fire if both are defined)
-            *     Callback function will be called with the error event as the first argument
-            * * `errorNetwork` - Fired when Speech Recognition fails because of a network error
-            *     Callback function will be called with the error event as the first argument
-            * * `errorPermissionBlocked` - Fired when the browser blocks the permission request to use Speech Recognition.
-            *     Callback function will be called with the error event as the first argument
-            * * `errorPermissionDenied` - Fired when the user blocks the permission request to use Speech Recognition.
-            *     Callback function will be called with the error event as the first argument
-            * * `end` - Fired when the browser's Speech Recognition engine stops
-            * * `result` - Fired as soon as some speech was identified. This generic callback will be followed by either the `resultMatch` or `resultNoMatch` callbacks.
-            *     Callback functions for to this event will be called with an array of possible phrases the user said as the first argument
-            * * `resultMatch` - Fired when annyang was able to match between what the user said and a registered command
-            *     Callback functions for this event will be called with three arguments in the following order:
-            *       * The phrase the user said that matched a command
-            *       * The command that was matched
-            *       * An array of possible alternative phrases the user might have said
-            * * `resultNoMatch` - Fired when what the user said didn't match any of the registered commands.
-            *     Callback functions for this event will be called with an array of possible phrases the user might've said as the first argument
-            *
-            * #### Examples:
-            * ````javascript
-            * annyang.addCallback('error', function() {
-            *   $('.myErrorText').text('There was an error!');
-            * });
-            *
-            * annyang.addCallback('resultMatch', function(userSaid, commandText, phrases) {
-            *   console.log(userSaid); // sample output: 'hello'
-            *   console.log(commandText); // sample output: 'hello (there)'
-            *   console.log(phrases); // sample output: ['hello', 'halo', 'yellow', 'polo', 'hello kitty']
-            * });
-            *
-            * // pass local context to a global function called notConnected
-            * annyang.addCallback('errorNetwork', notConnected, this);
-            * ````
-            * @param {String} type - Name of event that will trigger this callback
-            * @param {Function} callback - The function to call when event is triggered
-            * @param {Object} [context] - Optional context for the callback function
-            * @method addCallback
-            */
         addCallback: function addCallback(type, callback, context) {
             var cb: any;
-            if (callback instanceof String){
-                cb=window[callback] 
+            if (callback instanceof String) {
+                cb = window[callback]
             } else {
                 cb = callback;
             }
@@ -685,5 +1463,3 @@ if (SpeechRecognition) {
 } else {
     console.log("No speech recognition")
 }
-
-

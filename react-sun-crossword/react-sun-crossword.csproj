@@ -83,6 +83,7 @@
     <Content Include="react-tabs.css" />
     <Content Include="src\helpers\annyang.js" />
     <Content Include="src\lib\index.js" />
+    <Content Include="sounds\family-fortunes-wrong-buzzer.mp3" />
     <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

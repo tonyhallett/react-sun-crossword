@@ -72,6 +72,10 @@ export function numberToNumberString(num: number | string,hyphenate=true): strin
 }
 export function numberStringToNumber(numberString: string): number {
     numberString = numberString.toLowerCase();
+    //typescript have as type number but can be a string to be coerced https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/isNaN
+    if (!isNaN(numberString as any)) {
+        return parseInt(numberString);
+    }
     switch (numberString) {
         case "one":
             return 1;

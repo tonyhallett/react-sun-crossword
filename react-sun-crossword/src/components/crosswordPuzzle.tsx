@@ -130,26 +130,31 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     }
     navDirectionRecognised = (context: CommandCallbackContext) => {
         var direction = context.parameters[0].toLowerCase();
+        var numNavs = 1;
+        var numPart = context.parameters[1]
+        if (numPart) {
+            numNavs = numberStringToNumber(numPart);
+        }
+        var navFunction: () => void;
         switch (direction) {
             case "left":
-                this.arrowLeft();
+                navFunction=this.arrowLeft;
                 break;
             case "right":
-                this.arrowRight();
+                navFunction =this.arrowRight;
                 break;
             case "down":
-                this.arrowDown();
+                navFunction =this.arrowDown;
                 break;
             case "up":
-                this.arrowUp();
+                navFunction =this.arrowUp;
                 break;
         }
+        
+        for (var i = 0; i < numNavs; i++) {
+            navFunction.bind(this)();
+        }
     }
-    //*****************************************************************
-
-    //need to clear from before
-    //LP - should consider when clearing that another comnponent may also be adding commands
-
     recogniseNavigationCommands(crosswordModel:CrosswordModel) {
         this.recogniseCommand(this.getNavigationDirectionCommand());
         this.recogniseCommand(this.getNavigateToWordCommand(crosswordModel.clueProviders[0]));
@@ -251,10 +256,20 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.recogniseCommands(acrossSolveCommands.concat(downSolveCommands));
     }
     getNavigationDirectionCommand() {
+        var numPart = "\\s?("
+        for (var i = 1; i < 13; i++) {
+            numPart += i.toString() + "|" + numberToNumberString(i);
+            if (i < 12) {
+                numPart += "|";
+            }
+        }
+        numPart += ")?$"
+        var regExprString = "^(left|right|up|down)" + numPart;
+        console.log(regExprString);
         return {
             callback: this.navDirectionRecognised,
             description: "Navigation direction",
-            regExpr: /^(left|right|up|down)$/
+            regExpr: new RegExp(regExprString,"i")
         }
         
     }
@@ -305,16 +320,19 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.removeCommands();
     }
     debugResultNoMatch() {
-        //if sticking with this then can type the type
         if (!this.canRecognise) {
             //put synthesis in
+            
+            //if sticking with this then can type the type arg
             recogniseMe.addCallback("resultNoMatch", function (results: string[]) {
+                var audio = new Audio('sounds/family-fortunes-wrong-buzzer.mp3');
+                audio.play();
+
                 console.log("Result no match*************")
                 results.forEach(result => console.log(result));
                 console.log("Result no match*************")
             });
         }
-
     }
     setUpRecognition(crosswordModel:CrosswordModel) {
         if (recogniseMe) {

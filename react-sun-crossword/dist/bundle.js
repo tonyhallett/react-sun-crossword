@@ -19636,19 +19636,28 @@ var CrosswordPuzzle = (function (_super) {
         };
         _this.navDirectionRecognised = function (context) {
             var direction = context.parameters[0].toLowerCase();
+            var numNavs = 1;
+            var numPart = context.parameters[1];
+            if (numPart) {
+                numNavs = numberStrings_1.numberStringToNumber(numPart);
+            }
+            var navFunction;
             switch (direction) {
                 case "left":
-                    _this.arrowLeft();
+                    navFunction = _this.arrowLeft;
                     break;
                 case "right":
-                    _this.arrowRight();
+                    navFunction = _this.arrowRight;
                     break;
                 case "down":
-                    _this.arrowDown();
+                    navFunction = _this.arrowDown;
                     break;
                 case "up":
-                    _this.arrowUp();
+                    navFunction = _this.arrowUp;
                     break;
+            }
+            for (var i = 0; i < numNavs; i++) {
+                navFunction.bind(_this)();
             }
         };
         //this context lost otherwise
@@ -19722,9 +19731,6 @@ var CrosswordPuzzle = (function (_super) {
         });
         return mappedGrid;
     };
-    //*****************************************************************
-    //need to clear from before
-    //LP - should consider when clearing that another comnponent may also be adding commands
     CrosswordPuzzle.prototype.recogniseNavigationCommands = function (crosswordModel) {
         this.recogniseCommand(this.getNavigationDirectionCommand());
         this.recogniseCommand(this.getNavigateToWordCommand(crosswordModel.clueProviders[0]));
@@ -19816,10 +19822,20 @@ var CrosswordPuzzle = (function (_super) {
         this.recogniseCommands(acrossSolveCommands.concat(downSolveCommands));
     };
     CrosswordPuzzle.prototype.getNavigationDirectionCommand = function () {
+        var numPart = "\\s?(";
+        for (var i = 1; i < 13; i++) {
+            numPart += i.toString() + "|" + numberStrings_1.numberToNumberString(i);
+            if (i < 12) {
+                numPart += "|";
+            }
+        }
+        numPart += ")?$";
+        var regExprString = "^(left|right|up|down)" + numPart;
+        console.log(regExprString);
         return {
             callback: this.navDirectionRecognised,
             description: "Navigation direction",
-            regExpr: /^(left|right|up|down)$/
+            regExpr: new RegExp(regExprString, "i")
         };
     };
     CrosswordPuzzle.prototype.getNavigateToWordCommand = function (cp) {
@@ -19865,10 +19881,12 @@ var CrosswordPuzzle = (function (_super) {
         this.removeCommands();
     };
     CrosswordPuzzle.prototype.debugResultNoMatch = function () {
-        //if sticking with this then can type the type
         if (!this.canRecognise) {
             //put synthesis in
+            //if sticking with this then can type the type arg
             recogniseMe_1.recogniseMe.addCallback("resultNoMatch", function (results) {
+                var audio = new Audio('sounds/family-fortunes-wrong-buzzer.mp3');
+                audio.play();
                 console.log("Result no match*************");
                 results.forEach(function (result) { return console.log(result); });
                 console.log("Result no match*************");
@@ -20920,6 +20938,9 @@ var FormatWord = (function (_super) {
         var clueLetters = this.props.clueLetters;
         var format = this.props.format;
         var parts = format.split(",");
+        if (parts.length === 1) {
+            parts = format.split("-");
+        }
         var formatted = []; //type ReactInstance = Component<any, any> | Element; - this is not the correct typing ....
         var numParts = parts.length;
         var counter = 0;
@@ -21899,6 +21920,10 @@ function numberToNumberString(num, hyphenate) {
 exports.numberToNumberString = numberToNumberString;
 function numberStringToNumber(numberString) {
     numberString = numberString.toLowerCase();
+    //typescript have as type number but can be a string to be coerced https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/isNaN
+    if (!isNaN(numberString)) {
+        return parseInt(numberString);
+    }
     switch (numberString) {
         case "one":
             return 1;

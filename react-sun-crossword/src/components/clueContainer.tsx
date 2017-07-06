@@ -117,7 +117,6 @@ export class GroupedClue extends React.Component<GroupedClueProps, undefined> {
                 compareFormat = format;
             }
         }
-        
         if (formatsSame) {
             return (<div>
                 {this.props.clueTextFormats.map((clueTextFormat, index) => {
