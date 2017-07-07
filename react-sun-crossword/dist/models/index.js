@@ -201,4 +201,13 @@ function ConvertCrosswordJsonToModel(crosswordJson) {
     return crosswordModel;
 }
 exports.ConvertCrosswordJsonToModel = ConvertCrosswordJsonToModel;
+function getClueSolution(clue) {
+    var clueSolution = "";
+    var squares = clue.word.squares;
+    squares.forEach(function (sq) {
+        clueSolution += sq.letter;
+    });
+    return clueSolution;
+}
+exports.getClueSolution = getClueSolution;
 //# sourceMappingURL=index.js.map

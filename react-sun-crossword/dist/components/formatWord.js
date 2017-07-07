@@ -16,6 +16,9 @@ var FormatWord = (function (_super) {
         var clueLetters = this.props.clueLetters;
         var format = this.props.format;
         var parts = format.split(",");
+        if (parts.length === 1) {
+            parts = format.split("-");
+        }
         var formatted = []; //type ReactInstance = Component<any, any> | Element; - this is not the correct typing ....
         var numParts = parts.length;
         var counter = 0;

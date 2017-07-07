@@ -10,7 +10,8 @@ import { TwoCol } from "./twoCol";
 import { CroswordClues, ClueProps } from "./clues";
 import { Lightbulbs } from "./Lighbulbs"
 import { Lightbulb } from "./lightbulb";
-import { recogniseMe, simpleCommandToRegExp, Command, CommandCallbackContext } from "../helpers/recogniseMe";
+import { recogniseMe, simpleCommandToRegExp, CommandCallbackContext, CommandState, StateCommand, StateCommandCallbackContext, CommandCallbackResponse, sentenceRegExp } from "../helpers/recogniseMe";
+//import { recogniseMe, simpleCommandToRegExp, Command, CommandCallbackContext, CommandState } from "../helpers/recogniseMe";
 import { numberToNumberString, numberStringToNumber } from "../helpers/numberStrings";
 import { wordsFromSquashedWords } from "../helpers/stringHelpers";
 
@@ -25,14 +26,14 @@ interface RowColIndices {
 export enum WordSelectMode {
     select,nav,across,down
 }
-interface SolveCommand extends Command {
-    square: Square,
-    acrossOrDownMode: WordSelectMode
-}
-interface SolveExactCommand extends SolveCommand {
-    guess: string,
+//interface SolveCommand extends Command {
+//    square: Square,
+//    acrossOrDownMode: WordSelectMode
+//}
+//interface SolveExactCommand extends SolveCommand {
+//    guess: string,
     
-}
+//}
 interface CrosswordPuzzleState {
     testCommand:string
 }
@@ -40,7 +41,9 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     canRecognise: boolean
     solveExact: boolean;
     autoSolve: boolean;//to come as props
-    commands: Command[] = []
+    //commands: Command[] = []
+    defaultState: CommandState;
+    states: CommandState[] = [];
     constructor(props: CrosswordPuzzleProps) {
         super(props);
         this.autoSolve = true;
@@ -71,8 +74,8 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         return mappedGrid;
     }
 
-    //speech recognition callbacks  **************************** do inline ?
-    navWord = (context: CommandCallbackContext) => {
+
+    navWord = (context: StateCommandCallbackContext) => {
         var numberAcrossDown = context.parameters[0]
         var split = numberAcrossDown.split(" ");
         var numberString: string;
@@ -101,34 +104,100 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         if (isAcross) {
             clues = cp.acrossClues
         }
-        var word = clues.filter(function (clue) {
+        var clue = clues.filter(function (clue) {
             return clue.number === number.toString();
-        })[0].word;
+        })[0]
+        var word = clue.word;
 
-        this.performSelection(word.squares[0], wordSelectMode);
-    }
+        var startSquare = word.squares[0];
+        this.performSelection(startSquare, wordSelectMode);
+        var response: CommandCallbackResponse = {
+            nextStateContext: {
+                startSquare: startSquare,
+                wordSelectMode: wordSelectMode,
+                clueSolution: getClueSolution(clue)
+            }
+            
+        }
+        return response;
+    }//done
     solveWordLength = (context: CommandCallbackContext) => {
-        console.log("In solve word length")
-        var self = this;
-        var command = context.command as SolveCommand;
-        this.performSelection(command.square, command.acrossOrDownMode);
-        var words = context.parameters[0];
-        var guess = words.replace(" ", "");
-        guess.split("").forEach(function (letter) {
-            self.keyGuess(null, letter);
-        });
+        //console.log("In solve word length")
+        //var self = this;
+        //var command = context.command as SolveCommand;
+        //this.performSelection(command.square, command.acrossOrDownMode);
+        //var words = context.parameters[0];
+        //var guess = words.replace(" ", "");
+        //guess.split("").forEach(function (letter) {
+        //    self.keyGuess(null, letter);
+        //});
 
     }
     solveWordExact = (context: CommandCallbackContext) => {
-        var self = this;
-        var command = context.command as SolveExactCommand;
-        this.performSelection(command.square, command.acrossOrDownMode);
-        command.guess.split("").forEach(function (letter) {
-            self.keyGuess(null, letter);
-        });
+        //var self = this;
+        //var command = context.command as SolveExactCommand;
+        //this.performSelection(command.square, command.acrossOrDownMode);
+        //command.guess.split("").forEach(function (letter) {
+        //    self.keyGuess(null, letter);
+        //});
 
     }
-    navDirectionRecognised = (context: CommandCallbackContext) => {
+    spellAny = (context: StateCommandCallbackContext) => {
+        var self = this;
+        var words = context.parameters[0].toLowerCase();
+        var synthesisMessage: string;
+
+        var speakSpelling = false;
+
+        if (words === "delete") {
+            synthesisMessage = "delete";
+            self.backspace();
+        } else {
+            var phonetics = words.split(" ");
+            synthesisMessage = "";
+            phonetics.forEach(function (word) {
+                var letter = word.split("")[0];
+                self.keyGuess(null, letter);
+                synthesisMessage += letter + " ";
+            })
+        }
+        if (speakSpelling) {
+            return {
+                synthesisMessage: synthesisMessage
+            }
+        }
+        return null;
+    }
+    solveAny = (context: StateCommandCallbackContext) => {
+        var self = this;
+        //if get right will probably want to exit the state - would need to set on the command
+        var clueSolution = context.stateContext.clueSolution.toLowerCase();
+        
+        var guess = context.parameters[0];
+        var guessWords = guess.split(" ");
+        var solutionGuess = "";
+        for (var i = 0; i < guessWords.length; i++) {
+            solutionGuess += guessWords[i].toLowerCase();
+        }
+        var response: CommandCallbackResponse;
+        if (clueSolution === solutionGuess) {
+            clueSolution.split("").forEach(function (letter) {
+                self.keyGuess(null, letter);
+            })
+            response = {
+                sound:"sounds/small-bell-ring.mp3"
+            }
+        } else {
+             response = {
+                 matches: false,
+                 
+            }
+        }
+        
+        return response;
+    }
+    //done
+    navDirectionRecognised = (context: StateCommandCallbackContext ) => {
         var direction = context.parameters[0].toLowerCase();
         var numNavs = 1;
         var numPart = context.parameters[1]
@@ -154,194 +223,269 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         for (var i = 0; i < numNavs; i++) {
             navFunction.bind(this)();
         }
+        return null;
     }
-    recogniseNavigationCommands(crosswordModel:CrosswordModel) {
-        this.recogniseCommand(this.getNavigationDirectionCommand());
-        this.recogniseCommand(this.getNavigateToWordCommand(crosswordModel.clueProviders[0]));
-    }
+
     recogniseSolveCommands(clueProviders:ClueProvider[]) {
-        function getWordLengths(format: string) {
-            var parts = format.split(",");
-            if (parts.length === 1) {
-                parts = format.split("-");
-            }
-            return parts.map(function (p) {
-                return parseInt(p);
-            })
+        //function getWordLengths(format: string) {
+        //    var parts = format.split(",");
+        //    if (parts.length === 1) {
+        //        parts = format.split("-");
+        //    }
+        //    return parts.map(function (p) {
+        //        return parseInt(p);
+        //    })
+        //}
+        ////LP ( might only want to solve with one of the ClueProviders - cryptic or coffee time - through option pass in just the one
+        //function createSolveCommands(cps: ClueProvider[], numClueProviders: number, numClues: number, isAcross: boolean): Command[] {
+        //    var acrossOrDownWord = isAcross ? "across" : "down";
+        //    var wordSelectMode = isAcross ? WordSelectMode.across : WordSelectMode.down;
+        //    var solveCommands = [];
+        //    for (var i = 0; i < numClues; i++) {
+        //        var formats: string[] = [];
+        //        var clueProviderSolveCommands:Command[] = [];
+        //        for (var j = 0; j < numClueProviders; j++) {
+        //            var cp = cps[j];
+        //            var cpClues = isAcross ? cp.acrossClues : cp.downClues;
+        //            var cpClue = cpClues[i];
+        //            var cpFormat = cpClue.format;
+        //            var clueProviderSolveCommand: SolveCommand;
+        //            if (formats.indexOf(cpFormat) === -1) {
+        //                formats.push(cpFormat);
+        //                var wordLengths = getWordLengths(cpFormat);
+        //                var regExprPrefix = "^" + solveWord + " " + "(?:" + cpClue.number + "|" + numberToNumberString(cpClue.number) + ")" + " " + acrossOrDownWord + " (?:with)?\\s?";
+        //                if (self.solveExact) {
+        //                    var clueSolution = getClueSolution(cpClue);
+        //                    var wordMatch = wordsFromSquashedWords(clueSolution, wordLengths)
+
+        //                    var regExprString = regExprPrefix + wordMatch + "$";
+
+        //                    clueProviderSolveCommand = {
+        //                        description: "Solve exact: " + acrossOrDownWord + " " + cpClue.number,
+        //                        regExpr: new RegExp(regExprString, "i"),
+        //                        callback: self.solveWordExact,
+        //                        guess: clueSolution,
+        //                        square: null,
+        //                        acrossOrDownMode:null
+
+        //                    } as SolveCommand;
+                            
+
+        //                } else {
+        //                    //is it necessary to group the alternation ?
+        //                    var formatsPart = "(";
+        //                    for (var k = 0; k < wordLengths.length; k++) {
+        //                        formatsPart += "[a-z]{" + wordLengths[k] + "}"
+        //                        if (k !== wordLengths.length - 1) {
+        //                            formatsPart += " ";
+        //                        }
+        //                    }
+
+        //                    var wordLengthRegEexp = regExprPrefix + formatsPart + ")$";
+                            
+        //                    clueProviderSolveCommand = {
+        //                        description: "Solve word length: " + acrossOrDownWord + " " + cpClue.number,
+        //                        regExpr: new RegExp(wordLengthRegEexp, "i"),
+        //                        callback: self.solveWordLength,
+        //                        acrossOrDownMode: null,
+        //                        square:null
+        //                    }
+        //                }
+        //                clueProviderSolveCommand.square = cpClue.word.squares[0];
+        //                clueProviderSolveCommand.acrossOrDownMode = wordSelectMode;
+        //                (clueProviderSolveCommand as any)["providerName"] = cp.name;
+        //                clueProviderSolveCommands.push(clueProviderSolveCommand);
+        //            }
+        //        }
+        //        if (clueProviderSolveCommands.length > 1) {
+        //            clueProviderSolveCommands.forEach(function (command) {
+        //                command.description += " " + (command as any)["providerName"];
+        //                solveCommands.push(command);
+        //            })
+        //        } else {
+        //            solveCommands.push(clueProviderSolveCommands[0])
+        //        }
+                
+        //    }
+        //    return solveCommands;
+        //}
+        //var self = this;
+        //var solveWord = "(?:guess|answer|solve)";
+        
+
+        //var numClueProviders = clueProviders.length;
+        //var numAcrossClues = clueProviders[0].acrossClues.length;
+        //var numDownClues = clueProviders[0].downClues.length;
+
+        //var acrossSolveCommands = createSolveCommands(clueProviders,numClueProviders,numAcrossClues, true);
+        //var downSolveCommands = createSolveCommands(clueProviders, numClueProviders,numDownClues, false);
+
+        //this.recogniseCommands(acrossSolveCommands.concat(downSolveCommands));
+    }
+
+    recogniseDefaultState(defaultState: CommandState) {
+        recogniseMe.addStates([defaultState]);
+        this.defaultState = defaultState;
+    }
+    recogniseStates(states: CommandState[]) {
+        recogniseMe.addStates(states);
+        this.states = states;
+    }
+
+    getSpellState() {//extract the regular expression string to a helper
+        var spellState: CommandState={
+            name: "Spell",
+            enter: function () { console.log("Entering the spell state"); return { synthesisMessage:"Spelling" }; },
+            exit: function () { console.log("Exiting the spell state"); return null; },
+            commands: [
+                {
+                    name: "Spell any",
+                    regExp: sentenceRegExp,
+                    callback: this.spellAny,
+                }
+            ]
         }
-        //LP ( might only want to solve with one of the ClueProviders - cryptic or coffee time - through option pass in just the one
-        function createSolveCommands(cps: ClueProvider[], numClueProviders: number, numClues: number, isAcross: boolean): Command[] {
-            var acrossOrDownWord = isAcross ? "across" : "down";
-            var wordSelectMode = isAcross ? WordSelectMode.across : WordSelectMode.down;
-            var solveCommands = [];
-            for (var i = 0; i < numClues; i++) {
-                var formats: string[] = [];
-                var clueProviderSolveCommands:Command[] = [];
-                for (var j = 0; j < numClueProviders; j++) {
-                    var cp = cps[j];
-                    var cpClues = isAcross ? cp.acrossClues : cp.downClues;
-                    var cpClue = cpClues[i];
-                    var cpFormat = cpClue.format;
-                    var clueProviderSolveCommand: SolveCommand;
-                    if (formats.indexOf(cpFormat) === -1) {
-                        formats.push(cpFormat);
-                        var wordLengths = getWordLengths(cpFormat);
-                        var regExprPrefix = "^" + solveWord + " " + "(?:" + cpClue.number + "|" + numberToNumberString(cpClue.number) + ")" + " " + acrossOrDownWord + " (?:with)?\\s?";
-                        if (self.solveExact) {
-                            var clueSolution = getClueSolution(cpClue);
-                            var wordMatch = wordsFromSquashedWords(clueSolution, wordLengths)
-
-                            var regExprString = regExprPrefix + wordMatch + "$";
-
-                            clueProviderSolveCommand = {
-                                description: "Solve exact: " + acrossOrDownWord + " " + cpClue.number,
-                                regExpr: new RegExp(regExprString, "i"),
-                                callback: self.solveWordExact,
-                                guess: clueSolution,
-                                square: null,
-                                acrossOrDownMode:null
-
-                            } as SolveCommand;
-                            
-
-                        } else {
-                            //is it necessary to group the alternation ?
-                            var formatsPart = "(";
-                            for (var k = 0; k < wordLengths.length; k++) {
-                                formatsPart += "[a-z]{" + wordLengths[k] + "}"
-                                if (k !== wordLengths.length - 1) {
-                                    formatsPart += " ";
-                                }
-                            }
-
-                            var wordLengthRegEexp = regExprPrefix + formatsPart + ")$";
-                            
-                            clueProviderSolveCommand = {
-                                description: "Solve word length: " + acrossOrDownWord + " " + cpClue.number,
-                                regExpr: new RegExp(wordLengthRegEexp, "i"),
-                                callback: self.solveWordLength,
-                                acrossOrDownMode: null,
-                                square:null
-                            }
-                        }
-                        clueProviderSolveCommand.square = cpClue.word.squares[0];
-                        clueProviderSolveCommand.acrossOrDownMode = wordSelectMode;
-                        (clueProviderSolveCommand as any)["providerName"] = cp.name;
-                        clueProviderSolveCommands.push(clueProviderSolveCommand);
+        return spellState;
+    }
+    //could have global defaults
+    getNoMatchSynthesisMessage(results: string[], confidences: number[], giveResultsFeedback = true, numResultsForFeedback=1) {
+        var synthesisMessage = "Speech recognition results do not match solution.  ";//this is under current conditions of exact matching
+        if (giveResultsFeedback) {
+            synthesisMessage+="I heard, "
+            for (var i = 0; i < numResultsForFeedback; i++) {
+                synthesisMessage += results[i];
+                if (i < numResultsForFeedback - 1) {
+                    synthesisMessage += ", ";
+                }
+            }
+            synthesisMessage += ".  ";
+        }
+        return synthesisMessage;
+    }
+    getSolveState() {
+        var self = this;
+        var solveState: CommandState = {
+            name: "Solve",
+            enter: function () { console.log("Entering the solve state"); return { synthesisMessage: "Solving" };},
+            exit: function () { console.log("Exiting the solve state"); return null; },
+            noMatch: function (results:string[],confidences:number[]) {
+                //could add - Try spelling
+                return {
+                    synthesisMessage: self.getNoMatchSynthesisMessage(results, confidences)
+                };
+            },
+            commands: [
+                {
+                    name: "Solve any",
+                    regExp: sentenceRegExp,
+                    callback: this.solveAny,
+                    nextState: "Default"                   
+                }
+            ]
+        }
+        return solveState;
+    }
+    getDefaultState(cp: ClueProvider) :CommandState{
+        function getNavigationDirectionRegExpr() {
+            var numPart = "\\s?("
+            for (var i = 1; i < 13; i++) {
+                numPart += i.toString() + "|" + numberToNumberString(i);
+                if (i < 12) {
+                    numPart += "|";
+                }
+            }
+            numPart += ")?$"
+            var regExprString = "^(left|right|up|down)" + numPart;
+            return new RegExp(regExprString, "i")
+        }
+        function getWordRegExpr() {
+            //1 across | one down | 2 across | two across etc
+            function appendWordAlternativesForAcrossOrDownClues(clues: Clue[], isAcross: boolean, command: string) {
+                var acrossOrDown = isAcross ? "across" : "down";
+                for (var i = 0; i < clues.length; i++) {
+                    var clue = clues[i];
+                    var clueNumber = numberToNumberString(clue.number);
+                    command += clueNumber + " " + acrossOrDown + "|" + clue.number + " " + acrossOrDown;
+                    if (i !== clues.length - 1) {
+                        command += "|";
                     }
                 }
-                if (clueProviderSolveCommands.length > 1) {
-                    clueProviderSolveCommands.forEach(function (command) {
-                        command.description += " " + (command as any)["providerName"];
-                        solveCommands.push(command);
-                    })
-                } else {
-                    solveCommands.push(clueProviderSolveCommands[0])
-                }
-                
+                return command;
             }
-            return solveCommands;
+
+            var navWordCommandString = "^(";
+            navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.acrossClues, true, navWordCommandString);
+            navWordCommandString += "|";
+            navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.downClues, false, navWordCommandString);
+
+            navWordCommandString += ")$";
+            return new RegExp(navWordCommandString, "i");
         }
         var self = this;
-        var solveWord = "(?:guess|answer|solve)";
         
+        var clickSolveBulbCommand: StateCommand = {
+            name: "Click solve bulb",
+            regExp: /^Solve$/i,
+            callback: function () {
+                self.solveClicked();
+                return null;
+            },
+            keepState: true,
 
-        var numClueProviders = clueProviders.length;
-        var numAcrossClues = clueProviders[0].acrossClues.length;
-        var numDownClues = clueProviders[0].downClues.length;
-
-        var acrossSolveCommands = createSolveCommands(clueProviders,numClueProviders,numAcrossClues, true);
-        var downSolveCommands = createSolveCommands(clueProviders, numClueProviders,numDownClues, false);
-
-        this.recogniseCommands(acrossSolveCommands.concat(downSolveCommands));
-    }
-    getNavigationDirectionCommand() {
-        var numPart = "\\s?("
-        for (var i = 1; i < 13; i++) {
-            numPart += i.toString() + "|" + numberToNumberString(i);
-            if (i < 12) {
-                numPart += "|";
-            }
         }
-        numPart += ")?$"
-        var regExprString = "^(left|right|up|down)" + numPart;
-        console.log(regExprString);
-        return {
+        var clickCheatBulbCommand: StateCommand = {
+            name: "Click cheat bulb",
+            regExp: /^cheat$/i,
+            callback: function () {
+                self.globalCheatClicked();
+                return null;
+            },
+            keepState: true,
+
+        }
+        var navDirectionCommand: StateCommand = {
+            name: "Navigation direction",
+            regExp: getNavigationDirectionRegExpr(),
             callback: this.navDirectionRecognised,
-            description: "Navigation direction",
-            regExpr: new RegExp(regExprString,"i")
-        }
-        
-    }
-    getNavigateToWordCommand(cp:ClueProvider) {
-        //1 across | one down | 2 across | two across etc
-        function appendWordAlternativesForAcrossOrDownClues(clues: Clue[], isAcross: boolean, command: string) {
-            var acrossOrDown = isAcross ? "across" : "down";
-            for (var i = 0; i < clues.length; i++) {
-                var clue = clues[i];
-                var clueNumber = numberToNumberString(clue.number);
-                command += clueNumber + " " + acrossOrDown + "|" + clue.number + " " + acrossOrDown;
-                if (i !== clues.length - 1) {
-                    command += "|";
-                }
-            }
-            return command;
-        }
-
-        var navWordCommandString = "^(";
-        navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.acrossClues, true, navWordCommandString);
-        navWordCommandString += "|";
-        navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.downClues, false, navWordCommandString);
-
-        navWordCommandString += ")$"
-
-        return {
-            callback: this.navWord,
-            description: "Navigate to word",
-            regExpr: new RegExp(navWordCommandString, "i")
-        }
-        
-    }
-    recogniseCommands(commands: Command[]) {
-        recogniseMe.addCommands(commands);
-        this.commands = this.commands.concat(commands);
-    }
-    recogniseCommand(command: Command) {
-        recogniseMe.addCommands(command);
-        this.commands.push(command);
-    }
-    removeCommands() {
-        recogniseMe.removeCommands(this.commands.map(function (command) {
-            return command.description;
-        }));
-        this.commands = [];
-    }
-    resetRecognition() {
-        this.removeCommands();
-    }
-    debugResultNoMatch() {
-        if (!this.canRecognise) {
-            //put synthesis in
+            keepState:true
             
-            //if sticking with this then can type the type arg
-            recogniseMe.addCallback("resultNoMatch", function (results: string[]) {
-                var audio = new Audio('sounds/family-fortunes-wrong-buzzer.mp3');
-                audio.play();
+        }
+        var navWordCommand: StateCommand = {
+            name: "Navigation to word",
+            regExp: getWordRegExpr(),
+            callback: this.navWord,
+            nextState:"Solve"
+        }
+        var spellCommand: StateCommand = {
+            name: "Spell",
+            regExp: /^Spell$/i,
+            nextState: "Spell",
+            callback: function () { return null;}
+        }
 
-                console.log("Result no match*************")
-                results.forEach(result => console.log(result));
-                console.log("Result no match*************")
-            });
+        return   {
+            isDefault: true,
+            name: "Default",
+            enter: function () { return { sound:"sounds/default-state.mp3" } },
+            exit: function () { console.log("Exit default state"); return null },
+            noMatch: function (results, confidences) {
+                return { synthesisMessage:self.getNoMatchSynthesisMessage(results, confidences) }
+            },
+            commands: [navDirectionCommand, navWordCommand, spellCommand, clickCheatBulbCommand, clickSolveBulbCommand]
         }
     }
     setUpRecognition(crosswordModel:CrosswordModel) {
         if (recogniseMe) {
-            this.resetRecognition();
-
-            this.debugResultNoMatch();//to delete later
-
-            this.recogniseNavigationCommands(crosswordModel);
-            this.recogniseSolveCommands(crosswordModel.clueProviders);
+            var theDefaultState = this.getDefaultState(crosswordModel.clueProviders[0]);
+            if (this.canRecognise) {
+                recogniseMe.removeStates([this.defaultState.name]);
+            }
+            this.recogniseDefaultState(theDefaultState);
+            if (this.canRecognise) {
+                recogniseMe.setState(this.defaultState.name, {});
+            } else {
+                this.recogniseStates([this.getSolveState(), this.getSpellState()])
+            }
             recogniseMe.setLanguage("en-GB")
             this.canRecognise = true;
             recogniseMe.start();
@@ -604,7 +748,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             })
         }
     }
-    solveClicked = ()=>{
+    solveClicked = () => {
         if (this.props.crosswordModel.solvingMode === SolvingMode.Solving) {
             this.props.crosswordModel.solvingMode = SolvingMode.Guessing;
         } else {
