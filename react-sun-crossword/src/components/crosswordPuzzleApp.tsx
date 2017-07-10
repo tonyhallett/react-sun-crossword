@@ -115,7 +115,7 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         //{height:"200px"}
 
         /*
-            Element queries
+            Element queries       
              <Bounded />
             <ElementQuery queries={{ sm: { maxWidth: 200 }, lg: { minWidth: 201 }, hasHeight: {minHeight:1} }}>
                 <Matches sm>Small</Matches>

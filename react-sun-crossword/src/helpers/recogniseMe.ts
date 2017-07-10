@@ -16,7 +16,17 @@ interface CallbackWithContext {
 export interface StartOptions {
     paused?: boolean,
     autoRestart?: boolean
-    continuous?:boolean
+    continuous?: boolean
+    
+}
+export interface StartStopCommands {
+    defaultStartStopPhrases?: boolean
+    defaultStartStopSynthesis?: boolean
+    startPhrase?: RegExp
+    stopPhrase?: RegExp
+    startSound?: SoundResponse
+    stopSound?: SoundResponse
+
 }
 export interface CommandCallbackContext {
     command: Command,
@@ -42,6 +52,7 @@ export function simpleCommandToRegExp(command: string):RegExp {
     }).replace(splatParam, '(.*?)').replace(optionalRegex, '\\s*$1?\\s*');
     return new RegExp('^' + command + '$', 'i');
 }
+
 export var sentenceRegExp = /^((?:[a-z]+\s?)+)$/i;
 export type CommandOrCommands = Command | Command[]
 
@@ -137,7 +148,7 @@ export interface RecogniseMe {
     setLanguage: (language: string) => void//think that language can only be a string
     getSpeechRecognizer: () => SpeechRecognition
 
-
+    setStartStopCommands:  (startStopCommands:StartStopCommands)=>void
 
     addCallback: (type: string, callback: string|CallbackUnknown, context?: any) => void
     removeCallback: (type: string, callback: CallbackUnknown) => void
@@ -787,6 +798,19 @@ if (SpeechRecognition) {
     var pauseListening = false;
     var _isListening = false;
 
+    var extractFromSpeechRecognitionEvent = function (event: SpeechRecognitionEvent) {
+        var SpeechRecognitionResult = event.results[event.resultIndex];
+        var results = [];
+        var confidences = [];
+        for (var k = 0; k < SpeechRecognitionResult.length; k++) {
+            results[k] = SpeechRecognitionResult[k].transcript;
+            confidences[k] = SpeechRecognitionResult[k].confidence;
+        }
+        return {
+            results: results,
+            confidences:confidences
+        }
+    }
 
     // This method receives an array of callbacks to iterate over, and invokes each of them
     var invokeCallbacks = function invokeCallbacks(callbacks, ...args: any[]) {
@@ -978,9 +1002,7 @@ if (SpeechRecognition) {
     var audioQueue: HTMLAudioElement[] = [];
     var playSound = function (sound: string) {
         function playAudio(audio: HTMLAudioElement) {
-            console.log("playing audio");
             audio.onended = function (evt) {
-                console.log("audio ended, queue: " + audioQueue.length)
                 if (audioQueue.length > 0) {
                     var nextAudio = audioQueue[0];
                     audioQueue = audioQueue.slice(1);
@@ -994,7 +1016,6 @@ if (SpeechRecognition) {
         }
         var audio = new Audio(sound);
         if (playingAudio) {
-            console.log("queing audio");
             audioQueue.push(audio);
         } else {
             playAudio(audio);
@@ -1042,7 +1063,13 @@ if (SpeechRecognition) {
             }
         }
     }
-   
+
+    var listeningForStartStop: boolean = false;
+    var startPhrase: RegExp
+    var startSound: SoundResponse
+    var stopPhrase: RegExp
+    var stopSound: SoundResponse
+
     //will want state change callback
     recogniseMe = {
         currentState: null,
@@ -1181,6 +1208,30 @@ if (SpeechRecognition) {
             };
 
             recognition.onresult = function (event) {
+
+                if (listeningForStartStop) {
+                    var phrase= stopPhrase;
+                    var action = recogniseMe.pause;
+                    var sound = stopSound;
+                    if (pauseListening) {
+                        phrase = startPhrase
+                        action = recogniseMe.resume;
+                        sound=startSound;
+                    }
+                    var results = extractFromSpeechRecognitionEvent(event).results;
+                    var match = false;
+                    for (var i = 0; i < results.length; i++) {
+                        if (phrase.exec(results[i])) {
+                            match = true;
+                            break;
+                        }
+                    }
+                    if (match) {
+                        action();
+                        doSoundResponse(sound);
+                        return false;
+                    }
+                }
                 if (pauseListening) {
                     if (debugState) {
                         logMessage('Speech heard, but annyang is paused');
@@ -1233,7 +1284,12 @@ if (SpeechRecognition) {
             */
         start: function start(options) {
             initIfNeeded();
+            
             options = options || {};
+            
+
+
+
             if (options.paused !== undefined) {
                 pauseListening = !!options.paused;
             } else {
@@ -1321,7 +1377,37 @@ if (SpeechRecognition) {
             initIfNeeded();
             recognition.maxAlternatives = maxAlternatives;
         },
+        /*
+        
 
+        */
+        setStartStopCommands: function (startStopCommands) {
+            startPhrase = null;
+            stopPhrase = null;
+            startSound = null;
+            stopSound = null;
+            listeningForStartStop = false;
+            if (startStopCommands.defaultStartStopPhrases) {
+                startPhrase = /^Start$/i
+                stopPhrase = /^Stop$/i
+
+                if (startStopCommands.defaultStartStopSynthesis) {
+                    startSound = { synthesisMessage: "Resumed listening" };
+                    stopSound = { synthesisMessage: "Stopped listening" }
+                }
+            } else {
+                if (startStopCommands.startPhrase && startStopCommands.stopPhrase) {
+                    startPhrase = startStopCommands.startPhrase;
+                    stopPhrase = startStopCommands.stopPhrase;
+                    startSound = startStopCommands.startSound;
+                    stopSound = startStopCommands.stopSound;
+                }
+            }
+            if (startPhrase && stopPhrase) {
+                listeningForStartStop = true;
+            }
+            
+        },
         
 
         addStates: function addStates(cmdStates: CommandState[]) {
