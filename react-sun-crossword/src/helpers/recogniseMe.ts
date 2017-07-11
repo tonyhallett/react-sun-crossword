@@ -962,7 +962,7 @@ if (SpeechRecognition) {
                                     if (currentCommand.keepState || currentCommand.nextState === currentStateName) {
                                         clearStateTimeout();
                                         if (nextStateContext) {//when staying in same state do not need to maintain state 
-                                            recogniseMe.currentStateContext = nextStateContext;
+                                            enterState(currentState, nextStateContext)
                                         }
                                     } else {
                                         enterAndExitState(commandStateByName(currentCommand.nextState), nextStateContext)

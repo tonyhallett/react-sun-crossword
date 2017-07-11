@@ -19854,6 +19854,7 @@ var CrosswordPuzzle = (function (_super) {
                     numEmptySquares++;
                 }
                 else {
+                    //of course this letter replacement may not be necessary with other voices......
                     letter = squareGuess === "a" ? "eh" : squareGuess;
                 }
                 wordSynthesis += squareGuess;
@@ -23137,7 +23138,7 @@ if (SpeechRecognition) {
                                     if (currentCommand.keepState || currentCommand.nextState === currentStateName) {
                                         clearStateTimeout();
                                         if (nextStateContext) {
-                                            exports.recogniseMe.currentStateContext = nextStateContext;
+                                            enterState(currentState, nextStateContext);
                                         }
                                     }
                                     else {
