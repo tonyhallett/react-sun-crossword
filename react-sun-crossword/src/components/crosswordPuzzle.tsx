@@ -22,6 +22,11 @@ interface RowColIndices {
 export enum WordSelectMode {
     select,nav,across,down
 }
+interface SpeechUndo {
+    startingSquare: Square,
+    wordSelectMode: WordSelectMode,
+    originalGuesses:string[]
+}
 interface WordStateContext {
     startSquare: Square,
     wordSelectMode: WordSelectMode,
@@ -57,6 +62,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     autoSolve: boolean;//to come as props
     defaultState: CommandState;
     states: CommandState[] = [];
+    speechUndos: SpeechUndo[] = [];//********************************** important will need to clear these when change crossword
     constructor(props: CrosswordPuzzleProps) {
         super(props);
         this.autoSolve = true;
@@ -137,85 +143,44 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
 
     }
     //#endregion
-
-    //look at this again - should be providing in context the minimum for the commands to get what they individually need
-    navWord = (context: StateCommandCallbackContext) => {
-        var numberAcrossDown = context.parameters[0]
-        var split = numberAcrossDown.split(" ");
-        var numberString: string;
-        var acrossOrDown: string;
-        if (split.length === 2) {
-            var numberString = split[0];
-            var acrossOrDown = split[1]
-        } else {
-            var numberString = split[0] + " " + split[1];
-            var acrossOrDown = split[2]
-        }
-
-        acrossOrDown = acrossOrDown.toLowerCase();
-
-        var number: number
-        if (numberString.length < 3) {
-            number = parseInt(numberString);
-        } else {
-            number = numberStringToNumber(numberString);
-        }
-        var numString = number.toString();
-        var isAcross = acrossOrDown == "across" ? true : false;
-        var wordSelectMode = isAcross ? WordSelectMode.across : WordSelectMode.down;
-        var clueProviders = this.props.crosswordModel.clueProviders;
-
-        var clueProviderClues: ClueProviderClue[] = [];
-        var cp = clueProviders[0];
-        var clues = cp.downClues;
-        if (isAcross) {
-            clues = cp.acrossClues
-        } 
-        var clueIndex: number;
-        var startSquare: Square;
-        var clueSolution: string;
-        var squares: Square[];
-        for (var i = 0; i < clues.length; i++) {
-            var clue = clues[i];
-            if (clue.number === numString) {
-                clueSolution = getClueSolution(clue);
-                squares = clue.word.squares;
-                startSquare = squares[0];
-                
-
-                clueIndex = i;
-
-                clueProviderClues.push({ clue: clue.text, format: clue.format, providerName: cp.name })
-                break;
+    
+    //#region spelling
+    getSpellState() {
+        function getNavigationDirectionRegExpr() {
+            var numPart = "\\s?("
+            for (var i = 1; i < 13; i++) {
+                numPart += i.toString() + "|" + numberToNumberString(i);
+                if (i < 12) {
+                    numPart += "|";
+                }
             }
-        }
-        for (var i = 1; i < clueProviders.length; i++) {
-            cp = clueProviders[i];
-            clues = cp.downClues;
-            if (isAcross) {
-                clues = cp.acrossClues;
-            }
-            clue = clues[clueIndex];
-            clueProviderClues.push({ clue: clue.text,format:clue.format, providerName: cp.name });
+            numPart += ")?$"
+            var regExprString = "^(left|right|up|down)" + numPart;
+            return new RegExp(regExprString, "i")
         }
 
-        this.performSelection(startSquare, wordSelectMode);
-        var wordStateContext: WordStateContext = {
-            startSquare: startSquare,
-            wordSelectMode: wordSelectMode,
-            clueSolution: clueSolution,
-            identifier: numString + " " + acrossOrDown,
-            clueProviderClues: clueProviderClues,
-            squares:squares
-            
+        var navDirectionCommand: StateCommand = {
+            name: "Navigation direction",
+            regExp: getNavigationDirectionRegExpr(),
+            callback: this.navDirectionRecognised,
+            keepState: true
+
         }
-        var response: CommandCallbackResponse = {
-            nextStateContext: wordStateContext
-            
+        var spellState: CommandState={
+            name: "Spell",
+            enter: function () { console.log("Entering the spell state"); return { synthesisMessage:"Spelling" }; },
+            exit: function () { console.log("Exiting the spell state"); return null; },
+            catchCommand: {
+                name: "Spell any",
+                regExp: sentenceRegExp,
+                callback: this.spellAny,
+            },
+            commands: [
+                navDirectionCommand 
+            ]
         }
-        return response;
+        return spellState;
     }
-
     //to become part of spelling
     navDirectionRecognised = (context: StateCommandCallbackContext) => {
         var synthesisMessage = "No selected square to navigate from."
@@ -247,8 +212,9 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             for (var i = 0; i < numNavs; i++) {
                 navFunction.bind(this)();
             }
-
-            var currentSquareSpeech = this.props.crosswordModel.selectedSquare.guess;
+            //should extract to a get letter speech method
+            var currentSquareSpeech = this.props.crosswordModel.selectedSquare.guess.toLowerCase();
+            currentSquareSpeech = currentSquareSpeech === "a" ?"eh":currentSquareSpeech;
             var blankSquareSpeech = "blank";
             if (currentSquareSpeech === "") {
                 currentSquareSpeech = blankSquareSpeech
@@ -256,72 +222,59 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
 
             synthesisMessage += " : " + currentSquareSpeech;
         }
-        
-        
+
+
         var response: CommandCallbackResponse = {
             synthesisMessage: synthesisMessage
         }
         return response;
     }
-    
-    
-    //to go as helper in recogniseMe
-    getNoMatchSynthesisMessage(results: string[], confidences: number[], giveResultsFeedback = true, numResultsForFeedback = 1) {
-        var synthesisMessage = "Speech recognition results are not understood.  ";//this is under current conditions of exact matching
-        if (giveResultsFeedback) {
-            synthesisMessage += "I heard, "
-            for (var i = 0; i < numResultsForFeedback; i++) {
-                synthesisMessage += results[i];
-                if (i < numResultsForFeedback - 1) {
-                    synthesisMessage += ", ";
-                }
-            }
-            synthesisMessage += ".  ";
-        }
-        return synthesisMessage;
-    }
 
-    //#region spelling
-    getSpellState() {//extract the regular expression string to a helper
-        var spellState: CommandState={
-            name: "Spell",
-            enter: function () { console.log("Entering the spell state"); return { synthesisMessage:"Spelling" }; },
-            exit: function () { console.log("Exiting the spell state"); return null; },
-            commands: [
-                {
-                    name: "Spell any",
-                    regExp: sentenceRegExp,
-                    callback: this.spellAny,
-                }
-            ]
-        }
-        return spellState;
-    }
     spellAny = (context: StateCommandCallbackContext) => {
         var self = this;
-        var words = context.parameters[0].toLowerCase();
-        var synthesisMessage: string;
+        var startingSquare = this.props.crosswordModel.selectedSquare;//********************* will need to prevent when no letter selected
+        var synthesisMessage= "No selected square";
+        if (startingSquare) {
+            var words = context.parameters[0].toLowerCase();
 
-        var speakSpelling = false;
+            var startingSquareGuess = startingSquare.guess;
+            var originalGuesses: string[];
+            var selectedWordIsAcross = this.props.crosswordModel.selectedWord.isAcross;
+            var wordSelectMode = selectedWordIsAcross ? WordSelectMode.across : WordSelectMode.down;
 
-        if (words === "delete") {
-            synthesisMessage = "delete";
-            self.backspace();
-        } else {
-            var phonetics = words.split(" ");
-            synthesisMessage = "";
-            phonetics.forEach(function (word) {
-                var letter = word.split("")[0];
-                self.keyGuess(null, letter);
-                synthesisMessage += letter + " ";
+            if (words === "delete") {
+                originalGuesses = [startingSquareGuess];
+                synthesisMessage = "deleted";
+                self.backspace();
+            } else {
+                var phonetics = words.split(" ");
+                synthesisMessage = "";
+                originalGuesses = [startingSquareGuess];
+                for (var i = 0; i < phonetics.length; i++) {
+                    var word = phonetics[i];
+                    var letter = word.split("")[0];
+                    self.keyGuess(null, letter);
+                    if (i < phonetics.length - 1) {
+                        originalGuesses.push(this.props.crosswordModel.selectedSquare.guess);
+                    }
+                    
+                    letter = letter === "a" ? "eh" : letter;
+                    synthesisMessage += letter + " ";
+                }
+                
+            }
+            this.speechUndos.push({
+                originalGuesses: originalGuesses,
+                startingSquare: startingSquare,
+                wordSelectMode: wordSelectMode
             })
         }
-        if (speakSpelling) {
-            return {
-                synthesisMessage: synthesisMessage
-            }
+        
+
+        return {
+            synthesisMessage: synthesisMessage
         }
-        return null;
+
     }
     //#endregion
     //#region word
@@ -339,11 +292,11 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 return { synthesisMessage: wordContext.identifier };
             },
             exit: function () { console.log("Exiting the word state"); return null; },
-            noMatch: function (results:string[],confidences:number[]) {
-                //could adding to speach - Try spelling
-                return {
-                    synthesisMessage: self.getNoMatchSynthesisMessage(results, confidences)
-                };
+            catchCommand: {
+                name: "Solve any",
+                regExp: sentenceRegExp,
+                callback: this.solveAny,
+                nextState: "Default"
             },
             commands: [
                 {
@@ -361,13 +314,8 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     name: "Letters",
                     regExp: /^Letters/i,
                     callback: this.letters,
-                },
-                {
-                    name: "Solve any",
-                    regExp: sentenceRegExp,
-                    callback: this.solveAny,
-                    nextState: "Default"
-                },
+                }
+                
 
             ]
         }
@@ -386,9 +334,23 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         }
         var response: CommandCallbackResponse;
         if (clueSolution === solutionGuess) {
-            clueSolution.split("").forEach(function (letter) {
+            var startingSquare = this.props.crosswordModel.selectedSquare;
+            var speechUndo: SpeechUndo = {
+                startingSquare: startingSquare,
+                wordSelectMode: this.props.crosswordModel.selectedWord.isAcross ? WordSelectMode.across : WordSelectMode.down,
+                originalGuesses:[startingSquare.guess]
+            }
+            var letters = clueSolution.split("");
+            var numLetters = letters.length;
+            for (var i = 0; i < numLetters; i++) {
+                var letter = letters[i];              
                 self.keyGuess(null, letter);
-            })
+                if (i < numLetters - 1) {
+                    speechUndo.originalGuesses.push(this.props.crosswordModel.selectedSquare.guess);
+                }
+            }
+            this.speechUndos.push(speechUndo);
+            
             response = {
                 sound: "sounds/small-bell-ring.mp3"
             }
@@ -418,7 +380,9 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 if (i !== 0) {
                     clueFormatSynthesis += ", then ";
                 }
-                clueFormatSynthesis += parts[i] + " letters";
+                var part = parts[i];
+                var lettersPart = part === "1" ? "letter" : "letters";
+                clueFormatSynthesis += parts[i] + " " + lettersPart;
             }
             return clueFormatSynthesis;
         }
@@ -460,8 +424,9 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         var wordContext = context.stateContext as WordStateContext;
         var squares = wordContext.squares;
         var lettersSynthesis = "";
-        //will say word if no "", no guess if all "", otherwise spell
+        var speakWord = false;//probably will not change as if incorrect and garbage then as a word cannot be understood.  if decide to speak when correct then giving the game away
         var wordSynthesis = "";
+
         var emptySynthesis = "Word is empty."
         var numEmptySquares = 0;
         var emptySquareSynthesis = "something";
@@ -479,26 +444,28 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 letter = squareGuess === "a" ? "eh" : squareGuess;
             }
             wordSynthesis += squareGuess;
-            lettersSynthesis += letter + ". ";
+            lettersSynthesis += " " + letter + ". ";
         }
-        if (numEmptySquares === 0) {
-            synthesisMessage = wordSynthesis
-        } else if (numEmptySquares === numSquares) {
+        if (numEmptySquares === numSquares) {
             synthesisMessage = emptySynthesis
         } else {
-            synthesisMessage = lettersSynthesis;
+            if (numEmptySquares === 0 && speakWord) {
+                synthesisMessage = wordSynthesis
+            } else {
+                synthesisMessage = lettersSynthesis;
+            }
         }
-        return {
-            synthesisMessage: synthesisMessage
-        }
+        return { synthesisMessage: synthesisMessage }
+        
     }
+    
     //#endregion
     //#region details
     getDetailsState() {
-        //no match and state timeout
         var state: CommandState = {
             name:"Details",
             enter: function () {
+                console.log("Enter details state")
                 var soundResponse: SoundResponse = {
                     synthesisMessage:"Details"
                 }
@@ -514,12 +481,31 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     regExp: /^incomplete$/i,
                     callback: this.incompleteRecognised
                 },
+                {
+                    name: "Clue Providers",
+                    regExp: /^clue providers$/i,
+                    callback: this.clueProviders
+                },
             ]
             
             
         }
 
         return state;
+    }
+
+    clueProviders = (context: StateCommandCallbackContext) => {
+        var cps = this.props.crosswordModel.clueProviders;
+        var synthesisMesssage = "";
+        for (var i = 0; i < cps.length; i++) {
+            if (i !== 0) {
+                synthesisMesssage += ", ";
+            }
+            synthesisMesssage += cps[i].name;
+        }
+        return {
+            synthesisMessage: synthesisMesssage
+        }
     }
     //unsolved and incomplete can be refactored
     unsolvedRecognised = (context: StateCommandCallbackContext) => {
@@ -533,9 +519,9 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             var unsolved = !word.solved();
             if (unsolved) {
                 if (hasUnsolvedAcrossClues) {
-                    synthesis += ", " + acrossClue.number;
+                    synthesis += ". " + acrossClue.number + " ";
                 } else {
-                    synthesis = "Across: " + acrossClue.number;
+                    synthesis = "Across. " + acrossClue.number + " ";
                 }
 
                 hasUnsolvedAcrossClues = true;
@@ -587,9 +573,9 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             }
             if (wordIncomplete) {
                 if (hasIncompleteAcrossClues) {
-                    synthesis += ", " + acrossClue.number;
+                    synthesis += ". " + acrossClue.number + " ";
                 } else {
-                    synthesis = "Across: " + acrossClue.number;
+                    synthesis = "Across. " + acrossClue.number + " ";
                 }
 
                 hasIncompleteAcrossClues = true;
@@ -631,20 +617,8 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         return response;
     }
     //#endregion
-
+    //#region default
     getDefaultState(cp: ClueProvider) :CommandState{
-        function getNavigationDirectionRegExpr() {
-            var numPart = "\\s?("
-            for (var i = 1; i < 13; i++) {
-                numPart += i.toString() + "|" + numberToNumberString(i);
-                if (i < 12) {
-                    numPart += "|";
-                }
-            }
-            numPart += ")?$"
-            var regExprString = "^(left|right|up|down)" + numPart;
-            return new RegExp(regExprString, "i")
-        }
         function getWordRegExpr() {
             //1 across | one down | 2 across | two across etc
             function appendWordAlternativesForAcrossOrDownClues(clues: Clue[], isAcross: boolean, command: string) {
@@ -681,6 +655,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             keepState: true,
 
         }
+        //solution in details for blind
         var clickCheatBulbCommand: StateCommand = {
             name: "Click cheat bulb",
             regExp: /^cheat$/i,
@@ -691,14 +666,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             keepState: true,
 
         }
-        //going to go in spelling
-        var navDirectionCommand: StateCommand = {
-            name: "Navigation direction",
-            regExp: getNavigationDirectionRegExpr(),
-            callback: this.navDirectionRecognised,
-            keepState:true
-            
-        }
+
         var navWordCommand: StateCommand = {
             name: "Navigation to word",
             regExp: getWordRegExpr(),
@@ -719,18 +687,116 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             },
             nextState:"Details"
         }
+        var undoCommand: StateCommand = {
+            name: "Undo",
+            regExp: /^undo$/i,
+            callback: this.undo
+        }
         return   {
             isDefault: true,
             name: "Default",
             enter: function () { return { sound:"sounds/default-state.mp3" } },
             exit: function () { console.log("Exit default state"); return null },
-            noMatch: function (results, confidences) {
-                return { synthesisMessage:self.getNoMatchSynthesisMessage(results, confidences) }
-            },
-            commands: [navDirectionCommand, navWordCommand, detailsCommand, spellCommand, clickCheatBulbCommand, clickSolveBulbCommand]
+            commands: [ navWordCommand, detailsCommand, spellCommand,undoCommand, clickCheatBulbCommand, clickSolveBulbCommand]
         }
     }
+    undo = (context: StateCommandCallbackContext) => {
+        var self = this;
+        var synthesisMessage = "No speech to undo";
+        if (this.speechUndos.length > 0) {
+            synthesisMessage = "Undone";
+            var numUndos = this.speechUndos.length;
+            var speechUndo = this.speechUndos[numUndos-1];
+            this.speechUndos = this.speechUndos.slice(0, numUndos - 1);
+            this.performSelection(speechUndo.startingSquare, speechUndo.wordSelectMode);
 
+            speechUndo.originalGuesses.forEach(function (originalGuess) {
+                self.keyGuess(null, originalGuess);
+            });
+
+        }
+        return {
+            synthesisMessage: synthesisMessage
+        }
+    }
+    //look at this again - should be providing in context the minimum for the commands to get what they individually need
+    navWord = (context: StateCommandCallbackContext) => {
+        var numberAcrossDown = context.parameters[0]
+        var split = numberAcrossDown.split(" ");
+        var numberString: string;
+        var acrossOrDown: string;
+        if (split.length === 2) {
+            var numberString = split[0];
+            var acrossOrDown = split[1]
+        } else {
+            var numberString = split[0] + " " + split[1];
+            var acrossOrDown = split[2]
+        }
+
+        acrossOrDown = acrossOrDown.toLowerCase();
+
+        var number: number
+        if (numberString.length < 3) {
+            number = parseInt(numberString);
+        } else {
+            number = numberStringToNumber(numberString);
+        }
+        var numString = number.toString();
+        var isAcross = acrossOrDown == "across" ? true : false;
+        var wordSelectMode = isAcross ? WordSelectMode.across : WordSelectMode.down;
+        var clueProviders = this.props.crosswordModel.clueProviders;
+
+        var clueProviderClues: ClueProviderClue[] = [];
+        var cp = clueProviders[0];
+        var clues = cp.downClues;
+        if (isAcross) {
+            clues = cp.acrossClues
+        }
+        var clueIndex: number;
+        var startSquare: Square;
+        var clueSolution: string;
+        var squares: Square[];
+        for (var i = 0; i < clues.length; i++) {
+            var clue = clues[i];
+            if (clue.number === numString) {
+                clueSolution = getClueSolution(clue);
+                squares = clue.word.squares;
+                startSquare = squares[0];
+
+
+                clueIndex = i;
+
+                clueProviderClues.push({ clue: clue.text, format: clue.format, providerName: cp.name })
+                break;
+            }
+        }
+        for (var i = 1; i < clueProviders.length; i++) {
+            cp = clueProviders[i];
+            clues = cp.downClues;
+            if (isAcross) {
+                clues = cp.acrossClues;
+            }
+            clue = clues[clueIndex];
+            clueProviderClues.push({ clue: clue.text, format: clue.format, providerName: cp.name });
+        }
+
+        this.performSelection(startSquare, wordSelectMode);
+        var wordStateContext: WordStateContext = {
+            startSquare: startSquare,
+            wordSelectMode: wordSelectMode,
+            clueSolution: clueSolution,
+            identifier: numString + " " + acrossOrDown,
+            clueProviderClues: clueProviderClues,
+            squares: squares
+
+        }
+        var response: CommandCallbackResponse = {
+            nextStateContext: wordStateContext
+
+        }
+        return response;
+    }
+    //#endregion
     //#region setup
     setUpRecognition(crosswordModel:CrosswordModel) {
         if (recogniseMe) {
@@ -743,6 +809,10 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             if (this.canRecognise) {
                 recogniseMe.setState(this.defaultState.name, {});
             } else {
+                recogniseMe.allStatesNoMatchSoundResponse = { sound: "sounds/family-fortunes-wrong-buzzer.mp3" }
+                recogniseMe.doNotListenWhenSpeaking = true;
+                recogniseMe.setSkipSpeakingCommand("quiet please");
+
                 this.recogniseStates([this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()])
             }
             recogniseMe.setLanguage("en-GB")

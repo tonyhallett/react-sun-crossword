@@ -95,7 +95,8 @@ export interface CommandState {
     disabled?: boolean
     canInterrupt?: boolean
     noMatch?: (results:string[],confidences:number[]) => SoundResponse
-    commands:StateCommand[]
+    commands: StateCommand[],
+    catchCommand?:StateCommand
 }
 
 //requiresConfirmation: boolean
@@ -124,10 +125,17 @@ export interface StateCommand {
     maxAlternatives?:number,
     callback: (context: StateCommandCallbackContext) => CommandCallbackResponse
 }
-//global settings that are CommandState and StateCommand
+
 export interface RecogniseMe {
+    allStatesNoMatchSoundResponse: SoundResponse
+
+    doNotListenWhenSpeaking:boolean
+    setSkipSpeakingCommand:(command:string)=>void
+
+    //these to become private
     currentState: CommandState
     currentStateContext: any
+
     setState: (name:string, context:any) => void
 
     start: (startOptions?: StartOptions) => void
@@ -800,8 +808,8 @@ if (SpeechRecognition) {
 
     var extractFromSpeechRecognitionEvent = function (event: SpeechRecognitionEvent) {
         var SpeechRecognitionResult = event.results[event.resultIndex];
-        var results = [];
-        var confidences = [];
+        var results:string[] = [];
+        var confidences:number[] = [];
         for (var k = 0; k < SpeechRecognitionResult.length; k++) {
             results[k] = SpeechRecognitionResult[k].transcript;
             confidences[k] = SpeechRecognitionResult[k].confidence;
@@ -853,17 +861,25 @@ if (SpeechRecognition) {
         commandState.enter = commandState.enter === undefined ? noopNull : commandState.enter;
         commandState.exit = commandState.exit === undefined ? noopNull : commandState.exit;
         commandState.stateTimeout = commandState.stateTimeout === undefined ? 0 : commandState.stateTimeout;
+        var catchCommand = commandState.catchCommand
+        if (catchCommand) {
+            setCommandDefaults(catchCommand, commandState);
+            catchCommand.canInterrupt = false;
+        }
         defaultDisabled(commandState)
         commandState.canInterrupt = commandState.canInterrupt === undefined ? (commandState.isDefault ? false : true) : commandState.canInterrupt;
         commandState.noMatch = commandState.noMatch === undefined ? noopNull : commandState.noMatch;
         commandState.commands.forEach(function (command) {
-            defaultDisabled(command);
-            command.minConfidence = command.minConfidence === undefined ? 0 : command.minConfidence;
-            command.maxAlternatives = command.maxAlternatives === undefined ? 0 : command.maxAlternatives;
-            command.canInterrupt = command.canInterrupt === undefined ? (commandState.isDefault ? true : false) : command.canInterrupt;
-            command.nextState = command.nextState === undefined ? commandState.name : command.nextState;
-            command.keepState=command.keepState===undefined ? false:command.keepState
+            setCommandDefaults(command,commandState);
         })
+    }
+    var setCommandDefaults = function setCommandDefaults(command: StateCommand,commandState:CommandState) {
+        defaultDisabled(command);
+        command.minConfidence = command.minConfidence === undefined ? 0 : command.minConfidence;
+        command.maxAlternatives = command.maxAlternatives === undefined ? 0 : command.maxAlternatives;
+        command.canInterrupt = command.canInterrupt === undefined ? (commandState.isDefault ? true : false) : command.canInterrupt;
+        command.nextState = command.nextState === undefined ? commandState.name : command.nextState;
+        command.keepState = command.keepState === undefined ? false : command.keepState
     }
     var commandStateByName = function commandStateByName(stateName: string):CommandState {
         var state: CommandState;
@@ -884,6 +900,60 @@ if (SpeechRecognition) {
         response.allowFurther = response.allowFurther === undefined ? false : response.allowFurther;
         return response;
     }
+
+    var executeCommand = function executeCommand(currentCommand: StateCommand, commandText: string, confidences: number[], results: string[], resultIndex: number): boolean {
+        var executeFurther = true;
+        var confidence = confidences[resultIndex];
+        var ignoreResult = currentCommand.maxAlternatives !== 0 && currentCommand.maxAlternatives < resultIndex;
+        if (!ignoreResult) {
+            var minConfidence = currentCommand.minConfidence;
+            if (minConfidence === 0 || minConfidence > confidence) {
+                var result = currentCommand.regExp.exec(commandText);
+                if (result) {
+                    var parameters = result.slice(1);
+                    if (debugState) {
+                        logMessage('command matched: %c' + currentCommand.name, debugStyle);
+                        if (parameters.length) {
+                            logMessage('with parameters', parameters);
+                        }
+                    }
+
+                    var cbResponse = getDefaultCommandCallbackResponse(currentCommand.callback({
+                        command: currentCommand,
+                        confidence: confidence,
+                        parameters: parameters,
+                        results: results,
+                        confidences: confidences,
+                        stateContext: recogniseMe.currentStateContext
+                    }));
+
+
+                    //confirmation to do - will need a confirmation state with all information for proceeding
+
+
+
+                    if (cbResponse.matches) {
+                        doSoundResponse(cbResponse);
+
+                        invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.name, results, confidences);
+
+                        var nextStateContext = cbResponse.nextStateContext;
+                        if (currentCommand.keepState || currentCommand.nextState === recogniseMe.currentState.name) {
+                            clearStateTimeout();
+                            if (nextStateContext) {//when staying in same state do not need to maintain state 
+                                enterState(recogniseMe.currentState, nextStateContext)
+                            }
+                        } else {
+                            enterAndExitState(commandStateByName(currentCommand.nextState), nextStateContext)
+                        }
+                        executeFurther = cbResponse.allowFurther;
+                    }
+                }
+            }
+        }
+        return executeFurther;
+    }
+    
     var parseResults = function parseResults(results: string[], confidences: number[]) {
         function commandTransitionsToActiveState(command: StateCommand) {
             return (command.keepState && !recogniseMe.currentState.disabled) ||!commandStateByName(command.nextState).disabled;
@@ -919,70 +989,35 @@ if (SpeechRecognition) {
             var commands = interruptCommands.concat(currentStateCommands)
             var commandText;
             for (var i = 0; i < results.length; i++) {
-
-                commandText = results[i].trim();
-                var confidence = confidences[i];
+                commandText=results[i] = results[i].trim();
                 if (debugState) {
                     logMessage('Speech recognized: %c' + commandText, debugStyle);
                 }
 
                 for (var j = 0, l = commands.length; j < l; j++) {
-                    var currentCommand = commands[j];
-                    var ignoreResult = currentCommand.maxAlternatives !== 0 && currentCommand.maxAlternatives < i;
-                    if (!ignoreResult) {
-
-                        var minConfidence = currentCommand.minConfidence;
-                        if (minConfidence === 0 || minConfidence > confidence) {
-                            var result = currentCommand.regExp.exec(commandText);
-                            if (result) {
-                                var parameters = result.slice(1);
-                                if (debugState) {
-                                    logMessage('command matched: %c' + currentCommand.name, debugStyle);
-                                    if (parameters.length) {
-                                        logMessage('with parameters', parameters);
-                                    }
-                                }
-
-                                var cbResponse = getDefaultCommandCallbackResponse(currentCommand.callback({
-                                    command: currentCommand,
-                                    confidence: confidences[i],
-                                    parameters: parameters,
-                                    results: results,
-                                    confidences: confidences,
-                                    stateContext: recogniseMe.currentStateContext
-                                }));
-                                doSoundResponse(cbResponse);
-
-                                //confirmation to do - will need a confirmation state with all information for proceeding
-
-
-
-                                if (cbResponse.matches) {
-                                    var nextStateContext = cbResponse.nextStateContext;
-                                    if (currentCommand.keepState || currentCommand.nextState === currentStateName) {
-                                        clearStateTimeout();
-                                        if (nextStateContext) {//when staying in same state do not need to maintain state 
-                                            enterState(currentState, nextStateContext)
-                                        }
-                                    } else {
-                                        enterAndExitState(commandStateByName(currentCommand.nextState), nextStateContext)
-                                    }
-
-                                    if (!cbResponse.allowFurther) {
-                                        return;
-                                    }
-                                }
-
-                                invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.name, results, confidences);
-                            }
-                        }
-
+                    var executeFurther = executeCommand(commands[j], commandText, confidences, results, i);
+                    if (!executeFurther) {
+                        return;
                     }
-                   
                 }
             }
-
-            doSoundResponse(currentState.noMatch(results,confidences));
+            var catchCommandMatched = false;
+            if (currentState.catchCommand) {
+                for (var i = 0; i < results.length; i++) {
+                    commandText = results[i];
+                    var executeFurther = executeCommand(currentState.catchCommand, commandText, confidences, results, i);
+                    if (!executeFurther) {
+                        catchCommandMatched = true;
+                        break;
+                    }
+                }
+            }
+            if (!catchCommandMatched) {
+                var soundResponse = currentState.noMatch(results, confidences);
+                soundResponse = soundResponse ? soundResponse : recogniseMe.allStatesNoMatchSoundResponse;
+                doSoundResponse(soundResponse);
+            }
+           
         }
         invokeCallbacks(callbacks.resultNoMatch, results, confidences);
     };
@@ -1050,7 +1085,6 @@ if (SpeechRecognition) {
     }
     //lp - could call enterState() and default to the default state
     var enterState = function (state: CommandState, context: any) {
-        //default to the defaultState**********
         recogniseMe.currentState = state;//will probably want currentState and currentStateContext vars outside******************
         recogniseMe.currentStateContext = context;
         doSoundResponse(state.enter(context));
@@ -1069,9 +1103,14 @@ if (SpeechRecognition) {
     var startSound: SoundResponse
     var stopPhrase: RegExp
     var stopSound: SoundResponse
-
-    //will want state change callback
+    var skipSpeakingCommand: RegExp
     recogniseMe = {
+        doNotListenWhenSpeaking: true,
+        setSkipSpeakingCommand: function (skipCommand: string) {
+            skipSpeakingCommand = new RegExp(skipCommand,"i");
+        },
+
+        allStatesNoMatchSoundResponse:null,
         currentState: null,
         currentStateContext: null,
         setState: function setState(name: string, context: any) {
@@ -1129,7 +1168,6 @@ if (SpeechRecognition) {
             recognition.onsoundstart = function () {
                 invokeCallbacks(callbacks.soundstart);
             };
-            //missing event handlers for annyang - will get booleans later
             recognition.onsoundend = function () {
                 invokeCallbacks(callbacks.soundend);
             }
@@ -1208,48 +1246,66 @@ if (SpeechRecognition) {
             };
 
             recognition.onresult = function (event) {
-
-                if (listeningForStartStop) {
-                    var phrase= stopPhrase;
-                    var action = recogniseMe.pause;
-                    var sound = stopSound;
-                    if (pauseListening) {
-                        phrase = startPhrase
-                        action = recogniseMe.resume;
-                        sound=startSound;
-                    }
-                    var results = extractFromSpeechRecognitionEvent(event).results;
-                    var match = false;
-                    for (var i = 0; i < results.length; i++) {
-                        if (phrase.exec(results[i])) {
-                            match = true;
-                            break;
+                var isSpeaking = speechSynthesis.speaking;
+                if (isSpeaking) {
+                    if (skipSpeakingCommand) {
+                        var results = extractFromSpeechRecognitionEvent(event).results;
+                        var skipSpeaking = false;
+                        for (var i = 0; i < results.length; i++) {
+                            var result = results[i];
+                            if (skipSpeakingCommand.exec(result)) {
+                                skipSpeaking = true;
+                                break;
+                            }
+                        }
+                        if (skipSpeaking) {
+                            speechSynthesis.cancel();
+                            return;
                         }
                     }
-                    if (match) {
-                        action();
-                        doSoundResponse(sound);
+                    
+                }
+
+                if (!(isSpeaking && recogniseMe.doNotListenWhenSpeaking)) {
+                    var resultsAndConfidences: { results: string[], confidences: number[] };
+                    if (listeningForStartStop) {
+                        var phrase = stopPhrase;
+                        var action = recogniseMe.pause;
+                        var sound = stopSound;
+                        if (pauseListening) {
+                            phrase = startPhrase
+                            action = recogniseMe.resume;
+                            sound = startSound;
+                        }
+                        resultsAndConfidences = extractFromSpeechRecognitionEvent(event)
+                        var results = resultsAndConfidences.results;
+                        var match = false;
+                        for (var i = 0; i < results.length; i++) {
+                            if (phrase.exec(results[i])) {
+                                match = true;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            action();
+                            doSoundResponse(sound);
+                            return false;
+                        }
+                    }
+                    if (pauseListening) {
+                        if (debugState) {
+                            logMessage('Speech heard, but annyang is paused');
+                        }
                         return false;
                     }
-                }
-                if (pauseListening) {
-                    if (debugState) {
-                        logMessage('Speech heard, but annyang is paused');
-                    }
-                    return false;
-                }
-                //new line to annyang
-                invokeCallbacks(callbacks.originalResult, event);
-                // Map the results to an array
-                var SpeechRecognitionResult = event.results[event.resultIndex];
-                var results = [];
-                var confidences = [];//this is new
-                for (var k = 0; k < SpeechRecognitionResult.length; k++) {
-                    results[k] = SpeechRecognitionResult[k].transcript;
-                    confidences[k] = SpeechRecognitionResult[k].confidence;
-                }
-                //confidences argument is new
-                parseResults(results, confidences);
+
+                    invokeCallbacks(callbacks.originalResult, event);
+                    resultsAndConfidences = resultsAndConfidences ? resultsAndConfidences : extractFromSpeechRecognitionEvent(event);
+                    parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
+
+                } 
+
+                
             };
 
             if (resetStates) {
