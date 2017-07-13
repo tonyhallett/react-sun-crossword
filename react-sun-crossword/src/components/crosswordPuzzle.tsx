@@ -70,10 +70,10 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.state = { testCommand: "" };
     }
     componentWillReceiveProps(nextProps: CrosswordPuzzleProps) {
-        this.setUpRecognition(nextProps.crosswordModel);
+        //this.setUpRecognition(nextProps.crosswordModel);
     }
     componentDidMount() {
-        this.setUpRecognition(this.props.crosswordModel);
+        //this.setUpRecognition(this.props.crosswordModel);
     }
     //to delete with state
     testCommand = () => {

@@ -8277,7 +8277,7 @@ var CrosswordPuzzleApp = (function (_super) {
         };
         _this.saveUserCrossword = function () {
             var modelJson = index_1.ConvertCrosswordModelToJson(_this.state.crosswordModel);
-            modelJson.duration = _this.stopwatchController.getDuration().totalMs;
+            modelJson.duration = _this.stopwatchController.getDuration().totalMilliseconds;
             connectedDatabase_1.connectedDatabase.saveUserCrossword(_this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, dateStarted: modelJson.dateStarted, duration: modelJson.duration, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails) {
                 //will now know not dirty
             }).catch(function (err) {
@@ -8324,10 +8324,12 @@ var CrosswordPuzzleApp = (function (_super) {
         if (this.state.crosswordModel === null) {
             rightContent = React.createElement("div", null);
         }
+        //<DemoStopwatchDisplay />
         return React.createElement("div", null,
+            React.createElement("br", null),
             this.state.crosswordModel &&
-                React.createElement(stopwatchController_1.StopwatchController, { ref: function (sw) { _this.stopwatchController = sw; }, startDuration: this.state.crosswordModel.duration },
-                    React.createElement(stopwatchController_1.DemoStopwatchDisplay, null)),
+                React.createElement(stopwatchController_1.StopwatchController, { ref: function (sw) { _this.stopwatchController = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.tenthSecond, startDuration: this.state.crosswordModel.duration },
+                    React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
             React.createElement(muiWrappedButton_1.MuiButtonWrapper, __assign({ disabled: !this.state.userLoggedIn || this.state.crosswordModel === null, text: "Click to save", onClick: this.saveUserCrossword }, buttonProps)),
             React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent }));
         //{height:"200px"}
@@ -20100,10 +20102,10 @@ var CrosswordPuzzle = (function (_super) {
         return _this;
     }
     CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
-        this.setUpRecognition(nextProps.crosswordModel);
+        //this.setUpRecognition(nextProps.crosswordModel);
     };
     CrosswordPuzzle.prototype.componentDidMount = function () {
-        this.setUpRecognition(this.props.crosswordModel);
+        //this.setUpRecognition(this.props.crosswordModel);
     };
     CrosswordPuzzle.prototype._mapGrid = function (grid) {
         var _this = this;
@@ -22140,15 +22142,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var Duration = (function () {
     function Duration(ms) {
-        this.totalMs = ms;
+        this.totalMilliseconds = ms;
         this.milliseconds = (ms % 1000);
-        this.seconds = Math.floor((ms / 1000)) % 60;
-        this.minutes = Math.floor((ms / (1000 * 60))) % 60;
+        //this.seconds = Math.floor((ms / 1000)) % 60;
+        this.seconds = Math.floor((ms / 1000) % 60);
+        this.totalSeconds = Math.floor(ms / 1000);
+        this.minutes = Math.floor((ms / (1000 * 60)) % 60);
+        this.totalMinutes = Math.floor(ms / (1000 * 60));
         this.hours = Math.floor((ms / (1000 * 60 * 60))) % 24;
+        this.totalHours = Math.floor(ms / (1000 * 60 * 60));
         this.days = Math.floor((ms / (1000 * 60 * 60 * 24)));
     }
     Duration.increment = function (duration, ms) {
-        var totalMs = duration.totalMs + ms;
+        var totalMs = duration.totalMilliseconds + ms;
         return new Duration(totalMs);
     };
     return Duration;
@@ -22156,10 +22162,12 @@ var Duration = (function () {
 exports.Duration = Duration;
 var ReportTickInterval;
 (function (ReportTickInterval) {
-    ReportTickInterval[ReportTickInterval["milliseconds"] = 0] = "milliseconds";
-    ReportTickInterval[ReportTickInterval["seconds"] = 1] = "seconds";
-    ReportTickInterval[ReportTickInterval["minutes"] = 2] = "minutes";
-    ReportTickInterval[ReportTickInterval["hours"] = 3] = "hours";
+    ReportTickInterval[ReportTickInterval["millisecond"] = 0] = "millisecond";
+    ReportTickInterval[ReportTickInterval["hundredthSecond"] = 1] = "hundredthSecond";
+    ReportTickInterval[ReportTickInterval["tenthSecond"] = 2] = "tenthSecond";
+    ReportTickInterval[ReportTickInterval["second"] = 3] = "second";
+    ReportTickInterval[ReportTickInterval["minute"] = 4] = "minute";
+    ReportTickInterval[ReportTickInterval["hour"] = 5] = "hour";
 })(ReportTickInterval = exports.ReportTickInterval || (exports.ReportTickInterval = {}));
 var StopwatchController = (function (_super) {
     __extends(StopwatchController, _super);
@@ -22175,7 +22183,6 @@ var StopwatchController = (function (_super) {
             if (_this.state.started) {
                 _this.stopTimer();
                 _this.startDuration = _this.currentDuration;
-                _this.setState({ started: false });
             }
         };
         //LP
@@ -22193,12 +22200,16 @@ var StopwatchController = (function (_super) {
         }
     };
     StopwatchController.prototype.componentWillReceiveProps = function (nextProps) {
+        var self = this;
         this.stopTimer();
         this.currentDuration = new Duration(nextProps.startDuration);
         this.startDuration = this.currentDuration;
         this.setTimerInterval();
         if (this.props.autoStart) {
-            this.startTimer();
+            //necessary for state change !
+            window.setTimeout(function () {
+                self.startTimer();
+            }, 1);
         }
     };
     StopwatchController.prototype.getDuration = function () {
@@ -22206,16 +22217,22 @@ var StopwatchController = (function (_super) {
     };
     StopwatchController.prototype.setTimerInterval = function () {
         switch (this.props.reportTickInterval) {
-            case ReportTickInterval.milliseconds:
+            case ReportTickInterval.millisecond:
                 this.timerInterval = 1;
                 break;
-            case ReportTickInterval.seconds:
+            case ReportTickInterval.hundredthSecond:
+                this.timerInterval = 10;
+                break;
+            case ReportTickInterval.tenthSecond:
+                this.timerInterval = 100;
+                break;
+            case ReportTickInterval.second:
                 this.timerInterval = 1000;
                 break;
-            case ReportTickInterval.minutes:
+            case ReportTickInterval.minute:
                 this.timerInterval = 60000;
                 break;
-            case ReportTickInterval.hours:
+            case ReportTickInterval.hour:
                 this.timerInterval = 60000 * 24;
                 break;
         }
@@ -22238,6 +22255,7 @@ var StopwatchController = (function (_super) {
         this.setState({ started: true });
     };
     StopwatchController.prototype.stopTimer = function () {
+        this.setState({ started: false });
         window.clearInterval(this.cancelIntervalId);
     };
     StopwatchController.prototype.render = function () {
@@ -22248,7 +22266,7 @@ var StopwatchController = (function (_super) {
 StopwatchController.defaultProps = {
     autoStart: true,
     startDuration: 0,
-    reportTickInterval: ReportTickInterval.seconds
+    reportTickInterval: ReportTickInterval.second
 };
 exports.StopwatchController = StopwatchController;
 var DemoStopwatchDisplay = (function (_super) {
@@ -22273,6 +22291,172 @@ var DemoStopwatchDisplay = (function (_super) {
     return DemoStopwatchDisplay;
 }(React.Component));
 exports.DemoStopwatchDisplay = DemoStopwatchDisplay;
+var FlipCounter = (function (_super) {
+    __extends(FlipCounter, _super);
+    function FlipCounter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    //this will eventually become part of the duration
+    FlipCounter.prototype.getDoubleDigits = function (num) {
+        var numString = num.toString();
+        if (numString.length === 1) {
+            numString = "0" + numString;
+        }
+        return numString;
+    };
+    FlipCounter.prototype.getDoubleDigitsArray = function (num) {
+        return this.getDigitArray(this.getDoubleDigits(num).split(""));
+    };
+    FlipCounter.prototype.getDigitArray = function (numStrings) {
+        return numStrings.map(function (numString) {
+            return parseInt(numString);
+        });
+    };
+    FlipCounter.prototype.getHourDigits = function (hours) {
+        var hoursString = hours.toString();
+        //could change this based upon options
+        if (hoursString.length === 1) {
+            return this.getDoubleDigitsArray(hours);
+        }
+        return this.getDigitArray(hoursString.split(""));
+    };
+    FlipCounter.prototype.render = function () {
+        var self = this;
+        return React.createElement("div", { className: "flip-clock-wrapper" },
+            React.createElement(DigitsDivider, { dividerTitle: this.props.hoursTitle }),
+            this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
+                return React.createElement(FlipDigits, { debugIdentifier: "hour" + i.toString(), maxDigit: 9, running: self.props.started, digit: hourDigit, key: i });
+            }),
+            React.createElement(DigitsDivider, { dividerTitle: this.props.minutesTitle }),
+            this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
+                return React.createElement(FlipDigits, { debugIdentifier: "minute" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: minuteDigit, key: i });
+            }),
+            React.createElement(DigitsDivider, { dividerTitle: this.props.secondsTitle }),
+            this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
+                return React.createElement(FlipDigits, { debugIdentifier: "second" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: secondDigit, key: i });
+            }));
+    };
+    return FlipCounter;
+}(React.Component));
+FlipCounter.defaultProps = {
+    hoursTitle: "",
+    minutesTitle: "",
+    secondsTitle: "",
+    started: false
+};
+exports.FlipCounter = FlipCounter;
+var FlipDigits = (function (_super) {
+    __extends(FlipDigits, _super);
+    function FlipDigits() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.initialChanged = false;
+        return _this;
+    }
+    FlipDigits.prototype.getListClassName = function (props) {
+        return this.props.flipClass + this.props.running && this.initialChanged ? " " + this.props.playClass : "";
+    };
+    FlipDigits.prototype.getLiClass = function (digit, initial) {
+        var className = "";
+        if (digit === this.previousDigit) {
+            className = this.props.beforeClass;
+        }
+        else if (digit === this.lastDigit) {
+            className += " " + this.props.activeClass;
+        }
+        if (this.initialChanged) {
+        }
+        return className;
+    };
+    FlipDigits.prototype.setDigits = function (props) {
+        if (this.initialDigit === null) {
+            this.setInitial(0);
+        }
+        else {
+            if (!this.initialChanged && (props.digit !== this.initialDigit)) {
+                this.initialChanged = true;
+            }
+            this.lastDigit = props.digit;
+            this.previousDigit = this.getPreviousDigit(props.digit);
+        }
+    };
+    FlipDigits.prototype.setInitial = function (initialDigit) {
+        this.initialDigit = initialDigit;
+        this.lastDigit = initialDigit;
+        this.previousDigit = this.getPreviousDigit(initialDigit);
+    };
+    FlipDigits.prototype.render = function () {
+        var _this = this;
+        this.setInitial(this.props.digit);
+        var digits = [];
+        for (var i = 0; i < this.props.maxDigit + 1; i++) {
+            digits.push(i);
+        }
+        var self = this;
+        return React.createElement("ul", { ref: function (ul) { _this.listElement = ul; }, className: this.getListClassName(this.props) }, digits.map(function (digit) {
+            return React.createElement("li", { key: digit },
+                React.createElement("a", { href: "#" },
+                    React.createElement("div", { className: "up" },
+                        React.createElement("div", { className: "shadow" }),
+                        React.createElement("div", { className: "inn" }, digit)),
+                    React.createElement("div", { className: "down" },
+                        React.createElement("div", { className: "shadow" }),
+                        React.createElement("div", { className: "inn" }, digit))));
+        }));
+    };
+    FlipDigits.prototype.componentWillReceiveProps = function (nextProps) {
+        if (!nextProps.running) {
+            this.initialChanged = false;
+            this.initialDigit = null;
+            this.lastDigit = null;
+            this.previousDigit = null;
+        }
+        else {
+            this.setDigits(nextProps);
+        }
+        var lis = this.listElement.children;
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            li.className = this.getLiClass(i, false);
+        }
+        this.listElement.className = this.getListClassName(nextProps);
+    };
+    FlipDigits.prototype.shouldComponentUpdate = function () {
+        return false;
+    };
+    FlipDigits.prototype.getPreviousDigit = function (digit) {
+        var prevDigit = digit === 0 ? this.props.maxDigit : digit - 1;
+        return prevDigit;
+    };
+    return FlipDigits;
+}(React.Component));
+FlipDigits.defaultProps = {
+    activeClass: "flip-clock-active",
+    beforeClass: "flip-clock-before",
+    flipClass: "flip",
+    playClass: "play"
+};
+exports.FlipDigits = FlipDigits;
+var DigitsDivider = (function (_super) {
+    __extends(DigitsDivider, _super);
+    function DigitsDivider() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DigitsDivider.prototype.render = function () {
+        return React.createElement("span", { className: this.props.dividerClass },
+            React.createElement("span", { className: this.props.labelClass }, this.props.dividerTitle),
+            React.createElement("span", { className: this.props.dotClass + " top" }),
+            React.createElement("span", { className: this.props.dotClass + " bottom" }));
+    };
+    return DigitsDivider;
+}(React.Component));
+DigitsDivider.defaultProps = {
+    labelClass: 'flip-clock-label',
+    dotClass: 'flip-clock-dot',
+    dividerClass: 'flip-clock-divider'
+};
+exports.DigitsDivider = DigitsDivider;
+//will probably be able to have a Flippable component that cycles through whatever - string
+//startIndex - next() or just the index ? 
 
 
 /***/ }),

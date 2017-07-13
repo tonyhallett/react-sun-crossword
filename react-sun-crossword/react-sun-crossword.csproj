@@ -69,6 +69,7 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="firebaseui.css" />
+    <Content Include="flipclock.css" />
     <Content Include="muiBtn.css" />
     <Content Include="packages.config" />
     <Content Include="package.json" />

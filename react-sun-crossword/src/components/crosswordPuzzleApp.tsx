@@ -16,7 +16,7 @@ import 'firebase/database';
 import { CrosswordPuzzleChooser, DefaultSelectChooserButtonProps } from "./crosswordPuzzleChooser";
 import { MuiButton, MuiButtonProps } from "./muiButton";
 import { MuiButtonWrapper } from "./muiWrappedButton";
-import { DemoStopwatchDisplay, StopwatchController, Duration } from "./stopwatchController";
+import { DemoStopwatchDisplay, StopwatchController, Duration, FlipCounter, ReportTickInterval } from "./stopwatchController";
 
 import { Bounded, ElementQueries } from '../components/testBounds'
 import { ElementQuery, Matches, makeElementQuery } from 'react-element-queries';
@@ -53,7 +53,7 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
     saveUserCrossword = () => {
         
         var modelJson = ConvertCrosswordModelToJson(this.state.crosswordModel);
-        modelJson.duration = this.stopwatchController.getDuration().totalMs;
+        modelJson.duration = this.stopwatchController.getDuration().totalMilliseconds;
         connectedDatabase.saveUserCrossword(this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, dateStarted: modelJson.dateStarted, duration: modelJson.duration, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails: UserSaveDetails) {
             //will now know not dirty
         }).catch(function (err) {
@@ -100,10 +100,12 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         if (this.state.crosswordModel === null) {
             rightContent=<div/>
         }
+        //<DemoStopwatchDisplay />
         return <div >
+            <br/>
             {this.state.crosswordModel &&
-                <StopwatchController ref={(sw) => { this.stopwatchController = sw }} startDuration={this.state.crosswordModel.duration}>
-                    <DemoStopwatchDisplay />
+                <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
+                    <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
                 </StopwatchController>
             }
             <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
