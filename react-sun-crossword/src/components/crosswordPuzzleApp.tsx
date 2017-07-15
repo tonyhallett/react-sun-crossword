@@ -40,7 +40,6 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
     }
     componentDidMount() {
         auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
-        
     }
     
     crosswordSelected = (selectedCrossword: CrosswordModelJson) => {
@@ -75,6 +74,29 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
 
     
     stopwatchController: StopwatchController
+    stopwatchController2: StopwatchController
+    pauseAnimationsContainer: HTMLDivElement
+    pauseAnimationsContainer2: HTMLDivElement
+    pauseAnimations = (pauseAnimationsContainer)=> {
+        var descendants = pauseAnimationsContainer.querySelectorAll("*");
+        for (var i = 0; i < descendants.length; i++) {
+            var descendant = descendants[i] as HTMLElement
+            var style = window.getComputedStyle(descendant);
+            if (style.animation) {
+                descendant.style.webkitAnimationPlayState = 'paused';
+            }
+        }
+    }
+    resumeAnimations = (pauseAnimationsContainer) => {
+        var descendants = pauseAnimationsContainer.querySelectorAll("*");
+        for (var i = 0; i < descendants.length; i++) {
+            var descendant = descendants[i] as HTMLElement
+            var style = window.getComputedStyle(descendant);
+            if (style.animation) {
+                descendant.style.webkitAnimationPlayState = 'running';
+            }
+        }
+    }
     render() {
         var primaryColour ="gold"
         var buttonStyle: React.CSSProperties =  {
@@ -100,19 +122,48 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         if (this.state.crosswordModel === null) {
             rightContent=<div/>
         }
-        //<DemoStopwatchDisplay />
-        return <div >
-            <br/>
-            {this.state.crosswordModel &&
-                <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
-                    <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
-                </StopwatchController>
-            }
-            <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
-            <TwoCol leftContent={leftContent} rightContent={rightContent}>
+        
+        //return <div >
+        //    {this.state.crosswordModel &&
+        //        <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
+        //            <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
+        //        </StopwatchController>
+        //    }
+        //    <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
+        //    <TwoCol leftContent={leftContent} rightContent={rightContent}>
             
-            </TwoCol>
+        //    </TwoCol>
+        //    </div>
+
+        //<button onClick={}>Pause</button>
+        console.log("App render");
+        return <div>
+            <div ref={(div) => { this.pauseAnimationsContainer=div }}>
+            <StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={112000}>
+                <FlipCounter countdown={true} hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+            </StopwatchController>
+                </div>
+            <button onClick={() => { this.stopwatchController.stop(); this.pauseAnimations(this.pauseAnimationsContainer)  }}>Stop</button>
+            <button onClick={() => { this.stopwatchController.pause(); this.pauseAnimations(this.pauseAnimationsContainer) }}>Pause</button>
+            <button onClick={() => { this.stopwatchController.start(); this.resumeAnimations(this.pauseAnimationsContainer) }}>Play</button>
+            <div ref={(div) => { this.pauseAnimationsContainer2 = div }}>
+                <StopwatchController autoStart={false} ref={(sw) => { this.stopwatchController2 = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={0}>
+                    <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+                </StopwatchController>
             </div>
+            <button onClick={() => { this.stopwatchController2.stop(); this.pauseAnimations(this.pauseAnimationsContainer2) }}>Stop</button>
+            <button onClick={() => { this.stopwatchController2.pause(); this.pauseAnimations(this.pauseAnimationsContainer2)  }}>Pause</button>
+            <button onClick={() => { this.stopwatchController2.start(); this.resumeAnimations(this.pauseAnimationsContainer2) }}>Play</button>
+            <button onClick={this.pauseAnimations} >Pause animations</button>  
+
+            <button onClick={() => {
+                console.log(this.stopwatchController2.getDuration().totalMilliseconds);
+                var downDuration = this.stopwatchController.getDuration();
+                console.log(downDuration.totalSeconds)
+                console.log(downDuration.milliseconds)
+
+            }}>Check duration</button>
+                </div>
 
         //{height:"200px"}
 

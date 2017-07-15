@@ -36,7 +36,7 @@ export class Duration implements IDuration {
     constructor(ms: number) {
         this.totalMilliseconds = ms;  
         this.milliseconds = (ms % 1000);
-        //this.seconds = Math.floor((ms / 1000)) % 60;
+
         this.seconds = Math.floor((ms / 1000) % 60);
         this.totalSeconds = Math.floor(ms / 1000);
 
@@ -52,6 +52,10 @@ export class Duration implements IDuration {
         var totalMs = duration.totalMilliseconds + ms;
         return new Duration(totalMs);
     }
+    static decrement(duration: IDuration, ms: number): Duration {
+        var totalMs = duration.totalMilliseconds - ms;
+        return new Duration(totalMs);
+    }
 }
 
 export interface StopwatchProps {
@@ -59,11 +63,12 @@ export interface StopwatchProps {
     startDuration?: number,
     autoStart?:boolean,
     reportTickInterval?: ReportTickInterval
-    stopped?: () => void;
+    countdown?:boolean
 }
 export interface StopwatchState {
     duration: IDuration,
-    started:boolean
+    started: boolean
+    paused:boolean 
 }
 
 export enum ReportTickInterval { millisecond,hundredthSecond,tenthSecond,second,minute,hour}
@@ -77,36 +82,44 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
     private startDuration:Duration
     private currentDuration: Duration
     private cancelIntervalId: number
-    private startTime:any
+    private startTime: any
+    private hasStopped = false
+    private hasStarted = false;
     constructor(props) {
         super(props);
         this.currentDuration = new Duration(this.props.startDuration);
         this.startDuration = this.currentDuration;
         this.setTimerInterval();
-        this.state = { started: false, duration: this.currentDuration }
+        this.state = { started: false, duration: this.currentDuration,paused:false }
     }
 
     componentWillMount() {
         if (this.props.autoStart) {
-            this.startTimer();
+            this.start();
         }
     }
     componentWillReceiveProps(nextProps: StopwatchProps) {
         var self = this;
-        this.stopTimer();
+        this.stop();
         this.currentDuration = new Duration(nextProps.startDuration);
+        this.hasStopped = false;
+        this.hasStarted = false;
         this.startDuration = this.currentDuration;
         this.setTimerInterval();
         if (this.props.autoStart) {
             //necessary for state change !
             window.setTimeout(function () {
-                self.startTimer();
+                self.start();
             }, 1);
         }
-
     }
     getDuration() {
-        return this.currentDuration;
+        if (this.props.countdown||!this.hasStarted) {
+            return this.currentDuration;
+        } else {
+            return Duration.decrement(this.currentDuration, 1000);
+        }
+        
     }
     setTimerInterval() {
         switch (this.props.reportTickInterval) {
@@ -132,10 +145,24 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
         }
     }
     componentWillUnmount() {
-        this.stopTimer();
+        this.stopTimer(true);
     }
+    
     updateDuration(ms: number) {
-        this.currentDuration = Duration.increment(this.startDuration, ms);
+        if (this.props.countdown) {
+            this.currentDuration = Duration.decrement(this.startDuration, ms);
+            if (this.currentDuration.totalMilliseconds <= 0) {
+                this.stop();
+                return;
+            }
+        } else {
+            if (!this.hasStopped) {
+                ms = ms + 1000;
+            }
+            
+            this.currentDuration = Duration.increment(this.startDuration, ms);
+        }
+        
         this.setState({ duration: this.currentDuration });
     }
 
@@ -147,23 +174,36 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
             var elapsed = now - self.startTime;
             self.updateDuration(elapsed);
         }, this.timerInterval);
-        this.setState({ started: true });
     }
     start = () => {
-        if (!this.state.started) {
+        if (!this.state.started || this.state.paused) {
+            this.hasStarted = true;
             this.startTimer();
-            this.setState({ started:true})
+            this.setState({ started: true, paused: false, duration: this.currentDuration })
         }
     }
-    stopTimer() {
-        this.setState({ started: false })
+    stopTimer(paused: boolean) {
+        var newState: Partial<StopwatchState> = { started: false };
+        if (paused) {
+            newState = {
+                paused:true
+            }
+        }
+        this.setState(newState as StopwatchState)
         window.clearInterval(this.cancelIntervalId);
     }
-    stop = () => {
+    pause = () => {
+        this.pauseOrStop(true);
+    }
+    pauseOrStop(paused:boolean) {
         if (this.state.started) {
-            this.stopTimer();
+            this.hasStopped = true;
+            this.stopTimer(paused);
             this.startDuration = this.currentDuration;
         }
+    }
+    stop = () => {
+        this.pauseOrStop(false)
     }
     //LP
     clear = () => {
@@ -205,7 +245,8 @@ export interface FlipCounterProps {
     hoursTitle?: string,
     minutesTitle?: string,
     secondsTitle?: string,
-    started?: boolean
+    started?: boolean,
+    countdown?:boolean
 }
 export class FlipCounter extends React.Component<FlipCounterProps, undefined>{
     public static defaultProps: Partial<FlipCounterProps> = {
@@ -245,21 +286,21 @@ export class FlipCounter extends React.Component<FlipCounterProps, undefined>{
             <DigitsDivider dividerTitle={this.props.hoursTitle} />
             {
                 this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
-                    return <FlipDigits debugIdentifier={"hour" + i.toString()} maxDigit={9} running={self.props.started} digit={hourDigit} key={i} />
+                    return <FlipDigits countdown={self.props.countdown} debugIdentifier={"hour" + i.toString()} maxDigit={9} running={self.props.started} digit={hourDigit} key={i} />
                 })
             }
             
             <DigitsDivider dividerTitle={this.props.minutesTitle} />
             {
                 this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
-                    return <FlipDigits debugIdentifier={"minute" + i.toString()} maxDigit={i===0?5:9} running={self.props.started}  digit={minuteDigit} key={i} />
+                    return <FlipDigits countdown={self.props.countdown} debugIdentifier={"minute" + i.toString()} maxDigit={i===0?5:9} running={self.props.started}  digit={minuteDigit} key={i} />
                 })
             }
 
             <DigitsDivider dividerTitle={this.props.secondsTitle} />
             {
                 this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
-                    return <FlipDigits debugIdentifier={"second" + i.toString()} maxDigit={i === 0 ? 5 : 9} running={self.props.started}  digit={secondDigit} key={i} />
+                    return <FlipDigits isUnitSecond={i===1} countdown={self.props.countdown} debug={i === 1} debugIdentifier={"second" + i.toString()} maxDigit={i === 0 ? 5 : 9} running={self.props.started} digit={secondDigit} key={i} />
                 })
             }
             
@@ -275,7 +316,10 @@ export interface FlipDigitsProps {
     flipClass?: string,
     beforeClass?: string,
     activeClass?: string,
-    debugIdentifier:string
+    countdown?:boolean,
+    debugIdentifier?: string
+    debug?: boolean,
+    isUnitSecond?:boolean
 }
 
 export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
@@ -286,45 +330,40 @@ export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
         playClass:"play"
     }
     listElement: HTMLUListElement;
-    initialDigit: Digit
-    initialChanged:boolean=false
+    initialDigit:Digit
+    isInitial:boolean=true
     lastDigit: Digit
     previousDigit:Digit
     getListClassName(props: FlipDigitsProps) {
-        return this.props.flipClass + this.props.running && this.initialChanged ? " " + this.props.playClass : "";
+        var listClassName = this.props.flipClass + this.props.running && !this.isInitial ? " " + this.props.playClass : "";
+        return listClassName;
     }
-    getLiClass(digit: Digit,initial:boolean) {
+    getLiClass(digit: Digit) {
         
         var className = "";
         if (digit === this.previousDigit) {
             className = this.props.beforeClass;
         } else if (digit === this.lastDigit) {
-            className += " " + this.props.activeClass;
+            className = this.props.activeClass;
         }
-        if (this.initialChanged) {
-            
-        }
+        
         return className;
     }
     setDigits(props: FlipDigitsProps) {
-        if (this.initialDigit === null) {
-            this.setInitial(0);
-        } else {
-            if (!this.initialChanged && (props.digit !== this.initialDigit)) {
-                this.initialChanged = true;
-            }
-
+        if (this.initialDigit == null) {
+            this.initialDigit = props.digit;
             this.lastDigit = props.digit;
-            this.previousDigit = this.getPreviousDigit(props.digit);
+        } else {
+            if ((this.isInitial && this.initialDigit !== this.props.digit) || !this.isInitial) {
+                this.lastDigit = props.digit;
+                this.previousDigit = this.getPreviousDigit(props.digit);
+                this.isInitial = false;
+            }
         }
     }
-    setInitial(initialDigit: Digit) {
-        this.initialDigit = initialDigit;
-        this.lastDigit = initialDigit;
-        this.previousDigit = this.getPreviousDigit(initialDigit);
-    }
+
     render() {
-        this.setInitial(this.props.digit);
+        this.setDigits(this.props);
         var digits: Digit[] = [];
         for (var i = 0; i < this.props.maxDigit+1; i++) {
             digits.push(i as Digit);
@@ -334,7 +373,7 @@ export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
             {
                
                 digits.map(function (digit: Digit) {
-                return <li  key={digit}>
+                    return <li key={digit} className={self.getLiClass(digit)}>
                     <a href="#">
                         <div className="up">
                             <div className="shadow"></div>
@@ -352,28 +391,45 @@ export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
     }
     componentWillReceiveProps(nextProps: FlipDigitsProps) {
         if (!nextProps.running) {
-            this.initialChanged = false;
             this.initialDigit = null;
-            this.lastDigit = null;
-            this.previousDigit = null;
         } else {
             this.setDigits(nextProps);
         }
+       
+
         var lis = this.listElement.children;
         for (var i = 0; i < lis.length; i++) {
             var li = lis[i];
-            li.className = this.getLiClass(i as Digit, false);
+            var newClassName = this.getLiClass(i as Digit);
+            if (li.className !== newClassName) {
+                li.className = newClassName
+            }
         }
         
         this.listElement.className = this.getListClassName(nextProps);
+        
     }
     shouldComponentUpdate() {
         return false;
     }
+    debug(msg: string) {
+        if (this.props.debug) {
+            console.log(this.props.debugIdentifier + ": " + msg);
+        }
+    }
     getPreviousDigit(digit: Digit): Digit {
-
-        var prevDigit = digit === 0 ? this.props.maxDigit : digit - 1;
+        var prevDigit: number;
+        if (this.props.countdown) {
+            prevDigit = this.getNextDigit(digit);
+        } else {
+            prevDigit = digit === 0 ? this.props.maxDigit : digit - 1;
+        }
+        
         return prevDigit as Digit;
+    }
+    getNextDigit(digit: Digit) {
+        var nextDigit = digit === this.props.maxDigit ? 0 : digit + 1;
+        return nextDigit as Digit;
     }
 }
 export interface DigitsDividerProps {

@@ -763,7 +763,7 @@ exports.make = make;
 exports.resolve = resolve;
 exports.reject = reject;
 
-var _shared_promise = __webpack_require__(25);
+var _shared_promise = __webpack_require__(24);
 
 function make(resolver) {
   return new _shared_promise.local.Promise(resolver);
@@ -3195,64 +3195,6 @@ TabPanel.propTypes = process.env.NODE_ENV !== "production" ? {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var TwoCol = (function (_super) {
-    __extends(TwoCol, _super);
-    function TwoCol() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    TwoCol.prototype.render = function () {
-        var leftPercent = 50;
-        if (this.props.leftPercentage) {
-            leftPercent = this.props.leftPercentage;
-        }
-        var rightPercent = 100 - leftPercent;
-        var leftStyle = {
-            float: 'left',
-            width: leftPercent + '%',
-            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
-        };
-        var rightStyle = {
-            float: 'left',
-            width: rightPercent + '%',
-            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
-        };
-        var left = React.createElement("div", { style: leftStyle }, this.props.leftContent);
-        var right = React.createElement("div", { style: rightStyle },
-            this.props.rightContent,
-            " ");
-        var container = React.createElement("div", null,
-            left,
-            right);
-        if (this.props.containerStyle) {
-            container = React.createElement("div", { style: this.props.containerStyle },
-                left,
-                right);
-        }
-        return container;
-    };
-    return TwoCol;
-}(React.Component));
-exports.TwoCol = TwoCol;
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 /*! @license Firebase v4.1.1
 Build: rev-ca0d1df
 Terms: https://firebase.google.com/terms/ */
@@ -3355,7 +3297,7 @@ var ErrorFactory = exports.ErrorFactory = function () {
 
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3404,7 +3346,7 @@ var local = exports.local = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3431,7 +3373,7 @@ var _error = __webpack_require__(4);
 
 var errorsExports = _interopRequireWildcard(_error);
 
-var _metadata = __webpack_require__(28);
+var _metadata = __webpack_require__(27);
 
 var MetadataUtils = _interopRequireWildcard(_metadata);
 
@@ -3567,7 +3509,7 @@ function nullFunctionSpec(opt_optional) {
 
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3640,7 +3582,7 @@ function remove(array, elem) {
 
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3677,7 +3619,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _url = __webpack_require__(30);
+var _url = __webpack_require__(29);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
@@ -3849,7 +3791,7 @@ function metadataValidator(p) {
 
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4058,7 +4000,7 @@ function endsWith(s, end) {
 
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4127,7 +4069,7 @@ function makeQueryString(params) {
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4148,7 +4090,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4195,6 +4137,64 @@ var MuiButtonWrapper = (function (_super) {
     return MuiButtonWrapper;
 }(React.Component));
 exports.MuiButtonWrapper = MuiButtonWrapper;
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var TwoCol = (function (_super) {
+    __extends(TwoCol, _super);
+    function TwoCol() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TwoCol.prototype.render = function () {
+        var leftPercent = 50;
+        if (this.props.leftPercentage) {
+            leftPercent = this.props.leftPercentage;
+        }
+        var rightPercent = 100 - leftPercent;
+        var leftStyle = {
+            float: 'left',
+            width: leftPercent + '%',
+            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
+        };
+        var rightStyle = {
+            float: 'left',
+            width: rightPercent + '%',
+            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
+        };
+        var left = React.createElement("div", { style: leftStyle }, this.props.leftContent);
+        var right = React.createElement("div", { style: rightStyle },
+            this.props.rightContent,
+            " ");
+        var container = React.createElement("div", null,
+            left,
+            right);
+        if (this.props.containerStyle) {
+            container = React.createElement("div", { style: this.props.containerStyle },
+                left,
+                right);
+        }
+        return container;
+    };
+    return TwoCol;
+}(React.Component));
+exports.TwoCol = TwoCol;
 
 
 /***/ }),
@@ -5866,7 +5866,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.createSubscribe = createSubscribe;
 exports.async = async;
 
-var _shared_promise = __webpack_require__(25);
+var _shared_promise = __webpack_require__(24);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6430,7 +6430,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _errors = __webpack_require__(24);
+var _errors = __webpack_require__(23);
 
 var _errors2 = __webpack_require__(17);
 
@@ -6816,7 +6816,7 @@ var _fs = __webpack_require__(86);
 
 var fs = _interopRequireWildcard(_fs);
 
-var _string = __webpack_require__(29);
+var _string = __webpack_require__(28);
 
 var string = _interopRequireWildcard(_string);
 
@@ -7058,7 +7058,7 @@ exports.createResumableUpload = createResumableUpload;
 exports.getResumableUploadStatus = getResumableUploadStatus;
 exports.continueResumableUpload = continueResumableUpload;
 
-var _array = __webpack_require__(27);
+var _array = __webpack_require__(26);
 
 var array = _interopRequireWildcard(_array);
 
@@ -7068,7 +7068,7 @@ var _error = __webpack_require__(4);
 
 var errorsExports = _interopRequireWildcard(_error);
 
-var _metadata = __webpack_require__(28);
+var _metadata = __webpack_require__(27);
 
 var MetadataUtils = _interopRequireWildcard(_metadata);
 
@@ -7082,7 +7082,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _url = __webpack_require__(30);
+var _url = __webpack_require__(29);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
@@ -7533,7 +7533,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _args = __webpack_require__(26);
+var _args = __webpack_require__(25);
 
 var args = _interopRequireWildcard(_args);
 
@@ -7545,7 +7545,7 @@ var errorsExports = _interopRequireWildcard(_error);
 
 var _location = __webpack_require__(19);
 
-var _metadata = __webpack_require__(28);
+var _metadata = __webpack_require__(27);
 
 var metadata = _interopRequireWildcard(_metadata);
 
@@ -7561,7 +7561,7 @@ var _requests = __webpack_require__(49);
 
 var requests = _interopRequireWildcard(_requests);
 
-var _string = __webpack_require__(29);
+var _string = __webpack_require__(28);
 
 var fbsString = _interopRequireWildcard(_string);
 
@@ -8245,24 +8245,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
 var crosswordPuzzle_1 = __webpack_require__(138);
-var twoCol_1 = __webpack_require__(23);
 var firebaseApp_1 = __webpack_require__(33);
 var connectedDatabase_1 = __webpack_require__(60);
 __webpack_require__(42);
 var crosswordPuzzleChooser_1 = __webpack_require__(139);
-var muiWrappedButton_1 = __webpack_require__(32);
+var muiWrappedButton_1 = __webpack_require__(31);
 var stopwatchController_1 = __webpack_require__(149);
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
@@ -8284,6 +8275,26 @@ var CrosswordPuzzleApp = (function (_super) {
                 //should be firebase error
                 //logic to be done later
             });
+        };
+        _this.pauseAnimations = function (pauseAnimationsContainer) {
+            var descendants = pauseAnimationsContainer.querySelectorAll("*");
+            for (var i = 0; i < descendants.length; i++) {
+                var descendant = descendants[i];
+                var style = window.getComputedStyle(descendant);
+                if (style.animation) {
+                    descendant.style.webkitAnimationPlayState = 'paused';
+                }
+            }
+        };
+        _this.resumeAnimations = function (pauseAnimationsContainer) {
+            var descendants = pauseAnimationsContainer.querySelectorAll("*");
+            for (var i = 0; i < descendants.length; i++) {
+                var descendant = descendants[i];
+                var style = window.getComputedStyle(descendant);
+                if (style.animation) {
+                    descendant.style.webkitAnimationPlayState = 'running';
+                }
+            }
         };
         _this.state = { crosswordModel: null, userLoggedIn: null };
         return _this;
@@ -8324,14 +8335,38 @@ var CrosswordPuzzleApp = (function (_super) {
         if (this.state.crosswordModel === null) {
             rightContent = React.createElement("div", null);
         }
-        //<DemoStopwatchDisplay />
+        //return <div >
+        //    {this.state.crosswordModel &&
+        //        <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
+        //            <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
+        //        </StopwatchController>
+        //    }
+        //    <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
+        //    <TwoCol leftContent={leftContent} rightContent={rightContent}>
+        //    </TwoCol>
+        //    </div>
+        //<button onClick={}>Pause</button>
+        console.log("App render");
         return React.createElement("div", null,
-            React.createElement("br", null),
-            this.state.crosswordModel &&
-                React.createElement(stopwatchController_1.StopwatchController, { ref: function (sw) { _this.stopwatchController = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.tenthSecond, startDuration: this.state.crosswordModel.duration },
-                    React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
-            React.createElement(muiWrappedButton_1.MuiButtonWrapper, __assign({ disabled: !this.state.userLoggedIn || this.state.crosswordModel === null, text: "Click to save", onClick: this.saveUserCrossword }, buttonProps)),
-            React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent }));
+            React.createElement("div", { ref: function (div) { _this.pauseAnimationsContainer = div; } },
+                React.createElement(stopwatchController_1.StopwatchController, { countdown: true, autoStart: false, ref: function (sw) { _this.stopwatchController = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: 112000 },
+                    React.createElement(stopwatchController_1.FlipCounter, { countdown: true, hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" }))),
+            React.createElement("button", { onClick: function () { _this.stopwatchController.stop(); _this.pauseAnimations(_this.pauseAnimationsContainer); } }, "Stop"),
+            React.createElement("button", { onClick: function () { _this.stopwatchController.pause(); _this.pauseAnimations(_this.pauseAnimationsContainer); } }, "Pause"),
+            React.createElement("button", { onClick: function () { _this.stopwatchController.start(); _this.resumeAnimations(_this.pauseAnimationsContainer); } }, "Play"),
+            React.createElement("div", { ref: function (div) { _this.pauseAnimationsContainer2 = div; } },
+                React.createElement(stopwatchController_1.StopwatchController, { autoStart: false, ref: function (sw) { _this.stopwatchController2 = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: 0 },
+                    React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" }))),
+            React.createElement("button", { onClick: function () { _this.stopwatchController2.stop(); _this.pauseAnimations(_this.pauseAnimationsContainer2); } }, "Stop"),
+            React.createElement("button", { onClick: function () { _this.stopwatchController2.pause(); _this.pauseAnimations(_this.pauseAnimationsContainer2); } }, "Pause"),
+            React.createElement("button", { onClick: function () { _this.stopwatchController2.start(); _this.resumeAnimations(_this.pauseAnimationsContainer2); } }, "Play"),
+            React.createElement("button", { onClick: this.pauseAnimations }, "Pause animations"),
+            React.createElement("button", { onClick: function () {
+                    console.log(_this.stopwatchController2.getDuration().totalMilliseconds);
+                    var downDuration = _this.stopwatchController.getDuration();
+                    console.log(downDuration.totalSeconds);
+                    console.log(downDuration.milliseconds);
+                } }, "Check duration"));
         //{height:"200px"}
         /*
             Element queries
@@ -9996,9 +10031,9 @@ exports.createFirebaseNamespace = createFirebaseNamespace;
 
 var _subscribe = __webpack_require__(41);
 
-var _errors = __webpack_require__(24);
+var _errors = __webpack_require__(23);
 
-var _shared_promise = __webpack_require__(25);
+var _shared_promise = __webpack_require__(24);
 
 var _deep_copy = __webpack_require__(70);
 
@@ -11625,7 +11660,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _errors = __webpack_require__(24);
+var _errors = __webpack_require__(23);
 
 var _errors2 = __webpack_require__(17);
 
@@ -12270,7 +12305,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.registerStorage = registerStorage;
 
-var _string = __webpack_require__(29);
+var _string = __webpack_require__(28);
 
 var _taskenums = __webpack_require__(50);
 
@@ -12985,7 +13020,7 @@ exports.addAuthHeader_ = addAuthHeader_;
 exports.addVersionHeader_ = addVersionHeader_;
 exports.makeRequest = makeRequest;
 
-var _array = __webpack_require__(27);
+var _array = __webpack_require__(26);
 
 var array = _interopRequireWildcard(_array);
 
@@ -13009,7 +13044,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _url = __webpack_require__(30);
+var _url = __webpack_require__(29);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
@@ -13643,7 +13678,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-var _args = __webpack_require__(26);
+var _args = __webpack_require__(25);
 
 var args = _interopRequireWildcard(_args);
 
@@ -13844,11 +13879,11 @@ var _observer = __webpack_require__(88);
 
 var _tasksnapshot = __webpack_require__(96);
 
-var _args = __webpack_require__(26);
+var _args = __webpack_require__(25);
 
 var fbsArgs = _interopRequireWildcard(_args);
 
-var _array = __webpack_require__(27);
+var _array = __webpack_require__(26);
 
 var fbsArray = _interopRequireWildcard(_array);
 
@@ -16459,7 +16494,7 @@ function returnFalse() {
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(11);
-  var ReactPropTypesSecret = __webpack_require__(31);
+  var ReactPropTypesSecret = __webpack_require__(30);
   var loggedTypeFailures = {};
 }
 
@@ -16527,7 +16562,7 @@ module.exports = checkPropTypes;
 
 var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
-var ReactPropTypesSecret = __webpack_require__(31);
+var ReactPropTypesSecret = __webpack_require__(30);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -16595,7 +16630,7 @@ var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(11);
 
-var ReactPropTypesSecret = __webpack_require__(31);
+var ReactPropTypesSecret = __webpack_require__(30);
 var checkPropTypes = __webpack_require__(113);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -19161,7 +19196,7 @@ var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
 var formatWord_1 = __webpack_require__(142);
 var clueNumber_1 = __webpack_require__(135);
-var twoCol_1 = __webpack_require__(23);
+var twoCol_1 = __webpack_require__(32);
 var commonStyling_1 = __webpack_require__(14);
 var ClueContainer = (function (_super) {
     __extends(ClueContainer, _super);
@@ -19340,7 +19375,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var react_tabs_1 = __webpack_require__(127);
-var twoCol_1 = __webpack_require__(23);
+var twoCol_1 = __webpack_require__(32);
 var clueContainer_1 = __webpack_require__(134);
 var react_custom_scrollbars_1 = __webpack_require__(107);
 var CroswordClues = (function (_super) {
@@ -19560,7 +19595,7 @@ var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
 var crossword_1 = __webpack_require__(137);
 var KeyEvents = __webpack_require__(153);
-var twoCol_1 = __webpack_require__(23);
+var twoCol_1 = __webpack_require__(32);
 var clues_1 = __webpack_require__(136);
 var lightbulb_1 = __webpack_require__(143);
 var recogniseMe_1 = __webpack_require__(151);
@@ -20102,10 +20137,10 @@ var CrosswordPuzzle = (function (_super) {
         return _this;
     }
     CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
-        //this.setUpRecognition(nextProps.crosswordModel);
+        this.setUpRecognition(nextProps.crosswordModel);
     };
     CrosswordPuzzle.prototype.componentDidMount = function () {
-        //this.setUpRecognition(this.props.crosswordModel);
+        this.setUpRecognition(this.props.crosswordModel);
     };
     CrosswordPuzzle.prototype._mapGrid = function (grid) {
         var _this = this;
@@ -20728,7 +20763,7 @@ var emailLogOn_1 = __webpack_require__(141);
 var firebaseApp_1 = __webpack_require__(33);
 var Select = __webpack_require__(13);
 exports.Select = __webpack_require__(13);
-var muiWrappedButton_1 = __webpack_require__(32);
+var muiWrappedButton_1 = __webpack_require__(31);
 function displayNameHOC(Component, displayName) {
     var DisplayNameComponent = (function (_super) {
         __extends(DisplayNameComponent, _super);
@@ -21006,7 +21041,7 @@ var React = __webpack_require__(0);
 var divider_1 = __webpack_require__(140);
 var link_1 = __webpack_require__(144);
 var autoComplete_1 = __webpack_require__(133);
-var muiWrappedButton_1 = __webpack_require__(32);
+var muiWrappedButton_1 = __webpack_require__(31);
 var javascriptPolyfills_1 = __webpack_require__(34);
 var EmailErrorScreen = (function (_super) {
     __extends(EmailErrorScreen, _super);
@@ -22144,7 +22179,6 @@ var Duration = (function () {
     function Duration(ms) {
         this.totalMilliseconds = ms;
         this.milliseconds = (ms % 1000);
-        //this.seconds = Math.floor((ms / 1000)) % 60;
         this.seconds = Math.floor((ms / 1000) % 60);
         this.totalSeconds = Math.floor(ms / 1000);
         this.minutes = Math.floor((ms / (1000 * 60)) % 60);
@@ -22155,6 +22189,10 @@ var Duration = (function () {
     }
     Duration.increment = function (duration, ms) {
         var totalMs = duration.totalMilliseconds + ms;
+        return new Duration(totalMs);
+    };
+    Duration.decrement = function (duration, ms) {
+        var totalMs = duration.totalMilliseconds - ms;
         return new Duration(totalMs);
     };
     return Duration;
@@ -22173,17 +22211,20 @@ var StopwatchController = (function (_super) {
     __extends(StopwatchController, _super);
     function StopwatchController(props) {
         var _this = _super.call(this, props) || this;
+        _this.hasStopped = false;
+        _this.hasStarted = false;
         _this.start = function () {
-            if (!_this.state.started) {
+            if (!_this.state.started || _this.state.paused) {
+                _this.hasStarted = true;
                 _this.startTimer();
-                _this.setState({ started: true });
+                _this.setState({ started: true, paused: false, duration: _this.currentDuration });
             }
         };
+        _this.pause = function () {
+            _this.pauseOrStop(true);
+        };
         _this.stop = function () {
-            if (_this.state.started) {
-                _this.stopTimer();
-                _this.startDuration = _this.currentDuration;
-            }
+            _this.pauseOrStop(false);
         };
         //LP
         _this.clear = function () {
@@ -22191,29 +22232,36 @@ var StopwatchController = (function (_super) {
         _this.currentDuration = new Duration(_this.props.startDuration);
         _this.startDuration = _this.currentDuration;
         _this.setTimerInterval();
-        _this.state = { started: false, duration: _this.currentDuration };
+        _this.state = { started: false, duration: _this.currentDuration, paused: false };
         return _this;
     }
     StopwatchController.prototype.componentWillMount = function () {
         if (this.props.autoStart) {
-            this.startTimer();
+            this.start();
         }
     };
     StopwatchController.prototype.componentWillReceiveProps = function (nextProps) {
         var self = this;
-        this.stopTimer();
+        this.stop();
         this.currentDuration = new Duration(nextProps.startDuration);
+        this.hasStopped = false;
+        this.hasStarted = false;
         this.startDuration = this.currentDuration;
         this.setTimerInterval();
         if (this.props.autoStart) {
             //necessary for state change !
             window.setTimeout(function () {
-                self.startTimer();
+                self.start();
             }, 1);
         }
     };
     StopwatchController.prototype.getDuration = function () {
-        return this.currentDuration;
+        if (this.props.countdown || !this.hasStarted) {
+            return this.currentDuration;
+        }
+        else {
+            return Duration.decrement(this.currentDuration, 1000);
+        }
     };
     StopwatchController.prototype.setTimerInterval = function () {
         switch (this.props.reportTickInterval) {
@@ -22238,10 +22286,22 @@ var StopwatchController = (function (_super) {
         }
     };
     StopwatchController.prototype.componentWillUnmount = function () {
-        this.stopTimer();
+        this.stopTimer(true);
     };
     StopwatchController.prototype.updateDuration = function (ms) {
-        this.currentDuration = Duration.increment(this.startDuration, ms);
+        if (this.props.countdown) {
+            this.currentDuration = Duration.decrement(this.startDuration, ms);
+            if (this.currentDuration.totalMilliseconds <= 0) {
+                this.stop();
+                return;
+            }
+        }
+        else {
+            if (!this.hasStopped) {
+                ms = ms + 1000;
+            }
+            this.currentDuration = Duration.increment(this.startDuration, ms);
+        }
         this.setState({ duration: this.currentDuration });
     };
     StopwatchController.prototype.startTimer = function () {
@@ -22252,11 +22312,23 @@ var StopwatchController = (function (_super) {
             var elapsed = now - self.startTime;
             self.updateDuration(elapsed);
         }, this.timerInterval);
-        this.setState({ started: true });
     };
-    StopwatchController.prototype.stopTimer = function () {
-        this.setState({ started: false });
+    StopwatchController.prototype.stopTimer = function (paused) {
+        var newState = { started: false };
+        if (paused) {
+            newState = {
+                paused: true
+            };
+        }
+        this.setState(newState);
         window.clearInterval(this.cancelIntervalId);
+    };
+    StopwatchController.prototype.pauseOrStop = function (paused) {
+        if (this.state.started) {
+            this.hasStopped = true;
+            this.stopTimer(paused);
+            this.startDuration = this.currentDuration;
+        }
     };
     StopwatchController.prototype.render = function () {
         return React.createElement("div", null, React.cloneElement(this.props.children, { started: this.state.started, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start }));
@@ -22325,15 +22397,15 @@ var FlipCounter = (function (_super) {
         return React.createElement("div", { className: "flip-clock-wrapper" },
             React.createElement(DigitsDivider, { dividerTitle: this.props.hoursTitle }),
             this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
-                return React.createElement(FlipDigits, { debugIdentifier: "hour" + i.toString(), maxDigit: 9, running: self.props.started, digit: hourDigit, key: i });
+                return React.createElement(FlipDigits, { countdown: self.props.countdown, debugIdentifier: "hour" + i.toString(), maxDigit: 9, running: self.props.started, digit: hourDigit, key: i });
             }),
             React.createElement(DigitsDivider, { dividerTitle: this.props.minutesTitle }),
             this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
-                return React.createElement(FlipDigits, { debugIdentifier: "minute" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: minuteDigit, key: i });
+                return React.createElement(FlipDigits, { countdown: self.props.countdown, debugIdentifier: "minute" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: minuteDigit, key: i });
             }),
             React.createElement(DigitsDivider, { dividerTitle: this.props.secondsTitle }),
             this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
-                return React.createElement(FlipDigits, { debugIdentifier: "second" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: secondDigit, key: i });
+                return React.createElement(FlipDigits, { isUnitSecond: i === 1, countdown: self.props.countdown, debug: i === 1, debugIdentifier: "second" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: secondDigit, key: i });
             }));
     };
     return FlipCounter;
@@ -22349,51 +22421,46 @@ var FlipDigits = (function (_super) {
     __extends(FlipDigits, _super);
     function FlipDigits() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.initialChanged = false;
+        _this.isInitial = true;
         return _this;
     }
     FlipDigits.prototype.getListClassName = function (props) {
-        return this.props.flipClass + this.props.running && this.initialChanged ? " " + this.props.playClass : "";
+        var listClassName = this.props.flipClass + this.props.running && !this.isInitial ? " " + this.props.playClass : "";
+        return listClassName;
     };
-    FlipDigits.prototype.getLiClass = function (digit, initial) {
+    FlipDigits.prototype.getLiClass = function (digit) {
         var className = "";
         if (digit === this.previousDigit) {
             className = this.props.beforeClass;
         }
         else if (digit === this.lastDigit) {
-            className += " " + this.props.activeClass;
-        }
-        if (this.initialChanged) {
+            className = this.props.activeClass;
         }
         return className;
     };
     FlipDigits.prototype.setDigits = function (props) {
-        if (this.initialDigit === null) {
-            this.setInitial(0);
+        if (this.initialDigit == null) {
+            this.initialDigit = props.digit;
+            this.lastDigit = props.digit;
         }
         else {
-            if (!this.initialChanged && (props.digit !== this.initialDigit)) {
-                this.initialChanged = true;
+            if ((this.isInitial && this.initialDigit !== this.props.digit) || !this.isInitial) {
+                this.lastDigit = props.digit;
+                this.previousDigit = this.getPreviousDigit(props.digit);
+                this.isInitial = false;
             }
-            this.lastDigit = props.digit;
-            this.previousDigit = this.getPreviousDigit(props.digit);
         }
-    };
-    FlipDigits.prototype.setInitial = function (initialDigit) {
-        this.initialDigit = initialDigit;
-        this.lastDigit = initialDigit;
-        this.previousDigit = this.getPreviousDigit(initialDigit);
     };
     FlipDigits.prototype.render = function () {
         var _this = this;
-        this.setInitial(this.props.digit);
+        this.setDigits(this.props);
         var digits = [];
         for (var i = 0; i < this.props.maxDigit + 1; i++) {
             digits.push(i);
         }
         var self = this;
         return React.createElement("ul", { ref: function (ul) { _this.listElement = ul; }, className: this.getListClassName(this.props) }, digits.map(function (digit) {
-            return React.createElement("li", { key: digit },
+            return React.createElement("li", { key: digit, className: self.getLiClass(digit) },
                 React.createElement("a", { href: "#" },
                     React.createElement("div", { className: "up" },
                         React.createElement("div", { className: "shadow" }),
@@ -22405,10 +22472,7 @@ var FlipDigits = (function (_super) {
     };
     FlipDigits.prototype.componentWillReceiveProps = function (nextProps) {
         if (!nextProps.running) {
-            this.initialChanged = false;
             this.initialDigit = null;
-            this.lastDigit = null;
-            this.previousDigit = null;
         }
         else {
             this.setDigits(nextProps);
@@ -22416,16 +22480,34 @@ var FlipDigits = (function (_super) {
         var lis = this.listElement.children;
         for (var i = 0; i < lis.length; i++) {
             var li = lis[i];
-            li.className = this.getLiClass(i, false);
+            var newClassName = this.getLiClass(i);
+            if (li.className !== newClassName) {
+                li.className = newClassName;
+            }
         }
         this.listElement.className = this.getListClassName(nextProps);
     };
     FlipDigits.prototype.shouldComponentUpdate = function () {
         return false;
     };
+    FlipDigits.prototype.debug = function (msg) {
+        if (this.props.debug) {
+            console.log(this.props.debugIdentifier + ": " + msg);
+        }
+    };
     FlipDigits.prototype.getPreviousDigit = function (digit) {
-        var prevDigit = digit === 0 ? this.props.maxDigit : digit - 1;
+        var prevDigit;
+        if (this.props.countdown) {
+            prevDigit = this.getNextDigit(digit);
+        }
+        else {
+            prevDigit = digit === 0 ? this.props.maxDigit : digit - 1;
+        }
         return prevDigit;
+    };
+    FlipDigits.prototype.getNextDigit = function (digit) {
+        var nextDigit = digit === this.props.maxDigit ? 0 : digit + 1;
+        return nextDigit;
     };
     return FlipDigits;
 }(React.Component));
