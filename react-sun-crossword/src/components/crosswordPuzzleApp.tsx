@@ -16,13 +16,14 @@ import 'firebase/database';
 import { CrosswordPuzzleChooser, DefaultSelectChooserButtonProps } from "./crosswordPuzzleChooser";
 import { MuiButton, MuiButtonProps } from "./muiButton";
 import { MuiButtonWrapper } from "./muiWrappedButton";
-import { DemoStopwatchDisplay, StopwatchController, Duration, FlipCounter, ReportTickInterval } from "./stopwatchController";
+import { DemoStopwatchDisplay, StopwatchController, Duration, FlipCounter, ReportTickInterval, DemoFlipDigit, FlipDigitClassTest } from "./stopwatchController";
 
 import { Bounded, ElementQueries } from '../components/testBounds'
 import { ElementQuery, Matches, makeElementQuery } from 'react-element-queries';
 import { Keyboard } from "./keyboard";
 import { ExpandableKeyboard } from "./expandableKeyboard";
-import { recogniseMe,Command } from "../helpers/recogniseMe";
+import { recogniseMe, Command } from "../helpers/recogniseMe";
+import { DemoFlipClocks } from "./demoFlipClocks";
 //note that might want mediaquery as well
 
 
@@ -39,7 +40,7 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         this.state = {crosswordModel: null, userLoggedIn: null};
     }
     componentDidMount() {
-        auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+        //auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
     }
     
     crosswordSelected = (selectedCrossword: CrosswordModelJson) => {
@@ -137,33 +138,37 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
 
         //<button onClick={}>Pause</button>
         console.log("App render");
-        return <div>
-            <div ref={(div) => { this.pauseAnimationsContainer=div }}>
-            <StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={112000}>
-                <FlipCounter countdown={true} hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
-            </StopwatchController>
-                </div>
-            <button onClick={() => { this.stopwatchController.stop(); this.pauseAnimations(this.pauseAnimationsContainer)  }}>Stop</button>
-            <button onClick={() => { this.stopwatchController.pause(); this.pauseAnimations(this.pauseAnimationsContainer) }}>Pause</button>
-            <button onClick={() => { this.stopwatchController.start(); this.resumeAnimations(this.pauseAnimationsContainer) }}>Play</button>
-            <div ref={(div) => { this.pauseAnimationsContainer2 = div }}>
-                <StopwatchController autoStart={false} ref={(sw) => { this.stopwatchController2 = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={0}>
-                    <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
-                </StopwatchController>
-            </div>
-            <button onClick={() => { this.stopwatchController2.stop(); this.pauseAnimations(this.pauseAnimationsContainer2) }}>Stop</button>
-            <button onClick={() => { this.stopwatchController2.pause(); this.pauseAnimations(this.pauseAnimationsContainer2)  }}>Pause</button>
-            <button onClick={() => { this.stopwatchController2.start(); this.resumeAnimations(this.pauseAnimationsContainer2) }}>Play</button>
-            <button onClick={this.pauseAnimations} >Pause animations</button>  
+        return <div><DemoFlipClocks /></div>
 
-            <button onClick={() => {
-                console.log(this.stopwatchController2.getDuration().totalMilliseconds);
-                var downDuration = this.stopwatchController.getDuration();
-                console.log(downDuration.totalSeconds)
-                console.log(downDuration.milliseconds)
 
-            }}>Check duration</button>
-                </div>
+        //<div>
+
+            //<div ref={(div) => { this.pauseAnimationsContainer=div }}>
+            //<StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={112000}>
+            //    <FlipCounter countdown={true} hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+            //</StopwatchController>
+            //    </div>
+            //<button onClick={() => { this.stopwatchController.stop(); this.pauseAnimations(this.pauseAnimationsContainer)  }}>Stop</button>
+            //<button onClick={() => { this.stopwatchController.pause(); this.pauseAnimations(this.pauseAnimationsContainer) }}>Pause</button>
+            //<button onClick={() => { this.stopwatchController.start(); this.resumeAnimations(this.pauseAnimationsContainer) }}>Play</button>
+            //<div ref={(div) => { this.pauseAnimationsContainer2 = div }}>
+            //    <StopwatchController autoStart={false} ref={(sw) => { this.stopwatchController2 = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={0}>
+            //        <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+            //    </StopwatchController>
+            //</div>
+            //<button onClick={() => { this.stopwatchController2.stop(); this.pauseAnimations(this.pauseAnimationsContainer2) }}>Stop</button>
+            //<button onClick={() => { this.stopwatchController2.pause(); this.pauseAnimations(this.pauseAnimationsContainer2)  }}>Pause</button>
+            //<button onClick={() => { this.stopwatchController2.start(); this.resumeAnimations(this.pauseAnimationsContainer2) }}>Play</button>
+            //<button onClick={this.pauseAnimations} >Pause animations</button>  
+
+            //<button onClick={() => {
+            //    console.log(this.stopwatchController2.getDuration().totalMilliseconds);
+            //    var downDuration = this.stopwatchController.getDuration();
+            //    console.log(downDuration.totalSeconds)
+            //    console.log(downDuration.milliseconds)
+
+            //}}>Check duration</button>
+                //</div>
 
         //{height:"200px"}
 

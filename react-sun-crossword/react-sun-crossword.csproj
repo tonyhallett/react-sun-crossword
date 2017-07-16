@@ -101,6 +101,7 @@
     <TypeScriptCompile Include="src\components\clues.tsx" />
     <TypeScriptCompile Include="src\components\crosswordPuzzleApp.tsx" />
     <TypeScriptCompile Include="src\components\crosswordPuzzleChooser.tsx" />
+    <TypeScriptCompile Include="src\components\demoFlipClocks.tsx" />
     <TypeScriptCompile Include="src\components\divider.tsx" />
     <TypeScriptCompile Include="src\components\emailLogOn.tsx" />
     <TypeScriptCompile Include="src\components\expandableKeyboard.tsx" />

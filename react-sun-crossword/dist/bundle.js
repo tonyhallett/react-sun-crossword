@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 152);
+/******/ 	return __webpack_require__(__webpack_require__.s = 153);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1096,7 +1096,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDom = __webpack_require__(36);
+var _reactDom = __webpack_require__(35);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1112,11 +1112,11 @@ var _utilsDefaultArrowRenderer = __webpack_require__(123);
 
 var _utilsDefaultArrowRenderer2 = _interopRequireDefault(_utilsDefaultArrowRenderer);
 
-var _utilsDefaultFilterOptions = __webpack_require__(54);
+var _utilsDefaultFilterOptions = __webpack_require__(53);
 
 var _utilsDefaultFilterOptions2 = _interopRequireDefault(_utilsDefaultFilterOptions);
 
-var _utilsDefaultMenuRenderer = __webpack_require__(55);
+var _utilsDefaultMenuRenderer = __webpack_require__(54);
 
 var _utilsDefaultMenuRenderer2 = _interopRequireDefault(_utilsDefaultMenuRenderer);
 
@@ -2314,7 +2314,7 @@ module.exports = exports['default'];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Color = __webpack_require__(37);
+var Color = __webpack_require__(36);
 //these all have the same initial lightness but in rgb which is not ideal
 //the values are too dark - so is there a way 
 //to provide as hsl !
@@ -3611,7 +3611,7 @@ var json = _interopRequireWildcard(_json);
 
 var _location = __webpack_require__(19);
 
-var _path = __webpack_require__(48);
+var _path = __webpack_require__(47);
 
 var path = _interopRequireWildcard(_path);
 
@@ -4115,7 +4115,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var muiButton_1 = __webpack_require__(145);
+var muiButton_1 = __webpack_require__(146);
 var MuiButtonWrapper = (function (_super) {
     __extends(MuiButtonWrapper, _super);
     function MuiButtonWrapper() {
@@ -4204,23 +4204,6 @@ exports.TwoCol = TwoCol;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var firebase = __webpack_require__(73);
-var appToExport = firebase.initializeApp({
-    apiKey: "AIzaSyBHE9S_e2-OeQ1_2_MY_heKj1Ex0Yh-j-Y",
-    databaseURL: "https://react-sun-crossword.firebaseio.com/",
-});
-exports.auth = appToExport.auth();
-exports.database = appToExport.database();
-exports.app = appToExport;
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 function objectAssign(target) {
     'use strict';
     var varArgs = [];
@@ -4249,7 +4232,7 @@ exports.objectAssign = objectAssign;
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4264,13 +4247,13 @@ exports.KEYUP = 'keyup';
 
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4756,11 +4739,11 @@ module.exports = Color;
 
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var cssKeywords = __webpack_require__(39);
+var cssKeywords = __webpack_require__(38);
 
 // NOTE: conversions should only return primitive values (i.e. arrays, or
 //       values that give correct `typeof` results).
@@ -5623,7 +5606,7 @@ convert.rgb.gray = function (rgb) {
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -5778,7 +5761,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var prefix = __webpack_require__(98)
@@ -5845,7 +5828,7 @@ module.exports.get = function (element, properties) {
 
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6129,7 +6112,7 @@ function noop() {
 
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*! @license Firebase v4.1.1
@@ -6399,7 +6382,7 @@ d;return d.Ya},{Reference:U,Query:X,Database:Pg,enableLogging:Sb,INTERNAL:Z,TEST
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6440,7 +6423,7 @@ var _tokenManager = __webpack_require__(79);
 
 var _tokenManager2 = _interopRequireDefault(_tokenManager);
 
-var _notificationPermission = __webpack_require__(45);
+var _notificationPermission = __webpack_require__(44);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
@@ -6638,7 +6621,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6680,7 +6663,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6717,7 +6700,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6775,7 +6758,7 @@ module.exports = exports['default'];
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6940,7 +6923,7 @@ var FbsBlob = exports.FbsBlob = function () {
 
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7029,7 +7012,7 @@ function lastComponent(path) {
 
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7062,7 +7045,7 @@ var _array = __webpack_require__(26);
 
 var array = _interopRequireWildcard(_array);
 
-var _blob = __webpack_require__(47);
+var _blob = __webpack_require__(46);
 
 var _error = __webpack_require__(4);
 
@@ -7382,7 +7365,7 @@ function continueResumableUpload(location, authWrapper, url, blob, chunkSize, ma
 
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7458,7 +7441,7 @@ function taskStateFromInternalTaskState(state) {
 
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7498,7 +7481,7 @@ var ErrorCode = exports.ErrorCode = undefined;
 
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7537,7 +7520,7 @@ var _args = __webpack_require__(25);
 
 var args = _interopRequireWildcard(_args);
 
-var _blob = __webpack_require__(47);
+var _blob = __webpack_require__(46);
 
 var _error = __webpack_require__(4);
 
@@ -7553,11 +7536,11 @@ var _object = __webpack_require__(9);
 
 var object = _interopRequireWildcard(_object);
 
-var _path = __webpack_require__(48);
+var _path = __webpack_require__(47);
 
 var path = _interopRequireWildcard(_path);
 
-var _requests = __webpack_require__(49);
+var _requests = __webpack_require__(48);
 
 var requests = _interopRequireWildcard(_requests);
 
@@ -7806,7 +7789,7 @@ var Reference = exports.Reference = function () {
 
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7827,7 +7810,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7835,7 +7818,7 @@ module.exports = ReactPropTypesSecret;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _stripDiacritics = __webpack_require__(56);
+var _stripDiacritics = __webpack_require__(55);
 
 var _stripDiacritics2 = _interopRequireDefault(_stripDiacritics);
 
@@ -7875,7 +7858,7 @@ function filterOptions(options, filterValue, excludeOptions, props) {
 module.exports = filterOptions;
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7942,7 +7925,7 @@ function menuRenderer(_ref) {
 module.exports = menuRenderer;
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7958,7 +7941,7 @@ module.exports = function stripDiacritics(str) {
 };
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8007,7 +7990,7 @@ function getPanelsCount(children) {
 }
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8107,7 +8090,7 @@ function selectedIndexPropType(props, propName, componentName, location, propFul
 }
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8127,13 +8110,13 @@ function reset() {
 }
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var firebaseApp_1 = __webpack_require__(33);
+var firebaseApp_1 = __webpack_require__(60);
 var FirebaseDatabase = (function () {
     function FirebaseDatabase() {
         var connectedRef = firebaseApp_1.database.ref(".info/connected");
@@ -8230,6 +8213,23 @@ exports.connectedDatabase = new FirebaseDatabase();
 
 
 /***/ }),
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var firebase = __webpack_require__(73);
+var appToExport = firebase.initializeApp({
+    apiKey: "AIzaSyBHE9S_e2-OeQ1_2_MY_heKj1Ex0Yh-j-Y",
+    databaseURL: "https://react-sun-crossword.firebaseio.com/",
+});
+exports.auth = appToExport.auth();
+exports.database = appToExport.database();
+exports.app = appToExport;
+
+
+/***/ }),
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8249,12 +8249,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
 var crosswordPuzzle_1 = __webpack_require__(138);
-var firebaseApp_1 = __webpack_require__(33);
-var connectedDatabase_1 = __webpack_require__(60);
-__webpack_require__(42);
+var connectedDatabase_1 = __webpack_require__(59);
+__webpack_require__(41);
 var crosswordPuzzleChooser_1 = __webpack_require__(139);
 var muiWrappedButton_1 = __webpack_require__(31);
-var stopwatchController_1 = __webpack_require__(149);
+var demoFlipClocks_1 = __webpack_require__(140);
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
     function CrosswordPuzzleApp(props) {
@@ -8300,7 +8299,7 @@ var CrosswordPuzzleApp = (function (_super) {
         return _this;
     }
     CrosswordPuzzleApp.prototype.componentDidMount = function () {
-        firebaseApp_1.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+        //auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
     };
     CrosswordPuzzleApp.prototype.onAuthStateChanged = function (user) {
         var loggedIn = user !== null;
@@ -8312,7 +8311,6 @@ var CrosswordPuzzleApp = (function (_super) {
         }
     };
     CrosswordPuzzleApp.prototype.render = function () {
-        var _this = this;
         var primaryColour = "gold";
         var buttonStyle = {
             backgroundColor: primaryColour,
@@ -8348,25 +8346,32 @@ var CrosswordPuzzleApp = (function (_super) {
         //<button onClick={}>Pause</button>
         console.log("App render");
         return React.createElement("div", null,
-            React.createElement("div", { ref: function (div) { _this.pauseAnimationsContainer = div; } },
-                React.createElement(stopwatchController_1.StopwatchController, { countdown: true, autoStart: false, ref: function (sw) { _this.stopwatchController = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: 112000 },
-                    React.createElement(stopwatchController_1.FlipCounter, { countdown: true, hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" }))),
-            React.createElement("button", { onClick: function () { _this.stopwatchController.stop(); _this.pauseAnimations(_this.pauseAnimationsContainer); } }, "Stop"),
-            React.createElement("button", { onClick: function () { _this.stopwatchController.pause(); _this.pauseAnimations(_this.pauseAnimationsContainer); } }, "Pause"),
-            React.createElement("button", { onClick: function () { _this.stopwatchController.start(); _this.resumeAnimations(_this.pauseAnimationsContainer); } }, "Play"),
-            React.createElement("div", { ref: function (div) { _this.pauseAnimationsContainer2 = div; } },
-                React.createElement(stopwatchController_1.StopwatchController, { autoStart: false, ref: function (sw) { _this.stopwatchController2 = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: 0 },
-                    React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" }))),
-            React.createElement("button", { onClick: function () { _this.stopwatchController2.stop(); _this.pauseAnimations(_this.pauseAnimationsContainer2); } }, "Stop"),
-            React.createElement("button", { onClick: function () { _this.stopwatchController2.pause(); _this.pauseAnimations(_this.pauseAnimationsContainer2); } }, "Pause"),
-            React.createElement("button", { onClick: function () { _this.stopwatchController2.start(); _this.resumeAnimations(_this.pauseAnimationsContainer2); } }, "Play"),
-            React.createElement("button", { onClick: this.pauseAnimations }, "Pause animations"),
-            React.createElement("button", { onClick: function () {
-                    console.log(_this.stopwatchController2.getDuration().totalMilliseconds);
-                    var downDuration = _this.stopwatchController.getDuration();
-                    console.log(downDuration.totalSeconds);
-                    console.log(downDuration.milliseconds);
-                } }, "Check duration"));
+            React.createElement(demoFlipClocks_1.DemoFlipClocks, null));
+        //<div>
+        //<div ref={(div) => { this.pauseAnimationsContainer=div }}>
+        //<StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={112000}>
+        //    <FlipCounter countdown={true} hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+        //</StopwatchController>
+        //    </div>
+        //<button onClick={() => { this.stopwatchController.stop(); this.pauseAnimations(this.pauseAnimationsContainer)  }}>Stop</button>
+        //<button onClick={() => { this.stopwatchController.pause(); this.pauseAnimations(this.pauseAnimationsContainer) }}>Pause</button>
+        //<button onClick={() => { this.stopwatchController.start(); this.resumeAnimations(this.pauseAnimationsContainer) }}>Play</button>
+        //<div ref={(div) => { this.pauseAnimationsContainer2 = div }}>
+        //    <StopwatchController autoStart={false} ref={(sw) => { this.stopwatchController2 = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={0}>
+        //        <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+        //    </StopwatchController>
+        //</div>
+        //<button onClick={() => { this.stopwatchController2.stop(); this.pauseAnimations(this.pauseAnimationsContainer2) }}>Stop</button>
+        //<button onClick={() => { this.stopwatchController2.pause(); this.pauseAnimations(this.pauseAnimationsContainer2)  }}>Pause</button>
+        //<button onClick={() => { this.stopwatchController2.start(); this.resumeAnimations(this.pauseAnimationsContainer2) }}>Play</button>
+        //<button onClick={this.pauseAnimations} >Pause animations</button>  
+        //<button onClick={() => {
+        //    console.log(this.stopwatchController2.getDuration().totalMilliseconds);
+        //    var downDuration = this.stopwatchController.getDuration();
+        //    console.log(downDuration.totalSeconds)
+        //    console.log(downDuration.milliseconds)
+        //}}>Check duration</button>
+        //</div>
         //{height:"200px"}
         /*
             Element queries
@@ -8713,7 +8718,7 @@ module.exports = function(name, value) {
 /* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(38);
+var conversions = __webpack_require__(37);
 var route = __webpack_require__(66);
 
 var convert = {};
@@ -8797,7 +8802,7 @@ module.exports = convert;
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(38);
+var conversions = __webpack_require__(37);
 
 /*
 	this function routes a model to all other models.
@@ -8902,7 +8907,7 @@ module.exports = function (fromModel) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(39);
+var colorNames = __webpack_require__(38);
 var swizzle = __webpack_require__(128);
 
 var reverseNames = {};
@@ -10029,7 +10034,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.createFirebaseNamespace = createFirebaseNamespace;
 
-var _subscribe = __webpack_require__(41);
+var _subscribe = __webpack_require__(40);
 
 var _errors = __webpack_require__(23);
 
@@ -10703,7 +10708,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Import instance of FirebaseApp from ./app
 var Storage, XMLHttpRequest;
 
-__webpack_require__(42);
+__webpack_require__(41);
 __webpack_require__(81);
 var AsyncStorage;
 
@@ -10807,7 +10812,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _controllerInterface = __webpack_require__(43);
+var _controllerInterface = __webpack_require__(42);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -10815,11 +10820,11 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(46);
+var _workerPageMessage = __webpack_require__(45);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
-var _fcmDetails = __webpack_require__(44);
+var _fcmDetails = __webpack_require__(43);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -11184,7 +11189,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _controllerInterface = __webpack_require__(43);
+var _controllerInterface = __webpack_require__(42);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -11192,7 +11197,7 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(46);
+var _workerPageMessage = __webpack_require__(45);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
@@ -11200,11 +11205,11 @@ var _defaultSw = __webpack_require__(78);
 
 var _defaultSw2 = _interopRequireDefault(_defaultSw);
 
-var _notificationPermission = __webpack_require__(45);
+var _notificationPermission = __webpack_require__(44);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
-var _subscribe = __webpack_require__(41);
+var _subscribe = __webpack_require__(40);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11670,7 +11675,7 @@ var _arrayBufferToBase = __webpack_require__(77);
 
 var _arrayBufferToBase2 = _interopRequireDefault(_arrayBufferToBase);
 
-var _fcmDetails = __webpack_require__(44);
+var _fcmDetails = __webpack_require__(43);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -12307,11 +12312,11 @@ exports.registerStorage = registerStorage;
 
 var _string = __webpack_require__(28);
 
-var _taskenums = __webpack_require__(50);
+var _taskenums = __webpack_require__(49);
 
 var _xhriopool = __webpack_require__(93);
 
-var _reference = __webpack_require__(52);
+var _reference = __webpack_require__(51);
 
 var _service = __webpack_require__(94);
 
@@ -13048,7 +13053,7 @@ var _url = __webpack_require__(29);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
-var _xhrio = __webpack_require__(51);
+var _xhrio = __webpack_require__(50);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -13440,7 +13445,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _xhrio = __webpack_require__(51);
+var _xhrio = __webpack_require__(50);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -13694,7 +13699,7 @@ var _request = __webpack_require__(89);
 
 var RequestExports = _interopRequireWildcard(_request);
 
-var _reference = __webpack_require__(52);
+var _reference = __webpack_require__(51);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -13871,7 +13876,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _taskenums = __webpack_require__(50);
+var _taskenums = __webpack_require__(49);
 
 var fbsTaskEnums = _interopRequireWildcard(_taskenums);
 
@@ -13897,7 +13902,7 @@ var _promise_external = __webpack_require__(7);
 
 var fbsPromiseimpl = _interopRequireWildcard(_promise_external);
 
-var _requests = __webpack_require__(49);
+var _requests = __webpack_require__(48);
 
 var fbsRequests = _interopRequireWildcard(_requests);
 
@@ -14680,7 +14685,7 @@ module.exports = function prefixStyle (prop) {
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(11);
-  var ReactPropTypesSecret = __webpack_require__(53);
+  var ReactPropTypesSecret = __webpack_require__(52);
   var loggedTypeFailures = {};
 }
 
@@ -14811,7 +14816,7 @@ var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(11);
 
-var ReactPropTypesSecret = __webpack_require__(53);
+var ReactPropTypesSecret = __webpack_require__(52);
 var checkPropTypes = __webpack_require__(99);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -15500,7 +15505,7 @@ var _raf2 = __webpack_require__(102);
 
 var _raf3 = _interopRequireDefault(_raf2);
 
-var _domCss = __webpack_require__(40);
+var _domCss = __webpack_require__(39);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
@@ -16415,7 +16420,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = getScrollbarWidth;
 
-var _domCss = __webpack_require__(40);
+var _domCss = __webpack_require__(39);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
@@ -17375,7 +17380,7 @@ var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _utilsStripDiacritics = __webpack_require__(56);
+var _utilsStripDiacritics = __webpack_require__(55);
 
 var _utilsStripDiacritics2 = _interopRequireDefault(_utilsStripDiacritics);
 
@@ -17714,11 +17719,11 @@ var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _utilsDefaultFilterOptions = __webpack_require__(54);
+var _utilsDefaultFilterOptions = __webpack_require__(53);
 
 var _utilsDefaultFilterOptions2 = _interopRequireDefault(_utilsDefaultFilterOptions);
 
-var _utilsDefaultMenuRenderer = __webpack_require__(55);
+var _utilsDefaultMenuRenderer = __webpack_require__(54);
 
 var _utilsDefaultMenuRenderer2 = _interopRequireDefault(_utilsDefaultMenuRenderer);
 
@@ -18337,13 +18342,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes3 = __webpack_require__(58);
+var _propTypes3 = __webpack_require__(57);
 
 var _UncontrolledTabs = __webpack_require__(126);
 
 var _UncontrolledTabs2 = _interopRequireDefault(_UncontrolledTabs);
 
-var _count = __webpack_require__(57);
+var _count = __webpack_require__(56);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18495,11 +18500,11 @@ var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _uuid = __webpack_require__(59);
+var _uuid = __webpack_require__(58);
 
 var _uuid2 = _interopRequireDefault(_uuid);
 
-var _propTypes3 = __webpack_require__(58);
+var _propTypes3 = __webpack_require__(57);
 
 var _Tab = __webpack_require__(20);
 
@@ -18513,7 +18518,7 @@ var _TabPanel = __webpack_require__(22);
 
 var _TabPanel2 = _interopRequireDefault(_TabPanel);
 
-var _count = __webpack_require__(57);
+var _count = __webpack_require__(56);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18857,7 +18862,7 @@ var _TabPanel = __webpack_require__(22);
 
 var _TabPanel2 = _interopRequireDefault(_TabPanel);
 
-var _uuid = __webpack_require__(59);
+var _uuid = __webpack_require__(58);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19194,7 +19199,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var formatWord_1 = __webpack_require__(142);
+var formatWord_1 = __webpack_require__(143);
 var clueNumber_1 = __webpack_require__(135);
 var twoCol_1 = __webpack_require__(32);
 var commonStyling_1 = __webpack_require__(14);
@@ -19541,7 +19546,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var square_1 = __webpack_require__(146);
+var square_1 = __webpack_require__(147);
 var commonStyling_1 = __webpack_require__(14);
 // State is never set so we use the 'undefined' type.
 var Crossword = (function (_super) {
@@ -19594,12 +19599,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
 var crossword_1 = __webpack_require__(137);
-var KeyEvents = __webpack_require__(153);
+var KeyEvents = __webpack_require__(154);
 var twoCol_1 = __webpack_require__(32);
 var clues_1 = __webpack_require__(136);
-var lightbulb_1 = __webpack_require__(143);
-var recogniseMe_1 = __webpack_require__(151);
-var numberStrings_1 = __webpack_require__(150);
+var lightbulb_1 = __webpack_require__(144);
+var recogniseMe_1 = __webpack_require__(152);
+var numberStrings_1 = __webpack_require__(151);
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -20758,9 +20763,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var connectedDatabase_1 = __webpack_require__(60);
-var emailLogOn_1 = __webpack_require__(141);
-var firebaseApp_1 = __webpack_require__(33);
+var connectedDatabase_1 = __webpack_require__(59);
+var emailLogOn_1 = __webpack_require__(142);
+var firebaseApp_1 = __webpack_require__(60);
 var Select = __webpack_require__(13);
 exports.Select = __webpack_require__(13);
 var muiWrappedButton_1 = __webpack_require__(31);
@@ -20988,7 +20993,83 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var javascriptPolyfills_1 = __webpack_require__(34);
+var stopwatchController_1 = __webpack_require__(150);
+var DemoFlipClocks = (function (_super) {
+    __extends(DemoFlipClocks, _super);
+    function DemoFlipClocks(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
+            countdownDuration: 120000,
+            countUpDuration: 5000
+        };
+        return _this;
+    }
+    DemoFlipClocks.prototype.render = function () {
+        var _this = this;
+        /*
+        <StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.countdownStopwatch = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={this.state.countdownDuration}>
+                <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+            </StopwatchController>
+            <button onClick={() => { this.countdownStopwatch.start() }}>Start</button>
+
+        <StopwatchController countdown={true} autoStart={true} ref={(sw) => { this.autoStartCountdownStopwatch = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={this.state.countdownDuration}>
+                <FlipCounter  hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+            </StopwatchController>
+
+            <StopwatchController countdown={false} autoStart={false} ref={(sw) => { this.countUpStopwatch = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={this.state.countUpDuration}>
+                <FlipCounter  hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+            </StopwatchController>
+            <button onClick={() => { this.countUpStopwatch.start() }}>Start</button>
+            <StopwatchController countdown={false} autoStart={true} ref={(sw) => { this.autoStartCountUpStopwatch = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={this.state.countUpDuration}>
+                <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+            </StopwatchController>
+        */
+        return React.createElement("div", null,
+            React.createElement(stopwatchController_1.StopwatchController, { countdown: true, autoStart: false, ref: function (sw) { _this.countdownStopwatch = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: this.state.countdownDuration },
+                React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
+            React.createElement("button", { onClick: function () { _this.countdownStopwatch.start(); } }, "Start"),
+            React.createElement("button", { onClick: function () { _this.countdownStopwatch.stop(); } }, "Stop"),
+            React.createElement(stopwatchController_1.StopwatchController, { countdown: true, autoStart: true, ref: function (sw) { _this.autoStartCountdownStopwatch = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: this.state.countdownDuration },
+                React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
+            React.createElement("button", { onClick: function () { _this.autoStartCountdownStopwatch.start(); } }, "Start"),
+            React.createElement("button", { onClick: function () { _this.autoStartCountdownStopwatch.stop(); } }, "Stop"),
+            React.createElement(stopwatchController_1.StopwatchController, { countdown: false, autoStart: false, ref: function (sw) { _this.countUpStopwatch = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: this.state.countUpDuration },
+                React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
+            React.createElement("button", { onClick: function () { _this.countUpStopwatch.start(); } }, "Start"),
+            React.createElement("button", { onClick: function () { _this.countUpStopwatch.stop(); } }, "Stop"),
+            React.createElement(stopwatchController_1.StopwatchController, { countdown: false, autoStart: true, ref: function (sw) { _this.autoStartCountUpStopwatch = sw; }, reportTickInterval: stopwatchController_1.ReportTickInterval.hundredthSecond, startDuration: this.state.countUpDuration },
+                React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
+            React.createElement("button", { onClick: function () { _this.autoStartCountUpStopwatch.start(); } }, "Start"),
+            React.createElement("button", { onClick: function () { _this.autoStartCountUpStopwatch.stop(); } }, "Stop"),
+            React.createElement("button", { onClick: function () { return _this.setState({
+                    countdownDuration: 211000,
+                    countUpDuration: 91000
+                }); } }, "Switch durations"));
+    };
+    return DemoFlipClocks;
+}(React.Component));
+exports.DemoFlipClocks = DemoFlipClocks;
+
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var javascriptPolyfills_1 = __webpack_require__(33);
 var Divider = (function (_super) {
     __extends(Divider, _super);
     function Divider(props) {
@@ -21013,7 +21094,7 @@ exports.Divider = Divider;
 
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21038,11 +21119,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var divider_1 = __webpack_require__(140);
-var link_1 = __webpack_require__(144);
+var divider_1 = __webpack_require__(141);
+var link_1 = __webpack_require__(145);
 var autoComplete_1 = __webpack_require__(133);
 var muiWrappedButton_1 = __webpack_require__(31);
-var javascriptPolyfills_1 = __webpack_require__(34);
+var javascriptPolyfills_1 = __webpack_require__(33);
 var EmailErrorScreen = (function (_super) {
     __extends(EmailErrorScreen, _super);
     function EmailErrorScreen(props) {
@@ -21384,7 +21465,7 @@ EmailLoggedInScreen.defaultProps = {
 
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21493,7 +21574,7 @@ exports.ClueLetter = ClueLetter;
 
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21629,7 +21710,7 @@ exports.Lightbulb = Lightbulb;
 
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21691,7 +21772,7 @@ exports.NonNavigatableLink = NonNavigatableLink;
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21708,8 +21789,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var Color = __webpack_require__(37);
-var javascriptPolyfills_1 = __webpack_require__(34);
+var Color = __webpack_require__(36);
+var javascriptPolyfills_1 = __webpack_require__(33);
 var MuiButton = (function (_super) {
     __extends(MuiButton, _super);
     function MuiButton(props) {
@@ -21986,7 +22067,7 @@ exports.MuiButton = MuiButton;
 
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22005,8 +22086,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import  Radium  =require('radium')
 var index_1 = __webpack_require__(15);
-var squareLetter_1 = __webpack_require__(147);
-var squareNumber_1 = __webpack_require__(148);
+var squareLetter_1 = __webpack_require__(148);
+var squareNumber_1 = __webpack_require__(149);
 var commonStyling_1 = __webpack_require__(14);
 //@Radium
 var Square = (function (_super) {
@@ -22092,7 +22173,7 @@ exports.Square = Square;
 
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22125,7 +22206,7 @@ exports.SquareLetter = SquareLetter;
 
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22158,7 +22239,7 @@ exports.SquareNumber = SquareNumber;
 
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22207,6 +22288,12 @@ var ReportTickInterval;
     ReportTickInterval[ReportTickInterval["minute"] = 4] = "minute";
     ReportTickInterval[ReportTickInterval["hour"] = 5] = "hour";
 })(ReportTickInterval = exports.ReportTickInterval || (exports.ReportTickInterval = {}));
+var TickState;
+(function (TickState) {
+    TickState[TickState["running"] = 0] = "running";
+    TickState[TickState["paused"] = 1] = "paused";
+    TickState[TickState["stopped"] = 2] = "stopped";
+})(TickState || (TickState = {}));
 var StopwatchController = (function (_super) {
     __extends(StopwatchController, _super);
     function StopwatchController(props) {
@@ -22214,16 +22301,17 @@ var StopwatchController = (function (_super) {
         _this.hasStopped = false;
         _this.hasStarted = false;
         _this.start = function () {
-            if (!_this.state.started || _this.state.paused) {
+            if (_this.state.tickState === TickState.stopped || _this.state.tickState === TickState.paused) {
                 _this.hasStarted = true;
                 _this.startTimer();
-                _this.setState({ started: true, paused: false, duration: _this.currentDuration });
+                _this.setState({ tickState: TickState.running, duration: _this.currentDuration });
             }
         };
         _this.pause = function () {
             _this.pauseOrStop(true);
         };
         _this.stop = function () {
+            _this.hasStarted = false;
             _this.pauseOrStop(false);
         };
         //LP
@@ -22232,7 +22320,7 @@ var StopwatchController = (function (_super) {
         _this.currentDuration = new Duration(_this.props.startDuration);
         _this.startDuration = _this.currentDuration;
         _this.setTimerInterval();
-        _this.state = { started: false, duration: _this.currentDuration, paused: false };
+        _this.state = { tickState: TickState.stopped, duration: _this.currentDuration };
         return _this;
     }
     StopwatchController.prototype.componentWillMount = function () {
@@ -22242,18 +22330,20 @@ var StopwatchController = (function (_super) {
     };
     StopwatchController.prototype.componentWillReceiveProps = function (nextProps) {
         var self = this;
-        this.stop();
         this.currentDuration = new Duration(nextProps.startDuration);
+        this.stop();
         this.hasStopped = false;
-        this.hasStarted = false;
         this.startDuration = this.currentDuration;
         this.setTimerInterval();
-        if (this.props.autoStart) {
-            //necessary for state change !
-            window.setTimeout(function () {
-                self.start();
-            }, 1);
-        }
+        window.setTimeout(function () {
+            self.setState({ duration: self.currentDuration });
+            if (self.props.autoStart) {
+                //necessary for state change !
+                window.setTimeout(function () {
+                    self.start();
+                }, 1);
+            }
+        }, 1);
     };
     StopwatchController.prototype.getDuration = function () {
         if (this.props.countdown || !this.hasStarted) {
@@ -22314,24 +22404,29 @@ var StopwatchController = (function (_super) {
         }, this.timerInterval);
     };
     StopwatchController.prototype.stopTimer = function (paused) {
-        var newState = { started: false };
+        var self = this;
+        var newState;
         if (paused) {
             newState = {
-                paused: true
+                tickState: TickState.paused
             };
         }
-        this.setState(newState);
+        else {
+            newState = {
+                tickState: TickState.stopped,
+                duration: this.currentDuration
+            };
+        }
         window.clearInterval(this.cancelIntervalId);
+        this.setState(newState);
     };
     StopwatchController.prototype.pauseOrStop = function (paused) {
-        if (this.state.started) {
-            this.hasStopped = true;
-            this.stopTimer(paused);
-            this.startDuration = this.currentDuration;
-        }
+        this.hasStopped = true;
+        this.stopTimer(paused);
+        this.startDuration = this.currentDuration;
     };
     StopwatchController.prototype.render = function () {
-        return React.createElement("div", null, React.cloneElement(this.props.children, { started: this.state.started, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start }));
+        return React.createElement("div", null, React.cloneElement(this.props.children, { tickState: this.state.tickState, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start }));
     };
     return StopwatchController;
 }(React.Component));
@@ -22363,6 +22458,16 @@ var DemoStopwatchDisplay = (function (_super) {
     return DemoStopwatchDisplay;
 }(React.Component));
 exports.DemoStopwatchDisplay = DemoStopwatchDisplay;
+function getTickStateString(tickState) {
+    switch (tickState) {
+        case TickState.paused:
+            return "pausd";
+        case TickState.running:
+            return "running";
+        case TickState.stopped:
+            return "stopped";
+    }
+}
 var FlipCounter = (function (_super) {
     __extends(FlipCounter, _super);
     function FlipCounter() {
@@ -22397,15 +22502,15 @@ var FlipCounter = (function (_super) {
         return React.createElement("div", { className: "flip-clock-wrapper" },
             React.createElement(DigitsDivider, { dividerTitle: this.props.hoursTitle }),
             this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
-                return React.createElement(FlipDigits, { countdown: self.props.countdown, debugIdentifier: "hour" + i.toString(), maxDigit: 9, running: self.props.started, digit: hourDigit, key: i });
+                return React.createElement(FlipDigit, { pauseStoppedAnimation: true, tickState: self.props.tickState, debugIdentifier: "hour" + i.toString(), maxDigit: 9, digit: hourDigit, key: i });
             }),
             React.createElement(DigitsDivider, { dividerTitle: this.props.minutesTitle }),
             this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
-                return React.createElement(FlipDigits, { countdown: self.props.countdown, debugIdentifier: "minute" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: minuteDigit, key: i });
+                return React.createElement(FlipDigit, { pauseStoppedAnimation: true, tickState: self.props.tickState, debugIdentifier: "minute" + i.toString(), maxDigit: i === 0 ? 5 : 9, digit: minuteDigit, key: i });
             }),
             React.createElement(DigitsDivider, { dividerTitle: this.props.secondsTitle }),
             this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
-                return React.createElement(FlipDigits, { isUnitSecond: i === 1, countdown: self.props.countdown, debug: i === 1, debugIdentifier: "second" + i.toString(), maxDigit: i === 0 ? 5 : 9, running: self.props.started, digit: secondDigit, key: i });
+                return React.createElement(FlipDigit, { pauseStoppedAnimation: true, tickState: self.props.tickState, debug: i === 1, debugIdentifier: "second" + i.toString(), maxDigit: i === 0 ? 5 : 9, digit: secondDigit, key: i });
             }));
     };
     return FlipCounter;
@@ -22413,8 +22518,7 @@ var FlipCounter = (function (_super) {
 FlipCounter.defaultProps = {
     hoursTitle: "",
     minutesTitle: "",
-    secondsTitle: "",
-    started: false
+    secondsTitle: ""
 };
 exports.FlipCounter = FlipCounter;
 var FlipDigits = (function (_super) {
@@ -22427,6 +22531,12 @@ var FlipDigits = (function (_super) {
     FlipDigits.prototype.getListClassName = function (props) {
         var listClassName = this.props.flipClass + this.props.running && !this.isInitial ? " " + this.props.playClass : "";
         return listClassName;
+    };
+    FlipDigits.prototype.getListClassNameRunning = function (running) {
+        return this.props.flipClass + running ? (" " + this.props.playClass) : "";
+    };
+    FlipDigits.prototype.applyRunning = function (running) {
+        this.listElement.className = this.getListClassNameRunning(running);
     };
     FlipDigits.prototype.getLiClass = function (digit) {
         var className = "";
@@ -22470,13 +22580,7 @@ var FlipDigits = (function (_super) {
                         React.createElement("div", { className: "inn" }, digit))));
         }));
     };
-    FlipDigits.prototype.componentWillReceiveProps = function (nextProps) {
-        if (!nextProps.running) {
-            this.initialDigit = null;
-        }
-        else {
-            this.setDigits(nextProps);
-        }
+    FlipDigits.prototype.applyDigitClasses = function () {
         var lis = this.listElement.children;
         for (var i = 0; i < lis.length; i++) {
             var li = lis[i];
@@ -22485,6 +22589,17 @@ var FlipDigits = (function (_super) {
                 li.className = newClassName;
             }
         }
+    };
+    //looks like need a boolean for not running reset
+    FlipDigits.prototype.componentWillReceiveProps = function (nextProps) {
+        if (!nextProps.running) {
+            this.debug("not running: " + nextProps.digit);
+            this.initialDigit = null;
+        }
+        else {
+            this.setDigits(nextProps);
+        }
+        this.applyDigitClasses();
         this.listElement.className = this.getListClassName(nextProps);
     };
     FlipDigits.prototype.shouldComponentUpdate = function () {
@@ -22518,6 +22633,285 @@ FlipDigits.defaultProps = {
     playClass: "play"
 };
 exports.FlipDigits = FlipDigits;
+var DemoFlipDigit = (function (_super) {
+    __extends(DemoFlipDigit, _super);
+    function DemoFlipDigit(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { digit: 2, tickState: TickState.stopped };
+        return _this;
+    }
+    DemoFlipDigit.prototype.getNextDigit = function () {
+        var currentDigit = this.state.digit;
+        return (currentDigit === 9 ? 0 : currentDigit + 1);
+    };
+    DemoFlipDigit.prototype.render = function () {
+        var _this = this;
+        return React.createElement("div", { className: "flip-clock-wrapper" },
+            React.createElement(FlipDigit, { pausePausedAnimation: true, pauseStoppedAnimation: true, digit: this.state.digit, tickState: this.state.tickState, maxDigit: 9 }),
+            React.createElement("button", { onClick: function () { _this.setState({ digit: 5, tickState: TickState.stopped }); } }, "Stop 5"),
+            React.createElement("button", { onClick: function () { _this.setState({ digit: 9, tickState: TickState.paused }); } }, "Pause"),
+            React.createElement("button", { onClick: function () { _this.setState({ digit: _this.getNextDigit(), tickState: TickState.running }); } }, "Run next"),
+            React.createElement("button", { onClick: function () { _this.setState({ tickState: TickState.running }); } }, "Run"));
+    };
+    return DemoFlipDigit;
+}(React.Component));
+exports.DemoFlipDigit = DemoFlipDigit;
+//to return to - using the paused state for css 
+var FlipDigitBaseState = (function () {
+    function FlipDigitBaseState() {
+    }
+    FlipDigitBaseState.prototype.setChange = function (flipDigit, nextState, digit) {
+        var newState;
+        switch (nextState) {
+            case TickState.paused:
+                newState = new FlipDigitPausedState();
+                break;
+            case TickState.running:
+                newState = new FlipDigitRunningState();
+                break;
+            case TickState.stopped:
+                newState = new FlipDigitStoppedState();
+                break;
+        }
+        flipDigit.flipDigitState = newState;
+    };
+    return FlipDigitBaseState;
+}());
+var FlipDigitRunningState = (function (_super) {
+    __extends(FlipDigitRunningState, _super);
+    function FlipDigitRunningState() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    FlipDigitRunningState.prototype.setChange = function (flipDigit, nextState, digit) {
+        switch (nextState) {
+            case TickState.stopped:
+                flipDigit.pauseAnimations(true);
+                break;
+            case TickState.paused:
+                flipDigit.pauseAnimations(false);
+                break;
+            case TickState.running:
+                if (flipDigit.lastDigit !== digit) {
+                    flipDigit.previousDigit = flipDigit.lastDigit;
+                    flipDigit.lastDigit = digit;
+                    flipDigit.updateAll(true);
+                }
+        }
+        _super.prototype.setChange.call(this, flipDigit, nextState, digit);
+    };
+    return FlipDigitRunningState;
+}(FlipDigitBaseState));
+var FlipDigitPausedState = (function (_super) {
+    __extends(FlipDigitPausedState, _super);
+    function FlipDigitPausedState() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    FlipDigitPausedState.prototype.setChange = function (flipDigit, nextState, digit) {
+        switch (nextState) {
+            case TickState.stopped:
+                flipDigit.lastDigit = digit;
+                flipDigit.previousDigit = null;
+                flipDigit.updateDigits();
+                break;
+            case TickState.running:
+                if (digit !== flipDigit.lastDigit) {
+                    flipDigit.previousDigit = flipDigit.lastDigit;
+                    flipDigit.lastDigit = digit;
+                    flipDigit.updateDigits();
+                }
+                else {
+                    flipDigit.resumeAnimations();
+                }
+                break;
+        }
+        _super.prototype.setChange.call(this, flipDigit, nextState, digit);
+    };
+    return FlipDigitPausedState;
+}(FlipDigitBaseState));
+//can be running when stopped
+var FlipDigitStoppedState = (function (_super) {
+    __extends(FlipDigitStoppedState, _super);
+    function FlipDigitStoppedState() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    FlipDigitStoppedState.prototype.setChange = function (flipDigit, nextState, digit) {
+        switch (nextState) {
+            case TickState.stopped:
+                flipDigit.applyRunning(false);
+                flipDigit.lastDigit = digit;
+                flipDigit.previousDigit = null;
+                flipDigit.updateDigits();
+                break;
+            case TickState.running:
+                if (digit !== flipDigit.lastDigit) {
+                    flipDigit.previousDigit = flipDigit.lastDigit;
+                    flipDigit.lastDigit = digit;
+                    flipDigit.updateAll(true);
+                }
+                else {
+                    flipDigit.resumeAnimations();
+                }
+                break;
+        }
+        _super.prototype.setChange.call(this, flipDigit, nextState, digit);
+    };
+    return FlipDigitStoppedState;
+}(FlipDigitBaseState));
+var FlipDigitClassTest = (function (_super) {
+    __extends(FlipDigitClassTest, _super);
+    //will consider the effect of animations as well
+    function FlipDigitClassTest() {
+        var _this = _super.call(this) || this;
+        _this.setDigits = function () {
+            var self = _this;
+            var digitsText = _this.state.digitsText;
+            var parts = digitsText.split(" ");
+            parts.forEach(function (part) {
+                var previousOrLast = part.substring(0, 1);
+                var nullOrDigit = part.substring(1);
+                var isPrevious = previousOrLast === "p";
+                var digit = null;
+                if (nullOrDigit.length === 1) {
+                    digit = parseInt(nullOrDigit);
+                }
+                if (isPrevious) {
+                    self.flipDigit.previousDigit = digit;
+                }
+                else {
+                    self.flipDigit.lastDigit = digit;
+                }
+            });
+            if (_this.state.updateDigits) {
+                self.flipDigit.updateDigits();
+            }
+        };
+        _this.applyRunning = function () {
+            _this.flipDigit.applyRunning(_this.state.applyRunning);
+        };
+        _this.state = { digitsText: "", applyRunning: false, updateDigits: false };
+        return _this;
+    }
+    FlipDigitClassTest.prototype.render = function () {
+        var _this = this;
+        return React.createElement("div", { className: "flip-clock-wrapper" },
+            React.createElement(FlipDigit, { ref: function (digit) { _this.flipDigit = digit; }, digit: 0, tickState: TickState.stopped, maxDigit: 9 }),
+            React.createElement("input", { onChange: function (evt) { return _this.setState({ applyRunning: evt.target.checked }); }, checked: this.state.applyRunning, type: "checkbox" }),
+            React.createElement("button", { onClick: function () { _this.applyRunning(); } }, "Set running"),
+            React.createElement("input", { onChange: function (evt) { return _this.setState({ updateDigits: evt.target.checked }); }, checked: this.state.updateDigits, type: "checkbox" }),
+            React.createElement("button", { onClick: function () { _this.setDigits(); } }, "Set digits"),
+            React.createElement("input", { onChange: function (evt) { return _this.setState({ digitsText: evt.target.value }); }, value: this.state.digitsText, type: "text" }));
+    };
+    return FlipDigitClassTest;
+}(React.Component));
+exports.FlipDigitClassTest = FlipDigitClassTest;
+var FlipDigit = (function (_super) {
+    __extends(FlipDigit, _super);
+    function FlipDigit() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.flipDigitState = new FlipDigitStoppedState();
+        _this.animationPaused = false;
+        return _this;
+    }
+    FlipDigit.prototype.getRunningClassName = function (running) {
+        return this.props.flipClass + (running ? (" " + this.props.playClass) : "");
+    };
+    FlipDigit.prototype.applyRunning = function (running) {
+        this.listElement.className = this.getRunningClassName(running);
+    };
+    FlipDigit.prototype.getDigitClass = function (digit) {
+        var className = "";
+        if (digit === this.previousDigit) {
+            className = this.props.beforeClass;
+        }
+        else if (digit === this.lastDigit) {
+            className = this.props.activeClass;
+        }
+        return className;
+    };
+    FlipDigit.prototype.updateAll = function (running) {
+        this.updateDigits();
+        this.applyRunning(running);
+    };
+    FlipDigit.prototype.updateDigits = function () {
+        var lis = this.listElement.children;
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            var newClassName = this.getDigitClass(i);
+            li.className = newClassName;
+            //if (li.className !== newClassName) {
+            //    li.className = newClassName
+            //}
+        }
+    };
+    FlipDigit.prototype.debugProps = function (props) {
+        this.debug(getTickStateString(props.tickState) + " " + props.digit);
+    };
+    FlipDigit.prototype.render = function () {
+        var _this = this;
+        this.previousDigit = null;
+        this.lastDigit = this.props.digit;
+        var digits = [];
+        for (var i = 0; i < this.props.maxDigit + 1; i++) {
+            digits.push(i);
+        }
+        var self = this;
+        return React.createElement("ul", { ref: function (ul) { _this.listElement = ul; }, className: this.getRunningClassName(false) }, digits.map(function (digit) {
+            return React.createElement("li", { key: digit, className: self.getDigitClass(digit) },
+                React.createElement("a", { href: "#" },
+                    React.createElement("div", { className: "up" },
+                        React.createElement("div", { className: "shadow" }),
+                        React.createElement("div", { className: "inn" }, digit)),
+                    React.createElement("div", { className: "down" },
+                        React.createElement("div", { className: "shadow" }),
+                        React.createElement("div", { className: "inn" }, digit))));
+        }));
+    };
+    FlipDigit.prototype.componentWillReceiveProps = function (nextProps) {
+        this.flipDigitState.setChange(this, nextProps.tickState, nextProps.digit);
+    };
+    FlipDigit.prototype.shouldComponentUpdate = function () {
+        return false;
+    };
+    FlipDigit.prototype.debug = function (msg) {
+        if (this.props.debug) {
+            console.log(this.props.debugIdentifier + ": " + msg);
+        }
+    };
+    FlipDigit.prototype.pauseAnimations = function (stopped) {
+        var shouldPause = stopped ? this.props.pauseStoppedAnimation : this.props.pausePausedAnimation;
+        if (shouldPause) {
+            this.applyAnimationState(true);
+        }
+    };
+    FlipDigit.prototype.resumeAnimations = function () {
+        if (this.animationPaused) {
+            this.applyAnimationState(false);
+        }
+    };
+    FlipDigit.prototype.applyAnimationState = function (paused) {
+        var descendants = this.listElement.querySelectorAll("*");
+        for (var i = 0; i < descendants.length; i++) {
+            var descendant = descendants[i];
+            var style = window.getComputedStyle(descendant);
+            if (style.animation) {
+                var newState = paused ? 'paused' : 'running';
+                descendant.style.webkitAnimationPlayState = newState;
+            }
+        }
+        this.animationPaused = paused;
+    };
+    return FlipDigit;
+}(React.Component));
+FlipDigit.defaultProps = {
+    activeClass: "flip-clock-active",
+    beforeClass: "flip-clock-before",
+    flipClass: "flip",
+    playClass: "play",
+    tickState: TickState.stopped,
+    pausePausedAnimation: false,
+    pauseStoppedAnimation: false
+};
+exports.FlipDigit = FlipDigit;
 var DigitsDivider = (function (_super) {
     __extends(DigitsDivider, _super);
     function DigitsDivider() {
@@ -22542,7 +22936,7 @@ exports.DigitsDivider = DigitsDivider;
 
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22712,7 +23106,7 @@ exports.numberStringToNumber = numberStringToNumber;
 
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24089,20 +24483,20 @@ else {
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(36);
+var ReactDOM = __webpack_require__(35);
 var crosswordPuzzleApp_1 = __webpack_require__(61);
 ReactDOM.render(React.createElement(crosswordPuzzleApp_1.CrosswordPuzzleApp, null), document.getElementById("example"));
 
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24132,8 +24526,8 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import {canUseDOM} from 'exenv';
-var constants_1 = __webpack_require__(35);
-var utils_1 = __webpack_require__(154);
+var constants_1 = __webpack_require__(34);
+var utils_1 = __webpack_require__(155);
 function keyModifiersAny() {
     return {
         altKey: true,
@@ -24404,18 +24798,18 @@ exports.keyToggleHandler = keyHandleDecorator(utils_1.matchesKeyboardEvent);
 /**
  * Constants
  */
-__export(__webpack_require__(35));
+__export(__webpack_require__(34));
 
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 /* @flow */
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = __webpack_require__(35);
+var constants_1 = __webpack_require__(34);
 /**
  * Constants.
  */

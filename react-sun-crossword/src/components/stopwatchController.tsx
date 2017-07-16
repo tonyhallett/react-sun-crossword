@@ -67,11 +67,14 @@ export interface StopwatchProps {
 }
 export interface StopwatchState {
     duration: IDuration,
-    started: boolean
-    paused:boolean 
+    tickState:TickState
 }
 
-export enum ReportTickInterval { millisecond,hundredthSecond,tenthSecond,second,minute,hour}
+export enum ReportTickInterval { millisecond, hundredthSecond, tenthSecond, second, minute, hour }
+
+enum TickState {
+    running,paused,stopped
+}
 export class StopwatchController extends React.Component<StopwatchProps, StopwatchState> {
     public static defaultProps: Partial<StopwatchProps> = {
         autoStart: true,
@@ -90,7 +93,7 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
         this.currentDuration = new Duration(this.props.startDuration);
         this.startDuration = this.currentDuration;
         this.setTimerInterval();
-        this.state = { started: false, duration: this.currentDuration,paused:false }
+        this.state = { tickState: TickState.stopped, duration: this.currentDuration}
     }
 
     componentWillMount() {
@@ -100,18 +103,23 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
     }
     componentWillReceiveProps(nextProps: StopwatchProps) {
         var self = this;
-        this.stop();
+        
         this.currentDuration = new Duration(nextProps.startDuration);
+        this.stop();
         this.hasStopped = false;
-        this.hasStarted = false;
         this.startDuration = this.currentDuration;
         this.setTimerInterval();
-        if (this.props.autoStart) {
-            //necessary for state change !
-            window.setTimeout(function () {
-                self.start();
-            }, 1);
-        }
+        window.setTimeout(function () {
+            self.setState({ duration: self.currentDuration });
+            if (self.props.autoStart) {
+                //necessary for state change !
+                window.setTimeout(function () {
+                    self.start();
+                }, 1);
+            }
+        }, 1);
+        
+        
     }
     getDuration() {
         if (this.props.countdown||!this.hasStarted) {
@@ -176,42 +184,49 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
         }, this.timerInterval);
     }
     start = () => {
-        if (!this.state.started || this.state.paused) {
+        if (this.state.tickState === TickState.stopped || this.state.tickState === TickState.paused) {
             this.hasStarted = true;
             this.startTimer();
-            this.setState({ started: true, paused: false, duration: this.currentDuration })
+            this.setState({ tickState: TickState.running, duration: this.currentDuration })
         }
     }
     stopTimer(paused: boolean) {
-        var newState: Partial<StopwatchState> = { started: false };
+        var self = this;
+        var newState: Partial<StopwatchState>;
         if (paused) {
             newState = {
-                paused:true
+                tickState: TickState.paused
+            }
+        } else {
+            newState = {
+                tickState: TickState.stopped,
+                duration: this.currentDuration
             }
         }
-        this.setState(newState as StopwatchState)
         window.clearInterval(this.cancelIntervalId);
+        this.setState(newState as StopwatchState)
+        
     }
     pause = () => {
         this.pauseOrStop(true);
     }
     pauseOrStop(paused:boolean) {
-        if (this.state.started) {
-            this.hasStopped = true;
-            this.stopTimer(paused);
-            this.startDuration = this.currentDuration;
-        }
+        this.hasStopped = true;
+        this.stopTimer(paused);
+        this.startDuration = this.currentDuration;
     }
     stop = () => {
+        this.hasStarted = false;
         this.pauseOrStop(false)
     }
     //LP
     clear = () => {
 
     }
+
     render() {
         return <div>
-            {React.cloneElement(this.props.children as React.ReactElement<any>, {started: this.state.started, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start })}
+            {React.cloneElement(this.props.children as React.ReactElement<any>, {tickState: this.state.tickState, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start })}
         </div>
     }
 }
@@ -245,15 +260,26 @@ export interface FlipCounterProps {
     hoursTitle?: string,
     minutesTitle?: string,
     secondsTitle?: string,
-    started?: boolean,
-    countdown?:boolean
+    tickState?:TickState
+
 }
+
+function getTickStateString(tickState: TickState) {
+    switch (tickState) {
+        case TickState.paused:
+            return "pausd";
+        case TickState.running:
+            return "running";
+        case TickState.stopped:
+            return "stopped";
+    }
+}
+
 export class FlipCounter extends React.Component<FlipCounterProps, undefined>{
     public static defaultProps: Partial<FlipCounterProps> = {
         hoursTitle: "",
         minutesTitle: "",
-        secondsTitle: "",
-        started: false
+        secondsTitle: ""
     }
     //this will eventually become part of the duration
     getDoubleDigits(num: number): string {
@@ -286,21 +312,21 @@ export class FlipCounter extends React.Component<FlipCounterProps, undefined>{
             <DigitsDivider dividerTitle={this.props.hoursTitle} />
             {
                 this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
-                    return <FlipDigits countdown={self.props.countdown} debugIdentifier={"hour" + i.toString()} maxDigit={9} running={self.props.started} digit={hourDigit} key={i} />
+                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} debugIdentifier={"hour" + i.toString()} maxDigit={9} digit={hourDigit} key={i} />
                 })
             }
             
             <DigitsDivider dividerTitle={this.props.minutesTitle} />
             {
                 this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
-                    return <FlipDigits countdown={self.props.countdown} debugIdentifier={"minute" + i.toString()} maxDigit={i===0?5:9} running={self.props.started}  digit={minuteDigit} key={i} />
+                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} debugIdentifier={"minute" + i.toString()} maxDigit={i===0?5:9}  digit={minuteDigit} key={i} />
                 })
             }
 
             <DigitsDivider dividerTitle={this.props.secondsTitle} />
             {
                 this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
-                    return <FlipDigits isUnitSecond={i===1} countdown={self.props.countdown} debug={i === 1} debugIdentifier={"second" + i.toString()} maxDigit={i === 0 ? 5 : 9} running={self.props.started} digit={secondDigit} key={i} />
+                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} debug={i === 1} debugIdentifier={"second" + i.toString()} maxDigit={i === 0 ? 5 : 9}  digit={secondDigit} key={i} />
                 })
             }
             
@@ -309,17 +335,21 @@ export class FlipCounter extends React.Component<FlipCounterProps, undefined>{
 }
 type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 export interface FlipDigitsProps {
+    maxDigit: Digit,
+
     digit: Digit,
-    maxDigit:Digit,
+    
     running: boolean,
+
     playClass?:string,
     flipClass?: string,
     beforeClass?: string,
     activeClass?: string,
-    countdown?:boolean,
+
+    countdown?: boolean,
+
     debugIdentifier?: string
     debug?: boolean,
-    isUnitSecond?:boolean
 }
 
 export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
@@ -337,6 +367,12 @@ export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
     getListClassName(props: FlipDigitsProps) {
         var listClassName = this.props.flipClass + this.props.running && !this.isInitial ? " " + this.props.playClass : "";
         return listClassName;
+    }
+    getListClassNameRunning(running: boolean) {
+        return this.props.flipClass + running? (" " + this.props.playClass) : "";
+    }
+    applyRunning(running: boolean) {
+        this.listElement.className = this.getListClassNameRunning(running);
     }
     getLiClass(digit: Digit) {
         
@@ -389,14 +425,7 @@ export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
             })}
         </ul>
     }
-    componentWillReceiveProps(nextProps: FlipDigitsProps) {
-        if (!nextProps.running) {
-            this.initialDigit = null;
-        } else {
-            this.setDigits(nextProps);
-        }
-       
-
+    applyDigitClasses() {
         var lis = this.listElement.children;
         for (var i = 0; i < lis.length; i++) {
             var li = lis[i];
@@ -405,9 +434,22 @@ export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
                 li.className = newClassName
             }
         }
+    }
+
+    //looks like need a boolean for not running reset
+    componentWillReceiveProps(nextProps: FlipDigitsProps) {
+        if (!nextProps.running) {
+            this.debug("not running: " + nextProps.digit);
+
+            this.initialDigit = null;
+        } else {
+            this.setDigits(nextProps);
+        }
+
+        this.applyDigitClasses();
+        
         
         this.listElement.className = this.getListClassName(nextProps);
-        
     }
     shouldComponentUpdate() {
         return false;
@@ -432,6 +474,321 @@ export class FlipDigits extends React.Component<FlipDigitsProps, undefined>{
         return nextDigit as Digit;
     }
 }
+//////////////////////////////////////////////////////////////////////////////////////////////////
+interface DemoFlipDigitState {
+    tickState: TickState,
+    digit:Digit
+}
+export class DemoFlipDigit extends React.Component<undefined, DemoFlipDigitState>{
+    constructor(props) {
+        super(props);
+        this.state = { digit: 2, tickState: TickState.stopped };
+    }
+    getNextDigit():Digit {
+        var currentDigit = this.state.digit;
+        return (currentDigit === 9 ? 0 : currentDigit + 1) as Digit;
+    }
+    render() {
+
+        return <div className="flip-clock-wrapper">
+            <FlipDigit pausePausedAnimation={true} pauseStoppedAnimation={true} digit={this.state.digit} tickState={this.state.tickState} maxDigit={9} />
+
+            <button onClick={() => { this.setState({ digit: 5, tickState: TickState.stopped }) }}>Stop 5</button>
+            <button onClick={() => { this.setState({ digit: 9, tickState: TickState.paused }) }}>Pause</button>
+            <button onClick={() => { this.setState({ digit: this.getNextDigit(), tickState: TickState.running }) }}>Run next</button>
+            <button onClick={() => { this.setState({ tickState: TickState.running }) }}>Run</button>
+            </div>
+    }
+}
+/////////
+export interface FlipDigitProps {
+    maxDigit: Digit,
+
+    digit: Digit,
+
+    tickState: TickState,
+
+    playClass?: string,
+    flipClass?: string,
+    beforeClass?: string,
+    activeClass?: string,
+
+    debugIdentifier?: string
+    debug?: boolean,
+
+    pauseStoppedAnimation?: boolean
+    pausePausedAnimation?:boolean
+}
+//export enum FlipState { Stopped, Paused, Running }
+interface FlipDigitState {
+    setChange(flipDigit: FlipDigit, nextState: TickState, digit: Digit);
+}
+//to return to - using the paused state for css 
+class FlipDigitBaseState implements FlipDigitState {
+    setChange(flipDigit: FlipDigit, nextState: TickState, digit: Digit) {
+        var newState: FlipDigitState;
+        switch (nextState) {
+            case TickState.paused:
+                newState = new FlipDigitPausedState();
+                break;
+            case TickState.running:
+                newState = new FlipDigitRunningState();
+                break;
+            case TickState.stopped:
+                newState = new FlipDigitStoppedState();
+                break;
+        }
+        flipDigit.flipDigitState = newState;
+    }
+}
+
+class FlipDigitRunningState extends FlipDigitBaseState {
+    setChange(flipDigit: FlipDigit, nextState: TickState, digit: Digit) {
+        switch (nextState) {
+            case TickState.stopped:
+                flipDigit.pauseAnimations(true);
+                break;
+            case TickState.paused:
+                flipDigit.pauseAnimations(false);
+                break;
+            case TickState.running:
+                
+                if (flipDigit.lastDigit !== digit) {
+                    flipDigit.previousDigit = flipDigit.lastDigit;
+                    flipDigit.lastDigit = digit;
+                    flipDigit.updateAll(true)
+                }
+        }
+        super.setChange(flipDigit, nextState, digit);
+    }
+}
+class FlipDigitPausedState extends FlipDigitBaseState {
+    setChange(flipDigit: FlipDigit, nextState: TickState, digit: Digit) {
+        switch (nextState) {
+            case TickState.stopped:
+                flipDigit.lastDigit = digit;
+                flipDigit.previousDigit = null;
+                flipDigit.updateDigits();
+                break;
+            case TickState.running:
+                if (digit !== flipDigit.lastDigit) {
+                    flipDigit.previousDigit = flipDigit.lastDigit;
+                    flipDigit.lastDigit = digit;
+                    flipDigit.updateDigits();
+                } else {
+                    flipDigit.resumeAnimations();
+                }
+                break;
+        }
+        super.setChange(flipDigit, nextState, digit);
+    }
+}
+
+//can be running when stopped
+class FlipDigitStoppedState extends FlipDigitBaseState {
+    setChange(flipDigit: FlipDigit, nextState: TickState, digit: Digit) {
+        switch (nextState) {
+            case TickState.stopped:
+                flipDigit.applyRunning(false)
+                flipDigit.lastDigit = digit;
+                flipDigit.previousDigit = null;
+                flipDigit.updateDigits();
+                break;
+            case TickState.running:
+                if (digit !== flipDigit.lastDigit) {
+                    flipDigit.previousDigit = flipDigit.lastDigit;
+                    flipDigit.lastDigit = digit;
+                    flipDigit.updateAll(true);
+                    
+                } else {
+                    flipDigit.resumeAnimations();
+                }
+                break;
+        }
+        super.setChange(flipDigit, nextState, digit);
+    }
+}
+
+
+//will want to applyRunning
+//set previousDigit and lastDigit
+//updateDigits
+
+//be consistent with order
+interface FlipDigitClassTestState {
+    digitsText: string,
+    applyRunning: boolean
+    updateDigits:boolean
+}
+export class FlipDigitClassTest extends React.Component<undefined, FlipDigitClassTestState>{
+    //will consider the effect of animations as well
+    constructor() {
+        super();
+        this.state = { digitsText: "", applyRunning: false, updateDigits: false }
+
+    }
+    flipDigit: FlipDigit
+    setDigits = () => {
+        var self = this;
+        var digitsText = this.state.digitsText;
+        var parts = digitsText.split(" ");
+        parts.forEach(function (part) {
+            var previousOrLast = part.substring(0, 1);
+            var nullOrDigit = part.substring(1);
+            var isPrevious = previousOrLast === "p";
+            var digit: Digit= null;
+            if (nullOrDigit.length === 1) {
+                digit = parseInt(nullOrDigit) as Digit;
+            }
+            if (isPrevious) {
+                self.flipDigit.previousDigit = digit;
+            } else {
+                self.flipDigit.lastDigit = digit;
+            }
+        })
+        if (this.state.updateDigits) {
+            self.flipDigit.updateDigits();
+        }
+    }
+    applyRunning = () => {
+        this.flipDigit.applyRunning(this.state.applyRunning);
+    }
+    render() {
+        return <div className="flip-clock-wrapper">
+
+            <FlipDigit ref={(digit) => { this.flipDigit = digit; }} digit={0} tickState={TickState.stopped} maxDigit={9} />
+            <input onChange={(evt) => this.setState({ applyRunning: evt.target.checked })} checked={this.state.applyRunning} type="checkbox" />
+            <button onClick={() => { this.applyRunning() }}>Set running</button>
+            <input onChange={(evt) => this.setState({ updateDigits: evt.target.checked as boolean })} checked={this.state.updateDigits} type="checkbox" />
+            <button onClick={() => { this.setDigits() }}>Set digits</button>
+            <input onChange={(evt) => this.setState({ digitsText: evt.target.value })} value={this.state.digitsText} type="text" />
+        </div>
+    }
+}
+
+export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
+
+    public static defaultProps: Partial<FlipDigitProps> = {
+        activeClass: "flip-clock-active",
+        beforeClass: "flip-clock-before",
+        flipClass: "flip",
+        playClass: "play",
+
+        tickState: TickState.stopped,
+        pausePausedAnimation: false,
+        pauseStoppedAnimation:false
+    }
+    flipDigitState: FlipDigitState = new FlipDigitStoppedState();
+
+    listElement: HTMLUListElement;
+    previousDigit: Digit
+    lastDigit:Digit
+    getRunningClassName(running: boolean) {
+        return this.props.flipClass + (running ? (" " + this.props.playClass) : "");
+    }
+    
+    applyRunning(running: boolean) {
+        this.listElement.className = this.getRunningClassName(running);
+    }
+    getDigitClass(digit: Digit) {
+
+        var className = "";
+        if (digit === this.previousDigit) {
+            className = this.props.beforeClass;
+        } else if (digit === this.lastDigit) {
+            className = this.props.activeClass;
+        }
+
+        return className;
+    }
+    updateAll(running:boolean) {
+        this.updateDigits();
+        this.applyRunning(running)
+    }
+    updateDigits() {
+        var lis = this.listElement.children;
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            var newClassName = this.getDigitClass(i as Digit);
+            li.className = newClassName
+            //if (li.className !== newClassName) {
+            //    li.className = newClassName
+            //}
+        }
+    }
+    debugProps(props: FlipDigitProps) {
+        this.debug(getTickStateString(props.tickState) + " " + props.digit);
+    }
+    render() {
+
+        this.previousDigit = null;
+        this.lastDigit = this.props.digit;
+
+        var digits: Digit[] = [];
+        for (var i = 0; i < this.props.maxDigit + 1; i++) {
+            digits.push(i as Digit);
+        }
+        var self = this;
+        return <ul ref={(ul) => { this.listElement = ul }} className={this.getRunningClassName(false)}>
+            {
+
+                digits.map(function (digit: Digit) {
+                    return <li key={digit} className={self.getDigitClass(digit)}>
+                        <a href="#">
+                            <div className="up">
+                                <div className="shadow"></div>
+                                <div className="inn">{digit}</div>
+                            </div>
+                            <div className="down">
+                                <div className="shadow"></div>
+                                <div className="inn">{digit}</div>
+                            </div>
+
+                        </a>
+                    </li>
+                })}
+        </ul>
+    }
+    componentWillReceiveProps(nextProps: FlipDigitProps) { 
+        this.flipDigitState.setChange(this, nextProps.tickState, nextProps.digit);
+    }
+    shouldComponentUpdate() {
+        return false;
+    }
+    debug(msg: string) {
+        if (this.props.debug) {
+            console.log(this.props.debugIdentifier + ": " + msg);
+        }
+    }
+    animationPaused = false;
+    pauseAnimations(stopped:boolean) {
+        var shouldPause = stopped ? this.props.pauseStoppedAnimation : this.props.pausePausedAnimation;
+        if (shouldPause) {
+            this.applyAnimationState(true);
+        }
+    }
+    resumeAnimations() {       
+        if (this.animationPaused) {
+            this.applyAnimationState(false);
+        }
+    }
+    applyAnimationState(paused: boolean) {
+        var descendants = this.listElement.querySelectorAll("*");
+        for (var i = 0; i < descendants.length; i++) {
+            var descendant = descendants[i] as HTMLElement
+            var style = window.getComputedStyle(descendant);
+            if (style.animation) {
+                var newState = paused ? 'paused' : 'running';
+                descendant.style.webkitAnimationPlayState = newState;
+            }
+        }
+        this.animationPaused = paused;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 export interface DigitsDividerProps {
     dividerTitle: string,
     dividerClass?: string
