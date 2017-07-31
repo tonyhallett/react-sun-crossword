@@ -75,6 +75,173 @@ export enum ReportTickInterval { millisecond, hundredthSecond, tenthSecond, seco
 enum TickState {
     running,paused,stopped
 }
+export interface StopwatchProps2 {
+    //ms
+    startDuration?: number,
+    autoStart?: boolean,
+    countdown?: boolean
+}
+export class StopwatchController2 extends React.Component<StopwatchProps2, StopwatchState> {
+    public static defaultProps: Partial<StopwatchProps2> = {
+        autoStart: true,
+        startDuration: 0,
+    }
+    private startDuration: Duration
+    private currentDuration: Duration
+    private cancelIntervalId: number
+    private startTime: any
+    private hasStopped = false
+    private hasStarted = false;
+    constructor(props) {
+        super(props);
+        this.currentDuration = new Duration(this.props.startDuration);
+        this.startDuration = this.currentDuration;
+        this.state = { tickState: TickState.stopped, duration: this.currentDuration }
+    }
+
+    componentWillMount() {
+        if (this.props.autoStart) {
+            this.start();
+        }
+    }
+    componentWillReceiveProps(nextProps: StopwatchProps) {
+        var self = this;
+
+        this.currentDuration = new Duration(nextProps.startDuration);
+        this.stop();
+        this.hasStopped = false;
+        this.startDelay = 0;
+        this.startDuration = this.currentDuration;
+
+        window.setTimeout(function () {
+            self.setState({ duration: self.currentDuration });
+            if (self.props.autoStart) {
+                //necessary for state change !
+                window.setTimeout(function () {
+                    self.start();
+                }, 1);
+            }
+        }, 1);
+
+
+    }
+    getDuration() {
+        if (this.props.countdown || !this.hasStarted) {
+            return this.currentDuration;
+        } else {
+            return Duration.decrement(this.currentDuration, 1000);
+        }
+
+    }
+
+    componentWillUnmount() {
+        this.stopTimer(true);
+    }
+    updateSecond() {
+        this.updateDuration(1000);
+    }
+    updateDuration(ms: number) {
+        if (this.props.countdown) {
+            this.currentDuration = Duration.decrement(this.currentDuration, ms);
+            if (this.currentDuration.totalMilliseconds < 0) {
+                this.stop();
+                return;
+            }
+        } else {
+            
+
+            this.currentDuration = Duration.increment(this.currentDuration, ms);
+        }
+        
+        this.setState({ duration: this.currentDuration });
+    }
+
+    startTimer() {
+        var self = this;
+        
+        if (this.startDelay === 0) {
+            this.startSecondTimer();
+        } else {
+            window.setTimeout(function () {
+                self.updateSecond.bind(self)();
+                self.startSecondTimer.bind(self)();
+            },this.startDelay)
+        
+        }
+    }
+    
+    startSecondTimer() {
+        var self = this;
+        this.startTime = new Date();
+        this.cancelIntervalId = window.setInterval(function () {
+            self.updateSecond();
+        }, 1000);
+    }
+    start = () => {
+        var self = this;
+        if (this.state.tickState === TickState.stopped || this.state.tickState === TickState.paused) {
+            this.hasStarted = true;
+            this.startTimer();
+            this.setState({ tickState: TickState.running, duration: this.currentDuration });
+            if (!self.hasStopped) {
+                window.setTimeout(function () {
+                    self.updateDuration(1000);
+                }, 0);
+            }
+            
+        }
+    }
+    stopTimer(paused: boolean) {
+        var now = new Date() as any;
+
+        var self = this;
+        var newState: Partial<StopwatchState>;
+        if (paused) {
+            newState = {
+                tickState: TickState.paused
+            }
+        } else {
+            newState = {
+                tickState: TickState.stopped,
+                duration: this.currentDuration
+            }
+        }
+        
+        var difference = (now - this.startTime ) % 1000;
+        this.startDelay = 1000 - difference;
+
+
+        window.clearInterval(this.cancelIntervalId);
+        this.setState(newState as StopwatchState)
+
+    }
+    pause = () => {
+        this.pauseOrStop(true);
+    }
+    startDelay=0
+    pauseOrStop(paused: boolean) {
+        
+        this.hasStopped = true;
+        this.stopTimer(paused);
+        this.startDuration = this.currentDuration;
+
+    }
+    stop = () => {
+        this.hasStarted = false;
+        this.pauseOrStop(false)
+    }
+    //LP
+    clear = () => {
+
+    }
+
+    render() {
+        return <div>
+            {React.cloneElement(this.props.children as React.ReactElement<any>, { tickState: this.state.tickState, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start })}
+        </div>
+    }
+}
+
 export class StopwatchController extends React.Component<StopwatchProps, StopwatchState> {
     public static defaultProps: Partial<StopwatchProps> = {
         autoStart: true,
@@ -312,21 +479,21 @@ export class FlipCounter extends React.Component<FlipCounterProps, undefined>{
             <DigitsDivider dividerTitle={this.props.hoursTitle} />
             {
                 this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
-                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} debugIdentifier={"hour" + i.toString()} maxDigit={9} digit={hourDigit} key={i} />
+                    return <FlipDigit2 pauseStoppedAnimation={true} tickState={self.props.tickState} debugIdentifier={"hour" + i.toString()} maxDigit={9} digit={hourDigit} key={i} />
                 })
             }
             
             <DigitsDivider dividerTitle={this.props.minutesTitle} />
             {
                 this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
-                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} debugIdentifier={"minute" + i.toString()} maxDigit={i===0?5:9}  digit={minuteDigit} key={i} />
+                    return <FlipDigit2 pauseStoppedAnimation={true} tickState={self.props.tickState} debugIdentifier={"minute" + i.toString()} maxDigit={i===0?5:9}  digit={minuteDigit} key={i} />
                 })
             }
 
             <DigitsDivider dividerTitle={this.props.secondsTitle} />
             {
                 this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
-                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} debug={i === 1} debugIdentifier={"second" + i.toString()} maxDigit={i === 0 ? 5 : 9}  digit={secondDigit} key={i} />
+                    return <FlipDigit2 pauseStoppedAnimation={true} tickState={self.props.tickState} debug={i === 1} debugIdentifier={"second" + i.toString()} maxDigit={i === 0 ? 5 : 9}  digit={secondDigit} key={i} />
                 })
             }
             
@@ -540,6 +707,9 @@ class FlipDigitBaseState implements FlipDigitState {
         }
         flipDigit.flipDigitState = newState;
     }
+    isRunning() { return false; }
+    shouldComponentUpdate(nextProps: FlipDigitProps,flipDigit:FlipDigit) { return true; }
+    
 }
 
 class FlipDigitRunningState extends FlipDigitBaseState {
@@ -582,6 +752,7 @@ class FlipDigitPausedState extends FlipDigitBaseState {
         }
         super.setChange(flipDigit, nextState, digit);
     }
+
 }
 
 //can be running when stopped
@@ -710,10 +881,11 @@ export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
         for (var i = 0; i < lis.length; i++) {
             var li = lis[i];
             var newClassName = this.getDigitClass(i as Digit);
-            li.className = newClassName
+            
             //if (li.className !== newClassName) {
             //    li.className = newClassName
             //}
+            li.className = newClassName;
         }
     }
     debugProps(props: FlipDigitProps) {
@@ -785,6 +957,195 @@ export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
         this.animationPaused = paused;
     }
 }
+
+
+export class FlipDigit2 extends React.Component<FlipDigitProps, undefined>{
+
+    public static defaultProps: Partial<FlipDigitProps> = {
+        activeClass: "flip-clock-active",
+        beforeClass: "flip-clock-before",
+        flipClass: "flip",
+        playClass: "play",
+
+        tickState: TickState.stopped,
+        pausePausedAnimation: false,
+        pauseStoppedAnimation: false
+    }
+    //flipDigitState: FlipDigitState = new FlipDigitStoppedState();
+    runningState: TickState = TickState.stopped;
+    listElement: HTMLUListElement;
+    previousDigit: Digit=null
+    lastDigit: Digit=null
+    getRunningClassName(running: boolean) {
+        return this.props.flipClass + (running ? (" " + this.props.playClass) : "");
+    }
+
+    applyRunning(running: boolean) {
+        this.listElement.className = this.getRunningClassName(running);
+    }
+    getDigitClass(digit: Digit) {
+
+        var className = "";
+        if (digit === this.previousDigit) {
+            className = this.props.beforeClass;
+        } else if (digit === this.lastDigit) {
+            className = this.props.activeClass;
+        }
+
+        return className;
+    }
+    updateAll(running: boolean) {
+        this.updateDigits();
+        this.applyRunning(running)
+    }
+    updateDigits() {
+        var lis = this.listElement.children;
+        for (var i = 0; i < lis.length; i++) {
+            var li = lis[i];
+            var newClassName = this.getDigitClass(i as Digit);
+
+            //if (li.className !== newClassName) {
+            //    li.className = newClassName
+            //}
+            li.className = newClassName;
+        }
+    }
+    debugProps(props: FlipDigitProps) {
+        this.debug(getTickStateString(props.tickState) + " " + props.digit);
+    }
+    firstRender = true;
+    render() {
+        
+        var self = this;
+        var newTickState = this.props.tickState;
+        var isRunning = newTickState === TickState.running && !this.firstRender;
+        var digits: Digit[] = [];
+        if (this.previousDigit!==null) {
+            digits.push(this.previousDigit);
+        }
+        this.lastDigit = this.props.digit;
+        digits.push(this.lastDigit);
+        this.runningState = newTickState;
+
+        this.firstRender = false;
+        return <ul ref={(ul) => { this.listElement = ul }} className={this.getRunningClassName(isRunning)}>
+            {
+
+                digits.map(function (digit: Digit, i: number) {
+                    return <li key={digit} className={self.getDigitClass(digit)}>
+                        <a href="#">
+                            <div className="up">
+                                <div className="shadow"></div>
+                                <div className="inn">{digit}</div>
+                            </div>
+                            <div className="down">
+                                <div className="shadow"></div>
+                                <div className="inn">{digit}</div>
+                            </div>
+
+                        </a>
+                    </li>
+                })}
+        </ul>
+    }
+    nextProps:FlipDigitProps
+    componentWillReceiveProps(nextProps: FlipDigitProps) {
+        //could pass through to state here
+        this.nextProps = nextProps;
+    }
+    shouldComponentUpdate() {
+        var shouldUpdate = false;
+        var nextState = this.nextProps.tickState;
+        var nextDigit = this.nextProps.digit;
+        switch (this.runningState) {
+            case TickState.stopped:
+                switch (nextState) {
+                    case TickState.stopped:
+                        this.previousDigit = null;
+                        shouldUpdate = true;
+                        break;
+                    case TickState.running:
+                        if (nextDigit !== this.lastDigit) {
+                            this.previousDigit = this.lastDigit;
+                            shouldUpdate = true;
+
+                        } else {
+                            this.resumeAnimations();
+                        }
+                        break;
+                }
+                break;
+            case TickState.paused:
+                switch (nextState) {
+                    case TickState.stopped:
+                        this.previousDigit = null;
+                        shouldUpdate = true;
+                        break;
+                    case TickState.running:
+                        if (nextDigit !== this.lastDigit) {
+                            this.previousDigit = this.lastDigit;
+                            shouldUpdate = true;
+
+                        } else {
+                            this.resumeAnimations();
+                        }
+                        break;
+                }
+                break;
+            case TickState.running:
+                switch (nextState) {
+                    case TickState.stopped:
+                        this.pauseAnimations(true);
+                        break;
+                    case TickState.paused:
+                        this.pauseAnimations(false);
+                        break;
+                    case TickState.running:
+                        
+                        if (this.lastDigit !== nextDigit) {
+                            this.previousDigit = this.lastDigit;
+                            shouldUpdate = true;
+                        }
+                }
+                break;
+        }
+        this.runningState = nextState;
+        return shouldUpdate;
+    }
+    debug(msg: string) {
+        if (this.props.debug) {
+            console.log(this.props.debugIdentifier + ": " + msg);
+        }
+    }
+
+    //#region animations
+    animationPaused = false;
+    pauseAnimations(stopped: boolean) {
+        var shouldPause = stopped ? this.props.pauseStoppedAnimation : this.props.pausePausedAnimation;
+        if (shouldPause) {
+            this.applyAnimationState(true);
+        }
+    }
+    resumeAnimations() {
+        if (this.animationPaused) {
+            this.applyAnimationState(false);
+        }
+    }
+    applyAnimationState(paused: boolean) {
+        var descendants = this.listElement.querySelectorAll("*");
+        for (var i = 0; i < descendants.length; i++) {
+            var descendant = descendants[i] as HTMLElement
+            var style = window.getComputedStyle(descendant);
+            if (style.animation) {
+                var newState = paused ? 'paused' : 'running';
+                descendant.style.webkitAnimationPlayState = newState;
+            }
+        }
+        this.animationPaused = paused;
+    }
+    //endregion
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
