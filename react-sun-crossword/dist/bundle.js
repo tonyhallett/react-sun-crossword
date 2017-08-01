@@ -21000,53 +21000,62 @@ var DemoFlipClocks = (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.state = {
             countdownDuration: 120000,
-            countUpDuration: 5000
+            countUpDuration: 5000,
+            getDuration: 0
         };
         return _this;
     }
     DemoFlipClocks.prototype.render = function () {
-        var _this = this;
         /*
-        <StopwatchController2 countdown={true} autoStart={false} ref={(sw) => { this.countdownStopwatch = sw }}  startDuration={this.state.countdownDuration}>
+        <StopwatchController2 countdown={true} autoStart={false} ref={(sw) => { this.countdownStopwatch = sw }} startDuration={this.state.countdownDuration}>
                 <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
             </StopwatchController2>
             <button onClick={() => { this.countdownStopwatch.start() }}>Start</button>
             <button onClick={() => { this.countdownStopwatch.stop() }}>Stop</button>
 
-            <StopwatchController2 countdown={false} autoStart={false} ref={(sw) => { this.countUpStopwatch = sw }}  startDuration={this.state.countUpDuration}>
+            <StopwatchController2 countdown={false} autoStart={false} ref={(sw) => { this.countUpStopwatch = sw }} startDuration={this.state.countUpDuration}>
                 <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
             </StopwatchController2>
             <button onClick={() => { this.countUpStopwatch.start() }}>Start</button>
             <button onClick={() => { this.countUpStopwatch.stop() }}>Stop</button>
 
-            <StopwatchController2 countdown={false} autoStart={true} ref={(sw) => { this.autoStartCountUpStopwatch = sw }}  startDuration={this.state.countUpDuration}>
+            <StopwatchController2 countdown={false} autoStart={true} ref={(sw) => { this.autoStartCountUpStopwatch = sw }} startDuration={this.state.countUpDuration}>
                 <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
             </StopwatchController2>
             <button onClick={() => { this.autoStartCountUpStopwatch.start() }}>Start</button>
             <button onClick={() => { this.autoStartCountUpStopwatch.stop() }}>Stop</button>
-
-            <button onClick={() => this.setState({
-                countdownDuration: 211000,
-                countUpDuration: 91000
-            })}>Switch durations</button>
         */
+        var _this = this;
+        //determine how to do conditional
         return React.createElement("div", null,
             React.createElement(stopwatchController_1.StopwatchController2, { countdown: true, autoStart: true, ref: function (sw) { _this.autoStartCountdownStopwatch = sw; }, startDuration: this.state.countdownDuration },
                 React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
             React.createElement("button", { onClick: function () { _this.autoStartCountdownStopwatch.start(); } }, "Start"),
             React.createElement("button", { onClick: function () { _this.autoStartCountdownStopwatch.stop(); } }, "Stop"),
+            React.createElement("button", { onClick: function () {
+                    console.log(_this.autoStartCountdownStopwatch.getDuration().totalSeconds);
+                } }, "Get duration"),
             React.createElement(stopwatchController_1.StopwatchController2, { countdown: true, autoStart: false, ref: function (sw) { _this.countdownStopwatch = sw; }, startDuration: this.state.countdownDuration },
                 React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
             React.createElement("button", { onClick: function () { _this.countdownStopwatch.start(); } }, "Start"),
             React.createElement("button", { onClick: function () { _this.countdownStopwatch.stop(); } }, "Stop"),
+            React.createElement("button", { onClick: function () {
+                    console.log(_this.countdownStopwatch.getDuration().totalSeconds);
+                } }, "Get duration"),
             React.createElement(stopwatchController_1.StopwatchController2, { countdown: false, autoStart: false, ref: function (sw) { _this.countUpStopwatch = sw; }, startDuration: this.state.countUpDuration },
                 React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
             React.createElement("button", { onClick: function () { _this.countUpStopwatch.start(); } }, "Start"),
             React.createElement("button", { onClick: function () { _this.countUpStopwatch.stop(); } }, "Stop"),
+            React.createElement("button", { onClick: function () {
+                    console.log(_this.countUpStopwatch.getDuration().totalSeconds);
+                } }, "Get duration"),
             React.createElement(stopwatchController_1.StopwatchController2, { countdown: false, autoStart: true, ref: function (sw) { _this.autoStartCountUpStopwatch = sw; }, startDuration: this.state.countUpDuration },
                 React.createElement(stopwatchController_1.FlipCounter, { hoursTitle: "Hours", minutesTitle: "Minutes", secondsTitle: "Seconds" })),
             React.createElement("button", { onClick: function () { _this.autoStartCountUpStopwatch.start(); } }, "Start"),
             React.createElement("button", { onClick: function () { _this.autoStartCountUpStopwatch.stop(); } }, "Stop"),
+            React.createElement("button", { onClick: function () {
+                    console.log(_this.autoStartCountUpStopwatch.getDuration().totalSeconds);
+                } }, "Get duration"),
             React.createElement("button", { onClick: function () { return _this.setState({
                     countdownDuration: 211000,
                     countUpDuration: 91000
@@ -22306,16 +22315,24 @@ var StopwatchController2 = (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.hasStopped = false;
         _this.hasStarted = false;
+        _this.delayedTimer = null;
         _this.start = function () {
+            _this.actualStartTime = new Date();
             var self = _this;
             if (_this.state.tickState === TickState.stopped || _this.state.tickState === TickState.paused) {
                 _this.hasStarted = true;
-                _this.startTimer();
-                _this.setState({ tickState: TickState.running, duration: _this.currentDuration });
-                if (!self.hasStopped) {
+                _this.setState({ tickState: TickState.running, duration: self.currentDuration });
+                if (!_this.hasStopped) {
                     window.setTimeout(function () {
-                        self.updateDuration(1000);
-                    }, 0);
+                        self.currentDuration = self.changeDuration(1000);
+                        self.setState({ tickState: TickState.running, duration: self.currentDuration }, function () {
+                            self.startTimer();
+                        });
+                    }, 1);
+                }
+                else {
+                    _this.setState({ tickState: TickState.running, duration: self.currentDuration });
+                    self.startTimer();
                 }
             }
         };
@@ -22324,14 +22341,15 @@ var StopwatchController2 = (function (_super) {
         };
         _this.startDelay = 0;
         _this.stop = function () {
-            _this.hasStarted = false;
-            _this.pauseOrStop(false);
+            if (_this.hasStarted) {
+                _this.hasStarted = false;
+                _this.pauseOrStop(false);
+            }
         };
         //LP
         _this.clear = function () {
         };
         _this.currentDuration = new Duration(_this.props.startDuration);
-        _this.startDuration = _this.currentDuration;
         _this.state = { tickState: TickState.stopped, duration: _this.currentDuration };
         return _this;
     }
@@ -22346,7 +22364,6 @@ var StopwatchController2 = (function (_super) {
         this.stop();
         this.hasStopped = false;
         this.startDelay = 0;
-        this.startDuration = this.currentDuration;
         window.setTimeout(function () {
             self.setState({ duration: self.currentDuration });
             if (self.props.autoStart) {
@@ -22371,40 +22388,66 @@ var StopwatchController2 = (function (_super) {
     StopwatchController2.prototype.updateSecond = function () {
         this.updateDuration(1000);
     };
-    StopwatchController2.prototype.updateDuration = function (ms) {
+    StopwatchController2.prototype.changeDuration = function (ms) {
+        var newDuration;
         if (this.props.countdown) {
-            this.currentDuration = Duration.decrement(this.currentDuration, ms);
-            if (this.currentDuration.totalMilliseconds < 0) {
+            newDuration = Duration.decrement(this.currentDuration, ms);
+            if (newDuration.totalMilliseconds < 0) {
                 this.stop();
-                return;
+                newDuration = this.currentDuration;
             }
         }
         else {
-            this.currentDuration = Duration.increment(this.currentDuration, ms);
+            newDuration = Duration.increment(this.currentDuration, ms);
         }
+        return newDuration;
+    };
+    StopwatchController2.prototype.updateDuration = function (ms) {
+        this.currentDuration = this.changeDuration(ms);
         this.setState({ duration: this.currentDuration });
     };
     StopwatchController2.prototype.startTimer = function () {
-        var self = this;
         if (this.startDelay === 0) {
             this.startSecondTimer();
         }
         else {
-            window.setTimeout(function () {
-                self.updateSecond.bind(self)();
-                self.startSecondTimer.bind(self)();
-            }, this.startDelay);
+            this.startDelayedTimer();
         }
+    };
+    StopwatchController2.prototype.stopDelayedTimer = function () {
+        if (this.delayedTimer !== null) {
+            window.clearTimeout(this.delayedTimer);
+            this.delayedTimer = null;
+        }
+    };
+    StopwatchController2.prototype.startDelayedTimer = function () {
+        var self = this;
+        this.delayedTimer = window.setTimeout(function () {
+            self.startSecondTimer.bind(self)();
+            self.updateSecond.bind(self)();
+        }, this.startDelay);
     };
     StopwatchController2.prototype.startSecondTimer = function () {
         var self = this;
         this.startTime = new Date();
+        this.startDelay = 0;
         this.cancelIntervalId = window.setInterval(function () {
             self.updateSecond();
         }, 1000);
     };
     StopwatchController2.prototype.stopTimer = function (paused) {
         var now = new Date();
+        this.stopDelayedTimer();
+        if (this.startDelay === 0) {
+            var difference = (now - this.startTime) % 1000;
+            var delay = 1000 - difference;
+            this.startDelay = delay;
+        }
+        else {
+            var difference = (now - this.actualStartTime) % 1000;
+            var newDelay = 1000 - ((1000 - this.startDelay) + difference);
+            this.startDelay = newDelay;
+        }
         var self = this;
         var newState;
         if (paused) {
@@ -22418,15 +22461,12 @@ var StopwatchController2 = (function (_super) {
                 duration: this.currentDuration
             };
         }
-        var difference = (now - this.startTime) % 1000;
-        this.startDelay = 1000 - difference;
         window.clearInterval(this.cancelIntervalId);
         this.setState(newState);
     };
     StopwatchController2.prototype.pauseOrStop = function (paused) {
         this.hasStopped = true;
         this.stopTimer(paused);
-        this.startDuration = this.currentDuration;
     };
     StopwatchController2.prototype.render = function () {
         return React.createElement("div", null, React.cloneElement(this.props.children, { tickState: this.state.tickState, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start }));

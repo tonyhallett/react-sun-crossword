@@ -86,7 +86,6 @@ export class StopwatchController2 extends React.Component<StopwatchProps2, Stopw
         autoStart: true,
         startDuration: 0,
     }
-    private startDuration: Duration
     private currentDuration: Duration
     private cancelIntervalId: number
     private startTime: any
@@ -95,15 +94,17 @@ export class StopwatchController2 extends React.Component<StopwatchProps2, Stopw
     constructor(props) {
         super(props);
         this.currentDuration = new Duration(this.props.startDuration);
-        this.startDuration = this.currentDuration;
         this.state = { tickState: TickState.stopped, duration: this.currentDuration }
     }
-
+    
     componentWillMount() {
+
         if (this.props.autoStart) {
+
             this.start();
         }
     }
+
     componentWillReceiveProps(nextProps: StopwatchProps) {
         var self = this;
 
@@ -111,7 +112,6 @@ export class StopwatchController2 extends React.Component<StopwatchProps2, Stopw
         this.stop();
         this.hasStopped = false;
         this.startDelay = 0;
-        this.startDuration = this.currentDuration;
 
         window.setTimeout(function () {
             self.setState({ duration: self.currentDuration });
@@ -140,59 +140,95 @@ export class StopwatchController2 extends React.Component<StopwatchProps2, Stopw
     updateSecond() {
         this.updateDuration(1000);
     }
-    updateDuration(ms: number) {
+    changeDuration(ms: number) {
+        var newDuration: Duration;
         if (this.props.countdown) {
-            this.currentDuration = Duration.decrement(this.currentDuration, ms);
-            if (this.currentDuration.totalMilliseconds < 0) {
+            newDuration = Duration.decrement(this.currentDuration, ms);
+            if (newDuration.totalMilliseconds < 0) {
                 this.stop();
-                return;
+                newDuration = this.currentDuration;
             }
         } else {
-            
 
-            this.currentDuration = Duration.increment(this.currentDuration, ms);
+
+            newDuration = Duration.increment(this.currentDuration, ms);
         }
-        
-        this.setState({ duration: this.currentDuration });
+        return newDuration;
+    }
+    updateDuration(ms: number) {
+        this.currentDuration = this.changeDuration(ms);
+        this.setState({ duration: this.currentDuration })
     }
 
+    delayedTimer: number = null;
     startTimer() {
-        var self = this;
-        
         if (this.startDelay === 0) {
             this.startSecondTimer();
         } else {
-            window.setTimeout(function () {
-                self.updateSecond.bind(self)();
-                self.startSecondTimer.bind(self)();
-            },this.startDelay)
-        
+            this.startDelayedTimer();
         }
     }
-    
+    stopDelayedTimer() {
+        if (this.delayedTimer !== null) {
+            window.clearTimeout(this.delayedTimer);
+            this.delayedTimer = null;
+        }
+    }
+    startDelayedTimer() {
+        var self = this;
+        this.delayedTimer=window.setTimeout(function () {
+            self.startSecondTimer.bind(self)();
+            self.updateSecond.bind(self)();
+        }, this.startDelay)
+        
+    }
     startSecondTimer() {
         var self = this;
         this.startTime = new Date();
+        this.startDelay = 0;
         this.cancelIntervalId = window.setInterval(function () {
             self.updateSecond();
         }, 1000);
     }
+    actualStartTime: any;
     start = () => {
+        this.actualStartTime = new Date();
         var self = this;
         if (this.state.tickState === TickState.stopped || this.state.tickState === TickState.paused) {
-            this.hasStarted = true;
-            this.startTimer();
-            this.setState({ tickState: TickState.running, duration: this.currentDuration });
-            if (!self.hasStopped) {
-                window.setTimeout(function () {
-                    self.updateDuration(1000);
-                }, 0);
-            }
             
+            this.hasStarted = true;
+            
+            this.setState({ tickState: TickState.running, duration: self.currentDuration });
+            if (!this.hasStopped) {
+                window.setTimeout(function () {
+                    self.currentDuration = self.changeDuration(1000);
+                    self.setState({ tickState: TickState.running, duration: self.currentDuration }, function () {
+                        self.startTimer();
+                    });
+                }, 1);
+                
+            } else {
+                this.setState({ tickState: TickState.running, duration: self.currentDuration });
+                self.startTimer();
+            }
         }
     }
     stopTimer(paused: boolean) {
         var now = new Date() as any;
+
+        this.stopDelayedTimer();
+
+
+        if (this.startDelay === 0) {
+            var difference = (now - this.startTime) % 1000;
+            var delay = 1000 - difference;
+            this.startDelay = delay;
+        } else {
+            var difference = (now - this.actualStartTime) % 1000;
+            var newDelay = 1000-((1000-this.startDelay) + difference);
+            this.startDelay = newDelay;
+        }
+        
 
         var self = this;
         var newState: Partial<StopwatchState>;
@@ -206,10 +242,6 @@ export class StopwatchController2 extends React.Component<StopwatchProps2, Stopw
                 duration: this.currentDuration
             }
         }
-        
-        var difference = (now - this.startTime ) % 1000;
-        this.startDelay = 1000 - difference;
-
 
         window.clearInterval(this.cancelIntervalId);
         this.setState(newState as StopwatchState)
@@ -220,15 +252,14 @@ export class StopwatchController2 extends React.Component<StopwatchProps2, Stopw
     }
     startDelay=0
     pauseOrStop(paused: boolean) {
-        
         this.hasStopped = true;
         this.stopTimer(paused);
-        this.startDuration = this.currentDuration;
-
     }
     stop = () => {
-        this.hasStarted = false;
-        this.pauseOrStop(false)
+        if (this.hasStarted) {
+            this.hasStarted = false;
+            this.pauseOrStop(false)
+        }
     }
     //LP
     clear = () => {
