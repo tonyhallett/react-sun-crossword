@@ -4,24 +4,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var React = require("react");
 var index_1 = require("../models/index");
 var crosswordPuzzle_1 = require("./crosswordPuzzle");
-var twoCol_1 = require("./twoCol");
-var firebaseApp_1 = require("../helpers/firebaseApp");
 var connectedDatabase_1 = require("../helpers/connectedDatabase");
 require("firebase/database");
 var crosswordPuzzleChooser_1 = require("./crosswordPuzzleChooser");
 var muiWrappedButton_1 = require("./muiWrappedButton");
-var stopwatchController_1 = require("./stopwatchController");
+var demoFlipClocks_1 = require("./demoFlipClocks");
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
     function CrosswordPuzzleApp(props) {
@@ -35,7 +25,7 @@ var CrosswordPuzzleApp = (function (_super) {
         };
         _this.saveUserCrossword = function () {
             var modelJson = index_1.ConvertCrosswordModelToJson(_this.state.crosswordModel);
-            modelJson.duration = _this.stopwatchController.getDuration().totalMs;
+            modelJson.duration = _this.stopwatchController.getDuration().totalMilliseconds;
             connectedDatabase_1.connectedDatabase.saveUserCrossword(_this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, dateStarted: modelJson.dateStarted, duration: modelJson.duration, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails) {
                 //will now know not dirty
             }).catch(function (err) {
@@ -43,11 +33,31 @@ var CrosswordPuzzleApp = (function (_super) {
                 //logic to be done later
             });
         };
+        _this.pauseAnimations = function (pauseAnimationsContainer) {
+            var descendants = pauseAnimationsContainer.querySelectorAll("*");
+            for (var i = 0; i < descendants.length; i++) {
+                var descendant = descendants[i];
+                var style = window.getComputedStyle(descendant);
+                if (style.animation) {
+                    descendant.style.webkitAnimationPlayState = 'paused';
+                }
+            }
+        };
+        _this.resumeAnimations = function (pauseAnimationsContainer) {
+            var descendants = pauseAnimationsContainer.querySelectorAll("*");
+            for (var i = 0; i < descendants.length; i++) {
+                var descendant = descendants[i];
+                var style = window.getComputedStyle(descendant);
+                if (style.animation) {
+                    descendant.style.webkitAnimationPlayState = 'running';
+                }
+            }
+        };
         _this.state = { crosswordModel: null, userLoggedIn: null };
         return _this;
     }
     CrosswordPuzzleApp.prototype.componentDidMount = function () {
-        firebaseApp_1.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+        //auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
     };
     CrosswordPuzzleApp.prototype.onAuthStateChanged = function (user) {
         var loggedIn = user !== null;
@@ -59,7 +69,6 @@ var CrosswordPuzzleApp = (function (_super) {
         }
     };
     CrosswordPuzzleApp.prototype.render = function () {
-        var _this = this;
         var primaryColour = "gold";
         var buttonStyle = {
             backgroundColor: primaryColour,
@@ -82,12 +91,45 @@ var CrosswordPuzzleApp = (function (_super) {
         if (this.state.crosswordModel === null) {
             rightContent = React.createElement("div", null);
         }
+        //return <div >
+        //    {this.state.crosswordModel &&
+        //        <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
+        //            <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
+        //        </StopwatchController>
+        //    }
+        //    <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
+        //    <TwoCol leftContent={leftContent} rightContent={rightContent}>
+        //    </TwoCol>
+        //    </div>
+        //<button onClick={}>Pause</button>
+        console.log("App render");
         return React.createElement("div", null,
-            this.state.crosswordModel &&
-                React.createElement(stopwatchController_1.StopwatchController, { ref: function (sw) { _this.stopwatchController = sw; }, startDuration: this.state.crosswordModel.duration },
-                    React.createElement(stopwatchController_1.DemoStopwatchDisplay, null)),
-            React.createElement(muiWrappedButton_1.MuiButtonWrapper, __assign({ disabled: !this.state.userLoggedIn || this.state.crosswordModel === null, text: "Click to save", onClick: this.saveUserCrossword }, buttonProps)),
-            React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent }));
+            React.createElement(demoFlipClocks_1.DemoFlipClocks, null));
+        //<div>
+        //<div ref={(div) => { this.pauseAnimationsContainer=div }}>
+        //<StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={112000}>
+        //    <FlipCounter countdown={true} hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+        //</StopwatchController>
+        //    </div>
+        //<button onClick={() => { this.stopwatchController.stop(); this.pauseAnimations(this.pauseAnimationsContainer)  }}>Stop</button>
+        //<button onClick={() => { this.stopwatchController.pause(); this.pauseAnimations(this.pauseAnimationsContainer) }}>Pause</button>
+        //<button onClick={() => { this.stopwatchController.start(); this.resumeAnimations(this.pauseAnimationsContainer) }}>Play</button>
+        //<div ref={(div) => { this.pauseAnimationsContainer2 = div }}>
+        //    <StopwatchController autoStart={false} ref={(sw) => { this.stopwatchController2 = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={0}>
+        //        <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
+        //    </StopwatchController>
+        //</div>
+        //<button onClick={() => { this.stopwatchController2.stop(); this.pauseAnimations(this.pauseAnimationsContainer2) }}>Stop</button>
+        //<button onClick={() => { this.stopwatchController2.pause(); this.pauseAnimations(this.pauseAnimationsContainer2)  }}>Pause</button>
+        //<button onClick={() => { this.stopwatchController2.start(); this.resumeAnimations(this.pauseAnimationsContainer2) }}>Play</button>
+        //<button onClick={this.pauseAnimations} >Pause animations</button>  
+        //<button onClick={() => {
+        //    console.log(this.stopwatchController2.getDuration().totalMilliseconds);
+        //    var downDuration = this.stopwatchController.getDuration();
+        //    console.log(downDuration.totalSeconds)
+        //    console.log(downDuration.milliseconds)
+        //}}>Check duration</button>
+        //</div>
         //{height:"200px"}
         /*
             Element queries

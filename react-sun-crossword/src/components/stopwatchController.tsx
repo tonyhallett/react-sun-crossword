@@ -407,12 +407,13 @@ interface FlipClockPrivateStopwatchProps {
 
 }
 //may be better to instead have an array so could have multiple of same....
-interface FlipClockPrivatePublicProps {
+interface FlipClockPrivatePublicProps extends FlipDigitsProps{
     yearSettings?: YearSettings
     daySettings?: DaySettings,
     hourSettings?: HourSettings,
     minuteSettings?: MinuteSettings,
-    secondSettings?: SecondSettings
+    secondSettings?: SecondSettings,
+
 }
 interface FlipClockPrivateProps extends FlipClockPrivatePublicProps, FlipClockPrivateStopwatchProps {
 
@@ -506,7 +507,7 @@ export class FlipClockPrivate extends React.Component<FlipClockPrivateProps, und
             var num = pd.calculateFunction(pd.part, self.props.duration.totalMilliseconds);
             var digits = self.getDigits(num, pd.maxDigits, pd.minDigits);
             elements = elements.concat(digits.map(function (digit) {
-                var flipDigit = <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} digit={digit} key={counter} />
+                var flipDigit = <FlipDigit pauseStoppedAnimation={self.props.pauseStoppedAnimation} pausePausedAnimation={self.props.pausePausedAnimation} activeClass={self.props.activeClass} beforeClass={self.props.beforeClass} flipClass={self.props.flipClass} playClass={self.props.playClass}  tickState={self.props.tickState} digit={digit} key={counter} />
                 counter++;
                 return flipDigit;
             }))
@@ -522,9 +523,23 @@ export interface FlipClockProps extends StopwatchProps, FlipClockPrivatePublicPr
     
 }
 export class FlipClock extends React.Component<FlipClockProps, undefined>{
+    private stopwatchController:StopwatchController
+    start() {
+        this.stopwatchController.start();
+    }
+    stop() {
+        this.stopwatchController.stop();
+    }
+    pause() {
+        this.stopwatchController.pause();
+    }
+    getDuration() {
+        return this.stopwatchController.getDuration();
+    }
     render() {
-        return <StopwatchController countdown={this.props.countdown} autoStart={this.props.autoStart} shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration}>
-            <FlipClockPrivate daySettings={this.props.daySettings} hourSettings={this.props.hourSettings} minuteSettings={this.props.minuteSettings} secondSettings={this.props.secondSettings} />
+        //pausePausedAnimation={this.props.pausePausedAnimation}  daySettings={this.props.daySettings} hourSettings={this.props.hourSettings} minuteSettings={this.props.minuteSettings} secondSettings={this.props.secondSettings} 
+        return <StopwatchController ref={(sc) => { this.stopwatchController = sc }} countdown={this.props.countdown} autoStart={this.props.autoStart} shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration}>
+            <FlipClockPrivate {...this.props}/>
         </StopwatchController>
     }
 }
@@ -533,16 +548,17 @@ export class FlipClock extends React.Component<FlipClockProps, undefined>{
 //#region FlipDigit
 type Digit = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-export interface FlipDigitProps {
+export interface FlipDigitProps extends FlipDigitsProps {
     digit: Digit,
-
-    tickState: TickState,
-
+    tickState?: TickState
+}
+export interface FlipDigitsProps {
+    
     playClass?: string,
     flipClass?: string,
     beforeClass?: string,
     activeClass?: string,
-    
+
     pauseStoppedAnimation?: boolean
     pausePausedAnimation?: boolean
 }
@@ -754,7 +770,7 @@ var flipClockClockSecondSettings: SecondSettings = {
 //#endregion
 
 //will look at how have surfaced props for FlipClock
-export interface FlipClock12Props {
+export interface FlipClock12Props extends FlipClockPrivatePublicProps  {
     autoStart?: boolean
     shouldUpdateSameDuration?: boolean
     startDuration?:number
@@ -762,19 +778,33 @@ export interface FlipClock12Props {
 } 
 
 export class FlipClock12 extends React.Component<FlipClock12Props, undefined>{
+    private stopwatchController: StopwatchController
+    start() {
+        this.stopwatchController.start();
+    }
+    stop() {
+        this.stopwatchController.stop();
+    }
+    pause() {
+        this.stopwatchController.pause();
+    }
+    getDuration() {
+        return this.stopwatchController.getDuration();
+    }
     render() {
-        return <StopwatchController countdown={false} autoStart={this.props.autoStart} shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration}>
-            <FlipClock12Private/>
+        return <StopwatchController ref={(sc) => { this.stopwatchController=sc}} countdown={false} autoStart={this.props.autoStart} shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration}>
+            <FlipClock12Private {...this.props} />
         </StopwatchController>
     }
 
 }
-export interface FlipClock12PrivateProps {
+export interface FlipClock12PrivateProps extends FlipClockPrivatePublicProps {
     duration?: IDuration,
     tickState?: TickState
 }
 //pausing animations needs to be the same - how did the FlipClockPrivate deal with this 
 export class FlipClock12Private extends React.Component<FlipClock12PrivateProps, undefined>{
+
     getAmPm() {
         
         var ampm = calculateHours(HourPart.part24, this.props.duration.totalMilliseconds) < 12 ? "am" : "pm";
@@ -782,158 +812,283 @@ export class FlipClock12Private extends React.Component<FlipClock12PrivateProps,
     }
     render() {
         return <FlipClockPrivate duration={this.props.duration} hourSettings={flipClock12HourSettings} minuteSettings={flipClockClockMinuteSettings} secondSettings={flipClockClockSecondSettings} tickState={this.props.tickState}>
-                <FlipDigit tickState={this.props.tickState} digit={this.getAmPm()} />
+            <FlipDigit pauseStoppedAnimation={this.props.pausePausedAnimation} pausePausedAnimation={this.props.pausePausedAnimation} activeClass={this.props.activeClass} beforeClass={this.props.beforeClass} flipClass={this.props.flipClass} playClass={this.props.playClass}   tickState={this.props.tickState} digit={this.getAmPm()} />
             </FlipClockPrivate>
     }
 
 }
 
-export interface FlipClock24Props {
+export interface FlipClock24Props extends FlipDigitsProps {
     autoStart?: boolean,
     startDuration?: number
     shouldUpdateSameDuration?: boolean
 }
-export class FlipClock24 extends React.Component<FlipClock24Props, undefined>{
-    public static defaultProps: Partial<FlipClock24Props> = {
+
+export type FlipClock24 = FlipClockWrapper<FlipClock24Props>
+export const FlipClock24 = flipClockWrapper(
+    function (ownProps: FlipClock24Props) {
+        
+        var specific:FlipClockProps= {
+            countdown: false,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            hourSettings: flipClock24HourSettings,
+            minuteSettings: flipClockClockMinuteSettings,
+            secondSettings: flipClockClockSecondSettings
+        }
+
+        return objectMerge(ownProps, specific);
+    }, {
         autoStart: true,
         shouldUpdateSameDuration: false,
-        startDuration:0
+        startDuration: 0
     }
-    render() {
-        return <FlipClock shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart} countdown={false} hourSettings={flipClock24HourSettings} minuteSettings={flipClockClockMinuteSettings} secondSettings={flipClockClockSecondSettings} />
-    }
-}
-export interface FlipClock24CountdownProps {
+)
+export interface FlipClock24CountdownProps extends FlipDigitsProps  {
     autoStart?: boolean,
     startDuration: number
     shouldUpdateSameDuration?: boolean
 }
-export class FlipClock24Countdown extends React.Component<FlipClock24CountdownProps, undefined>{
-    public static defaultProps: Partial<FlipClock24CountdownProps> = {
+//not really necessary.....
+export type FlipClock24Countdown = FlipClockWrapper<FlipClock24CountdownProps>
+export const FlipClock24Countdown = flipClockWrapper(
+    function(ownProps: FlipClock24CountdownProps) {
+        var specific= {
+            countdown: true,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            hourSettings: flipClock24HourSettings,
+            minuteSettings: flipClockClockMinuteSettings,
+            secondSettings:flipClockClockSecondSettings 
+        }
+        var merged = objectMerge(ownProps, specific);
+        return merged;
+    }, {
         autoStart: true,
         shouldUpdateSameDuration: false,
     }
-    render() {
-        return <FlipClock shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart} countdown={true} hourSettings={flipClock12HourSettings} minuteSettings={flipClockClockMinuteSettings} secondSettings={flipClockClockSecondSettings} />
-    }
-}
-
+)
 
 //#region seconds
-export interface FlipClockSecondsProps {
+export interface FlipClockSecondsProps extends FlipDigitsProps  {
     shouldUpdateSameDuration?: boolean
     startDuration?: number
     autoStart?: boolean
     maxDigits?: number
     minDigits?:number
 }
-export class FlipClockSeconds extends React.Component<FlipClockSecondsProps, undefined>{
-    public static defaultProps: Partial<FlipClockSecondsProps> = {
-        autoStart: true,
-        shouldUpdateSameDuration: false,
-        startDuration: 0,
-        minDigits: 0,
-        maxDigits:0
-    }
-    render() {
-        return <FlipClock shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart} countdown={false} secondSettings={{ secondPart: SecondPart.total, maxDigits: this.props.maxDigits, minDigits: this.props.minDigits }} />
-    }
-}
-export interface FlipClockSecondsCountdownProps {
-    shouldUpdateSameDuration?: boolean
-    startDuration: number
-    autoStart?: boolean
-    minDigits?: number
-}
-export class FlipClockSecondsCountdown extends React.Component<FlipClockSecondsCountdownProps, undefined>{
-    public static defaultProps: Partial<FlipClockSecondsCountdownProps> = {
-        autoStart: true,
-        shouldUpdateSameDuration: false
-    }
-    render() {
-        var minDigits = this.props.minDigits === undefined ? calculateSeconds(SecondPart.total, this.props.startDuration).toString().length : this.props.minDigits;
-        return <FlipClock shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart} countdown={true} secondSettings={{ secondPart: SecondPart.total, maxDigits: 0, minDigits: minDigits }} />
-    }
-}
-//#endregion
-//#region minutes
-export interface FlipClockMinutesProps {
-    shouldUpdateSameDuration?: boolean
-    startDuration?: number
-    autoStart?: boolean
-    maxDigits?: number
-    minDigits?: number
-}
-export class FlipClockMinutes extends React.Component<FlipClockMinutesProps, undefined>{
-    public static defaultProps: Partial<FlipClockSecondsProps> = {
+export type FlipClockSeconds = FlipClockWrapper<FlipClockSecondsProps>
+export const FlipClockSeconds = flipClockWrapper(
+    function(ownProps: FlipClockSecondsProps) {
+        var specific= {
+            countdown: false,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            secondSettings: { secondPart: SecondPart.total, maxDigits: ownProps.maxDigits, minDigits: ownProps.minDigits }
+        }
+        return objectMerge(ownProps, specific);
+    }, {
         autoStart: true,
         shouldUpdateSameDuration: false,
         startDuration: 0,
         minDigits: 0,
         maxDigits: 0
     }
-    render() {
-        return <FlipClock shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart} countdown={false} minuteSettings={{ minutePart: MinutePart.total, maxDigits: this.props.maxDigits, minDigits: this.props.minDigits }} />
-    }
-}
-
-export interface FlipClockMinutesCountdownProps {
+)
+export interface FlipClockSecondsCountdownProps extends FlipDigitsProps  {
     shouldUpdateSameDuration?: boolean
     startDuration: number
     autoStart?: boolean
     minDigits?: number
 }
-export class FlipClockMinutesCountdown extends React.Component<FlipClockMinutesCountdownProps, undefined>{
-    public static defaultProps: Partial<FlipClockMinutesCountdownProps> = {
+export type FlipClockSecondsCountdown = FlipClockWrapper<FlipClockSecondsCountdownProps>
+export const FlipClockSecondsCountdown = flipClockWrapper(
+    function(ownProps: FlipClockSecondsCountdownProps) {
+        var minDigits = ownProps.minDigits === undefined ? calculateSeconds(SecondPart.total, ownProps.startDuration).toString().length : ownProps.minDigits;
+        var specific= {
+            countdown: true,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            secondSettings: { secondPart: SecondPart.total, maxDigits: 0, minDigits: minDigits }
+        }
+        return objectMerge(ownProps, specific);
+    }, {
         autoStart: true,
         shouldUpdateSameDuration: false
     }
-    render() {
-        var minDigits = this.props.minDigits === undefined ? calculateMinutes(MinutePart.total, this.props.startDuration).toString().length : this.props.minDigits;
-        return <FlipClock shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart} countdown={true} minuteSettings={{ minutePart: MinutePart.total, maxDigits: 0, minDigits: minDigits }} />
-    }
+)
+//#endregion
+//#region minutes
+export interface FlipClockMinutesProps extends FlipDigitsProps {
+    shouldUpdateSameDuration?: boolean
+    startDuration?: number
+    autoStart?: boolean
+    maxDigits?: number
+    minDigits?: number
 }
+export type FlipClockMinutes = FlipClockWrapper<FlipClockMinutesProps>
+export const FlipClockMinutes = flipClockWrapper(
+    function(ownProps: FlipClockMinutesProps) {
+        var specific= {
+            countdown: false,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            minuteSettings: { minutePart: MinutePart.total, maxDigits: ownProps.maxDigits, minDigits: ownProps.minDigits }
+        }
+        return objectMerge(ownProps, specific);
+    }, {
+        autoStart: true,
+        shouldUpdateSameDuration: false,
+        startDuration: 0,
+        minDigits: 0,
+        maxDigits: 0
+    }
+)
+export interface FlipClockMinutesCountdownProps extends FlipDigitsProps  {
+    shouldUpdateSameDuration?: boolean
+    startDuration: number
+    autoStart?: boolean
+    minDigits?: number
+}
+export type FlipClockMinutesCountdown = FlipClockWrapper<FlipClockMinutesCountdownProps>
+export const FlipClockMinutesCountdown = flipClockWrapper(
+    function(ownProps: FlipClockMinutesCountdownProps) {
+        var minDigits = ownProps.minDigits === undefined ? calculateMinutes(MinutePart.total, ownProps.startDuration).toString().length :ownProps.minDigits;
+        var specific = {
+            countdown: true,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            minuteSettings:{ minutePart: MinutePart.total, maxDigits: 0, minDigits: minDigits }
+        }
+        return objectMerge(ownProps, specific);
+    }, {
+        autoStart: true,
+        shouldUpdateSameDuration: false
+    }
+)
 //#endregion
 //#region minutes seconds
-export interface FlipClockMinutesSecondsProps {
+export interface FlipClockMinutesSecondsProps extends FlipDigitsProps {
     shouldUpdateSameDuration?: boolean
     startDuration?: number
     autoStart?: boolean
     maxMinutesDigits?: number
     minMinuteDigits?: number
 }
-export class FlipClockMinutesSeconds extends React.Component<FlipClockMinutesSecondsProps, undefined>{
-    public static defaultProps: Partial<FlipClockMinutesSecondsProps> = {
+export type FlipClockMinutesSeconds = FlipClockWrapper<FlipClockMinutesSecondsProps>
+export const FlipClockMinutesSeconds = flipClockWrapper(
+    function(ownProps: FlipClockMinutesSecondsProps) {
+        var specific= {
+            countdown: false,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            minuteSettings: { minDigits: ownProps.minMinuteDigits, maxDigits: ownProps.maxMinutesDigits, minutePart: MinutePart.total },
+            secondSettings: flipClockClockSecondSettings
+        }
+        return objectMerge(ownProps, specific);
+    }, {
         autoStart: true,
         shouldUpdateSameDuration: false,
         startDuration: 0,
         minMinuteDigits: 0,
         maxMinutesDigits: 0
     }
-    render() {
-        return <FlipClock shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart} countdown={false} minuteSettings={{ minDigits: this.props.minMinuteDigits, maxDigits: this.props.maxMinutesDigits, minutePart: MinutePart.total }} secondSettings={flipClockClockSecondSettings} />
-    }
-}
-export interface FlipClockMinutesSecondsCountdownProps {
+)
+export interface FlipClockMinutesSecondsCountdownProps extends FlipDigitsProps  {
     shouldUpdateSameDuration?: boolean
     startDuration: number
     autoStart?: boolean
     maxMinutesDigits?: number
     minMinuteDigits?: number
 }
-export class FlipClockMinutesSecondsCountdown extends React.Component<FlipClockMinutesSecondsCountdownProps, undefined>{
-    public static defaultProps: Partial<FlipClockMinutesSecondsCountdownProps> = {
+
+export type FlipClockMinutesSecondsCountdown = FlipClockWrapper<FlipClockMinutesSecondsCountdownProps>
+export const FlipClockMinutesSecondsCountdown = flipClockWrapper(
+    function(ownProps: FlipClockMinutesSecondsCountdownProps) {
+        var minDigits = ownProps.minMinuteDigits === undefined ? calculateMinutes(MinutePart.total, ownProps.startDuration).toString().length : ownProps.minMinuteDigits;
+        var specific = {
+            countdown: true,
+            shouldUpdateSameDuration: ownProps.shouldUpdateSameDuration,
+            startDuration: ownProps.startDuration,
+            autoStart: ownProps.autoStart,
+            minuteSettings: { minDigits: minDigits, maxDigits: ownProps.maxMinutesDigits, minutePart: MinutePart.total },
+            secondSettings: flipClockClockSecondSettings
+        }
+        return objectMerge(ownProps, specific);
+    }, {
         autoStart: true,
         shouldUpdateSameDuration: false,
         startDuration: 0,
         maxMinutesDigits: 0
     }
-    render() {
-        var minDigits = this.props.minMinuteDigits === undefined ? calculateMinutes(MinutePart.total, this.props.startDuration).toString().length : this.props.minMinuteDigits;
-        return <FlipClock countdown={true} shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration} autoStart={this.props.autoStart}  minuteSettings={{ minDigits: minDigits, maxDigits: this.props.maxMinutesDigits, minutePart: MinutePart.total }} secondSettings={flipClockClockSecondSettings} />
+)
+
+
+
+//#endregion
+//#region HOC
+
+export interface ClockController {
+    stop(): void,
+    pause(): void,
+    start(): void
+    getDuration():Duration
+}
+interface FlipClockClass<P> {
+    new (props?: P, context?: any): FlipClockWrapper<P>;
+    propTypes?: React.ValidationMap<P>;
+    contextTypes?: React.ValidationMap<any>;
+    childContextTypes?: React.ValidationMap<any>;
+    defaultProps?: Partial<P>;
+    displayName?: string;
+}
+export interface FlipClockWrapper<P> extends React.Component<P, undefined>, ClockController {
+
+}
+function objectMerge<A,B>(first: any, second: any) {
+    var merged = {};
+    for (var p in first) {
+        merged[p] = first[p];
+    }
+    for (var p in second) {
+        merged[p] = second[p];
+    }
+    return merged;
+}
+export function flipClockWrapper<P>(getFlipClockProps: (ownProps: P) => FlipClockProps, defaultProps: Partial<P>): FlipClockClass<P> {
+    return class extends React.Component<P, undefined> implements ClockController {
+        private flipClock: FlipClock;
+        public static defaultProps = defaultProps;
+        start() {
+            this.flipClock.start();
+        }
+        stop() {
+            this.flipClock.stop();
+        }
+        pause() {
+            this.flipClock.pause();
+        }
+        getDuration() {
+            return this.flipClock.getDuration();
+        }
+
+        render() {
+            var clockProps = getFlipClockProps(this.props);
+            return <FlipClock {...clockProps} ref={(fc) => this.flipClock = fc} />
+        }
     }
 }
+
+
 //#endregion
+
 //#endregion
 
 //#region FlipCounter old - can probably delete now

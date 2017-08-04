@@ -11,6 +11,7 @@ function simpleCommandToRegExp(command) {
     return new RegExp('^' + command + '$', 'i');
 }
 exports.simpleCommandToRegExp = simpleCommandToRegExp;
+exports.sentenceRegExp = /^((?:[a-z]+\s?)+)$/i;
 // Get the SpeechRecognition object, while handling browser prefixes
 var anyWindow = window;
 var SpeechRecognition = anyWindow.SpeechRecognition || anyWindow.webkitSpeechRecognition || anyWindow.mozSpeechRecognition || anyWindow.msSpeechRecognition || anyWindow.oSpeechRecognition;
@@ -587,6 +588,19 @@ if (SpeechRecognition) {
     var debugStyle = 'font-weight: bold; color: #00f;';
     var pauseListening = false;
     var _isListening = false;
+    var extractFromSpeechRecognitionEvent = function (event) {
+        var SpeechRecognitionResult = event.results[event.resultIndex];
+        var results = [];
+        var confidences = [];
+        for (var k = 0; k < SpeechRecognitionResult.length; k++) {
+            results[k] = SpeechRecognitionResult[k].transcript;
+            confidences[k] = SpeechRecognitionResult[k].confidence;
+        }
+        return {
+            results: results,
+            confidences: confidences
+        };
+    };
     // This method receives an array of callbacks to iterate over, and invokes each of them
     var invokeCallbacks = function invokeCallbacks(callbacks) {
         var args = [];
@@ -627,16 +641,25 @@ if (SpeechRecognition) {
         commandState.enter = commandState.enter === undefined ? noopNull : commandState.enter;
         commandState.exit = commandState.exit === undefined ? noopNull : commandState.exit;
         commandState.stateTimeout = commandState.stateTimeout === undefined ? 0 : commandState.stateTimeout;
+        var catchCommand = commandState.catchCommand;
+        if (catchCommand) {
+            setCommandDefaults(catchCommand, commandState);
+            catchCommand.canInterrupt = false;
+        }
         defaultDisabled(commandState);
         commandState.canInterrupt = commandState.canInterrupt === undefined ? (commandState.isDefault ? false : true) : commandState.canInterrupt;
         commandState.noMatch = commandState.noMatch === undefined ? noopNull : commandState.noMatch;
         commandState.commands.forEach(function (command) {
-            defaultDisabled(command);
-            command.minConfidence = command.minConfidence === undefined ? 0 : command.minConfidence;
-            command.canInterrupt = command.canInterrupt === undefined ? (commandState.isDefault ? true : false) : command.canInterrupt;
-            command.nextState = command.nextState === undefined ? commandState.name : command.nextState;
-            command.keepState = command.keepState === undefined ? false : command.keepState;
+            setCommandDefaults(command, commandState);
         });
+    };
+    var setCommandDefaults = function setCommandDefaults(command, commandState) {
+        defaultDisabled(command);
+        command.minConfidence = command.minConfidence === undefined ? 0 : command.minConfidence;
+        command.maxAlternatives = command.maxAlternatives === undefined ? 0 : command.maxAlternatives;
+        command.canInterrupt = command.canInterrupt === undefined ? (commandState.isDefault ? true : false) : command.canInterrupt;
+        command.nextState = command.nextState === undefined ? commandState.name : command.nextState;
+        command.keepState = command.keepState === undefined ? false : command.keepState;
     };
     var commandStateByName = function commandStateByName(stateName) {
         var state;
@@ -656,6 +679,51 @@ if (SpeechRecognition) {
         response.matches = response.matches === undefined ? true : response.matches;
         response.allowFurther = response.allowFurther === undefined ? false : response.allowFurther;
         return response;
+    };
+    var executeCommand = function executeCommand(currentCommand, commandText, confidences, results, resultIndex) {
+        var executeFurther = true;
+        var confidence = confidences[resultIndex];
+        var ignoreResult = currentCommand.maxAlternatives !== 0 && currentCommand.maxAlternatives < resultIndex;
+        if (!ignoreResult) {
+            var minConfidence = currentCommand.minConfidence;
+            if (minConfidence === 0 || minConfidence > confidence) {
+                var result = currentCommand.regExp.exec(commandText);
+                if (result) {
+                    var parameters = result.slice(1);
+                    if (debugState) {
+                        logMessage('command matched: %c' + currentCommand.name, debugStyle);
+                        if (parameters.length) {
+                            logMessage('with parameters', parameters);
+                        }
+                    }
+                    var cbResponse = getDefaultCommandCallbackResponse(currentCommand.callback({
+                        command: currentCommand,
+                        confidence: confidence,
+                        parameters: parameters,
+                        results: results,
+                        confidences: confidences,
+                        stateContext: exports.recogniseMe.currentStateContext
+                    }));
+                    //confirmation to do - will need a confirmation state with all information for proceeding
+                    if (cbResponse.matches) {
+                        doSoundResponse(cbResponse);
+                        invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.name, results, confidences);
+                        var nextStateContext = cbResponse.nextStateContext;
+                        if (currentCommand.keepState || currentCommand.nextState === exports.recogniseMe.currentState.name) {
+                            clearStateTimeout();
+                            if (nextStateContext) {
+                                enterState(exports.recogniseMe.currentState, nextStateContext);
+                            }
+                        }
+                        else {
+                            enterAndExitState(commandStateByName(currentCommand.nextState), nextStateContext);
+                        }
+                        executeFurther = cbResponse.allowFurther;
+                    }
+                }
+            }
+        }
+        return executeFurther;
     };
     var parseResults = function parseResults(results, confidences) {
         function commandTransitionsToActiveState(command) {
@@ -688,59 +756,33 @@ if (SpeechRecognition) {
             var commands = interruptCommands.concat(currentStateCommands);
             var commandText;
             for (var i = 0; i < results.length; i++) {
-                commandText = results[i].trim();
-                var confidence = confidences[i];
+                commandText = results[i] = results[i].trim();
                 if (debugState) {
                     logMessage('Speech recognized: %c' + commandText, debugStyle);
                 }
                 for (var j = 0, l = commands.length; j < l; j++) {
-                    var currentCommand = commands[j];
-                    var minConfidence = currentCommand.minConfidence;
-                    if (minConfidence === 0 || minConfidence > confidence) {
-                        var result = currentCommand.regExp.exec(commandText);
-                        if (result) {
-                            var parameters = result.slice(1);
-                            if (debugState) {
-                                logMessage('command matched: %c' + currentCommand.name, debugStyle);
-                                if (parameters.length) {
-                                    logMessage('with parameters', parameters);
-                                }
-                            }
-                            var cbResponse = getDefaultCommandCallbackResponse(currentCommand.callback({
-                                command: currentCommand,
-                                confidence: confidences[i],
-                                parameters: parameters,
-                                results: results,
-                                confidences: confidences,
-                                stateContext: exports.recogniseMe.currentStateContext
-                            }));
-                            doSoundResponse(cbResponse);
-                            //confirmation to do - will need a confirmation state with all information for proceeding
-                            if (cbResponse.matches) {
-                                var nextStateContext = cbResponse.nextStateContext;
-                                if (currentCommand.keepState || currentCommand.nextState === currentStateName) {
-                                    clearStateTimeout();
-                                    if (nextStateContext) {
-                                        exports.recogniseMe.currentStateContext = nextStateContext;
-                                    }
-                                }
-                                else {
-                                    //exitState(recogniseMe.currentState);
-                                    //var newState = commandStateByName(currentCommand.nextState);
-                                    //recogniseMe.currentState = newState;
-                                    //recogniseMe.currentStateContext = nextStateContext;
-                                    //enterState(newState, nextStateContext);
-                                    enterAndExitState(commandStateByName(currentCommand.nextState), nextStateContext);
-                                }
-                                if (!cbResponse.allowFurther) {
-                                    return;
-                                }
-                            }
-                        }
+                    var executeFurther = executeCommand(commands[j], commandText, confidences, results, i);
+                    if (!executeFurther) {
+                        return;
                     }
                 }
             }
-            doSoundResponse(currentState.noMatch(results, confidences));
+            var catchCommandMatched = false;
+            if (currentState.catchCommand) {
+                for (var i = 0; i < results.length; i++) {
+                    commandText = results[i];
+                    var executeFurther = executeCommand(currentState.catchCommand, commandText, confidences, results, i);
+                    if (!executeFurther) {
+                        catchCommandMatched = true;
+                        break;
+                    }
+                }
+            }
+            if (!catchCommandMatched) {
+                var soundResponse = currentState.noMatch(results, confidences);
+                soundResponse = soundResponse ? soundResponse : exports.recogniseMe.allStatesNoMatchSoundResponse;
+                doSoundResponse(soundResponse);
+            }
         }
         invokeCallbacks(callbacks.resultNoMatch, results, confidences);
     };
@@ -754,9 +796,30 @@ if (SpeechRecognition) {
             }
         }
     };
+    var playingAudio = false;
+    var audioQueue = [];
     var playSound = function (sound) {
+        function playAudio(audio) {
+            audio.onended = function (evt) {
+                if (audioQueue.length > 0) {
+                    var nextAudio = audioQueue[0];
+                    audioQueue = audioQueue.slice(1);
+                    playAudio(nextAudio);
+                }
+                else {
+                    playingAudio = false;
+                }
+            };
+            playingAudio = true;
+            audio.play();
+        }
         var audio = new Audio(sound);
-        audio.play();
+        if (playingAudio) {
+            audioQueue.push(audio);
+        }
+        else {
+            playAudio(audio);
+        }
     };
     var speak = function (speech) {
         speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
@@ -777,14 +840,13 @@ if (SpeechRecognition) {
     var exitState = function () {
         if (exports.recogniseMe.currentState) {
             clearStateTimeout();
+            doSoundResponse(exports.recogniseMe.currentState.exit());
             exports.recogniseMe.currentState = null;
             exports.recogniseMe.currentStateContext = null;
-            doSoundResponse(exports.recogniseMe.currentState.exit());
         }
     };
     //lp - could call enterState() and default to the default state
     var enterState = function (state, context) {
-        //default to the defaultState**********
         exports.recogniseMe.currentState = state; //will probably want currentState and currentStateContext vars outside******************
         exports.recogniseMe.currentStateContext = context;
         doSoundResponse(state.enter(context));
@@ -797,8 +859,18 @@ if (SpeechRecognition) {
             }
         }
     };
-    //will want state change callback
+    var listeningForStartStop = false;
+    var startPhrase;
+    var startSound;
+    var stopPhrase;
+    var stopSound;
+    var skipSpeakingCommand;
     exports.recogniseMe = {
+        doNotListenWhenSpeaking: true,
+        setSkipSpeakingCommand: function (skipCommand) {
+            skipSpeakingCommand = new RegExp(skipCommand, "i");
+        },
+        allStatesNoMatchSoundResponse: null,
         currentState: null,
         currentStateContext: null,
         setState: function setState(name, context) {
@@ -849,7 +921,6 @@ if (SpeechRecognition) {
             recognition.onsoundstart = function () {
                 invokeCallbacks(callbacks.soundstart);
             };
-            //missing event handlers for annyang - will get booleans later
             recognition.onsoundend = function () {
                 invokeCallbacks(callbacks.soundend);
             };
@@ -925,24 +996,60 @@ if (SpeechRecognition) {
                 }
             };
             recognition.onresult = function (event) {
-                if (pauseListening) {
-                    if (debugState) {
-                        logMessage('Speech heard, but annyang is paused');
+                var isSpeaking = speechSynthesis.speaking;
+                if (isSpeaking) {
+                    if (skipSpeakingCommand) {
+                        var results = extractFromSpeechRecognitionEvent(event).results;
+                        var skipSpeaking = false;
+                        for (var i = 0; i < results.length; i++) {
+                            var result = results[i];
+                            if (skipSpeakingCommand.exec(result)) {
+                                skipSpeaking = true;
+                                break;
+                            }
+                        }
+                        if (skipSpeaking) {
+                            speechSynthesis.cancel();
+                            return;
+                        }
                     }
-                    return false;
                 }
-                //new line to annyang
-                invokeCallbacks(callbacks.originalResult, event);
-                // Map the results to an array
-                var SpeechRecognitionResult = event.results[event.resultIndex];
-                var results = [];
-                var confidences = []; //this is new
-                for (var k = 0; k < SpeechRecognitionResult.length; k++) {
-                    results[k] = SpeechRecognitionResult[k].transcript;
-                    confidences[k] = SpeechRecognitionResult[k].confidence;
+                if (!(isSpeaking && exports.recogniseMe.doNotListenWhenSpeaking)) {
+                    var resultsAndConfidences;
+                    if (listeningForStartStop) {
+                        var phrase = stopPhrase;
+                        var action = exports.recogniseMe.pause;
+                        var sound = stopSound;
+                        if (pauseListening) {
+                            phrase = startPhrase;
+                            action = exports.recogniseMe.resume;
+                            sound = startSound;
+                        }
+                        resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
+                        var results = resultsAndConfidences.results;
+                        var match = false;
+                        for (var i = 0; i < results.length; i++) {
+                            if (phrase.exec(results[i])) {
+                                match = true;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            action();
+                            doSoundResponse(sound);
+                            return false;
+                        }
+                    }
+                    if (pauseListening) {
+                        if (debugState) {
+                            logMessage('Speech heard, but annyang is paused');
+                        }
+                        return false;
+                    }
+                    invokeCallbacks(callbacks.originalResult, event);
+                    resultsAndConfidences = resultsAndConfidences ? resultsAndConfidences : extractFromSpeechRecognitionEvent(event);
+                    parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
                 }
-                //confidences argument is new
-                parseResults(results, confidences);
             };
             if (resetStates) {
                 commandStates = [];
@@ -1058,6 +1165,36 @@ if (SpeechRecognition) {
         setMaxAlternatives: function (maxAlternatives) {
             initIfNeeded();
             recognition.maxAlternatives = maxAlternatives;
+        },
+        /*
+        
+
+        */
+        setStartStopCommands: function (startStopCommands) {
+            startPhrase = null;
+            stopPhrase = null;
+            startSound = null;
+            stopSound = null;
+            listeningForStartStop = false;
+            if (startStopCommands.defaultStartStopPhrases) {
+                startPhrase = /^Start$/i;
+                stopPhrase = /^Stop$/i;
+                if (startStopCommands.defaultStartStopSynthesis) {
+                    startSound = { synthesisMessage: "Resumed listening" };
+                    stopSound = { synthesisMessage: "Stopped listening" };
+                }
+            }
+            else {
+                if (startStopCommands.startPhrase && startStopCommands.stopPhrase) {
+                    startPhrase = startStopCommands.startPhrase;
+                    stopPhrase = startStopCommands.stopPhrase;
+                    startSound = startStopCommands.startSound;
+                    stopSound = startStopCommands.stopSound;
+                }
+            }
+            if (startPhrase && stopPhrase) {
+                listeningForStartStop = true;
+            }
         },
         addStates: function addStates(cmdStates) {
             initIfNeeded();
