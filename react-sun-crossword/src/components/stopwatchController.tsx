@@ -8,6 +8,9 @@ var hour = 3600000;
 var day = 86400000;
 var year = 31536000000;
 
+function calculateYears(ignorePart:number,ms:number) {
+    return Math.floor((ms / (1000 * 60 * 60 * 24*365)));
+}
 function calculateDays(dayPart: DayPart,ms:number) {
     switch (dayPart) {
         case DayPart.total:
@@ -479,9 +482,16 @@ export class FlipClockPrivate extends React.Component<FlipClockPrivateProps, und
         return digitsArray;
     }
     render() {
-        //days and years to return to 
         var self = this;
         var partDetails: PartDetail[] = [];
+        var yearSettings = this.props.yearSettings;
+        if (yearSettings) {
+            partDetails.push({ calculateFunction: calculateYears, minDigits: yearSettings.minDigits, maxDigits: yearSettings.maxDigits, part: 0 })
+        }
+        var daySettings = this.props.daySettings;
+        if (daySettings) {
+            partDetails.push({ calculateFunction: calculateDays, minDigits: daySettings.minDigits, maxDigits: daySettings.maxDigits, part: daySettings.dayPart })
+        }
         var hourSettings = this.props.hourSettings;
         if (hourSettings) {
             partDetails.push({ calculateFunction: calculateHours, minDigits: hourSettings.minDigits, maxDigits: hourSettings.maxDigits, part: hourSettings.hourPart })
@@ -500,22 +510,22 @@ export class FlipClockPrivate extends React.Component<FlipClockPrivateProps, und
         var counter = 0;
         for (var i = 0; i < numParts; i++) {
             if (i !== 0) {
-                elements.push(<DigitsDivider key={counter} dividerTitle="" />);
+                elements.push(<DigitsDivider additionalClassName={this.props.additionalClassName} key={counter} dividerTitle="" />);
                 counter++;
             }
             var pd = partDetails[i];
             var num = pd.calculateFunction(pd.part, self.props.duration.totalMilliseconds);
             var digits = self.getDigits(num, pd.maxDigits, pd.minDigits);
             elements = elements.concat(digits.map(function (digit) {
-                var flipDigit = <FlipDigit pauseStoppedAnimation={self.props.pauseStoppedAnimation} pausePausedAnimation={self.props.pausePausedAnimation} activeClass={self.props.activeClass} beforeClass={self.props.beforeClass} flipClass={self.props.flipClass} playClass={self.props.playClass}  tickState={self.props.tickState} digit={digit} key={counter} />
+                var flipDigit = <FlipDigit pauseStoppedAnimation={self.props.pauseStoppedAnimation} pausePausedAnimation={self.props.pausePausedAnimation} activeClass={self.props.activeClass} beforeClass={self.props.beforeClass} flipClass={self.props.flipClass} playClass={self.props.playClass} tickState={self.props.tickState} digit={digit} key={counter} additionalClassName={self.props.additionalClassName} />
                 counter++;
                 return flipDigit;
             }))
         }
-        return <span className="flip-clock-wrapper">
+        return <div className="flip-clock-wrapper">
             {elements}
             {this.props.children}
-            </span>
+            </div>
     }
 }
 
@@ -537,7 +547,6 @@ export class FlipClock extends React.Component<FlipClockProps, undefined>{
         return this.stopwatchController.getDuration();
     }
     render() {
-        //pausePausedAnimation={this.props.pausePausedAnimation}  daySettings={this.props.daySettings} hourSettings={this.props.hourSettings} minuteSettings={this.props.minuteSettings} secondSettings={this.props.secondSettings} 
         return <StopwatchController ref={(sc) => { this.stopwatchController = sc }} countdown={this.props.countdown} autoStart={this.props.autoStart} shouldUpdateSameDuration={this.props.shouldUpdateSameDuration} startDuration={this.props.startDuration}>
             <FlipClockPrivate {...this.props}/>
         </StopwatchController>
@@ -561,6 +570,7 @@ export interface FlipDigitsProps {
 
     pauseStoppedAnimation?: boolean
     pausePausedAnimation?: boolean
+    additionalClassName?:string
 }
 export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
     public static defaultProps: Partial<FlipDigitProps> = {
@@ -571,7 +581,9 @@ export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
 
         tickState: TickState.stopped,
         pausePausedAnimation: false,
-        pauseStoppedAnimation: false
+        pauseStoppedAnimation: false,
+
+        additionalClassName:""
     }
     runningState: TickState = TickState.stopped;
     listElement: HTMLUListElement;
@@ -579,7 +591,8 @@ export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
     lastDigit: Digit = null
 
     getRunningClassName(running: boolean) {
-        return this.props.flipClass + (running ? (" " + this.props.playClass) : "");
+        var additionalClassName = this.props.additionalClassName !== "" ? this.props.additionalClassName + " " : "";
+        return additionalClassName+ this.props.flipClass + (running ? (" " + this.props.playClass) : "");
     }
     getDigitClass(digit: Digit) {
 
@@ -595,7 +608,7 @@ export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
 
     firstRender = true;
     render() {
-
+        
         var self = this;
         var newTickState = this.props.tickState;
         var isRunning = newTickState === TickState.running && !this.firstRender;
@@ -606,7 +619,6 @@ export class FlipDigit extends React.Component<FlipDigitProps, undefined>{
         this.lastDigit = this.props.digit;
         digits.push(this.lastDigit);
         this.runningState = newTickState;
-
         this.firstRender = false;
         return <ul ref={(ul) => { this.listElement = ul }} className={this.getRunningClassName(isRunning)}>
             {
@@ -728,16 +740,18 @@ export interface DigitsDividerProps {
     dividerClass?: string
     labelClass?: string,
     dotClass?: string
+    additionalClassName?:string
 
 }
 export class DigitsDivider extends React.Component<DigitsDividerProps, undefined>{
     public static defaultProps: Partial<DigitsDividerProps> = {
         labelClass: 'flip-clock-label',
         dotClass: 'flip-clock-dot',
-        dividerClass: 'flip-clock-divider'
+        dividerClass: 'flip-clock-divider',
+        additionalClassName:""
     }
     render() {
-        return <span className={this.props.dividerClass}>
+        return <span className={this.props.dividerClass + " " + this.props.additionalClassName}>
             <span className={this.props.labelClass}>{this.props.dividerTitle}</span>
             <span className={this.props.dotClass + " top"}></span>
             <span className={this.props.dotClass + " bottom"}></span>
@@ -811,8 +825,8 @@ export class FlipClock12Private extends React.Component<FlipClock12PrivateProps,
         return ampm as any;
     }
     render() {
-        return <FlipClockPrivate duration={this.props.duration} hourSettings={flipClock12HourSettings} minuteSettings={flipClockClockMinuteSettings} secondSettings={flipClockClockSecondSettings} tickState={this.props.tickState}>
-            <FlipDigit pauseStoppedAnimation={this.props.pausePausedAnimation} pausePausedAnimation={this.props.pausePausedAnimation} activeClass={this.props.activeClass} beforeClass={this.props.beforeClass} flipClass={this.props.flipClass} playClass={this.props.playClass}   tickState={this.props.tickState} digit={this.getAmPm()} />
+        return <FlipClockPrivate duration={this.props.duration} hourSettings={flipClock12HourSettings} minuteSettings={flipClockClockMinuteSettings} secondSettings={flipClockClockSecondSettings} tickState={this.props.tickState} {...this.props}>
+            <FlipDigit additionalClassName={"ampm " + this.props.additionalClassName} pauseStoppedAnimation={this.props.pauseStoppedAnimation} pausePausedAnimation={this.props.pausePausedAnimation} activeClass={this.props.activeClass} beforeClass={this.props.beforeClass} flipClass={this.props.flipClass} playClass={this.props.playClass} tickState={this.props.tickState} digit={this.getAmPm()} />
             </FlipClockPrivate>
     }
 
@@ -863,6 +877,7 @@ export const FlipClock24Countdown = flipClockWrapper(
             minuteSettings: flipClockClockMinuteSettings,
             secondSettings:flipClockClockSecondSettings 
         }
+        
         var merged = objectMerge(ownProps, specific);
         return merged;
     }, {
@@ -1091,70 +1106,3 @@ export function flipClockWrapper<P>(getFlipClockProps: (ownProps: P) => FlipCloc
 
 //#endregion
 
-//#region FlipCounter old - can probably delete now
-export interface FlipCounterProps {
-    duration?: IDuration,
-    hoursTitle?: string,
-    minutesTitle?: string,
-    secondsTitle?: string,
-    tickState?:TickState
-
-}
-export class FlipCounter extends React.Component<FlipCounterProps, undefined>{
-    public static defaultProps: Partial<FlipCounterProps> = {
-        hoursTitle: "",
-        minutesTitle: "",
-        secondsTitle: ""
-    }
-    //this will eventually become part of the duration
-    getDoubleDigits(num: number): string {
-        var numString = num.toString();
-        if (numString.length === 1) {
-            numString = "0" + numString;
-        }
-        return numString;
-    }
-    getDoubleDigitsArray(num: number): Digit[] {
-        return this.getDigitArray(this.getDoubleDigits(num).split(""));
-    }
-    getDigitArray(numStrings: string[]): Digit[] {
-        return numStrings.map(function (numString) {
-            return parseInt(numString) as Digit;
-        })
-    }
-    getHourDigits(hours: number): Digit[] {
-        var hoursString = hours.toString();
-        //could change this based upon options
-        if (hoursString.length === 1) {
-            return this.getDoubleDigitsArray(hours);
-        }
-        return this.getDigitArray(hoursString.split(""));
-    }
-    render() {
-        var self = this;
-        return <div className="flip-clock-wrapper">
-            <DigitsDivider dividerTitle={this.props.hoursTitle} />
-            {
-                this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
-                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState} digit={hourDigit} key={i} />
-                })
-            }
-            
-            <DigitsDivider dividerTitle={this.props.minutesTitle} />
-            {
-                this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
-                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState}   digit={minuteDigit} key={i} />
-                })
-            }
-
-            <DigitsDivider dividerTitle={this.props.secondsTitle} />
-            {
-                this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
-                    return <FlipDigit pauseStoppedAnimation={true} tickState={self.props.tickState}  digit={secondDigit} key={i} />
-                })
-            }
-            
-        </div>
-    }
-}
-//#endregion

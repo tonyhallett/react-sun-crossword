@@ -16,7 +16,7 @@ import 'firebase/database';
 import { CrosswordPuzzleChooser, DefaultSelectChooserButtonProps } from "./crosswordPuzzleChooser";
 import { MuiButton, MuiButtonProps } from "./muiButton";
 import { MuiButtonWrapper } from "./muiWrappedButton";
-import {  StopwatchController, Duration, FlipCounter } from "./stopwatchController";
+import {  StopwatchController, Duration } from "./stopwatchController";
 
 import { Bounded, ElementQueries } from '../components/testBounds'
 import { ElementQuery, Matches, makeElementQuery } from 'react-element-queries';

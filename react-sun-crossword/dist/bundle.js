@@ -21003,26 +21003,34 @@ var DemoFlipClocks = (function (_super) {
             _this.flipClock24.start();
             _this.flipClockSeconds1.start();
             _this.flipClockSeconds2.start();
+            _this.flipClockSeconds3.start();
             _this.flipClockSecondsCountdown1.start();
             _this.flipClockSecondsCountdown2.start();
+            _this.flipClockSecondsCountdown3.start();
             _this.flipClockMinutesSeconds.start();
             _this.flipClockMinutes.start();
             _this.flipClockMinutesSecondsCountdown.start();
             _this.flipClockMinutesCountdown.start();
             _this.flipClock12.start();
+            _this.flipClock12Style2.start();
+            _this.flipClockYear.start();
         };
         _this.stop = function () {
             _this.flipClock24Countdown.stop();
             _this.flipClock24.stop();
             _this.flipClockSeconds1.stop();
             _this.flipClockSeconds2.stop();
+            _this.flipClockSeconds3.stop();
             _this.flipClockSecondsCountdown1.stop();
             _this.flipClockSecondsCountdown2.stop();
+            _this.flipClockSecondsCountdown3.stop();
             _this.flipClockMinutesSeconds.stop();
             _this.flipClockMinutes.stop();
             _this.flipClockMinutesSecondsCountdown.stop();
             _this.flipClockMinutesCountdown.stop();
             _this.flipClock12.stop();
+            _this.flipClock12Style2.stop();
+            _this.flipClockYear.stop();
         };
         _this.state = {
             countdownDuration: 10000,
@@ -21046,22 +21054,65 @@ var DemoFlipClocks = (function (_super) {
         var hour = 3600000;
         var day = 86400000;
         var year = 31536000000;
+        var flipClock24HourSettings = {
+            minDigits: 2,
+            hourPart: stopwatchController_1.HourPart.part24
+        };
+        var flipClockClockMinuteSettings = {
+            minDigits: 2,
+            minutePart: stopwatchController_1.MinutePart.partHour
+        };
+        var flipClockClockSecondSettings = {
+            minDigits: 2,
+            secondPart: stopwatchController_1.SecondPart.partMinute
+        };
+        var flipClockDaySettings = {
+            minDigits: 3,
+            dayPart: stopwatchController_1.DayPart.partYear
+        };
+        var flipClockYearSettings = {
+            minDigits: 1
+        };
         var minutesStartDuration = 55 * second;
         var minutesCountdownStartDuration = (10 * minute) + (10 * second);
+        /*
+        
+        */
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.stop }, "Stop"),
             React.createElement("button", { onClick: this.start }, "Start"),
+            React.createElement("div", null, "The five clocks below will pause animation when stopped"),
+            React.createElement("div", null, "12 hour clock"),
+            React.createElement(stopwatchController_1.FlipClock12, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock12 = fc; }, startDuration: (11 * hour) + (59 * minute) + (50 * second) }),
+            React.createElement("div", null, "12 hour clock, different css styling applied"),
+            React.createElement(stopwatchController_1.FlipClock12, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock12Style2 = fc; }, additionalClassName: "style2", startDuration: (11 * hour) + (59 * minute) + (50 * second) }),
+            React.createElement("div", null, "24 hour clock countdown"),
             React.createElement(stopwatchController_1.FlipClock24Countdown, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock24Countdown = fc; }, startDuration: (23 * hour) + (minute) + (2 * second) }),
-            React.createElement(stopwatchController_1.FlipClock24, { ref: function (fc) { _this.flipClock24 = fc; }, startDuration: (23 * hour) + (59 * minute) + (50 * second) }),
+            React.createElement("div", null, "24 hour clock"),
+            React.createElement(stopwatchController_1.FlipClock24, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock24 = fc; }, startDuration: (23 * hour) + (59 * minute) + (50 * second) }),
+            React.createElement("div", null, "Years, days, hours, minutes, seconds ( without helper )"),
+            React.createElement(stopwatchController_1.FlipClock, { ref: function (fc) { _this.flipClockYear = fc; }, pauseStoppedAnimation: true, countdown: false, secondSettings: flipClockClockSecondSettings, minuteSettings: flipClockClockMinuteSettings, hourSettings: flipClock24HourSettings, daySettings: flipClockDaySettings, yearSettings: flipClockYearSettings, startDuration: (364 * day) + (23 * hour) + (59 * minute) + (50 * second) }),
+            React.createElement("div", null, "The flip clocks below do not have animation stopped."),
+            React.createElement("div", null, "Total seconds, will always show 3 digits"),
             React.createElement(stopwatchController_1.FlipClockSeconds, { ref: function (fc) { _this.flipClockSeconds1 = fc; }, startDuration: 90 * second, minDigits: 3 }),
+            React.createElement("div", null, "Total seconds, will only show the required number of digits"),
+            React.createElement(stopwatchController_1.FlipClockSeconds, { ref: function (fc) { _this.flipClockSeconds3 = fc; }, startDuration: 90 * second }),
+            React.createElement("div", null, "Total seconds, will only show the last 2 digits"),
             React.createElement(stopwatchController_1.FlipClockSeconds, { ref: function (fc) { _this.flipClockSeconds2 = fc; }, startDuration: 90 * second, maxDigits: 2 }),
+            React.createElement("div", null, "Total seconds countdown, defaults to always showing the start number of digits"),
             React.createElement(stopwatchController_1.FlipClockSecondsCountdown, { ref: function (fc) { _this.flipClockSecondsCountdown1 = fc; }, startDuration: 15 * second }),
+            React.createElement("div", null, "Total seconds countdown, will only show the required number of digits"),
+            React.createElement(stopwatchController_1.FlipClockSecondsCountdown, { minDigits: 0, ref: function (fc) { _this.flipClockSecondsCountdown3 = fc; }, startDuration: 15 * second }),
+            React.createElement("div", null, "Total seconds countdown, always shows 3 digits"),
             React.createElement(stopwatchController_1.FlipClockSecondsCountdown, { ref: function (fc) { _this.flipClockSecondsCountdown2 = fc; }, startDuration: 15 * second, minDigits: 3 }),
+            React.createElement("div", null, "Minutes and seconds, always shows 2 minute digits"),
             React.createElement(stopwatchController_1.FlipClockMinutesSeconds, { ref: function (fc) { _this.flipClockMinutesSeconds = fc; }, minMinuteDigits: 2, startDuration: minutesStartDuration }),
+            React.createElement("div", null, "Minutes only, always shows 2 minute digits"),
             React.createElement(stopwatchController_1.FlipClockMinutes, { ref: function (fc) { _this.flipClockMinutes = fc; }, minDigits: 2, startDuration: minutesStartDuration }),
+            React.createElement("div", null, "Minutes and seconds countdown, defaults to always showing the start number of digits"),
             React.createElement(stopwatchController_1.FlipClockMinutesSecondsCountdown, { ref: function (fc) { _this.flipClockMinutesSecondsCountdown = fc; }, startDuration: minutesCountdownStartDuration }),
-            React.createElement(stopwatchController_1.FlipClockMinutesCountdown, { ref: function (fc) { _this.flipClockMinutesCountdown = fc; }, startDuration: minutesCountdownStartDuration }),
-            React.createElement(stopwatchController_1.FlipClock12, { ref: function (fc) { _this.flipClock12 = fc; }, startDuration: (11 * hour) + (59 * minute) + (50 * second) }));
+            React.createElement("div", null, "Minutes countdown, defaults to always showing the start number of digits"),
+            React.createElement(stopwatchController_1.FlipClockMinutesCountdown, { ref: function (fc) { _this.flipClockMinutesCountdown = fc; }, startDuration: minutesCountdownStartDuration }));
     };
     return DemoFlipClocks;
 }(React.Component));
@@ -22288,6 +22339,9 @@ var minute = 60000;
 var hour = 3600000;
 var day = 86400000;
 var year = 31536000000;
+function calculateYears(ignorePart, ms) {
+    return Math.floor((ms / (1000 * 60 * 60 * 24 * 365)));
+}
 function calculateDays(dayPart, ms) {
     switch (dayPart) {
         case DayPart.total:
@@ -22647,9 +22701,16 @@ var FlipClockPrivate = (function (_super) {
         return digitsArray;
     };
     FlipClockPrivate.prototype.render = function () {
-        //days and years to return to 
         var self = this;
         var partDetails = [];
+        var yearSettings = this.props.yearSettings;
+        if (yearSettings) {
+            partDetails.push({ calculateFunction: calculateYears, minDigits: yearSettings.minDigits, maxDigits: yearSettings.maxDigits, part: 0 });
+        }
+        var daySettings = this.props.daySettings;
+        if (daySettings) {
+            partDetails.push({ calculateFunction: calculateDays, minDigits: daySettings.minDigits, maxDigits: daySettings.maxDigits, part: daySettings.dayPart });
+        }
         var hourSettings = this.props.hourSettings;
         if (hourSettings) {
             partDetails.push({ calculateFunction: calculateHours, minDigits: hourSettings.minDigits, maxDigits: hourSettings.maxDigits, part: hourSettings.hourPart });
@@ -22667,19 +22728,19 @@ var FlipClockPrivate = (function (_super) {
         var counter = 0;
         for (var i = 0; i < numParts; i++) {
             if (i !== 0) {
-                elements.push(React.createElement(DigitsDivider, { key: counter, dividerTitle: "" }));
+                elements.push(React.createElement(DigitsDivider, { additionalClassName: this.props.additionalClassName, key: counter, dividerTitle: "" }));
                 counter++;
             }
             var pd = partDetails[i];
             var num = pd.calculateFunction(pd.part, self.props.duration.totalMilliseconds);
             var digits = self.getDigits(num, pd.maxDigits, pd.minDigits);
             elements = elements.concat(digits.map(function (digit) {
-                var flipDigit = React.createElement(FlipDigit, { pauseStoppedAnimation: self.props.pauseStoppedAnimation, pausePausedAnimation: self.props.pausePausedAnimation, activeClass: self.props.activeClass, beforeClass: self.props.beforeClass, flipClass: self.props.flipClass, playClass: self.props.playClass, tickState: self.props.tickState, digit: digit, key: counter });
+                var flipDigit = React.createElement(FlipDigit, { pauseStoppedAnimation: self.props.pauseStoppedAnimation, pausePausedAnimation: self.props.pausePausedAnimation, activeClass: self.props.activeClass, beforeClass: self.props.beforeClass, flipClass: self.props.flipClass, playClass: self.props.playClass, tickState: self.props.tickState, digit: digit, key: counter, additionalClassName: self.props.additionalClassName });
                 counter++;
                 return flipDigit;
             }));
         }
-        return React.createElement("span", { className: "flip-clock-wrapper" },
+        return React.createElement("div", { className: "flip-clock-wrapper" },
             elements,
             this.props.children);
     };
@@ -22705,7 +22766,6 @@ var FlipClock = (function (_super) {
     };
     FlipClock.prototype.render = function () {
         var _this = this;
-        //pausePausedAnimation={this.props.pausePausedAnimation}  daySettings={this.props.daySettings} hourSettings={this.props.hourSettings} minuteSettings={this.props.minuteSettings} secondSettings={this.props.secondSettings} 
         return React.createElement(StopwatchController, { ref: function (sc) { _this.stopwatchController = sc; }, countdown: this.props.countdown, autoStart: this.props.autoStart, shouldUpdateSameDuration: this.props.shouldUpdateSameDuration, startDuration: this.props.startDuration },
             React.createElement(FlipClockPrivate, __assign({}, this.props)));
     };
@@ -22726,7 +22786,8 @@ var FlipDigit = (function (_super) {
         //#endregion
     }
     FlipDigit.prototype.getRunningClassName = function (running) {
-        return this.props.flipClass + (running ? (" " + this.props.playClass) : "");
+        var additionalClassName = this.props.additionalClassName !== "" ? this.props.additionalClassName + " " : "";
+        return additionalClassName + this.props.flipClass + (running ? (" " + this.props.playClass) : "");
     };
     FlipDigit.prototype.getDigitClass = function (digit) {
         var className = "";
@@ -22855,7 +22916,8 @@ FlipDigit.defaultProps = {
     playClass: "play",
     tickState: TickState.stopped,
     pausePausedAnimation: false,
-    pauseStoppedAnimation: false
+    pauseStoppedAnimation: false,
+    additionalClassName: ""
 };
 exports.FlipDigit = FlipDigit;
 var DigitsDivider = (function (_super) {
@@ -22864,7 +22926,7 @@ var DigitsDivider = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     DigitsDivider.prototype.render = function () {
-        return React.createElement("span", { className: this.props.dividerClass },
+        return React.createElement("span", { className: this.props.dividerClass + " " + this.props.additionalClassName },
             React.createElement("span", { className: this.props.labelClass }, this.props.dividerTitle),
             React.createElement("span", { className: this.props.dotClass + " top" }),
             React.createElement("span", { className: this.props.dotClass + " bottom" }));
@@ -22874,7 +22936,8 @@ var DigitsDivider = (function (_super) {
 DigitsDivider.defaultProps = {
     labelClass: 'flip-clock-label',
     dotClass: 'flip-clock-dot',
-    dividerClass: 'flip-clock-divider'
+    dividerClass: 'flip-clock-divider',
+    additionalClassName: ""
 };
 exports.DigitsDivider = DigitsDivider;
 //will probably be able to have a Flippable component that cycles through whatever - string
@@ -22934,8 +22997,8 @@ var FlipClock12Private = (function (_super) {
         return ampm;
     };
     FlipClock12Private.prototype.render = function () {
-        return React.createElement(FlipClockPrivate, { duration: this.props.duration, hourSettings: flipClock12HourSettings, minuteSettings: flipClockClockMinuteSettings, secondSettings: flipClockClockSecondSettings, tickState: this.props.tickState },
-            React.createElement(FlipDigit, { pauseStoppedAnimation: this.props.pausePausedAnimation, pausePausedAnimation: this.props.pausePausedAnimation, activeClass: this.props.activeClass, beforeClass: this.props.beforeClass, flipClass: this.props.flipClass, playClass: this.props.playClass, tickState: this.props.tickState, digit: this.getAmPm() }));
+        return React.createElement(FlipClockPrivate, __assign({ duration: this.props.duration, hourSettings: flipClock12HourSettings, minuteSettings: flipClockClockMinuteSettings, secondSettings: flipClockClockSecondSettings, tickState: this.props.tickState }, this.props),
+            React.createElement(FlipDigit, { additionalClassName: "ampm " + this.props.additionalClassName, pauseStoppedAnimation: this.props.pauseStoppedAnimation, pausePausedAnimation: this.props.pausePausedAnimation, activeClass: this.props.activeClass, beforeClass: this.props.beforeClass, flipClass: this.props.flipClass, playClass: this.props.playClass, tickState: this.props.tickState, digit: this.getAmPm() }));
     };
     return FlipClock12Private;
 }(React.Component));
@@ -23106,59 +23169,7 @@ function flipClockWrapper(getFlipClockProps, defaultProps) {
     var _a;
 }
 exports.flipClockWrapper = flipClockWrapper;
-var FlipCounter = (function (_super) {
-    __extends(FlipCounter, _super);
-    function FlipCounter() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    //this will eventually become part of the duration
-    FlipCounter.prototype.getDoubleDigits = function (num) {
-        var numString = num.toString();
-        if (numString.length === 1) {
-            numString = "0" + numString;
-        }
-        return numString;
-    };
-    FlipCounter.prototype.getDoubleDigitsArray = function (num) {
-        return this.getDigitArray(this.getDoubleDigits(num).split(""));
-    };
-    FlipCounter.prototype.getDigitArray = function (numStrings) {
-        return numStrings.map(function (numString) {
-            return parseInt(numString);
-        });
-    };
-    FlipCounter.prototype.getHourDigits = function (hours) {
-        var hoursString = hours.toString();
-        //could change this based upon options
-        if (hoursString.length === 1) {
-            return this.getDoubleDigitsArray(hours);
-        }
-        return this.getDigitArray(hoursString.split(""));
-    };
-    FlipCounter.prototype.render = function () {
-        var self = this;
-        return React.createElement("div", { className: "flip-clock-wrapper" },
-            React.createElement(DigitsDivider, { dividerTitle: this.props.hoursTitle }),
-            this.getHourDigits(this.props.duration.totalHours).map(function (hourDigit, i) {
-                return React.createElement(FlipDigit, { pauseStoppedAnimation: true, tickState: self.props.tickState, digit: hourDigit, key: i });
-            }),
-            React.createElement(DigitsDivider, { dividerTitle: this.props.minutesTitle }),
-            this.getDoubleDigitsArray(this.props.duration.minutes).map(function (minuteDigit, i) {
-                return React.createElement(FlipDigit, { pauseStoppedAnimation: true, tickState: self.props.tickState, digit: minuteDigit, key: i });
-            }),
-            React.createElement(DigitsDivider, { dividerTitle: this.props.secondsTitle }),
-            this.getDoubleDigitsArray(this.props.duration.seconds).map(function (secondDigit, i) {
-                return React.createElement(FlipDigit, { pauseStoppedAnimation: true, tickState: self.props.tickState, digit: secondDigit, key: i });
-            }));
-    };
-    return FlipCounter;
-}(React.Component));
-FlipCounter.defaultProps = {
-    hoursTitle: "",
-    minutesTitle: "",
-    secondsTitle: ""
-};
-exports.FlipCounter = FlipCounter;
+//#endregion
 //#endregion
 
 
