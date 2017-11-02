@@ -24,7 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.3</TypeScriptToolsVersion>
     <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.css" />
-    <Content Include="docs\index.html" />
     <Content Include="firebaseui.css" />
     <Content Include="flipclock.css" />
     <Content Include="muiBtn.css" />
