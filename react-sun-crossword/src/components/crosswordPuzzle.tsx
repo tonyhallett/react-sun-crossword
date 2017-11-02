@@ -105,7 +105,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             this.speechUndos.push(speechUndo);
 
             response = {
-                sound: "sounds/small-bell-ring.mp3"
+                sound: "assets/sounds/small-bell-ring.mp3"
             }
         } else {
             response = {
@@ -598,7 +598,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         return {
             isDefault: true,
             name: "Default",
-            enter: function () { return { sound: "sounds/default-state.mp3" } },
+            enter: function () { return { sound: "assets/sounds/default-state.mp3" } },
             exit: function () { console.log("Exit default state"); return null },
             commands: [navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
         }
@@ -726,7 +726,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             recogniseMe.addStates([this.getDefaultState(clueProviders[0].acrossClues, clueProviders[0].downClues), this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()])
             
             if (!this.recognising) {
-                recogniseMe.allStatesNoMatchSoundResponse = { sound: "sounds/family-fortunes-wrong-buzzer.mp3" }
+                recogniseMe.allStatesNoMatchSoundResponse = { sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3" }
                 recogniseMe.doNotListenWhenSpeaking = true;
                 recogniseMe.setSkipSpeakingCommand("quiet please");
                 recogniseMe.setLanguage("en-GB")

@@ -68,10 +68,10 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app.css" />
-    <Content Include="firebaseui.css" />
-    <Content Include="flipclock.css" />
-    <Content Include="muiBtn.css" />
+    <Content Include="assets\css\app.css" />
+    <Content Include="assets\css\firebaseui.css" />
+    <Content Include="assets\css\flipclock.css" />
+    <Content Include="assets\css\muiBtn.css" />
     <Content Include="packages.config" />
     <Content Include="package.json" />
     <None Include="src\sunCrosswordJsons\23825.json" />
@@ -81,13 +81,13 @@
     <None Include="src\sunCrosswordJsons\23829.json" />
     <None Include="src\sunCrosswordJsons\23830.json" />
     <None Include="src\sunCrosswordJsons\23912.json" />
-    <Content Include="react-select.css" />
-    <Content Include="react-tabs.css" />
-    <Content Include="sounds\default-state.mp3" />
-    <Content Include="sounds\small-bell-ring.mp3" />
+    <Content Include="assets\css\react-select.css" />
+    <Content Include="assets\css\react-tabs.css" />
+    <Content Include="assets\sounds\default-state.mp3" />
+    <Content Include="assets\sounds\small-bell-ring.mp3" />
     <Content Include="src\helpers\annyang.js" />
     <Content Include="src\lib\index.js" />
-    <Content Include="sounds\family-fortunes-wrong-buzzer.mp3" />
+    <Content Include="assets\sounds\family-fortunes-wrong-buzzer.mp3" />
     <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
