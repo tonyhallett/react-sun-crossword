@@ -15,7 +15,7 @@ var MuiButton = (function (_super) {
         _this.onClickCB = function (ev) {
             _this.showRipple(ev);
             // execute callback
-            var fn = _this.props.onMouseDown;
+            var fn = _this.props.onClick;
             fn && fn(ev);
         };
         _this.onMouseDownCB = function (ev) {
