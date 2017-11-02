@@ -1,5 +1,5 @@
 ﻿export interface SimpleButtonProps {
-    onClick: () => void;
+    onClick?: React.EventHandler<React.MouseEvent<HTMLButtonElement>>
     text: string,
     disabled?: boolean
 }

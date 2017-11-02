@@ -12,6 +12,12 @@ var MuiButton = (function (_super) {
     function MuiButton(props) {
         var _this = _super.call(this, props) || this;
         _this.ignoreMouseRippleDueToTouch = false;
+        _this.onClickCB = function (ev) {
+            _this.showRipple(ev);
+            // execute callback
+            var fn = _this.props.onMouseDown;
+            fn && fn(ev);
+        };
         _this.onMouseDownCB = function (ev) {
             _this.showRipple(ev);
             // execute callback
@@ -237,7 +243,7 @@ var MuiButton = (function (_super) {
         }
         var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + (this.props.touchOnly ? "" : hoverFocusActiveLighterBackgroundCss) + disabledCss + buttonCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
         return React.createElement("button", { onContextMenu: function (evt) { if (_this.props.preventContextMenu)
-                evt.preventDefault(); }, disabled: this.props.disabled, style: this.buttonStyle, id: this.id, ref: function (btn) { return _this.buttonEl = btn; }, onTouchStart: this.onTouchStartCB, onTouchEnd: this.onTouchEndCB, onMouseDown: this.onMouseDownCB, onMouseUp: this.onMouseUpCB, onMouseLeave: this.onMouseLeaveCB },
+                evt.preventDefault(); }, disabled: this.props.disabled, style: this.buttonStyle, id: this.id, ref: function (btn) { return _this.buttonEl = btn; }, onTouchStart: this.onTouchStartCB, onTouchEnd: this.onTouchEndCB, onMouseDown: this.onMouseDownCB, onMouseUp: this.onMouseUpCB, onMouseLeave: this.onMouseLeaveCB, onClick: this.onClickCB },
             this.props.children,
             React.createElement("style", { dangerouslySetInnerHTML: {
                     __html: muiCss

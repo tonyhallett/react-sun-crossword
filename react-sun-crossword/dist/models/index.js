@@ -37,6 +37,39 @@ var Word = (function () {
     return Word;
 }());
 exports.Word = Word;
+var CrosswordModel = (function () {
+    function CrosswordModel() {
+    }
+    CrosswordModel.prototype.selectWord = function (word) {
+        if (this.selectedWord !== word) {
+            if (this.selectedWord) {
+                this.selectedWord.deselect();
+            }
+            word.select();
+            this.selectedWord = word;
+        }
+    };
+    CrosswordModel.prototype.selectSquare = function (square) {
+        var previousSelectedSquare = this.selectedSquare;
+        if (previousSelectedSquare) {
+            previousSelectedSquare.selected = false;
+        }
+        square.selected = true;
+        this.selectedSquare = square;
+    };
+    ;
+    return CrosswordModel;
+}());
+var Square = (function () {
+    function Square() {
+    }
+    Square.prototype.isStartOfWord = function (across) {
+        var word = across ? this.acrossWord : this.downWord;
+        var index = word.squares.indexOf(this);
+        return index === 0;
+    };
+    return Square;
+}());
 function ConvertCrosswordModelToJson(crosswordModel) {
     //dates different types
     var grid = crosswordModel.grid.map(function (row) {
@@ -100,35 +133,26 @@ function ConvertCrosswordModelToJson(crosswordModel) {
 exports.ConvertCrosswordModelToJson = ConvertCrosswordModelToJson;
 function ConvertCrosswordJsonToModel(crosswordJson) {
     var dateStarted = crosswordJson.dateStarted ? new Date(crosswordJson.dateStarted) : null;
-    var crosswordModel = {
-        dateStarted: dateStarted,
-        duration: crosswordJson.duration,
-        id: crosswordJson.id,
-        datePublished: new Date(crosswordJson.datePublished),
-        title: crosswordJson.title,
-        selectedSquare: null,
-        selectedWord: null,
-        solvingMode: crosswordJson.solvingMode,
-        words: null,
-        clueProviders: null,
-        grid: null
-    };
+    var crosswordModel = new CrosswordModel();
+    crosswordModel.dateStarted = dateStarted;
+    crosswordModel.duration = crosswordJson.duration;
+    crosswordModel.id = crosswordJson.id;
+    crosswordModel.datePublished = new Date(crosswordJson.datePublished);
+    crosswordModel.title = crosswordJson.title;
+    crosswordModel.solvingMode = crosswordJson.solvingMode;
     var selectedSquare = null;
     var grid = crosswordJson.grid.map(function (row, rowIndex) {
         return row.map(function (square, columnIndex) {
-            var crosswordSquare = {
-                autoSolved: square.autoSolved,
-                columnIndex: columnIndex,
-                rowIndex: rowIndex,
-                acrossWord: null,
-                downWord: null,
-                guess: square.guess,
-                letter: square.letter,
-                number: square.number,
-                selected: square.selected,
-                wordSelected: square.wordSelected,
-                solvingMode: SolvingMode.Guessing
-            };
+            var crosswordSquare = new Square();
+            crosswordSquare.autoSolved = square.autoSolved;
+            crosswordSquare.columnIndex = columnIndex;
+            crosswordSquare.rowIndex = rowIndex;
+            crosswordSquare.guess = square.guess;
+            crosswordSquare.letter = square.letter;
+            crosswordSquare.number = square.number;
+            crosswordSquare.selected = square.selected;
+            crosswordSquare.wordSelected = square.wordSelected;
+            crosswordSquare.solvingMode = square.solvingMode;
             if (crosswordSquare.selected) {
                 selectedSquare = crosswordSquare;
             }

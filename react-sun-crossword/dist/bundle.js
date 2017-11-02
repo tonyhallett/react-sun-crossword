@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 153);
+/******/ 	return __webpack_require__(__webpack_require__.s = 152);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -351,6 +351,7 @@ function isNativeBlob(p) {
 function isNativeBlobDefined() {
     return typeof Blob !== 'undefined';
 }
+//# sourceMappingURL=type.js.map
 
 
 /***/ }),
@@ -626,6 +627,7 @@ function invalidFormat(format, message) {
 function internalError(message) {
     throw new FirebaseStorageError(Code.INTERNAL_ERROR, 'Internal error: ' + message);
 }
+//# sourceMappingURL=error.js.map
 
 
 /***/ }),
@@ -763,7 +765,7 @@ exports.make = make;
 exports.resolve = resolve;
 exports.reject = reject;
 
-var _shared_promise = __webpack_require__(24);
+var _shared_promise = __webpack_require__(25);
 
 function make(resolver) {
   return new _shared_promise.local.Promise(resolver);
@@ -801,6 +803,7 @@ function resolve(value) {
 function reject(error) {
   return _shared_promise.local.Promise.reject(error);
 }
+//# sourceMappingURL=promise_external.js.map
 
 
 /***/ }),
@@ -902,6 +905,7 @@ function clone(obj) {
     });
     return c;
 }
+//# sourceMappingURL=object.js.map
 
 
 /***/ }),
@@ -1057,6 +1061,7 @@ var firebase = (0, _firebase_app.createFirebaseNamespace)(); /**
 // Import the createFirebaseNamespace function
 exports.default = firebase;
 module.exports = exports['default'];
+//# sourceMappingURL=app.js.map
 
 
 /***/ }),
@@ -1096,7 +1101,7 @@ var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDom = __webpack_require__(35);
+var _reactDom = __webpack_require__(36);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -1112,11 +1117,11 @@ var _utilsDefaultArrowRenderer = __webpack_require__(123);
 
 var _utilsDefaultArrowRenderer2 = _interopRequireDefault(_utilsDefaultArrowRenderer);
 
-var _utilsDefaultFilterOptions = __webpack_require__(53);
+var _utilsDefaultFilterOptions = __webpack_require__(54);
 
 var _utilsDefaultFilterOptions2 = _interopRequireDefault(_utilsDefaultFilterOptions);
 
-var _utilsDefaultMenuRenderer = __webpack_require__(54);
+var _utilsDefaultMenuRenderer = __webpack_require__(55);
 
 var _utilsDefaultMenuRenderer2 = _interopRequireDefault(_utilsDefaultMenuRenderer);
 
@@ -2314,7 +2319,7 @@ module.exports = exports['default'];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var Color = __webpack_require__(36);
+var Color = __webpack_require__(37);
 //these all have the same initial lightness but in rgb which is not ideal
 //the values are too dark - so is there a way 
 //to provide as hsl !
@@ -2416,6 +2421,39 @@ var Word = (function () {
     return Word;
 }());
 exports.Word = Word;
+var CrosswordModel = (function () {
+    function CrosswordModel() {
+    }
+    CrosswordModel.prototype.selectWord = function (word) {
+        if (this.selectedWord !== word) {
+            if (this.selectedWord) {
+                this.selectedWord.deselect();
+            }
+            word.select();
+            this.selectedWord = word;
+        }
+    };
+    CrosswordModel.prototype.selectSquare = function (square) {
+        var previousSelectedSquare = this.selectedSquare;
+        if (previousSelectedSquare) {
+            previousSelectedSquare.selected = false;
+        }
+        square.selected = true;
+        this.selectedSquare = square;
+    };
+    ;
+    return CrosswordModel;
+}());
+var Square = (function () {
+    function Square() {
+    }
+    Square.prototype.isStartOfWord = function (across) {
+        var word = across ? this.acrossWord : this.downWord;
+        var index = word.squares.indexOf(this);
+        return index === 0;
+    };
+    return Square;
+}());
 function ConvertCrosswordModelToJson(crosswordModel) {
     //dates different types
     var grid = crosswordModel.grid.map(function (row) {
@@ -2479,35 +2517,26 @@ function ConvertCrosswordModelToJson(crosswordModel) {
 exports.ConvertCrosswordModelToJson = ConvertCrosswordModelToJson;
 function ConvertCrosswordJsonToModel(crosswordJson) {
     var dateStarted = crosswordJson.dateStarted ? new Date(crosswordJson.dateStarted) : null;
-    var crosswordModel = {
-        dateStarted: dateStarted,
-        duration: crosswordJson.duration,
-        id: crosswordJson.id,
-        datePublished: new Date(crosswordJson.datePublished),
-        title: crosswordJson.title,
-        selectedSquare: null,
-        selectedWord: null,
-        solvingMode: crosswordJson.solvingMode,
-        words: null,
-        clueProviders: null,
-        grid: null
-    };
+    var crosswordModel = new CrosswordModel();
+    crosswordModel.dateStarted = dateStarted;
+    crosswordModel.duration = crosswordJson.duration;
+    crosswordModel.id = crosswordJson.id;
+    crosswordModel.datePublished = new Date(crosswordJson.datePublished);
+    crosswordModel.title = crosswordJson.title;
+    crosswordModel.solvingMode = crosswordJson.solvingMode;
     var selectedSquare = null;
     var grid = crosswordJson.grid.map(function (row, rowIndex) {
         return row.map(function (square, columnIndex) {
-            var crosswordSquare = {
-                autoSolved: square.autoSolved,
-                columnIndex: columnIndex,
-                rowIndex: rowIndex,
-                acrossWord: null,
-                downWord: null,
-                guess: square.guess,
-                letter: square.letter,
-                number: square.number,
-                selected: square.selected,
-                wordSelected: square.wordSelected,
-                solvingMode: SolvingMode.Guessing
-            };
+            var crosswordSquare = new Square();
+            crosswordSquare.autoSolved = square.autoSolved;
+            crosswordSquare.columnIndex = columnIndex;
+            crosswordSquare.rowIndex = rowIndex;
+            crosswordSquare.guess = square.guess;
+            crosswordSquare.letter = square.letter;
+            crosswordSquare.number = square.number;
+            crosswordSquare.selected = square.selected;
+            crosswordSquare.wordSelected = square.wordSelected;
+            crosswordSquare.solvingMode = square.solvingMode;
             if (crosswordSquare.selected) {
                 selectedSquare = crosswordSquare;
             }
@@ -2693,6 +2722,7 @@ exports.default = {
     map: ERROR_MAP
 };
 module.exports = exports['default'];
+//# sourceMappingURL=errors.js.map
 
 
 /***/ }),
@@ -2779,6 +2809,7 @@ var defaultMaxUploadRetryTime = exports.defaultMaxUploadRetryTime = 10 * 60 * 10
  * enough for us to use it directly.
  */
 var minSafeInteger = exports.minSafeInteger = -9007199254740991;
+//# sourceMappingURL=constants.js.map
 
 
 /***/ }),
@@ -2911,6 +2942,7 @@ var Location = exports.Location = function () {
 
     return Location;
 }();
+//# sourceMappingURL=location.js.map
 
 
 /***/ }),
@@ -3195,6 +3227,64 @@ TabPanel.propTypes = process.env.NODE_ENV !== "production" ? {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var TwoCol = (function (_super) {
+    __extends(TwoCol, _super);
+    function TwoCol() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TwoCol.prototype.render = function () {
+        var leftPercent = 50;
+        if (this.props.leftPercentage) {
+            leftPercent = this.props.leftPercentage;
+        }
+        var rightPercent = 100 - leftPercent;
+        var leftStyle = {
+            float: 'left',
+            width: leftPercent + '%',
+            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
+        };
+        var rightStyle = {
+            float: 'left',
+            width: rightPercent + '%',
+            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
+        };
+        var left = React.createElement("div", { style: leftStyle }, this.props.leftContent);
+        var right = React.createElement("div", { style: rightStyle },
+            this.props.rightContent,
+            " ");
+        var container = React.createElement("div", null,
+            left,
+            right);
+        if (this.props.containerStyle) {
+            container = React.createElement("div", { style: this.props.containerStyle },
+                left,
+                right);
+        }
+        return container;
+    };
+    return TwoCol;
+}(React.Component));
+exports.TwoCol = TwoCol;
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /*! @license Firebase v4.1.1
 Build: rev-ca0d1df
 Terms: https://firebase.google.com/terms/ */
@@ -3294,10 +3384,11 @@ var ErrorFactory = exports.ErrorFactory = function () {
 
     return ErrorFactory;
 }();
+//# sourceMappingURL=errors.js.map
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3342,11 +3433,12 @@ var local = exports.local = {
     Promise: PromiseImpl,
     GoogPromise: PromiseImpl
 };
+//# sourceMappingURL=shared_promise.js.map
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3373,7 +3465,7 @@ var _error = __webpack_require__(4);
 
 var errorsExports = _interopRequireWildcard(_error);
 
-var _metadata = __webpack_require__(27);
+var _metadata = __webpack_require__(28);
 
 var MetadataUtils = _interopRequireWildcard(_metadata);
 
@@ -3506,10 +3598,11 @@ function nullFunctionSpec(opt_optional) {
         }
     }, opt_optional);
 }
+//# sourceMappingURL=args.js.map
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3579,10 +3672,11 @@ function remove(array, elem) {
         array.splice(i, 1);
     }
 }
+//# sourceMappingURL=array.js.map
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3611,7 +3705,7 @@ var json = _interopRequireWildcard(_json);
 
 var _location = __webpack_require__(19);
 
-var _path = __webpack_require__(47);
+var _path = __webpack_require__(48);
 
 var path = _interopRequireWildcard(_path);
 
@@ -3619,7 +3713,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _url = __webpack_require__(29);
+var _url = __webpack_require__(30);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
@@ -3788,10 +3882,11 @@ function metadataValidator(p) {
         }
     }
 }
+//# sourceMappingURL=metadata.js.map
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3997,10 +4092,11 @@ function endsWith(s, end) {
     }
     return s.substring(s.length - end.length) === end;
 }
+//# sourceMappingURL=string.js.map
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4066,10 +4162,11 @@ function makeQueryString(params) {
     queryPart = queryPart.slice(0, -1);
     return queryPart;
 }
+//# sourceMappingURL=url.js.map
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4090,7 +4187,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4115,22 +4212,18 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var muiButton_1 = __webpack_require__(146);
+var muiButton_1 = __webpack_require__(145);
 var MuiButtonWrapper = (function (_super) {
     __extends(MuiButtonWrapper, _super);
     function MuiButtonWrapper() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        //wrap in div and handle click from that ?
-        _this.onMouseUp = function () {
-            _this.props.onClick();
+        _this.onClick = function (ev) {
+            _this.props.onClick(ev);
         };
         return _this;
     }
     MuiButtonWrapper.prototype.render = function () {
-        //important consideration at a later point
-        //if the consumer of this wrapper wanted to also pass onMouseUp
-        //moot point as functionally is only used for onClick and the remainder is just styling
-        return React.createElement(muiButton_1.MuiButton, __assign({}, this.props, { disabled: this.props.disabled, onMouseUp: this.onMouseUp }),
+        return React.createElement(muiButton_1.MuiButton, __assign({}, this.props, { disabled: this.props.disabled, onClick: this.onClick }),
             "  ",
             this.props.text);
     };
@@ -4140,65 +4233,24 @@ exports.MuiButtonWrapper = MuiButtonWrapper;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var TwoCol = (function (_super) {
-    __extends(TwoCol, _super);
-    function TwoCol() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    TwoCol.prototype.render = function () {
-        var leftPercent = 50;
-        if (this.props.leftPercentage) {
-            leftPercent = this.props.leftPercentage;
-        }
-        var rightPercent = 100 - leftPercent;
-        var leftStyle = {
-            float: 'left',
-            width: leftPercent + '%',
-            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
-        };
-        var rightStyle = {
-            float: 'left',
-            width: rightPercent + '%',
-            overflow: this.props.colOverflow ? this.props.colOverflow : 'hidden'
-        };
-        var left = React.createElement("div", { style: leftStyle }, this.props.leftContent);
-        var right = React.createElement("div", { style: rightStyle },
-            this.props.rightContent,
-            " ");
-        var container = React.createElement("div", null,
-            left,
-            right);
-        if (this.props.containerStyle) {
-            container = React.createElement("div", { style: this.props.containerStyle },
-                left,
-                right);
-        }
-        return container;
-    };
-    return TwoCol;
-}(React.Component));
-exports.TwoCol = TwoCol;
+var firebase = __webpack_require__(73);
+var appToExport = firebase.initializeApp({
+    apiKey: "AIzaSyBHE9S_e2-OeQ1_2_MY_heKj1Ex0Yh-j-Y",
+    databaseURL: "https://react-sun-crossword.firebaseio.com/",
+});
+exports.auth = appToExport.auth();
+exports.database = appToExport.database();
+exports.app = appToExport;
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4232,7 +4284,7 @@ exports.objectAssign = objectAssign;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4247,13 +4299,13 @@ exports.KEYUP = 'keyup';
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = ReactDOM;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4739,11 +4791,11 @@ module.exports = Color;
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var cssKeywords = __webpack_require__(38);
+var cssKeywords = __webpack_require__(39);
 
 // NOTE: conversions should only return primitive values (i.e. arrays, or
 //       values that give correct `typeof` results).
@@ -5606,7 +5658,7 @@ convert.rgb.gray = function (rgb) {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -5761,7 +5813,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var prefix = __webpack_require__(98)
@@ -5828,7 +5880,7 @@ module.exports.get = function (element, properties) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5849,7 +5901,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 exports.createSubscribe = createSubscribe;
 exports.async = async;
 
-var _shared_promise = __webpack_require__(24);
+var _shared_promise = __webpack_require__(25);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6109,10 +6161,11 @@ function implementsAnyMethods(obj, methods) {
 function noop() {
     // do nothing
 }
+//# sourceMappingURL=subscribe.js.map
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*! @license Firebase v4.1.1
@@ -6378,11 +6431,12 @@ try{firebase.INTERNAL.registerService("database",function(a){var b=Ug.Vb(),c=a.o
 d;return d.Ya},{Reference:U,Query:X,Database:Pg,enableLogging:Sb,INTERNAL:Z,TEST_ACCESS:W,ServerValue:Sg})}catch(Uh){Vb("Failed to register the Firebase Database Service ("+Uh+")")};
             module.exports = firebase.database;
           })();
-                    
+          //# sourceMappingURL=database.js.map
+          
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6413,7 +6467,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _errors = __webpack_require__(23);
+var _errors = __webpack_require__(24);
 
 var _errors2 = __webpack_require__(17);
 
@@ -6423,7 +6477,7 @@ var _tokenManager = __webpack_require__(79);
 
 var _tokenManager2 = _interopRequireDefault(_tokenManager);
 
-var _notificationPermission = __webpack_require__(44);
+var _notificationPermission = __webpack_require__(45);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
@@ -6618,10 +6672,11 @@ var ControllerInterface = function () {
 
 exports.default = ControllerInterface;
 module.exports = exports['default'];
+//# sourceMappingURL=controller-interface.js.map
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6660,10 +6715,11 @@ exports.default = {
     SUBSCRIPTION_OPTIONS: SUBSCRIPTION_DETAILS
 };
 module.exports = exports['default'];
+//# sourceMappingURL=fcm-details.js.map
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6697,10 +6753,11 @@ exports.default = {
     denied: 'denied'
 };
 module.exports = exports['default'];
+//# sourceMappingURL=notification-permission.js.map
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6755,10 +6812,11 @@ exports.default = {
     createNewMsg: createNewMsg
 };
 module.exports = exports['default'];
+//# sourceMappingURL=worker-page-message.js.map
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6799,7 +6857,7 @@ var _fs = __webpack_require__(86);
 
 var fs = _interopRequireWildcard(_fs);
 
-var _string = __webpack_require__(28);
+var _string = __webpack_require__(29);
 
 var string = _interopRequireWildcard(_string);
 
@@ -6920,10 +6978,11 @@ var FbsBlob = exports.FbsBlob = function () {
 
     return FbsBlob;
 }();
+//# sourceMappingURL=blob.js.map
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7009,10 +7068,11 @@ function lastComponent(path) {
         return path.slice(index + 1);
     }
 }
+//# sourceMappingURL=path.js.map
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7041,17 +7101,17 @@ exports.createResumableUpload = createResumableUpload;
 exports.getResumableUploadStatus = getResumableUploadStatus;
 exports.continueResumableUpload = continueResumableUpload;
 
-var _array = __webpack_require__(26);
+var _array = __webpack_require__(27);
 
 var array = _interopRequireWildcard(_array);
 
-var _blob = __webpack_require__(46);
+var _blob = __webpack_require__(47);
 
 var _error = __webpack_require__(4);
 
 var errorsExports = _interopRequireWildcard(_error);
 
-var _metadata = __webpack_require__(27);
+var _metadata = __webpack_require__(28);
 
 var MetadataUtils = _interopRequireWildcard(_metadata);
 
@@ -7065,7 +7125,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _url = __webpack_require__(29);
+var _url = __webpack_require__(30);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
@@ -7362,10 +7422,11 @@ function continueResumableUpload(location, authWrapper, url, blob, chunkSize, ma
     requestInfo.errorHandler = sharedErrorHandler(location);
     return requestInfo;
 }
+//# sourceMappingURL=requests.js.map
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7438,10 +7499,11 @@ function taskStateFromInternalTaskState(state) {
             return TaskState.ERROR;
     }
 }
+//# sourceMappingURL=taskenums.js.map
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7478,10 +7540,11 @@ var ErrorCode = exports.ErrorCode = undefined;
     ErrorCode[ErrorCode["NETWORK_ERROR"] = 1] = "NETWORK_ERROR";
     ErrorCode[ErrorCode["ABORT"] = 2] = "ABORT";
 })(ErrorCode || (exports.ErrorCode = ErrorCode = {}));
+//# sourceMappingURL=xhrio.js.map
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7516,11 +7579,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _args = __webpack_require__(25);
+var _args = __webpack_require__(26);
 
 var args = _interopRequireWildcard(_args);
 
-var _blob = __webpack_require__(46);
+var _blob = __webpack_require__(47);
 
 var _error = __webpack_require__(4);
 
@@ -7528,7 +7591,7 @@ var errorsExports = _interopRequireWildcard(_error);
 
 var _location = __webpack_require__(19);
 
-var _metadata = __webpack_require__(27);
+var _metadata = __webpack_require__(28);
 
 var metadata = _interopRequireWildcard(_metadata);
 
@@ -7536,15 +7599,15 @@ var _object = __webpack_require__(9);
 
 var object = _interopRequireWildcard(_object);
 
-var _path = __webpack_require__(47);
+var _path = __webpack_require__(48);
 
 var path = _interopRequireWildcard(_path);
 
-var _requests = __webpack_require__(48);
+var _requests = __webpack_require__(49);
 
 var requests = _interopRequireWildcard(_requests);
 
-var _string = __webpack_require__(28);
+var _string = __webpack_require__(29);
 
 var fbsString = _interopRequireWildcard(_string);
 
@@ -7786,10 +7849,11 @@ var Reference = exports.Reference = function () {
 
     return Reference;
 }();
+//# sourceMappingURL=reference.js.map
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7810,7 +7874,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7818,7 +7882,7 @@ module.exports = ReactPropTypesSecret;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-var _stripDiacritics = __webpack_require__(55);
+var _stripDiacritics = __webpack_require__(56);
 
 var _stripDiacritics2 = _interopRequireDefault(_stripDiacritics);
 
@@ -7858,7 +7922,7 @@ function filterOptions(options, filterValue, excludeOptions, props) {
 module.exports = filterOptions;
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7925,7 +7989,7 @@ function menuRenderer(_ref) {
 module.exports = menuRenderer;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7941,7 +8005,7 @@ module.exports = function stripDiacritics(str) {
 };
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7990,7 +8054,7 @@ function getPanelsCount(children) {
 }
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8090,7 +8154,7 @@ function selectedIndexPropType(props, propName, componentName, location, propFul
 }
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8110,18 +8174,18 @@ function reset() {
 }
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var firebaseApp_1 = __webpack_require__(60);
+var firebaseApp_1 = __webpack_require__(33);
 var FirebaseDatabase = (function () {
     function FirebaseDatabase() {
-        var connectedRef = firebaseApp_1.database.ref(".info/connected");
+        this.connectedRef = firebaseApp_1.database.ref(".info/connected");
         var self = this;
-        connectedRef.on("value", function (snap) {
+        this.connectedRef.on("value", function (snap) {
             var connected = false;
             if (snap.val() === true) {
                 connected = true;
@@ -8213,23 +8277,6 @@ exports.connectedDatabase = new FirebaseDatabase();
 
 
 /***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var firebase = __webpack_require__(73);
-var appToExport = firebase.initializeApp({
-    apiKey: "AIzaSyBHE9S_e2-OeQ1_2_MY_heKj1Ex0Yh-j-Y",
-    databaseURL: "https://react-sun-crossword.firebaseio.com/",
-});
-exports.auth = appToExport.auth();
-exports.database = appToExport.database();
-exports.app = appToExport;
-
-
-/***/ }),
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8245,15 +8292,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
 var crosswordPuzzle_1 = __webpack_require__(138);
-var connectedDatabase_1 = __webpack_require__(59);
-__webpack_require__(41);
+var twoCol_1 = __webpack_require__(23);
+var firebaseApp_1 = __webpack_require__(33);
+var connectedDatabase_1 = __webpack_require__(60);
+__webpack_require__(42);
 var crosswordPuzzleChooser_1 = __webpack_require__(139);
-var muiWrappedButton_1 = __webpack_require__(31);
-var demoFlipClocks_1 = __webpack_require__(140);
+var muiWrappedButton_1 = __webpack_require__(32);
+var stopwatchController_1 = __webpack_require__(149);
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
     function CrosswordPuzzleApp(props) {
@@ -8263,7 +8320,7 @@ var CrosswordPuzzleApp = (function (_super) {
             if (!crosswordModel.dateStarted) {
                 crosswordModel.dateStarted = new Date();
             }
-            _this.setState({ crosswordModel: crosswordModel });
+            _this.setState({ crosswordModel: crosswordModel, crosswordModelDuration: crosswordModel.duration });
         };
         _this.saveUserCrossword = function () {
             var modelJson = index_1.ConvertCrosswordModelToJson(_this.state.crosswordModel);
@@ -8295,11 +8352,11 @@ var CrosswordPuzzleApp = (function (_super) {
                 }
             }
         };
-        _this.state = { crosswordModel: null, userLoggedIn: null };
+        _this.state = { crosswordModel: null, userLoggedIn: null, crosswordModelDuration: 0 };
         return _this;
     }
     CrosswordPuzzleApp.prototype.componentDidMount = function () {
-        //auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+        firebaseApp_1.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
     };
     CrosswordPuzzleApp.prototype.onAuthStateChanged = function (user) {
         var loggedIn = user !== null;
@@ -8328,25 +8385,26 @@ var CrosswordPuzzleApp = (function (_super) {
         };
         //explicit height allows room for the Select 
         var leftContent = React.createElement("div", { style: { minHeight: "1000px" } },
-            React.createElement(crosswordPuzzleChooser_1.CrosswordPuzzleChooser, { emailLogOnStyleProps: { signInButtonProps: buttonProps, dividerColor: primaryColour }, selectChooserProps: selectChooserProps, userLoggedIn: this.state.userLoggedIn, crosswordSelected: this.crosswordSelected }));
+            React.createElement(crosswordPuzzleChooser_1.CrosswordPuzzleChooser, { emailLogOnStyleProps: { signInButtonProps: buttonProps, dividerColor: primaryColour }, selectChooserProps: selectChooserProps, userLoggedIn: this.state.userLoggedIn, crosswordSelected: this.crosswordSelected }),
+            this.state.crosswordModel &&
+                React.createElement(stopwatchController_1.FlipClock24, { shouldUpdateSameDuration: true, startDuration: this.state.crosswordModelDuration }),
+            React.createElement(muiWrappedButton_1.MuiButtonWrapper, __assign({ disabled: !this.state.userLoggedIn || this.state.crosswordModel === null, text: "Click to save", onClick: this.saveUserCrossword }, buttonProps)));
         var rightContent = React.createElement(crosswordPuzzle_1.CrosswordPuzzleKeyEvents, { crosswordModel: this.state.crosswordModel });
         if (this.state.crosswordModel === null) {
             rightContent = React.createElement("div", null);
         }
-        //return <div >
-        //    {this.state.crosswordModel &&
-        //        <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
-        //            <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
-        //        </StopwatchController>
-        //    }
-        //    <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
-        //    <TwoCol leftContent={leftContent} rightContent={rightContent}>
-        //    </TwoCol>
-        //    </div>
-        //<button onClick={}>Pause</button>
+        /*
+        //{this.state.crosswordModel &&
+            //    <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
+            //        <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
+            //    </StopwatchController>
+            //}
+            //<MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
+        */
         console.log("App render");
         return React.createElement("div", null,
-            React.createElement(demoFlipClocks_1.DemoFlipClocks, null));
+            React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent }));
+        //<button onClick={}>Pause</button>
         //<div>
         //<div ref={(div) => { this.pauseAnimationsContainer=div }}>
         //<StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={112000}>
@@ -8373,30 +8431,6 @@ var CrosswordPuzzleApp = (function (_super) {
         //}}>Check duration</button>
         //</div>
         //{height:"200px"}
-        /*
-            Element queries
-             <Bounded />
-            <ElementQuery queries={{ sm: { maxWidth: 200 }, lg: { minWidth: 201 }, hasHeight: {minHeight:1} }}>
-                <Matches sm>Small</Matches>
-                <Matches lg>Large</Matches>
-                <Matches hasHeight>Has height !</Matches>
-            </ElementQuery>
-            <ElementQueries/>
-        */
-        /*
-              <ElementQuery queries={{ sm: { maxWidth: 499 }, medium: { minWidth: 500,maxWidth:1000 },large: {minWidth: 1001}}}>
-                <Matches sm>
-                        <Keyboard width={250} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-                <Matches medium>
-                    <Keyboard keyboardColour="#F8F8F8" buttonColour="gray" buttonBackgroundColour="yellow" width={500} bottomOfScreen={false} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-                <Matches large>
-                    <Keyboard keyboardColour="#F8F8F8" buttonBackgroundColour="orange"width={1000} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-
-            </ElementQuery>
-        */
         /*
         return <div style={{ minWidth: "500px", maxWidth:"1000px" }}>
             <ExpandableKeyboard keyboardColour="gray" buttonBackgroundColour="orange"  backspacePressed={() => { }} keyPressed={() => { }} />
@@ -8718,7 +8752,7 @@ module.exports = function(name, value) {
 /* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(37);
+var conversions = __webpack_require__(38);
 var route = __webpack_require__(66);
 
 var convert = {};
@@ -8802,7 +8836,7 @@ module.exports = convert;
 /* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var conversions = __webpack_require__(37);
+var conversions = __webpack_require__(38);
 
 /*
 	this function routes a model to all other models.
@@ -8907,7 +8941,7 @@ module.exports = function (fromModel) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /* MIT license */
-var colorNames = __webpack_require__(38);
+var colorNames = __webpack_require__(39);
 var swizzle = __webpack_require__(128);
 
 var reverseNames = {};
@@ -9998,6 +10032,7 @@ function deepExtend(target, source) {
 function patchProperty(obj, prop, value) {
     obj[prop] = value;
 }
+//# sourceMappingURL=deep_copy.js.map
 
 
 /***/ }),
@@ -10034,11 +10069,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 exports.createFirebaseNamespace = createFirebaseNamespace;
 
-var _subscribe = __webpack_require__(40);
+var _subscribe = __webpack_require__(41);
 
-var _errors = __webpack_require__(23);
+var _errors = __webpack_require__(24);
 
-var _shared_promise = __webpack_require__(24);
+var _shared_promise = __webpack_require__(25);
 
 var _deep_copy = __webpack_require__(70);
 
@@ -10401,6 +10436,7 @@ var errors = {
     'invalid-app-argument': 'firebase.{$name}() takes either no argument or a ' + 'Firebase App instance.'
 };
 var appErrors = new _errors.ErrorFactory('app', 'Firebase', errors);
+//# sourceMappingURL=firebase_app.js.map
 
 
 /***/ }),
@@ -10708,7 +10744,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Import instance of FirebaseApp from ./app
 var Storage, XMLHttpRequest;
 
-__webpack_require__(41);
+__webpack_require__(42);
 __webpack_require__(81);
 var AsyncStorage;
 
@@ -10716,6 +10752,7 @@ __webpack_require__(74);
 // Export the single instance of firebase
 exports.default = _app2.default;
 module.exports = exports['default'];
+//# sourceMappingURL=firebase-browser.js.map
 
 
 /***/ }),
@@ -10776,6 +10813,7 @@ function registerMessaging(instance) {
     });
 }
 registerMessaging(_app2.default);
+//# sourceMappingURL=messaging.js.map
 
 
 /***/ }),
@@ -10812,7 +10850,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _controllerInterface = __webpack_require__(42);
+var _controllerInterface = __webpack_require__(43);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -10820,11 +10858,11 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(45);
+var _workerPageMessage = __webpack_require__(46);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
-var _fcmDetails = __webpack_require__(43);
+var _fcmDetails = __webpack_require__(44);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -11153,6 +11191,7 @@ var SWController = function (_ControllerInterface) {
 
 exports.default = SWController;
 module.exports = exports['default'];
+//# sourceMappingURL=sw-controller.js.map
 
 
 /***/ }),
@@ -11189,7 +11228,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _controllerInterface = __webpack_require__(42);
+var _controllerInterface = __webpack_require__(43);
 
 var _controllerInterface2 = _interopRequireDefault(_controllerInterface);
 
@@ -11197,7 +11236,7 @@ var _errors = __webpack_require__(17);
 
 var _errors2 = _interopRequireDefault(_errors);
 
-var _workerPageMessage = __webpack_require__(45);
+var _workerPageMessage = __webpack_require__(46);
 
 var _workerPageMessage2 = _interopRequireDefault(_workerPageMessage);
 
@@ -11205,11 +11244,11 @@ var _defaultSw = __webpack_require__(78);
 
 var _defaultSw2 = _interopRequireDefault(_defaultSw);
 
-var _notificationPermission = __webpack_require__(44);
+var _notificationPermission = __webpack_require__(45);
 
 var _notificationPermission2 = _interopRequireDefault(_notificationPermission);
 
-var _subscribe = __webpack_require__(40);
+var _subscribe = __webpack_require__(41);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11553,6 +11592,7 @@ var WindowController = function (_ControllerInterface) {
 
 exports.default = WindowController;
 module.exports = exports['default'];
+//# sourceMappingURL=window-controller.js.map
 
 
 /***/ }),
@@ -11595,6 +11635,7 @@ exports.default = function (arrayBuffer) {
 };
 
 module.exports = exports['default'];
+//# sourceMappingURL=array-buffer-to-base64.js.map
 
 
 /***/ }),
@@ -11631,6 +11672,7 @@ exports.default = {
     scope: '/firebase-cloud-messaging-push-scope'
 };
 module.exports = exports['default'];
+//# sourceMappingURL=default-sw.js.map
 
 
 /***/ }),
@@ -11665,7 +11707,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _errors = __webpack_require__(23);
+var _errors = __webpack_require__(24);
 
 var _errors2 = __webpack_require__(17);
 
@@ -11675,7 +11717,7 @@ var _arrayBufferToBase = __webpack_require__(77);
 
 var _arrayBufferToBase2 = _interopRequireDefault(_arrayBufferToBase);
 
-var _fcmDetails = __webpack_require__(43);
+var _fcmDetails = __webpack_require__(44);
 
 var _fcmDetails2 = _interopRequireDefault(_fcmDetails);
 
@@ -12052,6 +12094,7 @@ var TokenManager = function () {
 
 exports.default = TokenManager;
 module.exports = exports['default'];
+//# sourceMappingURL=token-manager.js.map
 
 
 /***/ }),
@@ -12310,13 +12353,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.registerStorage = registerStorage;
 
-var _string = __webpack_require__(28);
+var _string = __webpack_require__(29);
 
-var _taskenums = __webpack_require__(49);
+var _taskenums = __webpack_require__(50);
 
 var _xhriopool = __webpack_require__(93);
 
-var _reference = __webpack_require__(51);
+var _reference = __webpack_require__(52);
 
 var _service = __webpack_require__(94);
 
@@ -12361,6 +12404,7 @@ function registerStorage(instance) {
     true);
 }
 registerStorage(_app2.default);
+//# sourceMappingURL=storage.js.map
 
 
 /***/ }),
@@ -12418,6 +12462,7 @@ function async(f) {
 /**
  * @fileoverview Method for invoking a callback asynchronously.
  */
+//# sourceMappingURL=async.js.map
 
 
 /***/ }),
@@ -12599,6 +12644,7 @@ var AuthWrapper = exports.AuthWrapper = function () {
 
     return AuthWrapper;
 }();
+//# sourceMappingURL=authwrapper.js.map
 
 
 /***/ }),
@@ -12730,6 +12776,7 @@ function start(f, callback, timeout) {
 function stop(id) {
     id(false);
 }
+//# sourceMappingURL=backoff.js.map
 
 
 /***/ }),
@@ -12788,6 +12835,7 @@ var FailRequest = exports.FailRequest = function () {
 
     return FailRequest;
 }();
+//# sourceMappingURL=failrequest.js.map
 
 
 /***/ }),
@@ -12868,6 +12916,7 @@ function sliceBlob(blob, start, end) {
     }
     return null;
 }
+//# sourceMappingURL=fs.js.map
 
 
 /***/ }),
@@ -12923,6 +12972,7 @@ function jsonObjectOrNull(s) {
   * See the License for the specific language governing permissions and
   * limitations under the License.
   */
+//# sourceMappingURL=json.js.map
 
 
 /***/ }),
@@ -12982,6 +13032,7 @@ var Observer = exports.Observer = function Observer(nextOrObserver, opt_error, o
         this.complete = observer['complete'];
     }
 };
+//# sourceMappingURL=observer.js.map
 
 
 /***/ }),
@@ -13025,7 +13076,7 @@ exports.addAuthHeader_ = addAuthHeader_;
 exports.addVersionHeader_ = addVersionHeader_;
 exports.makeRequest = makeRequest;
 
-var _array = __webpack_require__(26);
+var _array = __webpack_require__(27);
 
 var array = _interopRequireWildcard(_array);
 
@@ -13049,11 +13100,11 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _url = __webpack_require__(29);
+var _url = __webpack_require__(30);
 
 var UrlUtils = _interopRequireWildcard(_url);
 
-var _xhrio = __webpack_require__(50);
+var _xhrio = __webpack_require__(51);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -13254,6 +13305,7 @@ function makeRequest(requestInfo, authToken, pool) {
     addVersionHeader_(headers);
     return new NetworkRequest(url, requestInfo.method, headers, requestInfo.body, requestInfo.successCodes, requestInfo.additionalRetryCodes, requestInfo.handler, requestInfo.errorHandler, requestInfo.timeout, requestInfo.progressCallback, pool);
 }
+//# sourceMappingURL=request.js.map
 
 
 /***/ }),
@@ -13300,6 +13352,7 @@ handler, timeout) {
   this.successCodes = [200];
   this.additionalRetryCodes = [];
 };
+//# sourceMappingURL=requestinfo.js.map
 
 
 /***/ }),
@@ -13394,6 +13447,7 @@ var RequestMap = exports.RequestMap = function () {
 
     return RequestMap;
 }();
+//# sourceMappingURL=requestmap.js.map
 
 
 /***/ }),
@@ -13445,7 +13499,7 @@ var _type = __webpack_require__(2);
 
 var type = _interopRequireWildcard(_type);
 
-var _xhrio = __webpack_require__(50);
+var _xhrio = __webpack_require__(51);
 
 var XhrIoExports = _interopRequireWildcard(_xhrio);
 
@@ -13592,6 +13646,7 @@ var NetworkXhrIo = exports.NetworkXhrIo = function () {
 
     return NetworkXhrIo;
 }();
+//# sourceMappingURL=xhrio_network.js.map
 
 
 /***/ }),
@@ -13648,6 +13703,7 @@ var XhrIoPool = exports.XhrIoPool = function () {
 
     return XhrIoPool;
 }();
+//# sourceMappingURL=xhriopool.js.map
 
 
 /***/ }),
@@ -13683,7 +13739,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
 
-var _args = __webpack_require__(25);
+var _args = __webpack_require__(26);
 
 var args = _interopRequireWildcard(_args);
 
@@ -13699,7 +13755,7 @@ var _request = __webpack_require__(89);
 
 var RequestExports = _interopRequireWildcard(_request);
 
-var _reference = __webpack_require__(51);
+var _reference = __webpack_require__(52);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -13838,6 +13894,7 @@ var ServiceInternals = exports.ServiceInternals = function () {
 
     return ServiceInternals;
 }();
+//# sourceMappingURL=service.js.map
 
 
 /***/ }),
@@ -13876,7 +13933,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
  */
 
 
-var _taskenums = __webpack_require__(49);
+var _taskenums = __webpack_require__(50);
 
 var fbsTaskEnums = _interopRequireWildcard(_taskenums);
 
@@ -13884,11 +13941,11 @@ var _observer = __webpack_require__(88);
 
 var _tasksnapshot = __webpack_require__(96);
 
-var _args = __webpack_require__(25);
+var _args = __webpack_require__(26);
 
 var fbsArgs = _interopRequireWildcard(_args);
 
-var _array = __webpack_require__(26);
+var _array = __webpack_require__(27);
 
 var fbsArray = _interopRequireWildcard(_array);
 
@@ -13902,7 +13959,7 @@ var _promise_external = __webpack_require__(7);
 
 var fbsPromiseimpl = _interopRequireWildcard(_promise_external);
 
-var _requests = __webpack_require__(48);
+var _requests = __webpack_require__(49);
 
 var fbsRequests = _interopRequireWildcard(_requests);
 
@@ -14480,6 +14537,7 @@ var UploadTask = exports.UploadTask = function () {
 
     return UploadTask;
 }();
+//# sourceMappingURL=task.js.map
 
 
 /***/ }),
@@ -14531,6 +14589,7 @@ var UploadTaskSnapshot = exports.UploadTaskSnapshot = function () {
 
     return UploadTaskSnapshot;
 }();
+//# sourceMappingURL=tasksnapshot.js.map
 
 
 /***/ }),
@@ -14685,7 +14744,7 @@ module.exports = function prefixStyle (prop) {
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(11);
-  var ReactPropTypesSecret = __webpack_require__(52);
+  var ReactPropTypesSecret = __webpack_require__(53);
   var loggedTypeFailures = {};
 }
 
@@ -14816,7 +14875,7 @@ var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(11);
 
-var ReactPropTypesSecret = __webpack_require__(52);
+var ReactPropTypesSecret = __webpack_require__(53);
 var checkPropTypes = __webpack_require__(99);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -15400,6 +15459,7 @@ module.exports.polyfill = function() {
 
 }).call(this);
 
+//# sourceMappingURL=performance-now.js.map
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
@@ -15505,7 +15565,7 @@ var _raf2 = __webpack_require__(102);
 
 var _raf3 = _interopRequireDefault(_raf2);
 
-var _domCss = __webpack_require__(39);
+var _domCss = __webpack_require__(40);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
@@ -16420,7 +16480,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = getScrollbarWidth;
 
-var _domCss = __webpack_require__(39);
+var _domCss = __webpack_require__(40);
 
 var _domCss2 = _interopRequireDefault(_domCss);
 
@@ -16499,7 +16559,7 @@ function returnFalse() {
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(6);
   var warning = __webpack_require__(11);
-  var ReactPropTypesSecret = __webpack_require__(30);
+  var ReactPropTypesSecret = __webpack_require__(31);
   var loggedTypeFailures = {};
 }
 
@@ -16567,7 +16627,7 @@ module.exports = checkPropTypes;
 
 var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
-var ReactPropTypesSecret = __webpack_require__(30);
+var ReactPropTypesSecret = __webpack_require__(31);
 
 module.exports = function() {
   function shim(props, propName, componentName, location, propFullName, secret) {
@@ -16635,7 +16695,7 @@ var emptyFunction = __webpack_require__(10);
 var invariant = __webpack_require__(6);
 var warning = __webpack_require__(11);
 
-var ReactPropTypesSecret = __webpack_require__(30);
+var ReactPropTypesSecret = __webpack_require__(31);
 var checkPropTypes = __webpack_require__(113);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -17380,7 +17440,7 @@ var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _utilsStripDiacritics = __webpack_require__(55);
+var _utilsStripDiacritics = __webpack_require__(56);
 
 var _utilsStripDiacritics2 = _interopRequireDefault(_utilsStripDiacritics);
 
@@ -17719,11 +17779,11 @@ var _Select = __webpack_require__(13);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _utilsDefaultFilterOptions = __webpack_require__(53);
+var _utilsDefaultFilterOptions = __webpack_require__(54);
 
 var _utilsDefaultFilterOptions2 = _interopRequireDefault(_utilsDefaultFilterOptions);
 
-var _utilsDefaultMenuRenderer = __webpack_require__(54);
+var _utilsDefaultMenuRenderer = __webpack_require__(55);
 
 var _utilsDefaultMenuRenderer2 = _interopRequireDefault(_utilsDefaultMenuRenderer);
 
@@ -18342,13 +18402,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes3 = __webpack_require__(57);
+var _propTypes3 = __webpack_require__(58);
 
 var _UncontrolledTabs = __webpack_require__(126);
 
 var _UncontrolledTabs2 = _interopRequireDefault(_UncontrolledTabs);
 
-var _count = __webpack_require__(56);
+var _count = __webpack_require__(57);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18500,11 +18560,11 @@ var _classnames = __webpack_require__(5);
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _uuid = __webpack_require__(58);
+var _uuid = __webpack_require__(59);
 
 var _uuid2 = _interopRequireDefault(_uuid);
 
-var _propTypes3 = __webpack_require__(57);
+var _propTypes3 = __webpack_require__(58);
 
 var _Tab = __webpack_require__(20);
 
@@ -18518,7 +18578,7 @@ var _TabPanel = __webpack_require__(22);
 
 var _TabPanel2 = _interopRequireDefault(_TabPanel);
 
-var _count = __webpack_require__(56);
+var _count = __webpack_require__(57);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18862,7 +18922,7 @@ var _TabPanel = __webpack_require__(22);
 
 var _TabPanel2 = _interopRequireDefault(_TabPanel);
 
-var _uuid = __webpack_require__(58);
+var _uuid = __webpack_require__(59);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19199,9 +19259,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
-var formatWord_1 = __webpack_require__(143);
+var formatWord_1 = __webpack_require__(142);
 var clueNumber_1 = __webpack_require__(135);
-var twoCol_1 = __webpack_require__(32);
+var twoCol_1 = __webpack_require__(23);
 var commonStyling_1 = __webpack_require__(14);
 var ClueContainer = (function (_super) {
     __extends(ClueContainer, _super);
@@ -19380,7 +19440,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var react_tabs_1 = __webpack_require__(127);
-var twoCol_1 = __webpack_require__(32);
+var twoCol_1 = __webpack_require__(23);
 var clueContainer_1 = __webpack_require__(134);
 var react_custom_scrollbars_1 = __webpack_require__(107);
 var CroswordClues = (function (_super) {
@@ -19546,7 +19606,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var square_1 = __webpack_require__(147);
+var square_1 = __webpack_require__(146);
 var commonStyling_1 = __webpack_require__(14);
 // State is never set so we use the 'undefined' type.
 var Crossword = (function (_super) {
@@ -19599,12 +19659,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var index_1 = __webpack_require__(15);
 var crossword_1 = __webpack_require__(137);
-var KeyEvents = __webpack_require__(154);
-var twoCol_1 = __webpack_require__(32);
+var KeyEvents = __webpack_require__(153);
+var twoCol_1 = __webpack_require__(23);
 var clues_1 = __webpack_require__(136);
-var lightbulb_1 = __webpack_require__(144);
-var recogniseMe_1 = __webpack_require__(152);
-var numberStrings_1 = __webpack_require__(151);
+var lightbulb_1 = __webpack_require__(143);
+var recogniseMe_1 = __webpack_require__(151);
+var numberStrings_1 = __webpack_require__(150);
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -19616,136 +19676,8 @@ var CrosswordPuzzle = (function (_super) {
     __extends(CrosswordPuzzle, _super);
     function CrosswordPuzzle(props) {
         var _this = _super.call(this, props) || this;
-        _this.states = [];
-        _this.speechUndos = []; //********************************** important will need to clear these when change crossword
-        //to delete with state
-        _this.testCommand = function () {
-            //recogniseMe.trigger([this.state.testCommand], []);
-            //var ssml = new SSML();
-            //var demoSpellSsml = ssml.say('Demo of spelling').say({ text: "monkey", interpretAs: "characters" }).toString();
-            //console.log(demoSpellSsml);
-            //speechSynthesis.speak(new SpeechSynthesisUtterance(demoSpellSsml));
-            //will then need to check this idea with spelling multiple ( and with something )
-            //add means 
-            var rate = parseFloat(_this.state.testCommand);
-            console.log(rate);
-            var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-            var text = ["eh", "bee", "see", "dee", "ee", "ef", "gee", "aitch", "eye", "jay", "kay", "el", "em", "en", "oh", "pee", "queue", "are", "ess", "tea", "you", "vee", "double you", "ex", "why", "zed"];
-            for (var i = 0; i < letters.length; i++) {
-                var speech = new SpeechSynthesisUtterance(letters[i]);
-                speech.rate = rate;
-                speechSynthesis.speak(speech);
-                var textSpeech = new SpeechSynthesisUtterance(text[i]);
-                textSpeech.rate = rate;
-                speechSynthesis.speak(textSpeech);
-            }
-        };
         //#region recognition
-        //#region old to look at again
-        _this.solveWordLength = function (context) {
-            //console.log("In solve word length")
-            //var self = this;
-            //var command = context.command as SolveCommand;
-            //this.performSelection(command.square, command.acrossOrDownMode);
-            //var words = context.parameters[0];
-            //var guess = words.replace(" ", "");
-            //guess.split("").forEach(function (letter) {
-            //    self.keyGuess(null, letter);
-            //});
-        };
-        _this.solveWordExact = function (context) {
-            //var self = this;
-            //var command = context.command as SolveExactCommand;
-            //this.performSelection(command.square, command.acrossOrDownMode);
-            //command.guess.split("").forEach(function (letter) {
-            //    self.keyGuess(null, letter);
-            //});
-        };
-        //to become part of spelling
-        _this.navDirectionRecognised = function (context) {
-            var synthesisMessage = "No selected square to navigate from.";
-            if (_this.props.crosswordModel.selectedSquare) {
-                var direction = context.parameters[0].toLowerCase();
-                var numNavs = 1;
-                var numPart = context.parameters[1];
-                var numPartMessage = numPart === undefined ? "" : numPart;
-                synthesisMessage = direction + " " + numPartMessage;
-                if (numPart) {
-                    numNavs = numberStrings_1.numberStringToNumber(numPart);
-                }
-                var navFunction;
-                switch (direction) {
-                    case "left":
-                        navFunction = _this.arrowLeft;
-                        break;
-                    case "right":
-                        navFunction = _this.arrowRight;
-                        break;
-                    case "down":
-                        navFunction = _this.arrowDown;
-                        break;
-                    case "up":
-                        navFunction = _this.arrowUp;
-                        break;
-                }
-                for (var i = 0; i < numNavs; i++) {
-                    navFunction.bind(_this)();
-                }
-                //should extract to a get letter speech method
-                var currentSquareSpeech = _this.props.crosswordModel.selectedSquare.guess.toLowerCase();
-                currentSquareSpeech = currentSquareSpeech === "a" ? "eh" : currentSquareSpeech;
-                var blankSquareSpeech = "blank";
-                if (currentSquareSpeech === "") {
-                    currentSquareSpeech = blankSquareSpeech;
-                }
-                synthesisMessage += " : " + currentSquareSpeech;
-            }
-            var response = {
-                synthesisMessage: synthesisMessage
-            };
-            return response;
-        };
-        _this.spellAny = function (context) {
-            var self = _this;
-            var startingSquare = _this.props.crosswordModel.selectedSquare; //********************* will need to prevent when no letter selected
-            var synthesisMessage = "No selected square";
-            if (startingSquare) {
-                var words = context.parameters[0].toLowerCase();
-                var startingSquareGuess = startingSquare.guess;
-                var originalGuesses;
-                var selectedWordIsAcross = _this.props.crosswordModel.selectedWord.isAcross;
-                var wordSelectMode = selectedWordIsAcross ? WordSelectMode.across : WordSelectMode.down;
-                if (words === "delete") {
-                    originalGuesses = [startingSquareGuess];
-                    synthesisMessage = "deleted";
-                    self.backspace();
-                }
-                else {
-                    var phonetics = words.split(" ");
-                    synthesisMessage = "";
-                    originalGuesses = [startingSquareGuess];
-                    for (var i = 0; i < phonetics.length; i++) {
-                        var word = phonetics[i];
-                        var letter = word.split("")[0];
-                        self.keyGuess(null, letter);
-                        if (i < phonetics.length - 1) {
-                            originalGuesses.push(_this.props.crosswordModel.selectedSquare.guess);
-                        }
-                        letter = letter === "a" ? "eh" : letter;
-                        synthesisMessage += letter + " ";
-                    }
-                }
-                _this.speechUndos.push({
-                    originalGuesses: originalGuesses,
-                    startingSquare: startingSquare,
-                    wordSelectMode: wordSelectMode
-                });
-            }
-            return {
-                synthesisMessage: synthesisMessage
-            };
-        };
-        //if do solve where match against format - will read out the answer and not change state - see old to look at again
+        //#region recognition callbacks
         _this.solveAny = function (context) {
             var self = _this;
             var clueSolution = context.stateContext.clueSolution.toLowerCase();
@@ -20001,6 +19933,89 @@ var CrosswordPuzzle = (function (_super) {
             };
             return response;
         };
+        _this.navDirectionRecognised = function (context) {
+            var synthesisMessage = "No selected square to navigate from.";
+            if (_this.props.crosswordModel.selectedSquare) {
+                var direction = context.parameters[0].toLowerCase();
+                var numNavs = 1;
+                var numPart = context.parameters[1];
+                var numPartMessage = numPart === undefined ? "" : numPart;
+                synthesisMessage = direction + " " + numPartMessage;
+                if (numPart) {
+                    numNavs = numberStrings_1.numberStringToNumber(numPart);
+                }
+                var navFunction;
+                switch (direction) {
+                    case "left":
+                        navFunction = _this.arrowLeft;
+                        break;
+                    case "right":
+                        navFunction = _this.arrowRight;
+                        break;
+                    case "down":
+                        navFunction = _this.arrowDown;
+                        break;
+                    case "up":
+                        navFunction = _this.arrowUp;
+                        break;
+                }
+                for (var i = 0; i < numNavs; i++) {
+                    navFunction.bind(_this)();
+                }
+                //should extract to a get letter speech method
+                var currentSquareSpeech = _this.props.crosswordModel.selectedSquare.guess.toLowerCase();
+                currentSquareSpeech = currentSquareSpeech === "a" ? "eh" : currentSquareSpeech;
+                var blankSquareSpeech = "blank";
+                if (currentSquareSpeech === "") {
+                    currentSquareSpeech = blankSquareSpeech;
+                }
+                synthesisMessage += " : " + currentSquareSpeech;
+            }
+            var response = {
+                synthesisMessage: synthesisMessage
+            };
+            return response;
+        };
+        _this.spellAny = function (context) {
+            var self = _this;
+            var startingSquare = _this.props.crosswordModel.selectedSquare;
+            var synthesisMessage = "No selected square";
+            if (startingSquare) {
+                var words = context.parameters[0].toLowerCase();
+                var startingSquareGuess = startingSquare.guess;
+                var originalGuesses;
+                var selectedWordIsAcross = _this.props.crosswordModel.selectedWord.isAcross;
+                var wordSelectMode = selectedWordIsAcross ? WordSelectMode.across : WordSelectMode.down;
+                if (words === "delete") {
+                    originalGuesses = [startingSquareGuess];
+                    synthesisMessage = "deleted";
+                    self.backspace();
+                }
+                else {
+                    var phonetics = words.split(" ");
+                    synthesisMessage = "";
+                    originalGuesses = [startingSquareGuess];
+                    for (var i = 0; i < phonetics.length; i++) {
+                        var word = phonetics[i];
+                        var letter = word.split("")[0];
+                        self.keyGuess(null, letter);
+                        if (i < phonetics.length - 1) {
+                            originalGuesses.push(_this.props.crosswordModel.selectedSquare.guess);
+                        }
+                        letter = letter === "a" ? "eh" : letter;
+                        synthesisMessage += letter + " ";
+                    }
+                }
+                _this.speechUndos.push({
+                    originalGuesses: originalGuesses,
+                    startingSquare: startingSquare,
+                    wordSelectMode: wordSelectMode
+                });
+            }
+            return {
+                synthesisMessage: synthesisMessage
+            };
+        };
         _this.undo = function (context) {
             var self = _this;
             var synthesisMessage = "No speech to undo";
@@ -20018,7 +20033,6 @@ var CrosswordPuzzle = (function (_super) {
                 synthesisMessage: synthesisMessage
             };
         };
-        //look at this again - should be providing in context the minimum for the commands to get what they individually need
         _this.navWord = function (context) {
             var numberAcrossDown = context.parameters[0];
             var split = numberAcrossDown.split(" ");
@@ -20076,8 +20090,6 @@ var CrosswordPuzzle = (function (_super) {
             }
             _this.performSelection(startSquare, wordSelectMode);
             var wordStateContext = {
-                startSquare: startSquare,
-                wordSelectMode: wordSelectMode,
                 clueSolution: clueSolution,
                 identifier: numString + " " + acrossOrDown,
                 clueProviderClues: clueProviderClues,
@@ -20088,11 +20100,19 @@ var CrosswordPuzzle = (function (_super) {
             };
             return response;
         };
-        //this context lost otherwise
+        //#endregion
+        //#endregion
+        //#region selection
         _this.squareSelected = function (rowColIndices) {
             var square = _this.props.crosswordModel.grid[rowColIndices.row][rowColIndices.col];
             _this.performSelection(square);
         };
+        _this.autoSolveClicked = function () {
+            _this.autoSolve = !_this.autoSolve;
+            _this.forceUpdate();
+        };
+        //#endregion
+        //#region SolvingMode Guessing/Solving/Cheating
         _this.solveClicked = function () {
             if (_this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving) {
                 _this.props.crosswordModel.solvingMode = index_1.SolvingMode.Guessing;
@@ -20111,10 +20131,7 @@ var CrosswordPuzzle = (function (_super) {
             }
             _this.forceUpdate();
         };
-        _this.autoSolveClicked = function () {
-            _this.autoSolve = !_this.autoSolve;
-            _this.forceUpdate();
-        };
+        //#endregion
         _this.clueSelected = function (isAcross, wordId) {
             var words = _this.props.crosswordModel.words;
             var selectedWord;
@@ -20133,9 +20150,6 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
-        _this.testCommandChanged = function (evt) {
-            _this.setState({ testCommand: evt.target.value });
-        };
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -20147,130 +20161,10 @@ var CrosswordPuzzle = (function (_super) {
     CrosswordPuzzle.prototype.componentDidMount = function () {
         this.setUpRecognition(this.props.crosswordModel);
     };
-    CrosswordPuzzle.prototype._mapGrid = function (grid) {
-        var _this = this;
-        var self = this;
-        var mappedGrid = grid.map(function (row, rowIndex) {
-            return row.map(function (square, colIndex) {
-                return {
-                    identifier: { row: rowIndex, col: colIndex }, autoSolved: square.autoSolved, selected: _this.squareSelected, isSelected: square.selected, isWordSelected: square.wordSelected, solvingMode: _this.props.crosswordModel.solvingMode, number: square.number, letter: square.letter, guess: square.guess
-                };
-            });
-        });
-        return mappedGrid;
-    };
-    //#endregion
-    //#region spelling
-    CrosswordPuzzle.prototype.getSpellState = function () {
-        function getNavigationDirectionRegExpr() {
-            var numPart = "\\s?(";
-            for (var i = 1; i < 13; i++) {
-                numPart += i.toString() + "|" + numberStrings_1.numberToNumberString(i);
-                if (i < 12) {
-                    numPart += "|";
-                }
-            }
-            numPart += ")?$";
-            var regExprString = "^(left|right|up|down)" + numPart;
-            return new RegExp(regExprString, "i");
-        }
-        var navDirectionCommand = {
-            name: "Navigation direction",
-            regExp: getNavigationDirectionRegExpr(),
-            callback: this.navDirectionRecognised,
-            keepState: true
-        };
-        var spellState = {
-            name: "Spell",
-            enter: function () { console.log("Entering the spell state"); return { synthesisMessage: "Spelling" }; },
-            exit: function () { console.log("Exiting the spell state"); return null; },
-            catchCommand: {
-                name: "Spell any",
-                regExp: recogniseMe_1.sentenceRegExp,
-                callback: this.spellAny,
-            },
-            commands: [
-                navDirectionCommand
-            ]
-        };
-        return spellState;
-    };
-    //#endregion
-    //#region word
-    CrosswordPuzzle.prototype.getWordState = function (clueProviders) {
-        var self = this;
-        var cluesRegExprString = "^(Clues";
-        for (var i = 0; i < clueProviders.length; i++) {
-            cluesRegExprString += "|" + clueProviders[i].name;
-        }
-        cluesRegExprString += ")$";
-        var solveState = {
-            name: "Word",
-            enter: function (wordContext) {
-                console.log("Entering the word state");
-                return { synthesisMessage: wordContext.identifier };
-            },
-            exit: function () { console.log("Exiting the word state"); return null; },
-            catchCommand: {
-                name: "Solve any",
-                regExp: recogniseMe_1.sentenceRegExp,
-                callback: this.solveAny,
-                nextState: "Default"
-            },
-            commands: [
-                {
-                    name: "Solution",
-                    regExp: /^Solution$/i,
-                    callback: this.solution,
-                },
-                {
-                    name: "Clues",
-                    regExp: new RegExp(cluesRegExprString, "i"),
-                    callback: this.clues,
-                },
-                {
-                    name: "Letters",
-                    regExp: /^Letters/i,
-                    callback: this.letters,
-                }
-            ]
-        };
-        return solveState;
-    };
-    //#endregion
-    //#region details
-    CrosswordPuzzle.prototype.getDetailsState = function () {
-        var state = {
-            name: "Details",
-            enter: function () {
-                console.log("Enter details state");
-                var soundResponse = {
-                    synthesisMessage: "Details"
-                };
-                return soundResponse;
-            },
-            commands: [
-                {
-                    name: "Unsolved",
-                    regExp: /^unsolved$/i,
-                    callback: this.unsolvedRecognised
-                }, {
-                    name: "Incomplete",
-                    regExp: /^incomplete$/i,
-                    callback: this.incompleteRecognised
-                },
-                {
-                    name: "Clue Providers",
-                    regExp: /^clue providers$/i,
-                    callback: this.clueProviders
-                },
-            ]
-        };
-        return state;
-    };
-    //#endregion
-    //#region default
-    CrosswordPuzzle.prototype.getDefaultState = function (cp) {
+    //#endregion   
+    //#region setup
+    //#region get command states
+    CrosswordPuzzle.prototype.getDefaultState = function (acrossClues, downClues) {
         function getWordRegExpr() {
             //1 across | one down | 2 across | two across etc
             function appendWordAlternativesForAcrossOrDownClues(clues, isAcross, command) {
@@ -20286,15 +20180,14 @@ var CrosswordPuzzle = (function (_super) {
                 return command;
             }
             var navWordCommandString = "^(";
-            navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.acrossClues, true, navWordCommandString);
+            navWordCommandString = appendWordAlternativesForAcrossOrDownClues(acrossClues, true, navWordCommandString);
             navWordCommandString += "|";
-            navWordCommandString = appendWordAlternativesForAcrossOrDownClues(cp.downClues, false, navWordCommandString);
+            navWordCommandString = appendWordAlternativesForAcrossOrDownClues(downClues, false, navWordCommandString);
             navWordCommandString += ")$";
             return new RegExp(navWordCommandString, "i");
         }
         var self = this;
-        //for the blind this information is available in details ( through exclusion of those returned )
-        var clickSolveBulbCommand = {
+        var solveCommand = {
             name: "Click solve bulb",
             regExp: /^Solve$/i,
             callback: function () {
@@ -20303,8 +20196,7 @@ var CrosswordPuzzle = (function (_super) {
             },
             keepState: true,
         };
-        //solution in details for blind
-        var clickCheatBulbCommand = {
+        var cheatCommand = {
             name: "Click cheat bulb",
             regExp: /^cheat$/i,
             callback: function () {
@@ -20343,68 +20235,130 @@ var CrosswordPuzzle = (function (_super) {
             name: "Default",
             enter: function () { return { sound: "sounds/default-state.mp3" }; },
             exit: function () { console.log("Exit default state"); return null; },
-            commands: [navWordCommand, detailsCommand, spellCommand, undoCommand, clickCheatBulbCommand, clickSolveBulbCommand]
+            commands: [navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
         };
     };
+    CrosswordPuzzle.prototype.getWordState = function (clueProviders) {
+        var self = this;
+        var cluesRegExprString = "^(Clues";
+        for (var i = 0; i < clueProviders.length; i++) {
+            cluesRegExprString += "|" + clueProviders[i].name;
+        }
+        cluesRegExprString += ")$";
+        var wordState = {
+            name: "Word",
+            enter: function (wordContext) {
+                console.log("Entering the word state");
+                return { synthesisMessage: wordContext.identifier };
+            },
+            exit: function () { console.log("Exiting the word state"); return null; },
+            catchCommand: {
+                name: "Solve any",
+                regExp: recogniseMe_1.sentenceRegExp,
+                callback: this.solveAny,
+                nextState: "Default"
+            },
+            commands: [
+                {
+                    name: "Solution",
+                    regExp: /^Solution$/i,
+                    callback: this.solution,
+                },
+                {
+                    name: "Clues",
+                    regExp: new RegExp(cluesRegExprString, "i"),
+                    callback: this.clues,
+                },
+                {
+                    name: "Letters",
+                    regExp: /^Letters/i,
+                    callback: this.letters,
+                }
+            ]
+        };
+        return wordState;
+    };
+    CrosswordPuzzle.prototype.getDetailsState = function () {
+        var state = {
+            name: "Details",
+            enter: function () {
+                console.log("Enter details state");
+                var soundResponse = {
+                    synthesisMessage: "Details"
+                };
+                return soundResponse;
+            },
+            commands: [
+                {
+                    name: "Unsolved",
+                    regExp: /^unsolved$/i,
+                    callback: this.unsolvedRecognised
+                }, {
+                    name: "Incomplete",
+                    regExp: /^incomplete$/i,
+                    callback: this.incompleteRecognised
+                },
+                {
+                    name: "Clue Providers",
+                    regExp: /^clue providers$/i,
+                    callback: this.clueProviders
+                },
+            ]
+        };
+        return state;
+    };
+    CrosswordPuzzle.prototype.getSpellState = function () {
+        function getNavigationDirectionRegExpr() {
+            var numPart = "\\s?(";
+            for (var i = 1; i < 13; i++) {
+                numPart += i.toString() + "|" + numberStrings_1.numberToNumberString(i);
+                if (i < 12) {
+                    numPart += "|";
+                }
+            }
+            numPart += ")?$";
+            var regExprString = "^(left|right|up|down)" + numPart;
+            return new RegExp(regExprString, "i");
+        }
+        var navDirectionCommand = {
+            name: "Navigation direction",
+            regExp: getNavigationDirectionRegExpr(),
+            callback: this.navDirectionRecognised,
+            keepState: true
+        };
+        var spellState = {
+            name: "Spell",
+            enter: function () { console.log("Entering the spell state"); return { synthesisMessage: "Spelling" }; },
+            exit: function () { console.log("Exiting the spell state"); return null; },
+            catchCommand: {
+                name: "Spell any",
+                regExp: recogniseMe_1.sentenceRegExp,
+                callback: this.spellAny,
+            },
+            commands: [
+                navDirectionCommand
+            ]
+        };
+        return spellState;
+    };
     //#endregion
-    //#region setup
     CrosswordPuzzle.prototype.setUpRecognition = function (crosswordModel) {
         if (recogniseMe_1.recogniseMe) {
+            this.speechUndos = [];
             var clueProviders = crosswordModel.clueProviders;
-            var theDefaultState = this.getDefaultState(clueProviders[0]);
-            if (this.canRecognise) {
-                recogniseMe_1.recogniseMe.removeStates([this.defaultState.name]);
-            }
-            this.recogniseDefaultState(theDefaultState);
-            if (this.canRecognise) {
-                recogniseMe_1.recogniseMe.setState(this.defaultState.name, {});
-            }
-            else {
+            recogniseMe_1.recogniseMe.removeStates();
+            //spellState navigation command is assuming that the crossword is 13*13 ( which it currently will always be) - later let this be dynamic based upon the crossword
+            recogniseMe_1.recogniseMe.addStates([this.getDefaultState(clueProviders[0].acrossClues, clueProviders[0].downClues), this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()]);
+            if (!this.recognising) {
                 recogniseMe_1.recogniseMe.allStatesNoMatchSoundResponse = { sound: "sounds/family-fortunes-wrong-buzzer.mp3" };
                 recogniseMe_1.recogniseMe.doNotListenWhenSpeaking = true;
                 recogniseMe_1.recogniseMe.setSkipSpeakingCommand("quiet please");
-                this.recogniseStates([this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()]);
+                recogniseMe_1.recogniseMe.setLanguage("en-GB");
+                recogniseMe_1.recogniseMe.setStartStopCommands({ defaultStartStopPhrases: true, defaultStartStopSynthesis: true });
+                recogniseMe_1.recogniseMe.start();
+                this.recognising = true;
             }
-            recogniseMe_1.recogniseMe.setLanguage("en-GB");
-            recogniseMe_1.recogniseMe.setStartStopCommands({ defaultStartStopPhrases: true, defaultStartStopSynthesis: true });
-            this.canRecognise = true;
-            recogniseMe_1.recogniseMe.start();
         }
-    };
-    CrosswordPuzzle.prototype.recogniseDefaultState = function (defaultState) {
-        recogniseMe_1.recogniseMe.addStates([defaultState]);
-        this.defaultState = defaultState;
-    };
-    CrosswordPuzzle.prototype.recogniseStates = function (states) {
-        recogniseMe_1.recogniseMe.addStates(states);
-        this.states = states;
-    };
-    //#endregion
-    //#endregion
-    CrosswordPuzzle.prototype._selectWord = function (selectedWord) {
-        if (this.props.crosswordModel.selectedWord !== selectedWord) {
-            if (this.props.crosswordModel.selectedWord) {
-                //this._setWordSquaresSelection(this.props.crosswordModel.selectedWord, false);
-                this.props.crosswordModel.selectedWord.deselect();
-            }
-            selectedWord.select();
-            this.props.crosswordModel.selectedWord = selectedWord;
-        }
-    };
-    //the crosswordModel selectedCell property should deal with it - but interface 
-    CrosswordPuzzle.prototype._selectSquare = function (square) {
-        var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
-        if (previousSelectedSquare) {
-            previousSelectedSquare.selected = false;
-        }
-        square.selected = true;
-        this.props.crosswordModel.selectedSquare = square;
-    };
-    //method of square model
-    CrosswordPuzzle.prototype._squareIsStartOfWord = function (square, across) {
-        var word = across ? square.acrossWord : square.downWord;
-        var index = word.squares.indexOf(square);
-        return index === 0;
     };
     CrosswordPuzzle.prototype.performSelection = function (square, wordSelectMode) {
         if (wordSelectMode === void 0) { wordSelectMode = WordSelectMode.select; }
@@ -20415,7 +20369,7 @@ var CrosswordPuzzle = (function (_super) {
             var previousSelectedSquare = this.props.crosswordModel.selectedSquare;
             var sameSquare = square.selected;
             if (!sameSquare) {
-                this._selectSquare(square);
+                this.props.crosswordModel.selectSquare(square);
                 requiresRender = true;
             }
             var wordToSelect;
@@ -20441,8 +20395,8 @@ var CrosswordPuzzle = (function (_super) {
                         if (determinePreference) {
                             wordToSelect = square.acrossWord;
                             if (square.number !== "") {
-                                if (this._squareIsStartOfWord(square, false)) {
-                                    if (!this._squareIsStartOfWord(square, true)) {
+                                if (square.isStartOfWord(false)) {
+                                    if (!square.isStartOfWord(true)) {
                                         wordToSelect = square.downWord;
                                     }
                                 }
@@ -20455,7 +20409,7 @@ var CrosswordPuzzle = (function (_super) {
                 wordToSelect = square.acrossWord ? square.acrossWord : square.downWord;
             }
             if (previousSelectedWord !== wordToSelect) {
-                this._selectWord(wordToSelect);
+                this.props.crosswordModel.selectWord(wordToSelect);
                 requiresRender = true;
             }
         }
@@ -20463,10 +20417,8 @@ var CrosswordPuzzle = (function (_super) {
             this.forceUpdate();
         }
     };
-    CrosswordPuzzle.prototype.arrowDownDown = function (evt) {
-        evt.preventDefault();
-        this.arrowDown();
-    };
+    //#endregion
+    //#region arrow navigation
     CrosswordPuzzle.prototype.arrowDown = function () {
         var crosswordModel = this.props.crosswordModel;
         var selectedSquare = crosswordModel.selectedSquare;
@@ -20486,10 +20438,6 @@ var CrosswordPuzzle = (function (_super) {
             }
             this.performSelection(nextNonBlankSquare, WordSelectMode.nav);
         }
-    };
-    CrosswordPuzzle.prototype.arrowLeftDown = function (evt) {
-        evt.preventDefault();
-        this.arrowLeft();
     };
     CrosswordPuzzle.prototype.arrowLeft = function () {
         var crosswordModel = this.props.crosswordModel;
@@ -20511,10 +20459,6 @@ var CrosswordPuzzle = (function (_super) {
             this.performSelection(nextNonBlankSquare, WordSelectMode.nav);
         }
     };
-    CrosswordPuzzle.prototype.arrowRightDown = function (evt) {
-        evt.preventDefault();
-        this.arrowRight();
-    };
     CrosswordPuzzle.prototype.arrowRight = function () {
         var crosswordModel = this.props.crosswordModel;
         var selectedSquare = crosswordModel.selectedSquare;
@@ -20535,10 +20479,6 @@ var CrosswordPuzzle = (function (_super) {
             this.performSelection(nextNonBlankSquare, WordSelectMode.nav);
         }
     };
-    CrosswordPuzzle.prototype.arrowUpDown = function (evt) {
-        evt.preventDefault();
-        this.arrowUp();
-    };
     CrosswordPuzzle.prototype.arrowUp = function () {
         var crosswordModel = this.props.crosswordModel;
         var selectedSquare = crosswordModel.selectedSquare;
@@ -20558,6 +20498,24 @@ var CrosswordPuzzle = (function (_super) {
             }
             this.performSelection(nextNonBlankSquare, WordSelectMode.nav);
         }
+    };
+    //#endregion
+    //#region key press callbacks
+    CrosswordPuzzle.prototype.arrowDownDown = function (evt) {
+        evt.preventDefault();
+        this.arrowDown();
+    };
+    CrosswordPuzzle.prototype.arrowLeftDown = function (evt) {
+        evt.preventDefault();
+        this.arrowLeft();
+    };
+    CrosswordPuzzle.prototype.arrowRightDown = function (evt) {
+        evt.preventDefault();
+        this.arrowRight();
+    };
+    CrosswordPuzzle.prototype.arrowUpDown = function (evt) {
+        evt.preventDefault();
+        this.arrowUp();
     };
     CrosswordPuzzle.prototype.backspace = function () {
         var selectedSquare = this.props.crosswordModel.selectedSquare;
@@ -20608,9 +20566,10 @@ var CrosswordPuzzle = (function (_super) {
             }
         }
     };
+    //#endregion
+    //#region auto solving
     CrosswordPuzzle.prototype.setAutoSolve = function () {
         var crosswordModel = this.props.crosswordModel;
-        //given that autoSolve is unrelated to a specific crossword
         if (this.autoSolve) {
             var solvedWords = [];
             var unsolvedWords = [];
@@ -20638,6 +20597,7 @@ var CrosswordPuzzle = (function (_super) {
             });
         }
     };
+    //#region model mapping for rendered child components
     CrosswordPuzzle.prototype.mapClues = function (clues) {
         var crosswordModel = this.props.crosswordModel;
         var solvingMode = crosswordModel.solvingMode;
@@ -20666,20 +20626,25 @@ var CrosswordPuzzle = (function (_super) {
             return clueProps;
         });
     };
+    CrosswordPuzzle.prototype._mapGrid = function (grid) {
+        var _this = this;
+        var self = this;
+        var mappedGrid = grid.map(function (row, rowIndex) {
+            return row.map(function (square, colIndex) {
+                return {
+                    identifier: { row: rowIndex, col: colIndex }, autoSolved: square.autoSolved, selected: _this.squareSelected, isSelected: square.selected, isWordSelected: square.wordSelected, solvingMode: _this.props.crosswordModel.solvingMode, number: square.number, letter: square.letter, guess: square.guess
+                };
+            });
+        });
+        return mappedGrid;
+    };
+    //#endregion
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
         var squares = this._mapGrid(this.props.crosswordModel.grid);
-        var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
-            return {
-                name: cp.name,
-                acrossClues: _this.mapClues(cp.acrossClues),
-                downClues: _this.mapClues(cp.downClues)
-            };
-        });
         /*
-        <SolveButton  isSolving={this.props.crosswordModel.solvingMode === SolvingMode.Solving} clicked={this.solveClicked} />
-            <GlobalCheatButton isCheating={this.props.crosswordModel.solvingMode === SolvingMode.Cheating} clicked={this.globalCheatClicked} />
+        
             <AutoSolveButton isAutoSolving={this.autoSolve} clicked={this.autoSolveClicked} />
         */
         var leftContent = React.createElement("div", null,
@@ -20688,9 +20653,14 @@ var CrosswordPuzzle = (function (_super) {
                 React.createElement("span", { onClick: this.globalCheatClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
-                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))),
-            React.createElement("input", { type: "text", onChange: this.testCommandChanged, value: this.state.testCommand }),
-            React.createElement("button", { onClick: this.testCommand }, "Test command"));
+                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))));
+        var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
+            return {
+                name: cp.name,
+                acrossClues: _this.mapClues(cp.acrossClues),
+                downClues: _this.mapClues(cp.downClues)
+            };
+        });
         var rightContent = React.createElement(clues_1.CroswordClues, { clueSelected: this.clueSelected, grouping: true, clueProviders: mappedClueProviders });
         return React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent });
     };
@@ -20763,12 +20733,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var connectedDatabase_1 = __webpack_require__(59);
-var emailLogOn_1 = __webpack_require__(142);
-var firebaseApp_1 = __webpack_require__(60);
+var connectedDatabase_1 = __webpack_require__(60);
+var emailLogOn_1 = __webpack_require__(141);
+var firebaseApp_1 = __webpack_require__(33);
 var Select = __webpack_require__(13);
 exports.Select = __webpack_require__(13);
-var muiWrappedButton_1 = __webpack_require__(31);
+var muiWrappedButton_1 = __webpack_require__(32);
 function displayNameHOC(Component, displayName) {
     var DisplayNameComponent = (function (_super) {
         __extends(DisplayNameComponent, _super);
@@ -20993,151 +20963,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var stopwatchController_1 = __webpack_require__(150);
-var DemoFlipClocks = (function (_super) {
-    __extends(DemoFlipClocks, _super);
-    function DemoFlipClocks(props) {
-        var _this = _super.call(this, props) || this;
-        _this.start = function () {
-            _this.flipClock24Countdown.start();
-            _this.flipClock24.start();
-            _this.flipClockSeconds1.start();
-            _this.flipClockSeconds2.start();
-            _this.flipClockSeconds3.start();
-            _this.flipClockSecondsCountdown1.start();
-            _this.flipClockSecondsCountdown2.start();
-            _this.flipClockSecondsCountdown3.start();
-            _this.flipClockMinutesSeconds.start();
-            _this.flipClockMinutes.start();
-            _this.flipClockMinutesSecondsCountdown.start();
-            _this.flipClockMinutesCountdown.start();
-            _this.flipClock12.start();
-            _this.flipClock12Style2.start();
-            _this.flipClockYear.start();
-        };
-        _this.stop = function () {
-            _this.flipClock24Countdown.stop();
-            _this.flipClock24.stop();
-            _this.flipClockSeconds1.stop();
-            _this.flipClockSeconds2.stop();
-            _this.flipClockSeconds3.stop();
-            _this.flipClockSecondsCountdown1.stop();
-            _this.flipClockSecondsCountdown2.stop();
-            _this.flipClockSecondsCountdown3.stop();
-            _this.flipClockMinutesSeconds.stop();
-            _this.flipClockMinutes.stop();
-            _this.flipClockMinutesSecondsCountdown.stop();
-            _this.flipClockMinutesCountdown.stop();
-            _this.flipClock12.stop();
-            _this.flipClock12Style2.stop();
-            _this.flipClockYear.stop();
-        };
-        _this.state = {
-            countdownDuration: 10000,
-            countUpDuration: 5000,
-            someOther: 0
-        };
-        return _this;
-    }
-    DemoFlipClocks.prototype.checkDurations = function () {
-    };
-    DemoFlipClocks.prototype.render = function () {
-        /*
-            <button onClick={() => this.setState({
-                countdownDuration: 211000,
-                countUpDuration: 91000
-            })}>Switch durations</button>
-        */
-        var _this = this;
-        var second = 1000;
-        var minute = 60000;
-        var hour = 3600000;
-        var day = 86400000;
-        var year = 31536000000;
-        var flipClock24HourSettings = {
-            minDigits: 2,
-            hourPart: stopwatchController_1.HourPart.part24
-        };
-        var flipClockClockMinuteSettings = {
-            minDigits: 2,
-            minutePart: stopwatchController_1.MinutePart.partHour
-        };
-        var flipClockClockSecondSettings = {
-            minDigits: 2,
-            secondPart: stopwatchController_1.SecondPart.partMinute
-        };
-        var flipClockDaySettings = {
-            minDigits: 3,
-            dayPart: stopwatchController_1.DayPart.partYear
-        };
-        var flipClockYearSettings = {
-            minDigits: 1
-        };
-        var minutesStartDuration = 55 * second;
-        var minutesCountdownStartDuration = (10 * minute) + (10 * second);
-        /*
-        
-        */
-        return React.createElement("div", null,
-            React.createElement("button", { onClick: this.stop }, "Stop"),
-            React.createElement("button", { onClick: this.start }, "Start"),
-            React.createElement("div", null, "The five clocks below will pause animation when stopped"),
-            React.createElement("div", null, "12 hour clock"),
-            React.createElement(stopwatchController_1.FlipClock12, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock12 = fc; }, startDuration: (11 * hour) + (59 * minute) + (50 * second) }),
-            React.createElement("div", null, "12 hour clock, different css styling applied"),
-            React.createElement(stopwatchController_1.FlipClock12, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock12Style2 = fc; }, additionalClassName: "style2", startDuration: (11 * hour) + (59 * minute) + (50 * second) }),
-            React.createElement("div", null, "24 hour clock countdown"),
-            React.createElement(stopwatchController_1.FlipClock24Countdown, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock24Countdown = fc; }, startDuration: (23 * hour) + (minute) + (2 * second) }),
-            React.createElement("div", null, "24 hour clock"),
-            React.createElement(stopwatchController_1.FlipClock24, { pauseStoppedAnimation: true, ref: function (fc) { _this.flipClock24 = fc; }, startDuration: (23 * hour) + (59 * minute) + (50 * second) }),
-            React.createElement("div", null, "Years, days, hours, minutes, seconds ( without helper )"),
-            React.createElement(stopwatchController_1.FlipClock, { ref: function (fc) { _this.flipClockYear = fc; }, pauseStoppedAnimation: true, countdown: false, secondSettings: flipClockClockSecondSettings, minuteSettings: flipClockClockMinuteSettings, hourSettings: flipClock24HourSettings, daySettings: flipClockDaySettings, yearSettings: flipClockYearSettings, startDuration: (364 * day) + (23 * hour) + (59 * minute) + (50 * second) }),
-            React.createElement("div", null, "The flip clocks below do not have animation stopped."),
-            React.createElement("div", null, "Total seconds, will always show 3 digits"),
-            React.createElement(stopwatchController_1.FlipClockSeconds, { ref: function (fc) { _this.flipClockSeconds1 = fc; }, startDuration: 90 * second, minDigits: 3 }),
-            React.createElement("div", null, "Total seconds, will only show the required number of digits"),
-            React.createElement(stopwatchController_1.FlipClockSeconds, { ref: function (fc) { _this.flipClockSeconds3 = fc; }, startDuration: 90 * second }),
-            React.createElement("div", null, "Total seconds, will only show the last 2 digits"),
-            React.createElement(stopwatchController_1.FlipClockSeconds, { ref: function (fc) { _this.flipClockSeconds2 = fc; }, startDuration: 90 * second, maxDigits: 2 }),
-            React.createElement("div", null, "Total seconds countdown, defaults to always showing the start number of digits"),
-            React.createElement(stopwatchController_1.FlipClockSecondsCountdown, { ref: function (fc) { _this.flipClockSecondsCountdown1 = fc; }, startDuration: 15 * second }),
-            React.createElement("div", null, "Total seconds countdown, will only show the required number of digits"),
-            React.createElement(stopwatchController_1.FlipClockSecondsCountdown, { minDigits: 0, ref: function (fc) { _this.flipClockSecondsCountdown3 = fc; }, startDuration: 15 * second }),
-            React.createElement("div", null, "Total seconds countdown, always shows 3 digits"),
-            React.createElement(stopwatchController_1.FlipClockSecondsCountdown, { ref: function (fc) { _this.flipClockSecondsCountdown2 = fc; }, startDuration: 15 * second, minDigits: 3 }),
-            React.createElement("div", null, "Minutes and seconds, always shows 2 minute digits"),
-            React.createElement(stopwatchController_1.FlipClockMinutesSeconds, { ref: function (fc) { _this.flipClockMinutesSeconds = fc; }, minMinuteDigits: 2, startDuration: minutesStartDuration }),
-            React.createElement("div", null, "Minutes only, always shows 2 minute digits"),
-            React.createElement(stopwatchController_1.FlipClockMinutes, { ref: function (fc) { _this.flipClockMinutes = fc; }, minDigits: 2, startDuration: minutesStartDuration }),
-            React.createElement("div", null, "Minutes and seconds countdown, defaults to always showing the start number of digits"),
-            React.createElement(stopwatchController_1.FlipClockMinutesSecondsCountdown, { ref: function (fc) { _this.flipClockMinutesSecondsCountdown = fc; }, startDuration: minutesCountdownStartDuration }),
-            React.createElement("div", null, "Minutes countdown, defaults to always showing the start number of digits"),
-            React.createElement(stopwatchController_1.FlipClockMinutesCountdown, { ref: function (fc) { _this.flipClockMinutesCountdown = fc; }, startDuration: minutesCountdownStartDuration }));
-    };
-    return DemoFlipClocks;
-}(React.Component));
-exports.DemoFlipClocks = DemoFlipClocks;
-
-
-/***/ }),
-/* 141 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(0);
-var javascriptPolyfills_1 = __webpack_require__(33);
+var javascriptPolyfills_1 = __webpack_require__(34);
 var Divider = (function (_super) {
     __extends(Divider, _super);
     function Divider(props) {
@@ -21162,7 +20988,7 @@ exports.Divider = Divider;
 
 
 /***/ }),
-/* 142 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21187,11 +21013,11 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var divider_1 = __webpack_require__(141);
-var link_1 = __webpack_require__(145);
+var divider_1 = __webpack_require__(140);
+var link_1 = __webpack_require__(144);
 var autoComplete_1 = __webpack_require__(133);
-var muiWrappedButton_1 = __webpack_require__(31);
-var javascriptPolyfills_1 = __webpack_require__(33);
+var muiWrappedButton_1 = __webpack_require__(32);
+var javascriptPolyfills_1 = __webpack_require__(34);
 var EmailErrorScreen = (function (_super) {
     __extends(EmailErrorScreen, _super);
     function EmailErrorScreen(props) {
@@ -21533,7 +21359,7 @@ EmailLoggedInScreen.defaultProps = {
 
 
 /***/ }),
-/* 143 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21642,7 +21468,7 @@ exports.ClueLetter = ClueLetter;
 
 
 /***/ }),
-/* 144 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21778,7 +21604,7 @@ exports.Lightbulb = Lightbulb;
 
 
 /***/ }),
-/* 145 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21840,7 +21666,7 @@ exports.NonNavigatableLink = NonNavigatableLink;
 
 
 /***/ }),
-/* 146 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21857,13 +21683,19 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var Color = __webpack_require__(36);
-var javascriptPolyfills_1 = __webpack_require__(33);
+var Color = __webpack_require__(37);
+var javascriptPolyfills_1 = __webpack_require__(34);
 var MuiButton = (function (_super) {
     __extends(MuiButton, _super);
     function MuiButton(props) {
         var _this = _super.call(this, props) || this;
         _this.ignoreMouseRippleDueToTouch = false;
+        _this.onClickCB = function (ev) {
+            _this.showRipple(ev);
+            // execute callback
+            var fn = _this.props.onClick;
+            fn && fn(ev);
+        };
         _this.onMouseDownCB = function (ev) {
             _this.showRipple(ev);
             // execute callback
@@ -22089,7 +21921,7 @@ var MuiButton = (function (_super) {
         }
         var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + (this.props.touchOnly ? "" : hoverFocusActiveLighterBackgroundCss) + disabledCss + buttonCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
         return React.createElement("button", { onContextMenu: function (evt) { if (_this.props.preventContextMenu)
-                evt.preventDefault(); }, disabled: this.props.disabled, style: this.buttonStyle, id: this.id, ref: function (btn) { return _this.buttonEl = btn; }, onTouchStart: this.onTouchStartCB, onTouchEnd: this.onTouchEndCB, onMouseDown: this.onMouseDownCB, onMouseUp: this.onMouseUpCB, onMouseLeave: this.onMouseLeaveCB },
+                evt.preventDefault(); }, disabled: this.props.disabled, style: this.buttonStyle, id: this.id, ref: function (btn) { return _this.buttonEl = btn; }, onTouchStart: this.onTouchStartCB, onTouchEnd: this.onTouchEndCB, onMouseDown: this.onMouseDownCB, onMouseUp: this.onMouseUpCB, onMouseLeave: this.onMouseLeaveCB, onClick: this.onClickCB },
             this.props.children,
             React.createElement("style", { dangerouslySetInnerHTML: {
                     __html: muiCss
@@ -22135,7 +21967,7 @@ exports.MuiButton = MuiButton;
 
 
 /***/ }),
-/* 147 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22154,8 +21986,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import  Radium  =require('radium')
 var index_1 = __webpack_require__(15);
-var squareLetter_1 = __webpack_require__(148);
-var squareNumber_1 = __webpack_require__(149);
+var squareLetter_1 = __webpack_require__(147);
+var squareNumber_1 = __webpack_require__(148);
 var commonStyling_1 = __webpack_require__(14);
 //@Radium
 var Square = (function (_super) {
@@ -22241,7 +22073,7 @@ exports.Square = Square;
 
 
 /***/ }),
-/* 148 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22274,7 +22106,7 @@ exports.SquareLetter = SquareLetter;
 
 
 /***/ }),
-/* 149 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22307,7 +22139,7 @@ exports.SquareNumber = SquareNumber;
 
 
 /***/ }),
-/* 150 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22650,6 +22482,245 @@ StopwatchController.defaultProps = {
     shouldUpdateSameDuration: false
 };
 exports.StopwatchController = StopwatchController;
+var StopwatchController2 = (function (_super) {
+    __extends(StopwatchController2, _super);
+    function StopwatchController2(props) {
+        var _this = _super.call(this, props) || this;
+        _this.actualDuration = 0;
+        _this.startDelay = 0;
+        _this.delayedTimer = null;
+        _this.hasStopped = false;
+        _this.neverStarted = true;
+        _this.countdownCompleted = false;
+        _this.shouldUpdate = true;
+        _this.start = function () {
+            _this.actualStartTime = new Date();
+            var self = _this;
+            if (_this.state.tickState === TickState.stopped || _this.state.tickState === TickState.paused) {
+                _this.neverStarted = false;
+                _this.setState({ tickState: TickState.running, duration: self.currentDuration });
+                if (!_this.hasStopped) {
+                    window.setTimeout(function () {
+                        self.currentDuration = self.changeDuration(1000);
+                        self.setState({ tickState: TickState.running, duration: self.currentDuration }, function () {
+                            self.startTimer();
+                        });
+                    }, 1);
+                }
+                else {
+                    _this.setState({ tickState: TickState.running, duration: self.currentDuration });
+                    self.startTimer();
+                }
+            }
+        };
+        _this.stop = function () {
+            if (_this.state.tickState === TickState.running) {
+                _this.pauseOrStop(false);
+            }
+        };
+        _this.pause = function () {
+            _this.pauseOrStop(true);
+        };
+        //LP
+        _this.clear = function () {
+        };
+        _this.setStartDuration(_this.props.startDuration);
+        _this.state = { tickState: _this.props.tickState, duration: _this.currentDuration };
+        return _this;
+    }
+    StopwatchController2.prototype.shouldComponentUpdate = function (nextProps, nextState) {
+        var shouldUpdate = this.shouldUpdate;
+        this.shouldUpdate = true;
+        return shouldUpdate;
+    };
+    StopwatchController2.prototype.componentWillMount = function () {
+        if (this.props.tickState === TickState.running) {
+            this.start();
+        }
+    };
+    StopwatchController2.prototype.componentWillReceiveProps = function (nextProps) {
+        var self = this;
+        var shouldUpdate = true;
+        //if (nextProps.startDuration === this.props.startDuration && nextProps.countdown === this.props.countdown && nextProps.tickState === this.props.tickState!this.props.shouldUpdateSameDuration){
+        //    shouldUpdate = false;
+        //}
+        if (nextProps.startDuration === this.props.startDuration && !this.props.shouldUpdateSameDuration) {
+            shouldUpdate = false;
+        }
+        this.shouldUpdate = shouldUpdate;
+        if (shouldUpdate) {
+            console.log("about to stop in componentWillReceiveProps");
+            this.stop();
+            console.log("stopped");
+            this.hasStopped = false;
+            this.neverStarted = true;
+            this.countdownCompleted = false;
+            this.actualDuration = 0;
+            this.startDelay = 0;
+            this.setStartDuration(nextProps.startDuration);
+            window.setTimeout(function () {
+                self.setState({ duration: self.currentDuration });
+                if (self.props.tickState === TickState.running) {
+                    //necessary for state change !
+                    window.setTimeout(function () {
+                        self.start();
+                    }, 1);
+                }
+            }, 1);
+        }
+    };
+    StopwatchController2.prototype.componentWillUnmount = function () {
+        this.stopTimers();
+    };
+    StopwatchController2.prototype.setStartDuration = function (durationMs) {
+        var duration = new Duration(this.props.startDuration);
+        this.currentDuration = duration;
+        this.startDuration = duration;
+    };
+    StopwatchController2.prototype.getDuration = function () {
+        var actualDuration;
+        if (this.state.tickState === TickState.running) {
+            var now = new Date();
+            actualDuration = this.actualDuration + (now - this.actualStartTime);
+        }
+        else {
+            actualDuration = this.actualDuration;
+        }
+        if (this.props.countdown) {
+            var duration = Duration.decrement(this.startDuration, actualDuration);
+            if (duration.totalMilliseconds < 0) {
+                duration = this.currentDuration;
+            }
+            return duration;
+        }
+        else {
+            return Duration.increment(this.startDuration, actualDuration);
+        }
+        //var difference = 1000 - this.getDelay(new Date());
+        //if (this.state.tickState === TickState.running) {
+        //} else {
+        //    if (this.startDelay === 0) {
+        //        difference = 0;
+        //    } else {
+        //        difference = 1000 - this.startDelay;
+        //    }
+        //}
+        //if (this.neverStarted) {
+        //    return this.currentDuration;
+        //} else {
+        //    if (this.props.countdown) {
+        //        if (this.countdownCompleted) {
+        //            return this.currentDuration;
+        //        }
+        //        return Duration.increment(this.currentDuration, 1000+difference);
+        //    } else {
+        //        return Duration.decrement(this.currentDuration, 1000-difference);
+        //    }
+        //}
+    };
+    StopwatchController2.prototype.updateSecond = function () {
+        this.updateDuration(1000);
+    };
+    StopwatchController2.prototype.changeDuration = function (ms) {
+        var newDuration;
+        if (this.props.countdown) {
+            newDuration = Duration.decrement(this.currentDuration, ms);
+            if (newDuration.totalMilliseconds < 0) {
+                this.completeCountdown();
+                newDuration = this.currentDuration;
+            }
+        }
+        else {
+            newDuration = Duration.increment(this.currentDuration, ms);
+        }
+        return newDuration;
+    };
+    StopwatchController2.prototype.updateDuration = function (ms) {
+        this.currentDuration = this.changeDuration(ms);
+        this.setState({ duration: this.currentDuration });
+    };
+    StopwatchController2.prototype.startTimer = function () {
+        if (this.startDelay === 0) {
+            this.startSecondTimer();
+        }
+        else {
+            this.startDelayedTimer();
+        }
+    };
+    StopwatchController2.prototype.startSecondTimer = function () {
+        var self = this;
+        this.startTime = new Date();
+        this.startDelay = 0;
+        this.cancelIntervalId = window.setInterval(function () {
+            self.updateSecond();
+        }, 1000);
+    };
+    StopwatchController2.prototype.startDelayedTimer = function () {
+        var self = this;
+        this.delayedTimer = window.setTimeout(function () {
+            self.startSecondTimer.bind(self)();
+            self.updateSecond.bind(self)();
+        }, this.startDelay);
+    };
+    StopwatchController2.prototype.stopDelayedTimer = function () {
+        if (this.delayedTimer !== null) {
+            window.clearTimeout(this.delayedTimer);
+            this.delayedTimer = null;
+        }
+    };
+    StopwatchController2.prototype.stopTimers = function () {
+        this.stopDelayedTimer();
+        window.clearInterval(this.cancelIntervalId);
+    };
+    StopwatchController2.prototype.getDelay = function (nowDate) {
+        var delay;
+        var now = nowDate;
+        if (this.startDelay === 0) {
+            var difference = (now - this.startTime) % 1000;
+            delay = 1000 - difference;
+        }
+        else {
+            var difference = (now - this.actualStartTime) % 1000;
+            delay = 1000 - ((1000 - this.startDelay) + difference);
+        }
+        return delay;
+    };
+    StopwatchController2.prototype.pauseOrStop = function (paused) {
+        this.stopTimers();
+        var now = new Date();
+        this.actualDuration = this.actualDuration + (now - this.actualStartTime);
+        this.hasStopped = true;
+        this.startDelay = this.getDelay(now);
+        var newState;
+        if (paused) {
+            newState = {
+                tickState: TickState.paused
+            };
+        }
+        else {
+            newState = {
+                tickState: TickState.stopped,
+                duration: this.currentDuration
+            };
+        }
+        this.setState(newState);
+    };
+    StopwatchController2.prototype.completeCountdown = function () {
+        this.stop();
+        this.countdownCompleted = true;
+    };
+    StopwatchController2.prototype.render = function () {
+        console.log("stopwatch controller render");
+        return React.createElement("div", null, React.cloneElement(this.props.children, { tickState: this.state.tickState, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start }));
+    };
+    return StopwatchController2;
+}(React.Component));
+StopwatchController2.defaultProps = {
+    tickState: TickState.stopped,
+    startDuration: 0,
+    shouldUpdateSameDuration: false
+};
+exports.StopwatchController2 = StopwatchController2;
 var DayPart;
 (function (DayPart) {
     DayPart[DayPart["total"] = 0] = "total";
@@ -23174,7 +23245,7 @@ exports.flipClockWrapper = flipClockWrapper;
 
 
 /***/ }),
-/* 151 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23344,7 +23415,7 @@ exports.numberStringToNumber = numberStringToNumber;
 
 
 /***/ }),
-/* 152 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23987,7 +24058,7 @@ if (SpeechRecognition) {
         testObj.disabled = testObj.disabled === undefined ? false : testObj.disabled;
     };
     var noopNull = function () { return null; };
-    var setDefaults = function (commandState) {
+    var setCommandStateDefaults = function (commandState) {
         commandState.isDefault = commandState.isDefault === undefined ? false : commandState.isDefault;
         commandState.enter = commandState.enter === undefined ? noopNull : commandState.enter;
         commandState.exit = commandState.exit === undefined ? noopNull : commandState.exit;
@@ -24033,6 +24104,7 @@ if (SpeechRecognition) {
     };
     var executeCommand = function executeCommand(currentCommand, commandText, confidences, results, resultIndex) {
         var executeFurther = true;
+        var matched = false;
         var confidence = confidences[resultIndex];
         var ignoreResult = currentCommand.maxAlternatives !== 0 && currentCommand.maxAlternatives < resultIndex;
         if (!ignoreResult) {
@@ -24057,13 +24129,14 @@ if (SpeechRecognition) {
                     }));
                     //confirmation to do - will need a confirmation state with all information for proceeding
                     if (cbResponse.matches) {
+                        matched = true;
                         doSoundResponse(cbResponse);
                         invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.name, results, confidences);
                         var nextStateContext = cbResponse.nextStateContext;
                         if (currentCommand.keepState || currentCommand.nextState === exports.recogniseMe.currentState.name) {
                             clearStateTimeout();
                             if (nextStateContext) {
-                                enterState(exports.recogniseMe.currentState, nextStateContext);
+                                exports.recogniseMe.currentStateContext = nextStateContext;
                             }
                         }
                         else {
@@ -24074,23 +24147,25 @@ if (SpeechRecognition) {
                 }
             }
         }
-        return executeFurther;
+        return {
+            executeFurther: executeFurther,
+            matched: matched
+        };
     };
     var parseResults = function parseResults(results, confidences) {
         function commandTransitionsToActiveState(command) {
             return (command.keepState && !exports.recogniseMe.currentState.disabled) || !commandStateByName(command.nextState).disabled;
         }
         invokeCallbacks(callbacks.result, results, confidences);
+        var commandMatched = false;
         var currentState = exports.recogniseMe.currentState;
         if (currentState) {
-            var currentStateName = currentState.name;
             var interruptCommands = [];
             //will want to improve the processing instead of doing this on each recognition
             if (currentState.canInterrupt) {
                 commandStates.forEach(function (commandState) {
                     if (!commandState.disabled && commandState !== currentState) {
                         commandState.commands.forEach(function (command) {
-                            var canInterrupt = command.canInterrupt === undefined ? (commandState === defaultState ? true : false) : command.canInterrupt;
                             if (!command.disabled && command.canInterrupt && commandTransitionsToActiveState(command)) {
                                 interruptCommands.push(command);
                             }
@@ -24111,31 +24186,42 @@ if (SpeechRecognition) {
                 if (debugState) {
                     logMessage('Speech recognized: %c' + commandText, debugStyle);
                 }
+                var finishedExecuting = false;
                 for (var j = 0, l = commands.length; j < l; j++) {
-                    var executeFurther = executeCommand(commands[j], commandText, confidences, results, i);
-                    if (!executeFurther) {
-                        return;
+                    var executionDetails = executeCommand(commands[j], commandText, confidences, results, i);
+                    if (!commandMatched) {
+                        commandMatched = executionDetails.matched;
+                    }
+                    if (!executionDetails.executeFurther) {
+                        finishedExecuting = true;
+                        break;
                     }
                 }
+                if (finishedExecuting) {
+                    break;
+                }
             }
-            var catchCommandMatched = false;
             if (currentState.catchCommand) {
                 for (var i = 0; i < results.length; i++) {
                     commandText = results[i];
-                    var executeFurther = executeCommand(currentState.catchCommand, commandText, confidences, results, i);
-                    if (!executeFurther) {
-                        catchCommandMatched = true;
+                    var executionDetails = executeCommand(currentState.catchCommand, commandText, confidences, results, i);
+                    if (!commandMatched) {
+                        commandMatched = executionDetails.matched;
+                    }
+                    if (!executionDetails.executeFurther) {
                         break;
                     }
                 }
             }
-            if (!catchCommandMatched) {
+            if (!commandMatched) {
                 var soundResponse = currentState.noMatch(results, confidences);
                 soundResponse = soundResponse ? soundResponse : exports.recogniseMe.allStatesNoMatchSoundResponse;
                 doSoundResponse(soundResponse);
             }
         }
-        invokeCallbacks(callbacks.resultNoMatch, results, confidences);
+        if (!commandMatched) {
+            invokeCallbacks(callbacks.resultNoMatch, results, confidences);
+        }
     };
     var doSoundResponse = function (response) {
         if (response) {
@@ -24550,7 +24636,7 @@ if (SpeechRecognition) {
         addStates: function addStates(cmdStates) {
             initIfNeeded();
             cmdStates.forEach(function (commandState) {
-                setDefaults(commandState);
+                setCommandStateDefaults(commandState);
                 commandStates.push(commandState);
                 if (commandState.isDefault) {
                     defaultState = commandState;
@@ -24571,7 +24657,6 @@ if (SpeechRecognition) {
             else {
                 var exitCurrentState = false;
                 var stateNames = Array.isArray(statesToRemove) ? statesToRemove : [statesToRemove];
-                var defaultState;
                 commandStates = commandStates.filter(function (state) {
                     for (var i = 0; i < stateNames.length; i++) {
                         if (stateNames[i] === state.name) {
@@ -24721,20 +24806,20 @@ else {
 
 
 /***/ }),
-/* 153 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
-var ReactDOM = __webpack_require__(35);
+var ReactDOM = __webpack_require__(36);
 var crosswordPuzzleApp_1 = __webpack_require__(61);
 ReactDOM.render(React.createElement(crosswordPuzzleApp_1.CrosswordPuzzleApp, null), document.getElementById("example"));
 
 
 /***/ }),
-/* 154 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24764,8 +24849,8 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 //import {canUseDOM} from 'exenv';
-var constants_1 = __webpack_require__(34);
-var utils_1 = __webpack_require__(155);
+var constants_1 = __webpack_require__(35);
+var utils_1 = __webpack_require__(154);
 function keyModifiersAny() {
     return {
         altKey: true,
@@ -25036,18 +25121,18 @@ exports.keyToggleHandler = keyHandleDecorator(utils_1.matchesKeyboardEvent);
 /**
  * Constants
  */
-__export(__webpack_require__(34));
+__export(__webpack_require__(35));
 
 
 /***/ }),
-/* 155 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 /* @flow */
 Object.defineProperty(exports, "__esModule", { value: true });
-var constants_1 = __webpack_require__(34);
+var constants_1 = __webpack_require__(35);
 /**
  * Constants.
  */

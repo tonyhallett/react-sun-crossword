@@ -4,14 +4,24 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var React = require("react");
 var index_1 = require("../models/index");
 var crosswordPuzzle_1 = require("./crosswordPuzzle");
+var twoCol_1 = require("./twoCol");
+var firebaseApp_1 = require("../helpers/firebaseApp");
 var connectedDatabase_1 = require("../helpers/connectedDatabase");
 require("firebase/database");
 var crosswordPuzzleChooser_1 = require("./crosswordPuzzleChooser");
 var muiWrappedButton_1 = require("./muiWrappedButton");
-var demoFlipClocks_1 = require("./demoFlipClocks");
+var stopwatchController_1 = require("./stopwatchController");
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
     function CrosswordPuzzleApp(props) {
@@ -21,7 +31,7 @@ var CrosswordPuzzleApp = (function (_super) {
             if (!crosswordModel.dateStarted) {
                 crosswordModel.dateStarted = new Date();
             }
-            _this.setState({ crosswordModel: crosswordModel });
+            _this.setState({ crosswordModel: crosswordModel, crosswordModelDuration: crosswordModel.duration });
         };
         _this.saveUserCrossword = function () {
             var modelJson = index_1.ConvertCrosswordModelToJson(_this.state.crosswordModel);
@@ -53,11 +63,11 @@ var CrosswordPuzzleApp = (function (_super) {
                 }
             }
         };
-        _this.state = { crosswordModel: null, userLoggedIn: null };
+        _this.state = { crosswordModel: null, userLoggedIn: null, crosswordModelDuration: 0 };
         return _this;
     }
     CrosswordPuzzleApp.prototype.componentDidMount = function () {
-        //auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+        firebaseApp_1.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
     };
     CrosswordPuzzleApp.prototype.onAuthStateChanged = function (user) {
         var loggedIn = user !== null;
@@ -86,25 +96,26 @@ var CrosswordPuzzleApp = (function (_super) {
         };
         //explicit height allows room for the Select 
         var leftContent = React.createElement("div", { style: { minHeight: "1000px" } },
-            React.createElement(crosswordPuzzleChooser_1.CrosswordPuzzleChooser, { emailLogOnStyleProps: { signInButtonProps: buttonProps, dividerColor: primaryColour }, selectChooserProps: selectChooserProps, userLoggedIn: this.state.userLoggedIn, crosswordSelected: this.crosswordSelected }));
+            React.createElement(crosswordPuzzleChooser_1.CrosswordPuzzleChooser, { emailLogOnStyleProps: { signInButtonProps: buttonProps, dividerColor: primaryColour }, selectChooserProps: selectChooserProps, userLoggedIn: this.state.userLoggedIn, crosswordSelected: this.crosswordSelected }),
+            this.state.crosswordModel &&
+                React.createElement(stopwatchController_1.FlipClock24, { shouldUpdateSameDuration: true, startDuration: this.state.crosswordModelDuration }),
+            React.createElement(muiWrappedButton_1.MuiButtonWrapper, __assign({ disabled: !this.state.userLoggedIn || this.state.crosswordModel === null, text: "Click to save", onClick: this.saveUserCrossword }, buttonProps)));
         var rightContent = React.createElement(crosswordPuzzle_1.CrosswordPuzzleKeyEvents, { crosswordModel: this.state.crosswordModel });
         if (this.state.crosswordModel === null) {
             rightContent = React.createElement("div", null);
         }
-        //return <div >
-        //    {this.state.crosswordModel &&
-        //        <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
-        //            <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
-        //        </StopwatchController>
-        //    }
-        //    <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
-        //    <TwoCol leftContent={leftContent} rightContent={rightContent}>
-        //    </TwoCol>
-        //    </div>
-        //<button onClick={}>Pause</button>
+        /*
+        //{this.state.crosswordModel &&
+            //    <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
+            //        <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
+            //    </StopwatchController>
+            //}
+            //<MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
+        */
         console.log("App render");
         return React.createElement("div", null,
-            React.createElement(demoFlipClocks_1.DemoFlipClocks, null));
+            React.createElement(twoCol_1.TwoCol, { leftContent: leftContent, rightContent: rightContent }));
+        //<button onClick={}>Pause</button>
         //<div>
         //<div ref={(div) => { this.pauseAnimationsContainer=div }}>
         //<StopwatchController countdown={true} autoStart={false} ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={112000}>
@@ -131,30 +142,6 @@ var CrosswordPuzzleApp = (function (_super) {
         //}}>Check duration</button>
         //</div>
         //{height:"200px"}
-        /*
-            Element queries
-             <Bounded />
-            <ElementQuery queries={{ sm: { maxWidth: 200 }, lg: { minWidth: 201 }, hasHeight: {minHeight:1} }}>
-                <Matches sm>Small</Matches>
-                <Matches lg>Large</Matches>
-                <Matches hasHeight>Has height !</Matches>
-            </ElementQuery>
-            <ElementQueries/>
-        */
-        /*
-              <ElementQuery queries={{ sm: { maxWidth: 499 }, medium: { minWidth: 500,maxWidth:1000 },large: {minWidth: 1001}}}>
-                <Matches sm>
-                        <Keyboard width={250} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-                <Matches medium>
-                    <Keyboard keyboardColour="#F8F8F8" buttonColour="gray" buttonBackgroundColour="yellow" width={500} bottomOfScreen={false} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-                <Matches large>
-                    <Keyboard keyboardColour="#F8F8F8" buttonBackgroundColour="orange"width={1000} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-
-            </ElementQuery>
-        */
         /*
         return <div style={{ minWidth: "500px", maxWidth:"1000px" }}>
             <ExpandableKeyboard keyboardColour="gray" buttonBackgroundColour="orange"  backspacePressed={() => { }} keyPressed={() => { }} />

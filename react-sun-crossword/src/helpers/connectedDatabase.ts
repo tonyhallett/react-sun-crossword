@@ -3,7 +3,6 @@ import { database } from './firebaseApp'
 
 export interface IConnectedDatabase {
     connectionChanged(callback: (isConnected: boolean) => void);
-    //callback signature to change
     listenForPublicCrosswordLookups(callback: (lookups: CrosswordLookupJson[]) => void);
     listenForUserCrosswordLookups(uid: string, callback: (lookups: CrosswordLookupJson[]) => void);
     getPublicCrossword(id: string): Promise<CrosswordModelJson>;
@@ -51,10 +50,11 @@ class FirebaseDatabase implements IConnectedDatabase {
 
     connected: boolean
     connectionChangedCallback: (isConnected: boolean) => void
+    connectedRef: firebase.database.Reference;
     constructor() {
-        var connectedRef = database.ref(".info/connected");
+        this.connectedRef = database.ref(".info/connected");
         var self = this;
-        connectedRef.on("value", function (snap) {
+        this.connectedRef.on("value", function (snap) {
             var connected = false;
             if (snap.val() === true) {
                 connected = true;

@@ -1,4 +1,4 @@
-﻿export interface CrosswordModel {
+﻿export interface ICrosswordModel {
     id: string
     title: string
     //to look at..................
@@ -6,9 +6,11 @@
     dateStarted: Date,
     duration:number,
     clueProviders: ClueProvider[],
-    grid: Square[][],
-    selectedSquare: Square,
+    grid: ISquare[][],
+    selectedSquare: ISquare,
     selectedWord: IWord
+    selectWord: (word: IWord) => void;
+    selectSquare: (square: ISquare) => void;
     solvingMode: SolvingMode,
     words:IWord[]
 }
@@ -25,7 +27,7 @@ export interface Clue {
     word:IWord
 }
 export interface IWord {
-    squares: Square[],
+    squares: ISquare[],
     solved(): boolean,
     select: () => void,
     deselect: () => void,
@@ -37,7 +39,7 @@ export interface IWord {
     y: number
     length: number
 }
-export interface Square {
+export interface ISquare {
     acrossWord: IWord,
     downWord: IWord,
     selected: boolean,
@@ -48,12 +50,13 @@ export interface Square {
     guess: string,
     rowIndex: number,
     columnIndex: number
-    autoSolved:boolean
+    autoSolved: boolean,
+    isStartOfWord:(across:boolean)=>boolean
 }
 export enum SolvingMode { Guessing,Solving, Cheating  }
 
 export class Word implements IWord {
-    squares: Square[] = [];
+    squares: ISquare[] = [];
     _setSolvingMode(solvingMode: SolvingMode) {
         this.squares.forEach(square => square.solvingMode = solvingMode);
         this.solvingMode = solvingMode;
@@ -133,12 +136,62 @@ export interface CrosswordModelJsonSquare {
     autoSolved: boolean
 }
 
+class CrosswordModel implements ICrosswordModel {
+    id: string;
+    title: string;
+    datePublished: Date;
+    dateStarted: Date;
+    duration: number;
+    clueProviders: ClueProvider[];
+    grid: ISquare[][];
+    selectedSquare: ISquare;
+    selectedWord: IWord;
+    selectWord(word: IWord) {
+        if (this.selectedWord !== word) {
+            if (this.selectedWord) {
+                this.selectedWord.deselect();
+            }
+            word.select();
+            this.selectedWord = word;
+        }
+    }
+    selectSquare(square: ISquare) {
+        var previousSelectedSquare = this.selectedSquare;
+        if (previousSelectedSquare) {
+            previousSelectedSquare.selected = false;
+        }
+        square.selected = true;
+        this.selectedSquare = square;
+    };
+    solvingMode: SolvingMode;
+    words: IWord[];
 
 
-export function ConvertCrosswordModelToJson(crosswordModel: CrosswordModel): CrosswordModelJson {
+}
+class Square implements ISquare {
+    acrossWord: IWord;
+    downWord: IWord;
+    selected: boolean;
+    wordSelected: boolean;
+    solvingMode: SolvingMode;
+    number: string;
+    letter: string;
+    guess: string;
+    rowIndex: number;
+    columnIndex: number;
+    autoSolved: boolean;
+    isStartOfWord(across: boolean) {
+        var word = across ? this.acrossWord : this.downWord;
+        var index = word.squares.indexOf(this);
+        return index === 0;
+    }
+
+
+}
+export function ConvertCrosswordModelToJson(crosswordModel: ICrosswordModel): CrosswordModelJson {
     //dates different types
     var grid = crosswordModel.grid.map(function (row) {
-        return row.map(function (square: Square) {
+        return row.map(function (square: ISquare) {
             var jsonSquare: CrosswordModelJsonSquare = {
                 autoSolved: square.autoSolved,
                 guess: square.guess,
@@ -195,38 +248,32 @@ export function ConvertCrosswordModelToJson(crosswordModel: CrosswordModel): Cro
     }
     return crosswordModelJson;
 }
-export function ConvertCrosswordJsonToModel(crosswordJson: CrosswordModelJson): CrosswordModel{
+export function ConvertCrosswordJsonToModel(crosswordJson: CrosswordModelJson): ICrosswordModel{
     var dateStarted: Date = crosswordJson.dateStarted ? new Date(crosswordJson.dateStarted) : null;
-    var crosswordModel: CrosswordModel = {
-        dateStarted: dateStarted,
-        duration: crosswordJson.duration,
-        id: crosswordJson.id,
-        datePublished: new Date(crosswordJson.datePublished),
-        title: crosswordJson.title,
-        selectedSquare: null,
-        selectedWord: null,
-        solvingMode: crosswordJson.solvingMode,
-        words: null,
-        clueProviders: null,
-        grid: null
-    }
+    
+    var crosswordModel = new CrosswordModel();
+    crosswordModel.dateStarted = dateStarted;
+    crosswordModel.duration = crosswordJson.duration;
+    crosswordModel.id = crosswordJson.id;
+    crosswordModel.datePublished = new Date(crosswordJson.datePublished);
+    crosswordModel.title = crosswordJson.title;
+    crosswordModel.solvingMode = crosswordJson.solvingMode;
+    
     var selectedSquare = null;
     
-    var grid: Square[][] = crosswordJson.grid.map((row, rowIndex) => {
+    var grid: ISquare[][] = crosswordJson.grid.map((row, rowIndex) => {
         return row.map((square, columnIndex) => {
-            var crosswordSquare: Square = {
-                autoSolved: square.autoSolved,
-                columnIndex: columnIndex,
-                rowIndex: rowIndex,
-                acrossWord: null,
-                downWord: null,
-                guess: square.guess,
-                letter: square.letter,
-                number: square.number,
-                selected: square.selected,
-                wordSelected: square.wordSelected,
-                solvingMode: SolvingMode.Guessing
-            }
+            var crosswordSquare = new Square();
+            crosswordSquare.autoSolved = square.autoSolved;
+            crosswordSquare.columnIndex = columnIndex;
+            crosswordSquare.rowIndex = rowIndex;
+            crosswordSquare.guess = square.guess;
+            crosswordSquare.letter = square.letter;
+            crosswordSquare.number = square.number;
+            crosswordSquare.selected = square.selected;
+            crosswordSquare.wordSelected = square.wordSelected;
+            crosswordSquare.solvingMode = square.solvingMode;
+            
             if (crosswordSquare.selected) {
                 selectedSquare = crosswordSquare;
             }
@@ -251,7 +298,7 @@ export function ConvertCrosswordJsonToModel(crosswordJson: CrosswordModelJson): 
         var y = word.y;
         
         for (var i = 0; i < word.length; i++) {
-            var crosswordSquare: Square = grid[y - 1][x - 1];
+            var crosswordSquare: ISquare = grid[y - 1][x - 1];
 
             word.squares.push(crosswordSquare);
 

@@ -21,6 +21,7 @@ export interface MuiButtonProps {
     onMouseLeave?: React.EventHandler<React.MouseEvent<HTMLButtonElement>>,
     onTouchStart?: React.EventHandler<React.TouchEvent<HTMLButtonElement>>,
     onTouchEnd?: React.EventHandler<React.TouchEvent<HTMLButtonElement>>
+    onClick?: React.EventHandler<React.MouseEvent<HTMLButtonElement>>
     rippleContainerStyle?: any,
     //rippleVisibleOpacity?:number
     touchOnly?: boolean,
@@ -194,7 +195,14 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
             ripple: null
         });
     }
-    ignoreMouseRippleDueToTouch=false
+    ignoreMouseRippleDueToTouch = false
+    onClickCB = (ev: React.MouseEvent<HTMLButtonElement>) => {
+        this.showRipple(ev);
+
+        // execute callback
+        var fn = this.props.onClick;
+        fn && fn(ev);
+    }
     onMouseDownCB = (ev: React.MouseEvent<HTMLButtonElement>) => {
         this.showRipple(ev);
 
@@ -327,7 +335,7 @@ export class MuiButton extends React.Component<MuiButtonProps, MuiButtonState> {
             rippleContainerStyle.borderRadius = this.props.buttonStyle.borderRadius;
         }
         var muiCss = hoverFocusBoxShadowRaisedCss + activeHoverBoxShadowActiveCss + (this.props.touchOnly ? "" : hoverFocusActiveLighterBackgroundCss) + disabledCss + buttonCss + rippleActiveCss + rippleAnimatingCss + rippleNormalCss;
-        return <button onContextMenu={(evt) => { if (this.props.preventContextMenu) evt.preventDefault(); }} disabled={this.props.disabled} style={this.buttonStyle} id={this.id} ref={(btn) => this.buttonEl = btn} onTouchStart={this.onTouchStartCB} onTouchEnd={this.onTouchEndCB} onMouseDown={this.onMouseDownCB} onMouseUp={this.onMouseUpCB} onMouseLeave={this.onMouseLeaveCB}>
+        return <button onContextMenu={(evt) => { if (this.props.preventContextMenu) evt.preventDefault(); }} disabled={this.props.disabled} style={this.buttonStyle} id={this.id} ref={(btn) => this.buttonEl = btn} onTouchStart={this.onTouchStartCB} onTouchEnd={this.onTouchEndCB} onMouseDown={this.onMouseDownCB} onMouseUp={this.onMouseUpCB} onMouseLeave={this.onMouseLeaveCB} onClick={this.onClickCB}>
                 {this.props.children}
                 <style dangerouslySetInnerHTML={{
                     __html: muiCss

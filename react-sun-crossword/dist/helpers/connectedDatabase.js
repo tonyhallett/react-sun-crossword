@@ -2,9 +2,9 @@
 var firebaseApp_1 = require("./firebaseApp");
 var FirebaseDatabase = (function () {
     function FirebaseDatabase() {
-        var connectedRef = firebaseApp_1.database.ref(".info/connected");
+        this.connectedRef = firebaseApp_1.database.ref(".info/connected");
         var self = this;
-        connectedRef.on("value", function (snap) {
+        this.connectedRef.on("value", function (snap) {
             var connected = false;
             if (snap.val() === true) {
                 connected = true;

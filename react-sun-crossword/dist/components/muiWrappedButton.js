@@ -18,17 +18,13 @@ var MuiButtonWrapper = (function (_super) {
     __extends(MuiButtonWrapper, _super);
     function MuiButtonWrapper() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        //wrap in div and handle click from that ?
-        _this.onMouseUp = function () {
-            _this.props.onClick();
+        _this.onClick = function (ev) {
+            _this.props.onClick(ev);
         };
         return _this;
     }
     MuiButtonWrapper.prototype.render = function () {
-        //important consideration at a later point
-        //if the consumer of this wrapper wanted to also pass onMouseUp
-        //moot point as functionally is only used for onClick and the remainder is just styling
-        return React.createElement(muiButton_1.MuiButton, __assign({}, this.props, { disabled: this.props.disabled, onMouseUp: this.onMouseUp }),
+        return React.createElement(muiButton_1.MuiButton, __assign({}, this.props, { disabled: this.props.disabled, onClick: this.onClick }),
             "  ",
             this.props.text);
     };

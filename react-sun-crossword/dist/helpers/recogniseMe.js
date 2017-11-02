@@ -636,7 +636,7 @@ if (SpeechRecognition) {
         testObj.disabled = testObj.disabled === undefined ? false : testObj.disabled;
     };
     var noopNull = function () { return null; };
-    var setDefaults = function (commandState) {
+    var setCommandStateDefaults = function (commandState) {
         commandState.isDefault = commandState.isDefault === undefined ? false : commandState.isDefault;
         commandState.enter = commandState.enter === undefined ? noopNull : commandState.enter;
         commandState.exit = commandState.exit === undefined ? noopNull : commandState.exit;
@@ -682,6 +682,7 @@ if (SpeechRecognition) {
     };
     var executeCommand = function executeCommand(currentCommand, commandText, confidences, results, resultIndex) {
         var executeFurther = true;
+        var matched = false;
         var confidence = confidences[resultIndex];
         var ignoreResult = currentCommand.maxAlternatives !== 0 && currentCommand.maxAlternatives < resultIndex;
         if (!ignoreResult) {
@@ -706,13 +707,14 @@ if (SpeechRecognition) {
                     }));
                     //confirmation to do - will need a confirmation state with all information for proceeding
                     if (cbResponse.matches) {
+                        matched = true;
                         doSoundResponse(cbResponse);
                         invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.name, results, confidences);
                         var nextStateContext = cbResponse.nextStateContext;
                         if (currentCommand.keepState || currentCommand.nextState === exports.recogniseMe.currentState.name) {
                             clearStateTimeout();
                             if (nextStateContext) {
-                                enterState(exports.recogniseMe.currentState, nextStateContext);
+                                exports.recogniseMe.currentStateContext = nextStateContext;
                             }
                         }
                         else {
@@ -723,23 +725,25 @@ if (SpeechRecognition) {
                 }
             }
         }
-        return executeFurther;
+        return {
+            executeFurther: executeFurther,
+            matched: matched
+        };
     };
     var parseResults = function parseResults(results, confidences) {
         function commandTransitionsToActiveState(command) {
             return (command.keepState && !exports.recogniseMe.currentState.disabled) || !commandStateByName(command.nextState).disabled;
         }
         invokeCallbacks(callbacks.result, results, confidences);
+        var commandMatched = false;
         var currentState = exports.recogniseMe.currentState;
         if (currentState) {
-            var currentStateName = currentState.name;
             var interruptCommands = [];
             //will want to improve the processing instead of doing this on each recognition
             if (currentState.canInterrupt) {
                 commandStates.forEach(function (commandState) {
                     if (!commandState.disabled && commandState !== currentState) {
                         commandState.commands.forEach(function (command) {
-                            var canInterrupt = command.canInterrupt === undefined ? (commandState === defaultState ? true : false) : command.canInterrupt;
                             if (!command.disabled && command.canInterrupt && commandTransitionsToActiveState(command)) {
                                 interruptCommands.push(command);
                             }
@@ -760,31 +764,42 @@ if (SpeechRecognition) {
                 if (debugState) {
                     logMessage('Speech recognized: %c' + commandText, debugStyle);
                 }
+                var finishedExecuting = false;
                 for (var j = 0, l = commands.length; j < l; j++) {
-                    var executeFurther = executeCommand(commands[j], commandText, confidences, results, i);
-                    if (!executeFurther) {
-                        return;
+                    var executionDetails = executeCommand(commands[j], commandText, confidences, results, i);
+                    if (!commandMatched) {
+                        commandMatched = executionDetails.matched;
+                    }
+                    if (!executionDetails.executeFurther) {
+                        finishedExecuting = true;
+                        break;
                     }
                 }
+                if (finishedExecuting) {
+                    break;
+                }
             }
-            var catchCommandMatched = false;
             if (currentState.catchCommand) {
                 for (var i = 0; i < results.length; i++) {
                     commandText = results[i];
-                    var executeFurther = executeCommand(currentState.catchCommand, commandText, confidences, results, i);
-                    if (!executeFurther) {
-                        catchCommandMatched = true;
+                    var executionDetails = executeCommand(currentState.catchCommand, commandText, confidences, results, i);
+                    if (!commandMatched) {
+                        commandMatched = executionDetails.matched;
+                    }
+                    if (!executionDetails.executeFurther) {
                         break;
                     }
                 }
             }
-            if (!catchCommandMatched) {
+            if (!commandMatched) {
                 var soundResponse = currentState.noMatch(results, confidences);
                 soundResponse = soundResponse ? soundResponse : exports.recogniseMe.allStatesNoMatchSoundResponse;
                 doSoundResponse(soundResponse);
             }
         }
-        invokeCallbacks(callbacks.resultNoMatch, results, confidences);
+        if (!commandMatched) {
+            invokeCallbacks(callbacks.resultNoMatch, results, confidences);
+        }
     };
     var doSoundResponse = function (response) {
         if (response) {
@@ -1199,7 +1214,7 @@ if (SpeechRecognition) {
         addStates: function addStates(cmdStates) {
             initIfNeeded();
             cmdStates.forEach(function (commandState) {
-                setDefaults(commandState);
+                setCommandStateDefaults(commandState);
                 commandStates.push(commandState);
                 if (commandState.isDefault) {
                     defaultState = commandState;
@@ -1220,7 +1235,6 @@ if (SpeechRecognition) {
             else {
                 var exitCurrentState = false;
                 var stateNames = Array.isArray(statesToRemove) ? statesToRemove : [statesToRemove];
-                var defaultState;
                 commandStates = commandStates.filter(function (state) {
                     for (var i = 0; i < stateNames.length; i++) {
                         if (stateNames[i] === state.name) {

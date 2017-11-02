@@ -1,6 +1,6 @@
 ﻿
 import * as React from "react";
-import { CrosswordModel, ConvertCrosswordJsonToModel, ConvertCrosswordModelToJson, CrosswordModelJson, SolvingMode } from '../models/index'
+import { ICrosswordModel, ConvertCrosswordJsonToModel, ConvertCrosswordModelToJson, CrosswordModelJson, SolvingMode } from '../models/index'
 import { CrosswordPuzzleKeyEvents } from "./crosswordPuzzle";
 import { Promise } from "es6-promise";
 import Select = require("react-select")
@@ -16,31 +16,31 @@ import 'firebase/database';
 import { CrosswordPuzzleChooser, DefaultSelectChooserButtonProps } from "./crosswordPuzzleChooser";
 import { MuiButton, MuiButtonProps } from "./muiButton";
 import { MuiButtonWrapper } from "./muiWrappedButton";
-import {  StopwatchController, Duration } from "./stopwatchController";
+import { StopwatchController, Duration, FlipClock24 } from "./stopwatchController";
 
 import { Bounded, ElementQueries } from '../components/testBounds'
 import { ElementQuery, Matches, makeElementQuery } from 'react-element-queries';
 import { Keyboard } from "./keyboard";
 import { ExpandableKeyboard } from "./expandableKeyboard";
-import { recogniseMe, Command } from "../helpers/recogniseMe";
+
 import { DemoFlipClocks } from "./demoFlipClocks";
 //note that might want mediaquery as well
 
 
 
 interface CrosswordPuzzleAppState {
-    crosswordModel: CrosswordModel,
-    //crosswordModelDuration:number,
+    crosswordModel: ICrosswordModel,
+    crosswordModelDuration:number,
     userLoggedIn: string,
 }
 export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzzleAppState> {
 
     constructor(props) {
         super(props);
-        this.state = {crosswordModel: null, userLoggedIn: null};
+        this.state = { crosswordModel: null, userLoggedIn: null, crosswordModelDuration:0 };
     }
     componentDidMount() {
-        //auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
+        auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
     }
     
     crosswordSelected = (selectedCrossword: CrosswordModelJson) => {
@@ -48,7 +48,7 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         if (!crosswordModel.dateStarted) {
             crosswordModel.dateStarted = new Date();
         }
-        this.setState({ crosswordModel: crosswordModel});
+        this.setState({ crosswordModel: crosswordModel, crosswordModelDuration: crosswordModel.duration });
     }
     saveUserCrossword = () => {
         
@@ -113,32 +113,39 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         var selectChooserProps: DefaultSelectChooserButtonProps = {
             ButtonType: MuiButtonWrapper,
             buttonProps: buttonProps
-            
         }
         //explicit height allows room for the Select 
         var leftContent = <div style={{ minHeight: "1000px" }}>
             <CrosswordPuzzleChooser emailLogOnStyleProps={{ signInButtonProps: buttonProps, dividerColor: primaryColour }} selectChooserProps={selectChooserProps} userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} /> 
-            </div>
+            {this.state.crosswordModel &&
+                <FlipClock24 shouldUpdateSameDuration={true} startDuration={this.state.crosswordModelDuration} />
+            }
+            <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
+        </div>
         var rightContent = <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel} />
         if (this.state.crosswordModel === null) {
             rightContent=<div/>
         }
-        
-        //return <div >
-        //    {this.state.crosswordModel &&
-        //        <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
-        //            <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
-        //        </StopwatchController>
-        //    }
-        //    <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
-        //    <TwoCol leftContent={leftContent} rightContent={rightContent}>
+        /*
+        //{this.state.crosswordModel &&
+            //    <StopwatchController ref={(sw) => { this.stopwatchController = sw }} reportTickInterval={ReportTickInterval.tenthSecond} startDuration={this.state.crosswordModel.duration}>
+            //        <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds"  />
+            //    </StopwatchController>
+            //}
+            //<MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
+        */
+
+        console.log("App render");
+        return <div >
             
-        //    </TwoCol>
-        //    </div>
+            <TwoCol leftContent={leftContent} rightContent={rightContent}>
+            
+            </TwoCol>
+            </div>
 
         //<button onClick={}>Pause</button>
-        console.log("App render");
-        return <div><DemoFlipClocks /></div>
+        
+        
 
 
         //<div>
@@ -148,14 +155,17 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
             //    <FlipCounter countdown={true} hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
             //</StopwatchController>
             //    </div>
+
             //<button onClick={() => { this.stopwatchController.stop(); this.pauseAnimations(this.pauseAnimationsContainer)  }}>Stop</button>
             //<button onClick={() => { this.stopwatchController.pause(); this.pauseAnimations(this.pauseAnimationsContainer) }}>Pause</button>
             //<button onClick={() => { this.stopwatchController.start(); this.resumeAnimations(this.pauseAnimationsContainer) }}>Play</button>
+            
             //<div ref={(div) => { this.pauseAnimationsContainer2 = div }}>
             //    <StopwatchController autoStart={false} ref={(sw) => { this.stopwatchController2 = sw }} reportTickInterval={ReportTickInterval.hundredthSecond} startDuration={0}>
             //        <FlipCounter hoursTitle="Hours" minutesTitle="Minutes" secondsTitle="Seconds" />
             //    </StopwatchController>
             //</div>
+
             //<button onClick={() => { this.stopwatchController2.stop(); this.pauseAnimations(this.pauseAnimationsContainer2) }}>Stop</button>
             //<button onClick={() => { this.stopwatchController2.pause(); this.pauseAnimations(this.pauseAnimationsContainer2)  }}>Pause</button>
             //<button onClick={() => { this.stopwatchController2.start(); this.resumeAnimations(this.pauseAnimationsContainer2) }}>Play</button>
@@ -172,31 +182,7 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
 
         //{height:"200px"}
 
-        /*
-            Element queries       
-             <Bounded />
-            <ElementQuery queries={{ sm: { maxWidth: 200 }, lg: { minWidth: 201 }, hasHeight: {minHeight:1} }}>
-                <Matches sm>Small</Matches>
-                <Matches lg>Large</Matches>
-                <Matches hasHeight>Has height !</Matches>
-            </ElementQuery>
-            <ElementQueries/>
-        */
-
-        /*
-              <ElementQuery queries={{ sm: { maxWidth: 499 }, medium: { minWidth: 500,maxWidth:1000 },large: {minWidth: 1001}}}>
-                <Matches sm>
-                        <Keyboard width={250} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-                <Matches medium>
-                    <Keyboard keyboardColour="#F8F8F8" buttonColour="gray" buttonBackgroundColour="yellow" width={500} bottomOfScreen={false} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-                <Matches large>
-                    <Keyboard keyboardColour="#F8F8F8" buttonBackgroundColour="orange"width={1000} keyPressed={(key) => console.log(key)} backspacePressed={() => { console.log("backspace pressed") }} />
-                </Matches>
-
-            </ElementQuery>
-        */
+        
 
         /*
         return <div style={{ minWidth: "500px", maxWidth:"1000px" }}>

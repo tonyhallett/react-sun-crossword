@@ -202,9 +202,7 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
                 }
             }, 1);
         }
-
-
-
+        
     }
     componentWillUnmount() {
         this.stopTimers();
@@ -401,8 +399,282 @@ export class StopwatchController extends React.Component<StopwatchProps, Stopwat
     }
 }
 //#endregion
+export interface Stopwatch2Props {
+    tickState: TickState;
+    //ms
+    startDuration?: number,
+    countdown?: boolean,
+    shouldUpdateSameDuration?: boolean
+}
+export class StopwatchController2 extends React.Component<Stopwatch2Props, StopwatchState> {
+    public static defaultProps: Partial<Stopwatch2Props> = {
+        tickState: TickState.stopped,
+        startDuration: 0,
+        shouldUpdateSameDuration: false
+    }
+    private currentDuration: Duration
+    private startDuration: Duration
+    private actualDuration = 0;
+    private startTime: any
+    private actualStartTime: any;
+    private startDelay = 0
+
+    private cancelIntervalId: number
+    private delayedTimer: number = null;
+
+    private hasStopped = false
+    private neverStarted = true;
+
+    private countdownCompleted = false;
+
+    private shouldUpdate = true;
+
+    constructor(props) {
+        super(props);
+        this.setStartDuration(this.props.startDuration);
+        this.state = { tickState: this.props.tickState, duration: this.currentDuration }
+    }
 
 
+    shouldComponentUpdate(nextProps: StopwatchProps, nextState: StopwatchState) {
+        var shouldUpdate = this.shouldUpdate;
+        this.shouldUpdate = true;
+        return shouldUpdate;
+    }
+    componentWillMount() {
+        if (this.props.tickState === TickState.running) {
+            this.start();
+        }
+    }
+    componentWillReceiveProps(nextProps: Stopwatch2Props) {
+        var self = this;
+        var shouldUpdate = true;
+        //if (nextProps.startDuration === this.props.startDuration && nextProps.countdown === this.props.countdown && nextProps.tickState === this.props.tickState!this.props.shouldUpdateSameDuration){
+        //    shouldUpdate = false;
+        //}
+        if (nextProps.startDuration === this.props.startDuration && !this.props.shouldUpdateSameDuration) {
+            shouldUpdate = false;
+        }
+        this.shouldUpdate = shouldUpdate;
+        if (shouldUpdate) {
+            console.log("about to stop in componentWillReceiveProps");
+            this.stop();
+            console.log("stopped");
+            this.hasStopped = false;
+            this.neverStarted = true;
+            this.countdownCompleted = false;
+            this.actualDuration = 0;
+            this.startDelay = 0;
+
+            this.setStartDuration(nextProps.startDuration);
+
+            window.setTimeout(function () {
+                self.setState({ duration: self.currentDuration });
+                if (self.props.tickState === TickState.running) {
+                    //necessary for state change !
+                    window.setTimeout(function () {
+                        self.start();
+                    }, 1);
+                }
+            }, 1);
+        }
+
+    }
+    componentWillUnmount() {
+        this.stopTimers();
+    }
+
+    setStartDuration(durationMs: number) {
+        var duration = new Duration(this.props.startDuration);
+        this.currentDuration = duration;
+        this.startDuration = duration;
+    }
+    getDuration() {
+        var actualDuration: number;
+
+        if (this.state.tickState === TickState.running) {
+            var now = new Date() as any;
+            actualDuration = this.actualDuration + (now - this.actualStartTime);
+        } else {
+            actualDuration = this.actualDuration;
+
+        }
+
+        if (this.props.countdown) {
+            var duration = Duration.decrement(this.startDuration, actualDuration);
+            if (duration.totalMilliseconds < 0) {
+                duration = this.currentDuration;
+            }
+            return duration;
+        } else {
+            return Duration.increment(this.startDuration, actualDuration);
+        }
+
+
+        //var difference = 1000 - this.getDelay(new Date());
+        //if (this.state.tickState === TickState.running) {
+
+        //} else {
+        //    if (this.startDelay === 0) {
+        //        difference = 0;
+        //    } else {
+        //        difference = 1000 - this.startDelay;
+        //    }
+        //}
+        //if (this.neverStarted) {
+        //    return this.currentDuration;
+        //} else {
+        //    if (this.props.countdown) {
+        //        if (this.countdownCompleted) {
+        //            return this.currentDuration;
+        //        }
+        //        return Duration.increment(this.currentDuration, 1000+difference);
+        //    } else {
+        //        return Duration.decrement(this.currentDuration, 1000-difference);
+        //    }
+        //}
+
+    }
+
+    updateSecond() {
+        this.updateDuration(1000);
+    }
+    changeDuration(ms: number) {
+        var newDuration: Duration;
+        if (this.props.countdown) {
+            newDuration = Duration.decrement(this.currentDuration, ms);
+            if (newDuration.totalMilliseconds < 0) {
+                this.completeCountdown();
+                newDuration = this.currentDuration;
+            }
+        } else {
+            newDuration = Duration.increment(this.currentDuration, ms);
+        }
+        return newDuration;
+    }
+    updateDuration(ms: number) {
+        this.currentDuration = this.changeDuration(ms);
+        this.setState({ duration: this.currentDuration })
+    }
+
+    start = () => {
+        this.actualStartTime = new Date();
+        var self = this;
+        if (this.state.tickState === TickState.stopped || this.state.tickState === TickState.paused) {
+            this.neverStarted = false;
+
+            this.setState({ tickState: TickState.running, duration: self.currentDuration });
+            if (!this.hasStopped) {
+                window.setTimeout(function () {
+                    self.currentDuration = self.changeDuration(1000);
+                    self.setState({ tickState: TickState.running, duration: self.currentDuration }, function () {
+                        self.startTimer();
+                    });
+                }, 1);
+
+            } else {
+                this.setState({ tickState: TickState.running, duration: self.currentDuration });
+                self.startTimer();
+            }
+        }
+    }
+    startTimer() {
+        if (this.startDelay === 0) {
+            this.startSecondTimer();
+        } else {
+            this.startDelayedTimer();
+        }
+    }
+    startSecondTimer() {
+        var self = this;
+        this.startTime = new Date();
+        this.startDelay = 0;
+        this.cancelIntervalId = window.setInterval(function () {
+            self.updateSecond();
+        }, 1000);
+    }
+    startDelayedTimer() {
+        var self = this;
+        this.delayedTimer = window.setTimeout(function () {
+            self.startSecondTimer.bind(self)();
+            self.updateSecond.bind(self)();
+        }, this.startDelay)
+
+    }
+    stopDelayedTimer() {
+        if (this.delayedTimer !== null) {
+            window.clearTimeout(this.delayedTimer);
+            this.delayedTimer = null;
+        }
+    }
+    stopTimers() {
+        this.stopDelayedTimer();
+
+        window.clearInterval(this.cancelIntervalId);
+    }
+
+
+    getDelay(nowDate: Date) {
+        var delay: number;
+        var now = nowDate as any;
+        if (this.startDelay === 0) {
+            var difference = (now - this.startTime) % 1000;
+            delay = 1000 - difference;
+        } else {
+            var difference = (now - this.actualStartTime) % 1000;
+            delay = 1000 - ((1000 - this.startDelay) + difference);
+        }
+        return delay;
+    }
+
+    stop = () => {
+        if (this.state.tickState === TickState.running) {
+            this.pauseOrStop(false)
+        }
+    }
+    pause = () => {
+        this.pauseOrStop(true);
+    }
+    pauseOrStop(paused: boolean) {
+        this.stopTimers();
+        var now = new Date() as any;
+        this.actualDuration = this.actualDuration + (now - this.actualStartTime);
+
+        this.hasStopped = true;
+        this.startDelay = this.getDelay(now);
+
+
+        var newState: Partial<StopwatchState>;
+        if (paused) {
+            newState = {
+                tickState: TickState.paused
+            }
+        } else {
+            newState = {
+                tickState: TickState.stopped,
+                duration: this.currentDuration
+            }
+        }
+
+        this.setState(newState as StopwatchState)
+    }
+
+    completeCountdown() {
+        this.stop();
+        this.countdownCompleted = true;
+    }
+    //LP
+    clear = () => {
+
+    }
+
+    render() {
+        console.log("stopwatch controller render");
+        return <div>
+            {React.cloneElement(this.props.children as React.ReactElement<any>, { tickState: this.state.tickState, duration: this.state.duration, stop: this.stop, clear: this.clear, start: this.start })}
+        </div>
+    }
+}
 
 interface FlipClockPrivateStopwatchProps {
     duration?: IDuration,
