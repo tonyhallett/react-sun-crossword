@@ -39,14 +39,6 @@ interface ClueProviderClue {
     format:string,
     providerName: string;
 }
-//interface SolveCommand extends Command {
-//    square: Square,
-//    acrossOrDownMode: WordSelectMode
-//}
-//interface SolveExactCommand extends SolveCommand {
-//    guess: string,
-    
-//}
 
 export interface CrosswordPuzzleProps {
     crosswordModel: ICrosswordModel
@@ -619,12 +611,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 return { synthesisMessage: wordContext.identifier };
             },
             exit: function () { console.log("Exiting the word state"); return null; },
-            catchCommand: {
-                name: "Solve any",
-                regExp: sentenceRegExp,
-                callback: this.solveAny,
-                nextState: "Default"
-            },
+            
             commands: [
                 {
                     name: "Solution",
@@ -641,6 +628,11 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     name: "Letters",
                     regExp: /^Letters/i,
                     callback: this.letters,
+                }, {
+                    name: "Guess",
+                    regExp: sentenceRegExp,
+                    callback: this.solveAny,
+                    nextState: "Default"
                 }
 
 
@@ -705,13 +697,13 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             name: "Spell",
             enter: function () { console.log("Entering the spell state"); return { synthesisMessage: "Spelling" }; },
             exit: function () { console.log("Exiting the spell state"); return null; },
-            catchCommand: {
-                name: "Spell any",
-                regExp: sentenceRegExp,
-                callback: this.spellAny,
-            },
+            
             commands: [
-                navDirectionCommand
+                navDirectionCommand, {
+                    name: "Spell or delete",
+                    regExp: sentenceRegExp,
+                    callback: this.spellAny,
+                },
             ]
         }
         return spellState;

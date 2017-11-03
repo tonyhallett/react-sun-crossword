@@ -938,9 +938,10 @@ if (SpeechRecognition) {
 
                         var nextStateContext = cbResponse.nextStateContext;
                         if (currentCommand.keepState || currentCommand.nextState === recogniseMe.currentState.name) {
-                            clearStateTimeout();
                             if (nextStateContext) {
-                                recogniseMe.currentStateContext = nextStateContext;
+                                enterState(recogniseMe.currentState, nextStateContext);
+                            } else {
+                                clearStateTimeout();
                             }
                         } else {
                             enterAndExitState(commandStateByName(currentCommand.nextState), nextStateContext)

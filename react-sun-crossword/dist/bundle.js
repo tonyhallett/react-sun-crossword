@@ -41082,12 +41082,6 @@ var CrosswordPuzzle = (function (_super) {
                 return { synthesisMessage: wordContext.identifier };
             },
             exit: function () { console.log("Exiting the word state"); return null; },
-            catchCommand: {
-                name: "Solve any",
-                regExp: recogniseMe_1.sentenceRegExp,
-                callback: this.solveAny,
-                nextState: "Default"
-            },
             commands: [
                 {
                     name: "Solution",
@@ -41103,6 +41097,11 @@ var CrosswordPuzzle = (function (_super) {
                     name: "Letters",
                     regExp: /^Letters/i,
                     callback: this.letters,
+                }, {
+                    name: "Guess",
+                    regExp: recogniseMe_1.sentenceRegExp,
+                    callback: this.solveAny,
+                    nextState: "Default"
                 }
             ]
         };
@@ -41160,13 +41159,12 @@ var CrosswordPuzzle = (function (_super) {
             name: "Spell",
             enter: function () { console.log("Entering the spell state"); return { synthesisMessage: "Spelling" }; },
             exit: function () { console.log("Exiting the spell state"); return null; },
-            catchCommand: {
-                name: "Spell any",
-                regExp: recogniseMe_1.sentenceRegExp,
-                callback: this.spellAny,
-            },
             commands: [
-                navDirectionCommand
+                navDirectionCommand, {
+                    name: "Spell or delete",
+                    regExp: recogniseMe_1.sentenceRegExp,
+                    callback: this.spellAny,
+                },
             ]
         };
         return spellState;
@@ -44964,9 +44962,11 @@ if (SpeechRecognition) {
                         invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.name, results, confidences);
                         var nextStateContext = cbResponse.nextStateContext;
                         if (currentCommand.keepState || currentCommand.nextState === exports.recogniseMe.currentState.name) {
-                            clearStateTimeout();
                             if (nextStateContext) {
-                                exports.recogniseMe.currentStateContext = nextStateContext;
+                                enterState(exports.recogniseMe.currentState, nextStateContext);
+                            }
+                            else {
+                                clearStateTimeout();
                             }
                         }
                         else {
