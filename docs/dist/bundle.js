@@ -45341,7 +45341,7 @@ if (SpeechRecognition) {
                     if (currentSpeech) {
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
-                            if (result.trim() == currentSpeech.trim()) {
+                            if (result.trim().toLowerCase() == currentSpeech.trim().toLowerCase()) {
                                 matchedSynthesis = true;
                                 break;
                             }
