@@ -327,6 +327,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         return response;
     }
     navDirectionRecognised = (context: StateCommandCallbackContext) => {
+        console.log("Nav direction recognised");
         var synthesisMessage = "No selected square to navigate from."
         if (this.props.crosswordModel.selectedSquare) {
             var direction = context.parameters[0].toLowerCase();
@@ -684,7 +685,6 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             }
             numPart += ")?$"
             var regExprString = "^(left|right|up|down)" + numPart;
-            console.log("Nav direction regexp: " + regExprString);
             return new RegExp(regExprString, "i")
         }
 

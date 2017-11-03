@@ -40765,6 +40765,7 @@ var CrosswordPuzzle = (function (_super) {
             return response;
         };
         _this.navDirectionRecognised = function (context) {
+            console.log("Nav direction recognised");
             var synthesisMessage = "No selected square to navigate from.";
             if (_this.props.crosswordModel.selectedSquare) {
                 var direction = context.parameters[0].toLowerCase();
@@ -41157,7 +41158,6 @@ var CrosswordPuzzle = (function (_super) {
             }
             numPart += ")?$";
             var regExprString = "^(left|right|up|down)" + numPart;
-            console.log("Nav direction regexp: " + regExprString);
             return new RegExp(regExprString, "i");
         }
         var navDirectionCommand = {
