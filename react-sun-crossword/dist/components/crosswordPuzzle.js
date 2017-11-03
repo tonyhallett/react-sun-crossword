@@ -504,6 +504,15 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
+        //#endregion
+        _this.speakLong = function () {
+            var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
+            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+        };
+        _this.speakShort = function () {
+            var speech = "Jessica";
+            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+        };
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -606,12 +615,6 @@ var CrosswordPuzzle = (function (_super) {
                 return { synthesisMessage: wordContext.identifier };
             },
             exit: function () { console.log("Exiting the word state"); return null; },
-            catchCommand: {
-                name: "Solve any",
-                regExp: recogniseMe_1.sentenceRegExp,
-                callback: this.solveAny,
-                nextState: "Default"
-            },
             commands: [
                 {
                     name: "Solution",
@@ -627,6 +630,11 @@ var CrosswordPuzzle = (function (_super) {
                     name: "Letters",
                     regExp: /^Letters/i,
                     callback: this.letters,
+                }, {
+                    name: "Guess",
+                    regExp: recogniseMe_1.sentenceRegExp,
+                    callback: this.solveAny,
+                    nextState: "Default"
                 }
             ]
         };
@@ -684,13 +692,12 @@ var CrosswordPuzzle = (function (_super) {
             name: "Spell",
             enter: function () { console.log("Entering the spell state"); return { synthesisMessage: "Spelling" }; },
             exit: function () { console.log("Exiting the spell state"); return null; },
-            catchCommand: {
-                name: "Spell any",
-                regExp: recogniseMe_1.sentenceRegExp,
-                callback: this.spellAny,
-            },
             commands: [
-                navDirectionCommand
+                navDirectionCommand, {
+                    name: "Spell or delete",
+                    regExp: recogniseMe_1.sentenceRegExp,
+                    callback: this.spellAny,
+                },
             ]
         };
         return spellState;
@@ -992,7 +999,6 @@ var CrosswordPuzzle = (function (_super) {
         });
         return mappedGrid;
     };
-    //#endregion
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -1007,7 +1013,9 @@ var CrosswordPuzzle = (function (_super) {
                 React.createElement("span", { onClick: this.globalCheatClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
-                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))));
+                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
+                React.createElement("button", { onClick: this.speakLong }, "Speak long"),
+                React.createElement("button", { onClick: this.speakShort }, "Speak short")));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
                 name: cp.name,

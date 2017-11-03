@@ -713,9 +713,11 @@ if (SpeechRecognition) {
                         invokeCallbacks(callbacks.resultMatch, commandText, currentCommand.name, results, confidences);
                         var nextStateContext = cbResponse.nextStateContext;
                         if (currentCommand.keepState || currentCommand.nextState === exports.recogniseMe.currentState.name) {
-                            clearStateTimeout();
                             if (nextStateContext) {
-                                exports.recogniseMe.currentStateContext = nextStateContext;
+                                enterState(exports.recogniseMe.currentState, nextStateContext);
+                            }
+                            else {
+                                clearStateTimeout();
                             }
                         }
                         else {
@@ -837,7 +839,9 @@ if (SpeechRecognition) {
             playAudio(audio);
         }
     };
+    var currentSpeech;
     var speak = function (speech) {
+        currentSpeech = speech;
         speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
     };
     var stateTimeoutIdentifier;
@@ -947,9 +951,11 @@ if (SpeechRecognition) {
                 invokeCallbacks(callbacks.audioend);
             };
             recognition.onspeechstart = function () {
+                console.log("onspeechstart, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechstart);
             };
             recognition.onspeechend = function () {
+                console.log("onspeechend, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechend);
             };
             //should this be optional for this 'type' of no match ????
@@ -1012,10 +1018,13 @@ if (SpeechRecognition) {
                 }
             };
             recognition.onresult = function (event) {
+                var resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
+                var results = resultsAndConfidences.results;
+                var shouldParse = true;
                 var isSpeaking = speechSynthesis.speaking;
+                console.log("On result, is speaking " + isSpeaking);
                 if (isSpeaking) {
                     if (skipSpeakingCommand) {
-                        var results = extractFromSpeechRecognitionEvent(event).results;
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
@@ -1030,8 +1039,17 @@ if (SpeechRecognition) {
                         }
                     }
                 }
+                else {
+                    //check if the results match the speech synthesis
+                    if (currentSpeech) {
+                        for (var i = 0; i < results.length; i++) {
+                            var result = results[i];
+                            if (result == currentSpeech) {
+                            }
+                        }
+                    }
+                }
                 if (!(isSpeaking && exports.recogniseMe.doNotListenWhenSpeaking)) {
-                    var resultsAndConfidences;
                     if (listeningForStartStop) {
                         var phrase = stopPhrase;
                         var action = exports.recogniseMe.pause;
@@ -1041,7 +1059,6 @@ if (SpeechRecognition) {
                             action = exports.recogniseMe.resume;
                             sound = startSound;
                         }
-                        resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
                         var results = resultsAndConfidences.results;
                         var match = false;
                         for (var i = 0; i < results.length; i++) {

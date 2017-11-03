@@ -45277,11 +45277,12 @@ if (SpeechRecognition) {
                 }
             };
             recognition.onresult = function (event) {
+                var resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
+                var results = resultsAndConfidences.results;
                 var isSpeaking = speechSynthesis.speaking;
                 console.log("On result, is speaking " + isSpeaking);
                 if (isSpeaking) {
                     if (skipSpeakingCommand) {
-                        var results = extractFromSpeechRecognitionEvent(event).results;
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
@@ -45296,8 +45297,21 @@ if (SpeechRecognition) {
                         }
                     }
                 }
+                else {
+                    //check if the results match the speech synthesis
+                    if (currentSpeech) {
+                        for (var i = 0; i < results.length; i++) {
+                            var result = results[i];
+                            if (result.trim() == currentSpeech.trim()) {
+                                isSpeaking = true;
+                                console.log("matched against speech synthesis !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                                break;
+                            }
+                        }
+                    }
+                }
+                currentSpeech = null;
                 if (!(isSpeaking && exports.recogniseMe.doNotListenWhenSpeaking)) {
-                    var resultsAndConfidences;
                     if (listeningForStartStop) {
                         var phrase = stopPhrase;
                         var action = exports.recogniseMe.pause;
@@ -45307,7 +45321,6 @@ if (SpeechRecognition) {
                             action = exports.recogniseMe.resume;
                             sound = startSound;
                         }
-                        resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
                         var results = resultsAndConfidences.results;
                         var match = false;
                         for (var i = 0; i < results.length; i++) {
