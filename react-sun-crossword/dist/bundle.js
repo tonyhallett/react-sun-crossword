@@ -41157,6 +41157,7 @@ var CrosswordPuzzle = (function (_super) {
             }
             numPart += ")?$";
             var regExprString = "^(left|right|up|down)" + numPart;
+            console.log("Nav direction regexp: " + regExprString);
             return new RegExp(regExprString, "i");
         }
         var navDirectionCommand = {
