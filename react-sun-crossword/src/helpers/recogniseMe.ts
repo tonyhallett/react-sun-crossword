@@ -1266,12 +1266,14 @@ if (SpeechRecognition) {
                 var results = resultsAndConfidences.results;
                 
                 var matchedSynthesis = speechSynthesis.speaking;
+                console.log("Speech synthesis speaking");
                 if (matchedSynthesis) {
                     if (skipSpeakingCommand) {
                         
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
+                            console.log("Executing skip speaking command.....");
                             if (skipSpeakingCommand.exec(result)) {
                                 skipSpeaking = true;
                                 break;
@@ -1329,7 +1331,10 @@ if (SpeechRecognition) {
                     }
 
                     invokeCallbacks(callbacks.originalResult, event);
-                    resultsAndConfidences = resultsAndConfidences ? resultsAndConfidences : extractFromSpeechRecognitionEvent(event);
+                    console.log("about to parse results");
+                    for (var i = 0; i < results.length; i++) {
+                        console.log(results[i]);
+                    }
                     parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
 
                 } 
