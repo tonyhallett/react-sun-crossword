@@ -41133,13 +41133,14 @@ var CrosswordPuzzle = (function (_super) {
                     name: "Letters",
                     regExp: /^Letters/i,
                     callback: this.letters,
-                }, {
-                    name: "Guess",
-                    regExp: recogniseMe_1.sentenceRegExp,
-                    callback: this.solveAny,
-                    nextState: "Default"
                 }
-            ]
+            ],
+            catchCommand: {
+                name: "Guess",
+                regExp: recogniseMe_1.sentenceRegExp,
+                callback: this.solveAny,
+                nextState: "Default"
+            }
         };
         return wordState;
     };
@@ -41196,12 +41197,13 @@ var CrosswordPuzzle = (function (_super) {
             enter: function () { console.log("Entering the spell state"); return { synthesisMessage: "Spelling" }; },
             exit: function () { console.log("Exiting the spell state"); return null; },
             commands: [
-                navDirectionCommand, {
-                    name: "Spell or delete",
-                    regExp: recogniseMe_1.sentenceRegExp,
-                    callback: this.spellAny,
-                },
-            ]
+                navDirectionCommand
+            ],
+            catchCommand: {
+                name: "Spell or delete",
+                regExp: recogniseMe_1.sentenceRegExp,
+                callback: this.spellAny,
+            }
         };
         return spellState;
     };

@@ -654,15 +654,16 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     name: "Letters",
                     regExp: /^Letters/i,
                     callback: this.letters,
-                }, {
-                    name: "Guess",
-                    regExp: sentenceRegExp,
-                    callback: this.solveAny,
-                    nextState: "Default"
                 }
 
 
-            ]
+            ],
+            catchCommand: {
+                name: "Guess",
+                regExp: sentenceRegExp,
+                callback: this.solveAny,
+                nextState: "Default"
+            }
         }
         return wordState;
     }
@@ -726,12 +727,13 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             exit: function () { console.log("Exiting the spell state"); return null; },
             
             commands: [
-                navDirectionCommand, {
-                    name: "Spell or delete",
-                    regExp: sentenceRegExp,
-                    callback: this.spellAny,
-                },
-            ]
+                navDirectionCommand
+            ],
+            catchCommand: {
+                name: "Spell or delete",
+                regExp: sentenceRegExp,
+                callback: this.spellAny,
+            }
         }
         return spellState;
     }
