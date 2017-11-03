@@ -1071,7 +1071,9 @@ if (SpeechRecognition) {
         }
         
     }
+    var currentSpeech: string;
     var speak = function (speech: string) {
+        currentSpeech = speech;
         speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
     }
     var stateTimeoutIdentifier: number

@@ -40980,6 +40980,11 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
+        //#endregion
+        _this.speakLong = function () {
+            var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
+            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+        };
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -41466,7 +41471,6 @@ var CrosswordPuzzle = (function (_super) {
         });
         return mappedGrid;
     };
-    //#endregion
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -41481,7 +41485,8 @@ var CrosswordPuzzle = (function (_super) {
                 React.createElement("span", { onClick: this.globalCheatClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
-                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" }))));
+                    React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
+                React.createElement("button", { onClick: this.speakLong }, "Speak long")));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
                 name: cp.name,
@@ -45088,7 +45093,9 @@ if (SpeechRecognition) {
             playAudio(audio);
         }
     };
+    var currentSpeech;
     var speak = function (speech) {
+        currentSpeech = speech;
         speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
     };
     var stateTimeoutIdentifier;

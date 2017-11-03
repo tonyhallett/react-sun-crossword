@@ -1065,6 +1065,10 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     }
     //#endregion
 
+    speakLong = () => {
+        var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
+        speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+    }
     render() {
         this.setAutoSolve();
         var squares = this._mapGrid(this.props.crosswordModel.grid);
@@ -1084,6 +1088,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     <span onClick={this.solveClicked}>
                         <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Solving} rayColour="yellow" onGlowColour="yellow" text="Solve" id="solveBulb" bulbOuterColour="yellow" innerGlowColour="yellow" />
                     </span>
+                    <button onClick={this.speakLong}>Speak long</button>
                 </div>
             </div>
 
