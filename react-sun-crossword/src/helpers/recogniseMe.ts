@@ -996,20 +996,17 @@ if (SpeechRecognition) {
                 if (debugState) {
                     logMessage('Speech recognized: %c' + commandText, debugStyle);
                 }
-                var finishedExecuting = false;
+                
                 for (var j = 0, l = commands.length; j < l; j++) {
                     var executionDetails = executeCommand(commands[j], commandText, confidences, results, i);
                     if (!commandMatched) {
                         commandMatched = executionDetails.matched;
                     }
                     if (!executionDetails.executeFurther) {
-                        finishedExecuting = true;
-                        break;
+                        return;
                     }
                 }
-                if (finishedExecuting) {
-                    break;
-                }
+                
             }
             
             if (currentState.catchCommand) {

@@ -55,30 +55,6 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     speechUndos: SpeechUndo[];
     constructor(props: CrosswordPuzzleProps) {
         super(props);
-        function getNavigationDirectionRegExpr() {
-            var numPart = "\\s?("
-            for (var i = 1; i < 13; i++) {
-                numPart += i.toString() + "|" + numberToNumberString(i);
-                if (i < 12) {
-                    numPart += "|";
-                }
-            }
-            numPart += ")?$"
-            var regExprString = "^(left|right|up|down)" + numPart;
-            return new RegExp(regExprString, "i")
-        }
-        var testRegExp = getNavigationDirectionRegExpr();
-        var res = testRegExp.exec("right two")
-        /*
-        if (result) {
-                    var parameters = result.slice(1);
-        */
-        if (res) {
-            console.log("Has res");
-            console.log(res.slice(1));
-        } else {
-            console.log("No res")
-        }
         this.autoSolve = true;
         this.solveExact = false;
         this.state = { testCommand: "" };

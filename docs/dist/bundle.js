@@ -40991,31 +40991,6 @@ var CrosswordPuzzle = (function (_super) {
             var speech = "Jessica";
             speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
         };
-        function getNavigationDirectionRegExpr() {
-            var numPart = "\\s?(";
-            for (var i = 1; i < 13; i++) {
-                numPart += i.toString() + "|" + numberStrings_1.numberToNumberString(i);
-                if (i < 12) {
-                    numPart += "|";
-                }
-            }
-            numPart += ")?$";
-            var regExprString = "^(left|right|up|down)" + numPart;
-            return new RegExp(regExprString, "i");
-        }
-        var testRegExp = getNavigationDirectionRegExpr();
-        var res = testRegExp.exec("right two");
-        /*
-        if (result) {
-                    var parameters = result.slice(1);
-        */
-        if (res) {
-            console.log("Has res");
-            console.log(res.slice(1));
-        }
-        else {
-            console.log("No res");
-        }
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -45097,19 +45072,14 @@ if (SpeechRecognition) {
                 if (debugState) {
                     logMessage('Speech recognized: %c' + commandText, debugStyle);
                 }
-                var finishedExecuting = false;
                 for (var j = 0, l = commands.length; j < l; j++) {
                     var executionDetails = executeCommand(commands[j], commandText, confidences, results, i);
                     if (!commandMatched) {
                         commandMatched = executionDetails.matched;
                     }
                     if (!executionDetails.executeFurther) {
-                        finishedExecuting = true;
-                        break;
+                        return;
                     }
-                }
-                if (finishedExecuting) {
-                    break;
                 }
             }
             if (currentState.catchCommand) {
