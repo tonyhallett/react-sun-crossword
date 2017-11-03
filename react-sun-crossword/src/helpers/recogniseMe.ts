@@ -1194,11 +1194,9 @@ if (SpeechRecognition) {
                 invokeCallbacks(callbacks.audioend);
             }
             recognition.onspeechstart = function () {
-                console.log("onspeechstart, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechstart);
             }
             recognition.onspeechend = function () {
-                console.log("onspeechend, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechend);
             }
             //should this be optional for this 'type' of no match ????
@@ -1267,9 +1265,7 @@ if (SpeechRecognition) {
                 var resultsAndConfidences: { results: string[], confidences: number[] } = extractFromSpeechRecognitionEvent(event);
                 var results = resultsAndConfidences.results;
                 
-
                 var matchedSynthesis = speechSynthesis.speaking;
-                console.log("On result, is speaking " + matchedSynthesis);
                 if (matchedSynthesis) {
                     if (skipSpeakingCommand) {
                         
@@ -1288,16 +1284,11 @@ if (SpeechRecognition) {
                     }
                     
                 } else {
-                    //check if the results match the speech synthesis
-                    console.log("current speech" + currentSpeech);
                     if (currentSpeech) {
-                        console.log("results:");
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
-                            console.log(result);
                             if (result.trim() == currentSpeech.trim()) {
                                 matchedSynthesis = true;
-                                console.log("matched against speech synthesis !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                                 break;
                             }
                         }

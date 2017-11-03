@@ -13,7 +13,8 @@ import { Lightbulb } from "./lightbulb";
 import { recogniseMe, simpleCommandToRegExp, CommandCallbackContext, CommandState, StateCommand, StateCommandCallbackContext, CommandCallbackResponse, sentenceRegExp, SoundResponse } from "../helpers/recogniseMe";
 import { numberToNumberString, numberStringToNumber } from "../helpers/numberStrings";
 import { wordsFromSquashedWords } from "../helpers/stringHelpers";
-import  SSML =require('ssml');
+import SSML = require('ssml');
+import { IsOnline } from "./isOnline";
 
 interface RowColIndices {
     row: number,
@@ -1094,6 +1095,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     </span>
                     <button onClick={this.speakLong}>Speak long</button>
                     <button onClick={this.speakShort}>Speak short</button>
+                    <IsOnline/>
                 </div>
             </div>
 

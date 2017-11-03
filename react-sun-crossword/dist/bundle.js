@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 322);
+/******/ 	return __webpack_require__(__webpack_require__.s = 323);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10446,7 +10446,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
-var muiButton_1 = __webpack_require__(315);
+var muiButton_1 = __webpack_require__(316);
 var MuiButtonWrapper = (function (_super) {
     __extends(MuiButtonWrapper, _super);
     function MuiButtonWrapper() {
@@ -17851,7 +17851,7 @@ var connectedDatabase_1 = __webpack_require__(136);
 __webpack_require__(91);
 var crosswordPuzzleChooser_1 = __webpack_require__(309);
 var muiWrappedButton_1 = __webpack_require__(78);
-var stopwatchController_1 = __webpack_require__(319);
+var stopwatchController_1 = __webpack_require__(320);
 var CrosswordPuzzleApp = (function (_super) {
     __extends(CrosswordPuzzleApp, _super);
     function CrosswordPuzzleApp(props) {
@@ -40436,7 +40436,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
-var square_1 = __webpack_require__(316);
+var square_1 = __webpack_require__(317);
 var commonStyling_1 = __webpack_require__(35);
 // State is never set so we use the 'undefined' type.
 var Crossword = (function (_super) {
@@ -40489,12 +40489,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
 var index_1 = __webpack_require__(36);
 var crossword_1 = __webpack_require__(307);
-var KeyEvents = __webpack_require__(323);
+var KeyEvents = __webpack_require__(324);
 var twoCol_1 = __webpack_require__(51);
 var clues_1 = __webpack_require__(306);
-var lightbulb_1 = __webpack_require__(313);
-var recogniseMe_1 = __webpack_require__(321);
-var numberStrings_1 = __webpack_require__(320);
+var lightbulb_1 = __webpack_require__(314);
+var recogniseMe_1 = __webpack_require__(322);
+var numberStrings_1 = __webpack_require__(321);
+var isOnline_1 = __webpack_require__(313);
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -41491,7 +41492,8 @@ var CrosswordPuzzle = (function (_super) {
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
                 React.createElement("button", { onClick: this.speakLong }, "Speak long"),
-                React.createElement("button", { onClick: this.speakShort }, "Speak short")));
+                React.createElement("button", { onClick: this.speakShort }, "Speak short"),
+                React.createElement(isOnline_1.IsOnline, null)));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
                 name: cp.name,
@@ -41688,7 +41690,7 @@ var CrosswordPuzzleChooser = (function (_super) {
     }
     CrosswordPuzzleChooser.prototype.componentWillReceiveProps = function (nextProps) {
         if (nextProps.userLoggedIn !== this.props.userLoggedIn) {
-            this.addRemoveListeners(nextProps.userLoggedIn);
+            this.addDatabaseListeners(nextProps.userLoggedIn);
         }
     };
     //should do in ctor ?
@@ -41736,7 +41738,7 @@ var CrosswordPuzzleChooser = (function (_super) {
     CrosswordPuzzleChooser.prototype.userLookupsChanged = function (lookups) {
         this.manageLookups(lookups, false);
     };
-    CrosswordPuzzleChooser.prototype.addRemoveListeners = function (userLoggedIn) {
+    CrosswordPuzzleChooser.prototype.addDatabaseListeners = function (userLoggedIn) {
         //might have asynchronous issues with state.....
         if (!this.state.databaseDisconnected) {
             if (!this.listeningForPublic) {
@@ -41753,7 +41755,7 @@ var CrosswordPuzzleChooser = (function (_super) {
     };
     CrosswordPuzzleChooser.prototype.connectionChanged = function (isConnected) {
         this.setState({ databaseDisconnected: !isConnected });
-        this.addRemoveListeners(this.props.userLoggedIn);
+        this.addDatabaseListeners(this.props.userLoggedIn);
     };
     CrosswordPuzzleChooser.prototype.render = function () {
         var SelectChooser = displayNameHOC(this.props.SelectChooser, "SelectChooser"); //!important to do this for intellisense even without the displayNameHOC
@@ -41852,7 +41854,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
 var divider_1 = __webpack_require__(310);
-var link_1 = __webpack_require__(314);
+var link_1 = __webpack_require__(315);
 var autoComplete_1 = __webpack_require__(303);
 var muiWrappedButton_1 = __webpack_require__(78);
 var javascriptPolyfills_1 = __webpack_require__(80);
@@ -42323,6 +42325,47 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
+var IsOnline = (function (_super) {
+    __extends(IsOnline, _super);
+    function IsOnline(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onlineChanged = function () {
+            _this.setState({ isOnline: navigator.onLine });
+        };
+        _this.state = { isOnline: false };
+        return _this;
+    }
+    IsOnline.prototype.componentDidMount = function () {
+        window.addEventListener("online", this.onlineChanged);
+        window.addEventListener("offline", this.onlineChanged);
+        this.setState({ isOnline: navigator.onLine });
+    };
+    IsOnline.prototype.render = function () {
+        return React.createElement("div", null, this.state.isOnline ? "Online" : "Offline");
+    };
+    return IsOnline;
+}(React.Component));
+exports.IsOnline = IsOnline;
+
+
+/***/ }),
+/* 314 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(3);
 var blackStroke = "#000000";
 //will have to add icon for hover 
 var Lightbulb = (function (_super) {
@@ -42442,7 +42485,7 @@ exports.Lightbulb = Lightbulb;
 
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42504,7 +42547,7 @@ exports.NonNavigatableLink = NonNavigatableLink;
 
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42805,7 +42848,7 @@ exports.MuiButton = MuiButton;
 
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42824,8 +42867,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
 //import  Radium  =require('radium')
 var index_1 = __webpack_require__(36);
-var squareLetter_1 = __webpack_require__(317);
-var squareNumber_1 = __webpack_require__(318);
+var squareLetter_1 = __webpack_require__(318);
+var squareNumber_1 = __webpack_require__(319);
 var commonStyling_1 = __webpack_require__(35);
 //@Radium
 var Square = (function (_super) {
@@ -42911,7 +42954,7 @@ exports.Square = Square;
 
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42944,7 +42987,7 @@ exports.SquareLetter = SquareLetter;
 
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42977,7 +43020,7 @@ exports.SquareNumber = SquareNumber;
 
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44083,7 +44126,7 @@ exports.flipClockWrapper = flipClockWrapper;
 
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44253,7 +44296,7 @@ exports.numberStringToNumber = numberStringToNumber;
 
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45210,11 +45253,9 @@ if (SpeechRecognition) {
                 invokeCallbacks(callbacks.audioend);
             };
             recognition.onspeechstart = function () {
-                console.log("onspeechstart, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechstart);
             };
             recognition.onspeechend = function () {
-                console.log("onspeechend, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechend);
             };
             //should this be optional for this 'type' of no match ????
@@ -45280,7 +45321,6 @@ if (SpeechRecognition) {
                 var resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
                 var results = resultsAndConfidences.results;
                 var matchedSynthesis = speechSynthesis.speaking;
-                console.log("On result, is speaking " + matchedSynthesis);
                 if (matchedSynthesis) {
                     if (skipSpeakingCommand) {
                         var skipSpeaking = false;
@@ -45298,16 +45338,11 @@ if (SpeechRecognition) {
                     }
                 }
                 else {
-                    //check if the results match the speech synthesis
-                    console.log("current speech" + currentSpeech);
                     if (currentSpeech) {
-                        console.log("results:");
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
-                            console.log(result);
                             if (result.trim() == currentSpeech.trim()) {
                                 matchedSynthesis = true;
-                                console.log("matched against speech synthesis !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                                 break;
                             }
                         }
@@ -45667,7 +45702,7 @@ else {
 
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45680,7 +45715,7 @@ ReactDOM.render(React.createElement(crosswordPuzzleApp_1.CrosswordPuzzleApp, nul
 
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45711,7 +45746,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
 //import {canUseDOM} from 'exenv';
 var constants_1 = __webpack_require__(81);
-var utils_1 = __webpack_require__(324);
+var utils_1 = __webpack_require__(325);
 function keyModifiersAny() {
     return {
         altKey: true,
@@ -45986,7 +46021,7 @@ __export(__webpack_require__(81));
 
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

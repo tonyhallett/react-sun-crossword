@@ -143,7 +143,7 @@ export class CrosswordPuzzleChooser extends React.Component<CrosswordPuzzleChoos
     }
     componentWillReceiveProps(nextProps: CrosswordPuzzleChooserProps) {
         if (nextProps.userLoggedIn !== this.props.userLoggedIn) {
-            this.addRemoveListeners(nextProps.userLoggedIn);
+            this.addDatabaseListeners(nextProps.userLoggedIn);
         }
     }
     //should do in ctor ?
@@ -210,7 +210,7 @@ export class CrosswordPuzzleChooser extends React.Component<CrosswordPuzzleChoos
             self.props.crosswordSelected(crosswordModelJson);
         });
     }
-    addRemoveListeners(userLoggedIn:string) {
+    addDatabaseListeners(userLoggedIn:string) {
         //might have asynchronous issues with state.....
         if (!this.state.databaseDisconnected) {
             if (!this.listeningForPublic) {
@@ -228,7 +228,7 @@ export class CrosswordPuzzleChooser extends React.Component<CrosswordPuzzleChoos
     }
     connectionChanged(isConnected: boolean) {
         this.setState({ databaseDisconnected: !isConnected})
-        this.addRemoveListeners(this.props.userLoggedIn);
+        this.addDatabaseListeners(this.props.userLoggedIn);
     }
     render() {
         var SelectChooser = displayNameHOC( this.props.SelectChooser,"SelectChooser");//!important to do this for intellisense even without the displayNameHOC

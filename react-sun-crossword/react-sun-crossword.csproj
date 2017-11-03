@@ -108,6 +108,7 @@
     <TypeScriptCompile Include="src\components\expandableKeyboard.tsx" />
     <TypeScriptCompile Include="src\components\formatWord.tsx" />
     <TypeScriptCompile Include="src\components\globalCheatButton.tsx" />
+    <TypeScriptCompile Include="src\components\isOnline.tsx" />
     <TypeScriptCompile Include="src\components\keyboard.tsx" />
     <TypeScriptCompile Include="src\components\Lighbulbs.tsx" />
     <TypeScriptCompile Include="src\components\lightbulb.tsx" />
