@@ -19,6 +19,7 @@ var clues_1 = require("./clues");
 var lightbulb_1 = require("./lightbulb");
 var recogniseMe_1 = require("../helpers/recogniseMe");
 var numberStrings_1 = require("../helpers/numberStrings");
+var isOnline_1 = require("./isOnline");
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -1015,7 +1016,8 @@ var CrosswordPuzzle = (function (_super) {
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
                 React.createElement("button", { onClick: this.speakLong }, "Speak long"),
-                React.createElement("button", { onClick: this.speakShort }, "Speak short")));
+                React.createElement("button", { onClick: this.speakShort }, "Speak short"),
+                React.createElement(isOnline_1.IsOnline, null)));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
                 name: cp.name,

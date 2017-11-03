@@ -136,7 +136,7 @@ var CrosswordPuzzleChooser = (function (_super) {
     }
     CrosswordPuzzleChooser.prototype.componentWillReceiveProps = function (nextProps) {
         if (nextProps.userLoggedIn !== this.props.userLoggedIn) {
-            this.addRemoveListeners(nextProps.userLoggedIn);
+            this.addDatabaseListeners(nextProps.userLoggedIn);
         }
     };
     //should do in ctor ?
@@ -184,7 +184,7 @@ var CrosswordPuzzleChooser = (function (_super) {
     CrosswordPuzzleChooser.prototype.userLookupsChanged = function (lookups) {
         this.manageLookups(lookups, false);
     };
-    CrosswordPuzzleChooser.prototype.addRemoveListeners = function (userLoggedIn) {
+    CrosswordPuzzleChooser.prototype.addDatabaseListeners = function (userLoggedIn) {
         //might have asynchronous issues with state.....
         if (!this.state.databaseDisconnected) {
             if (!this.listeningForPublic) {
@@ -201,7 +201,7 @@ var CrosswordPuzzleChooser = (function (_super) {
     };
     CrosswordPuzzleChooser.prototype.connectionChanged = function (isConnected) {
         this.setState({ databaseDisconnected: !isConnected });
-        this.addRemoveListeners(this.props.userLoggedIn);
+        this.addDatabaseListeners(this.props.userLoggedIn);
     };
     CrosswordPuzzleChooser.prototype.render = function () {
         var SelectChooser = displayNameHOC(this.props.SelectChooser, "SelectChooser"); //!important to do this for intellisense even without the displayNameHOC

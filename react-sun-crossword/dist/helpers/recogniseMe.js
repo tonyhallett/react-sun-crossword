@@ -951,11 +951,9 @@ if (SpeechRecognition) {
                 invokeCallbacks(callbacks.audioend);
             };
             recognition.onspeechstart = function () {
-                console.log("onspeechstart, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechstart);
             };
             recognition.onspeechend = function () {
-                console.log("onspeechend, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechend);
             };
             //should this be optional for this 'type' of no match ????
@@ -1020,10 +1018,8 @@ if (SpeechRecognition) {
             recognition.onresult = function (event) {
                 var resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
                 var results = resultsAndConfidences.results;
-                var shouldParse = true;
-                var isSpeaking = speechSynthesis.speaking;
-                console.log("On result, is speaking " + isSpeaking);
-                if (isSpeaking) {
+                var matchedSynthesis = speechSynthesis.speaking;
+                if (matchedSynthesis) {
                     if (skipSpeakingCommand) {
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
@@ -1040,16 +1036,18 @@ if (SpeechRecognition) {
                     }
                 }
                 else {
-                    //check if the results match the speech synthesis
                     if (currentSpeech) {
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
-                            if (result == currentSpeech) {
+                            if (result.trim().toLowerCase() == currentSpeech.trim().toLowerCase()) {
+                                matchedSynthesis = true;
+                                break;
                             }
                         }
                     }
                 }
-                if (!(isSpeaking && exports.recogniseMe.doNotListenWhenSpeaking)) {
+                currentSpeech = null;
+                if (!(matchedSynthesis && exports.recogniseMe.doNotListenWhenSpeaking)) {
                     if (listeningForStartStop) {
                         var phrase = stopPhrase;
                         var action = exports.recogniseMe.pause;
