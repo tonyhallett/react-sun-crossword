@@ -1268,9 +1268,9 @@ if (SpeechRecognition) {
                 var results = resultsAndConfidences.results;
                 
 
-                var isSpeaking = speechSynthesis.speaking;
-                console.log("On result, is speaking " + isSpeaking);
-                if (isSpeaking) {
+                var matchedSynthesis = speechSynthesis.speaking;
+                console.log("On result, is speaking " + matchedSynthesis);
+                if (matchedSynthesis) {
                     if (skipSpeakingCommand) {
                         
                         var skipSpeaking = false;
@@ -1289,11 +1289,14 @@ if (SpeechRecognition) {
                     
                 } else {
                     //check if the results match the speech synthesis
+                    console.log("current speech" + currentSpeech);
                     if (currentSpeech) {
+                        console.log("results:");
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
+                            console.log(result);
                             if (result.trim() == currentSpeech.trim()) {
-                                isSpeaking = true;
+                                matchedSynthesis = true;
                                 console.log("matched against speech synthesis !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                                 break;
                             }
@@ -1301,7 +1304,7 @@ if (SpeechRecognition) {
                     }
                 }
                 currentSpeech = null;
-                if (!(isSpeaking && recogniseMe.doNotListenWhenSpeaking)) {
+                if (!(matchedSynthesis && recogniseMe.doNotListenWhenSpeaking)) {
                     
                     if (listeningForStartStop) {
                         var phrase = stopPhrase;
