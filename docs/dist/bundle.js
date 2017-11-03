@@ -45321,7 +45321,13 @@ if (SpeechRecognition) {
                 var resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
                 var results = resultsAndConfidences.results;
                 var matchedSynthesis = speechSynthesis.speaking;
-                console.log("Speech synthesis speaking");
+                if (currentSpeech) {
+                    console.log("Current speech: " + currentSpeech);
+                }
+                else {
+                    console.log("no current speech");
+                }
+                console.log("Speech synthesis speaking:" + matchedSynthesis);
                 if (matchedSynthesis) {
                     if (skipSpeakingCommand) {
                         var skipSpeaking = false;
