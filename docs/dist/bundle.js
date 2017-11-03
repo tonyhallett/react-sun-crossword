@@ -40985,6 +40985,10 @@ var CrosswordPuzzle = (function (_super) {
             var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
             speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
         };
+        _this.speakShort = function () {
+            var speech = "Jessica";
+            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+        };
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -41486,7 +41490,8 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
-                React.createElement("button", { onClick: this.speakLong }, "Speak long")));
+                React.createElement("button", { onClick: this.speakLong }, "Speak long"),
+                React.createElement("button", { onClick: this.speakShort }, "Speak short")));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
                 name: cp.name,
@@ -45205,9 +45210,11 @@ if (SpeechRecognition) {
                 invokeCallbacks(callbacks.audioend);
             };
             recognition.onspeechstart = function () {
+                console.log("onspeechstart, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechstart);
             };
             recognition.onspeechend = function () {
+                console.log("onspeechend, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechend);
             };
             //should this be optional for this 'type' of no match ????
@@ -45271,6 +45278,7 @@ if (SpeechRecognition) {
             };
             recognition.onresult = function (event) {
                 var isSpeaking = speechSynthesis.speaking;
+                console.log("On result, is speaking " + isSpeaking);
                 if (isSpeaking) {
                     if (skipSpeakingCommand) {
                         var results = extractFromSpeechRecognitionEvent(event).results;

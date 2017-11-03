@@ -1194,9 +1194,11 @@ if (SpeechRecognition) {
                 invokeCallbacks(callbacks.audioend);
             }
             recognition.onspeechstart = function () {
+                console.log("onspeechstart, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechstart);
             }
             recognition.onspeechend = function () {
+                console.log("onspeechend, speechSynthesis.speaking ? " + speechSynthesis.speaking);
                 invokeCallbacks(callbacks.speechend);
             }
             //should this be optional for this 'type' of no match ????
@@ -1263,6 +1265,7 @@ if (SpeechRecognition) {
 
             recognition.onresult = function (event) {
                 var isSpeaking = speechSynthesis.speaking;
+                console.log("On result, is speaking " + isSpeaking);
                 if (isSpeaking) {
                     if (skipSpeakingCommand) {
                         var results = extractFromSpeechRecognitionEvent(event).results;
