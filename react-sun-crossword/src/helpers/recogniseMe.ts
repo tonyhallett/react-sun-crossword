@@ -84,7 +84,8 @@ export type CommandOrCommands = Command | Command[]
 //}
 export interface SoundResponse {
     sound?: string
-    synthesisMessage?:string
+    synthesisMessage?: string
+    recognise?:boolean
 }
 export interface CommandState {
     name: string,
@@ -1039,7 +1040,7 @@ if (SpeechRecognition) {
                 playSound(response.sound);
             }
             if (response.synthesisMessage) {
-                speak(response.synthesisMessage);
+                speak(response.synthesisMessage, response.recognise);
             }
         }
         
@@ -1069,9 +1070,16 @@ if (SpeechRecognition) {
         
     }
     var currentSpeech: string;
-    var speak = function (speech: string) {
+    var speak = function (speech: string,recognise:boolean) {
         currentSpeech = speech;
-        speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+        var utterance = new SpeechSynthesisUtterance(speech);
+        if (!recognise) {
+            recogniseMe.pause();
+            utterance.onend(() => {
+                recogniseMe.resume();
+            })
+        }
+        speechSynthesis.speak(utterance);
     }
     var stateTimeoutIdentifier: number
 
@@ -1200,15 +1208,8 @@ if (SpeechRecognition) {
             recognition.onnomatch = function (event) {
                 var currentState = recogniseMe.currentState;
                 if (currentState && currentState.noMatch) {
-                    var response = currentState.noMatch([],[]);
-                    if (response) {
-                        if (response.synthesisMessage) {
-                            speak(response.synthesisMessage);
-                        }
-                        if (response.sound) {
-                            playSound(response.sound)
-                        }
-                    }
+                    var response = currentState.noMatch([], []);
+                    doSoundResponse(response);
                 }
                 invokeCallbacks(callbacks.nomatch, event);
             }
@@ -1275,7 +1276,6 @@ if (SpeechRecognition) {
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
-                            console.log("Executing skip speaking command.....");
                             if (skipSpeakingCommand.exec(result)) {
                                 skipSpeaking = true;
                                 break;

@@ -40765,7 +40765,6 @@ var CrosswordPuzzle = (function (_super) {
             return response;
         };
         _this.navDirectionRecognised = function (context) {
-            console.log("Nav direction recognised");
             var synthesisMessage = "No selected square to navigate from.";
             if (_this.props.crosswordModel.selectedSquare) {
                 var direction = context.parameters[0].toLowerCase();
@@ -45110,7 +45109,7 @@ if (SpeechRecognition) {
                 playSound(response.sound);
             }
             if (response.synthesisMessage) {
-                speak(response.synthesisMessage);
+                speak(response.synthesisMessage, response.recognise);
             }
         }
     };
@@ -45140,9 +45139,16 @@ if (SpeechRecognition) {
         }
     };
     var currentSpeech;
-    var speak = function (speech) {
+    var speak = function (speech, recognise) {
         currentSpeech = speech;
-        speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+        var utterance = new SpeechSynthesisUtterance(speech);
+        if (!recognise) {
+            exports.recogniseMe.pause();
+            utterance.onend(function () {
+                exports.recogniseMe.resume();
+            });
+        }
+        speechSynthesis.speak(utterance);
     };
     var stateTimeoutIdentifier;
     var clearStateTimeout = function clearStateTimeout() {
@@ -45261,14 +45267,7 @@ if (SpeechRecognition) {
                 var currentState = exports.recogniseMe.currentState;
                 if (currentState && currentState.noMatch) {
                     var response = currentState.noMatch([], []);
-                    if (response) {
-                        if (response.synthesisMessage) {
-                            speak(response.synthesisMessage);
-                        }
-                        if (response.sound) {
-                            playSound(response.sound);
-                        }
-                    }
+                    doSoundResponse(response);
                 }
                 invokeCallbacks(callbacks.nomatch, event);
             };
@@ -45331,7 +45330,6 @@ if (SpeechRecognition) {
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
                             var result = results[i];
-                            console.log("Executing skip speaking command.....");
                             if (skipSpeakingCommand.exec(result)) {
                                 skipSpeaking = true;
                                 break;
