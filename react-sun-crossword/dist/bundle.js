@@ -45144,9 +45144,9 @@ if (SpeechRecognition) {
         var utterance = new SpeechSynthesisUtterance(speech);
         if (!recognise) {
             exports.recogniseMe.pause();
-            utterance.onend(function () {
+            utterance.onend = function () {
                 exports.recogniseMe.resume();
-            });
+            };
         }
         speechSynthesis.speak(utterance);
     };

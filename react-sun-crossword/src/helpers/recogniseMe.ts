@@ -1075,9 +1075,9 @@ if (SpeechRecognition) {
         var utterance = new SpeechSynthesisUtterance(speech);
         if (!recognise) {
             recogniseMe.pause();
-            utterance.onend(() => {
+            utterance.onend=function() {
                 recogniseMe.resume();
-            })
+            }
         }
         speechSynthesis.speak(utterance);
     }
