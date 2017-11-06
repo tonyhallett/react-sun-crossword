@@ -1095,7 +1095,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     //#endregion
 
     playMultipleSounds = () => {
-        var sound1 = "assets/sounds/To_Be-Recognised.mp3";
+        var sound1 = "assets/sounds/To_Be_Recognised.mp3";
         var sound2 = "assets/sounds/To_Interrupt.mp3";
         var audio1 = new Audio(sound1);
         var audio2 = new Audio(sound2);
