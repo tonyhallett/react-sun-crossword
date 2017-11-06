@@ -52,7 +52,11 @@ export class DefaultSelectChooser extends React.Component<DefaultSelectChooserPr
         this.props.lookupSelected(this.state.selectedValue);
     }
     optionChange = (option: Select.Option) => {
-        this.setState({ selectedValue: option.value as string})
+        var selectedValue: string;
+        if (option) {
+            selectedValue = option.value as string;
+        }
+        this.setState({ selectedValue: selectedValue})
     }
     mapOptions = (): Select.Option[] => {
         var options = [];

@@ -41627,7 +41627,11 @@ var DefaultSelectChooser = (function (_super) {
             _this.props.lookupSelected(_this.state.selectedValue);
         };
         _this.optionChange = function (option) {
-            _this.setState({ selectedValue: option.value });
+            var selectedValue;
+            if (option) {
+                selectedValue = option.value;
+            }
+            _this.setState({ selectedValue: selectedValue });
         };
         _this.mapOptions = function () {
             var options = [];
