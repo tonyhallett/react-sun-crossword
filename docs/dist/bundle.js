@@ -45138,29 +45138,26 @@ if (SpeechRecognition) {
             playAudio(audio);
         }
     };
+    var canRecogniseSoundResponse = false;
     //may change to always never recognise and have a boolean of interrupt from the command
     var speak = function (speech, recognise) {
         var utterance = new SpeechSynthesisUtterance(speech);
-        if (!recognise) {
-            var shouldResume = false;
-            utterance.onstart = function () {
-                console.log("In onstart speaking: " + speechSynthesis.speaking);
-                if (!pauseListening) {
-                    shouldResume = true;
-                    console.log("pausing");
-                    exports.recogniseMe.pause();
-                }
-            };
-            utterance.onend = function () {
-                console.log("In onend speaking: " + speechSynthesis.speaking);
-                if (shouldResume) {
-                    window.setTimeout(function () {
-                        console.log("resuming");
-                        exports.recogniseMe.resume();
-                    }, 1000);
-                }
-            };
-        }
+        var shouldResume = false;
+        utterance.onstart = function () {
+            canRecogniseSoundResponse = false;
+            if (!pauseListening) {
+                canRecogniseSoundResponse = recognise;
+                shouldResume = true;
+                exports.recogniseMe.pause();
+            }
+        };
+        utterance.onend = function () {
+            if (shouldResume) {
+                window.setTimeout(function () {
+                    exports.recogniseMe.resume();
+                }, 1000);
+            }
+        };
         speechSynthesis.speak(utterance);
     };
     var stateTimeoutIdentifier;
@@ -45332,7 +45329,7 @@ if (SpeechRecognition) {
                 var results = resultsAndConfidences.results;
                 var matchedSynthesis = speechSynthesis.speaking;
                 console.log("Speech synthesis speaking:" + matchedSynthesis);
-                if (matchedSynthesis) {
+                if (canRecogniseSoundResponse) {
                     if (skipSpeakingCommand) {
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
@@ -45348,43 +45345,41 @@ if (SpeechRecognition) {
                         }
                     }
                 }
-                if (!(matchedSynthesis && exports.recogniseMe.doNotListenWhenSpeaking)) {
-                    if (listeningForStartStop) {
-                        var phrase = stopPhrase;
-                        var action = exports.recogniseMe.pause;
-                        var sound = stopSound;
-                        if (pauseListening) {
-                            phrase = startPhrase;
-                            action = exports.recogniseMe.resume;
-                            sound = startSound;
-                        }
-                        var results = resultsAndConfidences.results;
-                        var match = false;
-                        for (var i = 0; i < results.length; i++) {
-                            if (phrase.exec(results[i])) {
-                                match = true;
-                                break;
-                            }
-                        }
-                        if (match) {
-                            action();
-                            doSoundResponse(sound);
-                            return false;
+                if (pauseListening) {
+                    if (debugState) {
+                        logMessage('Speech heard, but annyang is paused');
+                    }
+                    return false;
+                }
+                if (listeningForStartStop) {
+                    var phrase = stopPhrase;
+                    var action = exports.recogniseMe.pause;
+                    var sound = stopSound;
+                    if (pauseListening) {
+                        phrase = startPhrase;
+                        action = exports.recogniseMe.resume;
+                        sound = startSound;
+                    }
+                    var results = resultsAndConfidences.results;
+                    var match = false;
+                    for (var i = 0; i < results.length; i++) {
+                        if (phrase.exec(results[i])) {
+                            match = true;
+                            break;
                         }
                     }
-                    if (pauseListening) {
-                        if (debugState) {
-                            logMessage('Speech heard, but annyang is paused');
-                        }
+                    if (match) {
+                        action();
+                        doSoundResponse(sound);
                         return false;
                     }
-                    invokeCallbacks(callbacks.originalResult, event);
-                    console.log("about to parse results");
-                    for (var i = 0; i < results.length; i++) {
-                        console.log(results[i]);
-                    }
-                    parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
                 }
+                invokeCallbacks(callbacks.originalResult, event);
+                console.log("about to parse results");
+                for (var i = 0; i < results.length; i++) {
+                    console.log(results[i]);
+                }
+                parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
             };
             if (resetStates) {
                 commandStates = [];
