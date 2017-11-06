@@ -40536,8 +40536,9 @@ var CrosswordPuzzle = (function (_super) {
                     }
                 }
                 _this.speechUndos.push(speechUndo);
+                //sound: "assets/sounds/small-bell-ring.mp3"
                 response = {
-                    sound: "assets/sounds/small-bell-ring.mp3"
+                    sound: "assets/sounds/To_Be_Recognised.mp3"
                 };
             }
             else {
@@ -40983,15 +40984,6 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
-        //#endregion
-        _this.playMultipleSounds = function () {
-            var sound1 = "assets/sounds/To_Be_Recognised.mp3";
-            var sound2 = "assets/sounds/To_Interrupt.mp3";
-            var audio1 = new Audio(sound1);
-            var audio2 = new Audio(sound2);
-            audio1.play();
-            audio2.play();
-        };
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -41094,13 +41086,14 @@ var CrosswordPuzzle = (function (_super) {
             regExp: /^undo$/i,
             callback: this.undo
         };
+        //testInterruptCommand, testCannotInterruptCommand,
         //enter: function () { return { sound: "assets/sounds/default-state.mp3" } },
         return {
             isDefault: true,
             name: "Default",
-            enter: function () { return { synthesisMessage: "Entered default state" }; },
+            enter: function () { return { sound: "assets/sounds/To_Interrupt.mp3" }; },
             exit: function () { console.log("Exit default state"); return null; },
-            commands: [testInterruptCommand, testCannotInterruptCommand, navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
+            commands: [navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
         };
     };
     CrosswordPuzzle.prototype.getWordState = function (clueProviders) {
@@ -41502,6 +41495,7 @@ var CrosswordPuzzle = (function (_super) {
         });
         return mappedGrid;
     };
+    //#endregion
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -41517,7 +41511,6 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
-                React.createElement("button", { onClick: this.playMultipleSounds }, "Test multiple sound"),
                 React.createElement(isOnline_1.IsOnline, null)));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
