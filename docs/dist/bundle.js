@@ -45132,7 +45132,9 @@ if (SpeechRecognition) {
     var playSound = function (sound, canInterrupt) {
         function endOfAudio() {
             currentAudio = null;
+            console.log("end of audio");
             window.setTimeout(function () {
+                console.log("in audio timeout");
                 canInterruptAudio = false;
                 playingAudio = false;
                 if (audioQueue.length > 0) {
@@ -45144,6 +45146,7 @@ if (SpeechRecognition) {
         }
         function playAudio(audio) {
             audio.onplaying = function (evt) {
+                console.log("Playing audio ");
                 playingAudio = true;
                 canInterruptAudio = canInterrupt;
                 currentAudio = audio;
@@ -45179,6 +45182,7 @@ if (SpeechRecognition) {
             }
             console.log("onend");
             window.setTimeout(function () {
+                console.log("synthesis timeout");
                 synthesisIsSpeaking = false;
                 canInterruptSynthesis = false;
             }, 1000);
