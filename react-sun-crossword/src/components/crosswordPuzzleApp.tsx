@@ -51,7 +51,6 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         this.setState({ crosswordModel: crosswordModel, crosswordModelDuration: crosswordModel.duration });
     }
     saveUserCrossword = () => {
-        
         var modelJson = ConvertCrosswordModelToJson(this.state.crosswordModel);
         modelJson.duration = this.stopwatchController.getDuration().totalMilliseconds;
         connectedDatabase.saveUserCrossword(this.state.userLoggedIn, modelJson.id, modelJson, { id: modelJson.id, dateStarted: modelJson.dateStarted, duration: modelJson.duration, datePublished: modelJson.datePublished, title: modelJson.title }).then(function (userSaveDetails: UserSaveDetails) {

@@ -261,7 +261,8 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             synthesis = "Crossword is solved";
         }
         var response: CommandCallbackResponse = {
-            synthesisMessage: synthesis
+            synthesisMessage: synthesis,
+            recognise: true
         }
         return response;
     }
@@ -322,7 +323,8 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             synthesis = "Crossword is solved";
         }
         var response: CommandCallbackResponse = {
-            synthesisMessage: synthesis
+            synthesisMessage: synthesis,
+            recognise:true
         }
         return response;
     }

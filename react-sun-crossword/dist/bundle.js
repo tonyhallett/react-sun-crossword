@@ -40698,7 +40698,8 @@ var CrosswordPuzzle = (function (_super) {
                 synthesis = "Crossword is solved";
             }
             var response = {
-                synthesisMessage: synthesis
+                synthesisMessage: synthesis,
+                recognise: true
             };
             return response;
         };
@@ -40760,7 +40761,8 @@ var CrosswordPuzzle = (function (_super) {
                 synthesis = "Crossword is solved";
             }
             var response = {
-                synthesisMessage: synthesis
+                synthesisMessage: synthesis,
+                recognise: true
             };
             return response;
         };
