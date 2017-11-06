@@ -1069,14 +1069,24 @@ if (SpeechRecognition) {
         }
         
     }
-    var currentSpeech: string;
+
+    //may change to always never recognise and have a boolean of interrupt from the command
     var speak = function (speech: string,recognise:boolean) {
-        currentSpeech = speech;
+        
         var utterance = new SpeechSynthesisUtterance(speech);
         if (!recognise) {
-            recogniseMe.pause();
-            utterance.onend=function() {
-                recogniseMe.resume();
+            var shouldResume = false;
+            utterance.onstart = function () {
+                console.log("In onstart speaking: " + speechSynthesis.isSpeaking);
+                shouldResume = !pauseListening;
+                recogniseMe.pause();
+            }
+            
+            utterance.onend = function () {
+                console.log("In onend speaking: " + speechSynthesis.isSpeaking);
+                if (shouldResume) {
+                    recogniseMe.resume();
+                }
             }
         }
         speechSynthesis.speak(utterance);
@@ -1264,11 +1274,7 @@ if (SpeechRecognition) {
                 var results = resultsAndConfidences.results;
                 
                 var matchedSynthesis = speechSynthesis.speaking;
-                if (currentSpeech) {
-                    console.log("Current speech: " + currentSpeech);
-                } else {
-                    console.log("no current speech");
-                }
+                
                 console.log("Speech synthesis speaking:" + matchedSynthesis);
                 if (matchedSynthesis) {
                     if (skipSpeakingCommand) {
@@ -1287,18 +1293,8 @@ if (SpeechRecognition) {
                         }
                     }
                     
-                } else {
-                    if (currentSpeech) {
-                        for (var i = 0; i < results.length; i++) {
-                            var result = results[i];
-                            if (result.trim().toLowerCase() == currentSpeech.trim().toLowerCase()) {
-                                matchedSynthesis = true;
-                                break;
-                            }
-                        }
-                    }
                 }
-                currentSpeech = null;
+                
                 if (!(matchedSynthesis && recogniseMe.doNotListenWhenSpeaking)) {
                     
                     if (listeningForStartStop) {
