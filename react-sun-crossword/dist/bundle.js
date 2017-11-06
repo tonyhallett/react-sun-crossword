@@ -40536,13 +40536,15 @@ var CrosswordPuzzle = (function (_super) {
                     }
                 }
                 _this.speechUndos.push(speechUndo);
+                //sound: "assets/sounds/small-bell-ring.mp3"
                 response = {
-                    sound: "assets/sounds/small-bell-ring.mp3"
+                    synthesisMessage: "Correct"
                 };
             }
             else {
+                //sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
                 response = {
-                    sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
+                    synthesisMessage: "Incorrect"
                 };
             }
             return response;
@@ -41085,10 +41087,11 @@ var CrosswordPuzzle = (function (_super) {
             regExp: /^undo$/i,
             callback: this.undo
         };
+        //enter: function () { return { sound: "assets/sounds/default-state.mp3" } },
         return {
             isDefault: true,
             name: "Default",
-            enter: function () { return { sound: "assets/sounds/default-state.mp3" }; },
+            enter: function () { return { synthesisMessage: "Entered default state" }; },
             exit: function () { console.log("Exit default state"); return null; },
             commands: [testInterruptCommand, testCannotInterruptCommand, navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
         };
