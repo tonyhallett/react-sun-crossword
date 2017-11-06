@@ -45154,8 +45154,10 @@ if (SpeechRecognition) {
             utterance.onend = function () {
                 console.log("In onend speaking: " + speechSynthesis.speaking);
                 if (shouldResume) {
-                    console.log("resuming");
-                    exports.recogniseMe.resume();
+                    window.setTimeout(function () {
+                        console.log("resuming");
+                        exports.recogniseMe.resume();
+                    }, 0);
                 }
             };
         }

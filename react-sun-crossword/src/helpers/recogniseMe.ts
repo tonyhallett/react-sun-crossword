@@ -1089,8 +1089,11 @@ if (SpeechRecognition) {
             utterance.onend = function () {
                 console.log("In onend speaking: " + speechSynthesis.speaking);
                 if (shouldResume) {
-                    console.log("resuming");
-                    recogniseMe.resume();
+                    window.setTimeout(() => {
+                        console.log("resuming");
+                        recogniseMe.resume();
+                    }, 0);
+                    
                 }
             }
         }
