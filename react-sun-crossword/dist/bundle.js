@@ -45143,8 +45143,7 @@ if (SpeechRecognition) {
             currentAudio = null;
             audioFinished = true;
             console.log("end of audio");
-            var audio = audioQueue[0];
-            audioQueue = audioQueue.slice(1);
+            console.log("audio queue length: " + audioQueue.length);
             audioTimeoutId = window.setTimeout(function () {
                 console.log("in audio timeout");
                 canInterruptAudio = false;
@@ -45155,6 +45154,7 @@ if (SpeechRecognition) {
             }
         }
         function addToQueue(audioSource) {
+            console.log("adding to queue: " + audioSource);
             var audio = new Audio(audioSource);
             audioQueue.push(audio);
             audio.onplaying = function (evt) {
@@ -45172,6 +45172,7 @@ if (SpeechRecognition) {
         function playAudio() {
             if (audioFinished) {
                 var audio = audioQueue[0];
+                console.log("playing audio: " + audio.src);
                 audioQueue = audioQueue.slice(1);
                 audioFinished = false;
                 audio.play();
