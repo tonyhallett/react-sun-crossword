@@ -1048,45 +1048,52 @@ if (SpeechRecognition) {
     var audioQueue: HTMLAudioElement[] = [];
     var currentAudio: HTMLAudioElement;
     var audioTimeoutId;
-    var playSound = function (sound: string, canInterrupt: boolean) {
+    var audioFinished = true;
+    var playSound = function (audioSource: string, canInterrupt: boolean) {
         function endOfAudio() {
             currentAudio = null;
+            audioFinished = true;
+            
             console.log("end of audio");
             audioTimeoutId=window.setTimeout(() => {
                 console.log("in audio timeout");
                 canInterruptAudio = false;
                 playingAudio = false;
-                if (audioQueue.length > 0) {
-                    var nextAudio = audioQueue[0];
-                    audioQueue = audioQueue.slice(1);
-                    playAudio(nextAudio);
-                } 
+                
             }, 1000);
+            if (audioQueue.length > 0) {
+                playAudio();
+            } 
         }
-        function playAudio(audio: HTMLAudioElement) {
+        function addToQueue(audioSource: string) {
+            var audio = new Audio(audioSource);
+            audioQueue.push(audio);
             audio.onplaying = function (evt) {
                 console.log("Playing audio ");
                 if (audioTimeoutId) {
                     window.clearTimeout(audioTimeoutId);
                     audioTimeoutId = null;
                 }
-                
+
                 playingAudio = true;
-                canInterruptAudio = canInterrupt;   
+                canInterruptAudio = canInterrupt;
                 currentAudio = audio;
             }
-            
+
             audio.onpause = endOfAudio;
-            
-            
-            audio.play();
         }
-        var audio = new Audio(sound);
-        if (playingAudio) {
-            audioQueue.push(audio);
-        } else {
-            playAudio(audio);
+        function playAudio() {
+            if (audioFinished) {
+                var audio = audioQueue[0];
+                audioQueue = audioQueue.slice(1);
+                audioFinished = false;
+                audio.play();
+            }
+            
         }
+        addToQueue(audioSource);
+        playAudio();
+        
         
     }
     var synthesisIsSpeaking = false;
