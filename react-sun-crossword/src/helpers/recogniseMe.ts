@@ -1085,9 +1085,12 @@ if (SpeechRecognition) {
         }
 
         utterance.onend = function () {
+            console.log("onend");
             if (shouldResume) {
                 window.setTimeout(() => {
+                    console.log("resuming");
                     recogniseMe.resume();
+                    console.log("pauseListening: " + pauseListening);
                 }, 1000);
             }
         }
@@ -1274,7 +1277,6 @@ if (SpeechRecognition) {
             recognition.onresult = function (event) {
                 var resultsAndConfidences: { results: string[], confidences: number[] } = extractFromSpeechRecognitionEvent(event);
                 var results = resultsAndConfidences.results;
-                
                 var matchedSynthesis = speechSynthesis.speaking;
                 
                 console.log("Speech synthesis speaking:" + matchedSynthesis);

@@ -45154,9 +45154,12 @@ if (SpeechRecognition) {
             }
         };
         utterance.onend = function () {
+            console.log("onend");
             if (shouldResume) {
                 window.setTimeout(function () {
+                    console.log("resuming");
                     exports.recogniseMe.resume();
+                    console.log("pauseListening: " + pauseListening);
                 }, 1000);
             }
         };
