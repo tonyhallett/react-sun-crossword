@@ -45151,8 +45151,14 @@ if (SpeechRecognition) {
                 canInterruptAudio = canInterrupt;
                 currentAudio = audio;
             };
-            audio.onended = endOfAudio;
-            audio.onpause = endOfAudio;
+            //audio.onended = endOfAudio;
+            //audio.onpause = endOfAudio;
+            audio.onended = function () {
+                console.log("audio onended");
+            };
+            audio.onpause = function () {
+                console.log("audio onpause");
+            };
             audio.play();
         }
         var audio = new Audio(sound);
