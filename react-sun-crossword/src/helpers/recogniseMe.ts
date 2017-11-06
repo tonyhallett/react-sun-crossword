@@ -1069,18 +1069,9 @@ if (SpeechRecognition) {
                 canInterruptAudio = canInterrupt;   
                 currentAudio = audio;
             }
-            //audio.onended = endOfAudio;
-            //audio.onpause = endOfAudio;
-            audio.onended = function () {
-                console.log("audio onended");
-                canInterruptAudio = false;
-                playingAudio = false;
-            }
-            audio.onpause = function () {
-                console.log("audio onpause");
-                canInterruptAudio = false;
-                playingAudio = false;
-            }
+            
+            audio.onpause = endOfAudio;
+            
             
             audio.play();
         }
