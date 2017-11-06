@@ -40983,14 +40983,6 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
-        //#endregion
-        _this.speakAndPlay = function () {
-            var sound = "assets/sounds/To_Be_Recognised.mp3";
-            var audio = new Audio(sound);
-            audio.play();
-            var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
-            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
-        };
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -41028,6 +41020,28 @@ var CrosswordPuzzle = (function (_super) {
             return new RegExp(navWordCommandString, "i");
         }
         var self = this;
+        var testInterruptCommand = {
+            name: "Test interrupt",
+            regExp: /^Interrupt$/i,
+            callback: function () {
+                var response = {
+                    canInterrupt: true,
+                    sound: "assets/sounds/To_Interrupt.mp3"
+                };
+                return response;
+            }
+        };
+        var testCannotInterruptCommand = {
+            name: "Test interrupt",
+            regExp: /^Listen$/i,
+            callback: function () {
+                var response = {
+                    canInterrupt: false,
+                    sound: "assets/sounds/Cannot_be_interrupted.mp3"
+                };
+                return response;
+            }
+        };
         var solveCommand = {
             name: "Click solve bulb",
             regExp: /^Solve$/i,
@@ -41076,7 +41090,7 @@ var CrosswordPuzzle = (function (_super) {
             name: "Default",
             enter: function () { return { sound: "assets/sounds/default-state.mp3" }; },
             exit: function () { console.log("Exit default state"); return null; },
-            commands: [navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
+            commands: [testInterruptCommand, testCannotInterruptCommand, navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
         };
     };
     CrosswordPuzzle.prototype.getWordState = function (clueProviders) {
@@ -41478,6 +41492,7 @@ var CrosswordPuzzle = (function (_super) {
         });
         return mappedGrid;
     };
+    //#endregion
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -41493,7 +41508,6 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
-                React.createElement("button", { onClick: this.speakAndPlay }, "Speak and play"),
                 React.createElement(isOnline_1.IsOnline, null)));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
@@ -45116,20 +45130,33 @@ if (SpeechRecognition) {
     var audioQueue = [];
     var currentAudio;
     var playSound = function (sound, canInterrupt) {
+        var shouldResume = false;
+        function endOfAudio() {
+            if (shouldResume) {
+                window.setTimeout(function () {
+                    exports.recogniseMe.resume();
+                    if (audioQueue.length > 0) {
+                        var nextAudio = audioQueue[0];
+                        audioQueue = audioQueue.slice(1);
+                        playAudio(nextAudio);
+                    }
+                    else {
+                        playingAudio = false;
+                    }
+                }, 1000);
+            }
+        }
         function playAudio(audio) {
             audio.onplaying = function (evt) {
+                canInterruptAudio = false;
+                if (!pauseListening) {
+                    canInterruptAudio = canInterrupt;
+                    shouldResume = true;
+                }
                 currentAudio = audio;
             };
-            audio.onended = function (evt) {
-                if (audioQueue.length > 0) {
-                    var nextAudio = audioQueue[0];
-                    audioQueue = audioQueue.slice(1);
-                    playAudio(nextAudio);
-                }
-                else {
-                    playingAudio = false;
-                }
-            };
+            audio.onended = endOfAudio;
+            audio.onpause = endOfAudio;
             playingAudio = true;
             audio.play();
         }
@@ -45141,7 +45168,8 @@ if (SpeechRecognition) {
             playAudio(audio);
         }
     };
-    var canInterruptSoundResponse = false;
+    var canInterruptSynthesis = false;
+    var canInterruptAudio = false;
     //may change to always never recognise and have a boolean of interrupt from the command
     var utterances = [];
     var speak = function (speech, canInterrupt) {
@@ -45149,9 +45177,9 @@ if (SpeechRecognition) {
         utterances.push(utterance);
         var shouldResume = false;
         utterance.onstart = function () {
-            canInterruptSoundResponse = false;
+            canInterruptSynthesis = false;
             if (!pauseListening) {
-                canInterruptSoundResponse = canInterrupt;
+                canInterruptSynthesis = canInterrupt;
                 shouldResume = true;
                 exports.recogniseMe.pause();
             }
@@ -45343,7 +45371,7 @@ if (SpeechRecognition) {
                 var results = resultsAndConfidences.results;
                 var matchedSynthesis = speechSynthesis.speaking;
                 console.log("Speech synthesis speaking:" + matchedSynthesis);
-                if (canInterruptSoundResponse) {
+                if (canInterruptSynthesis || canInterruptAudio) {
                     if (skipSpeakingCommand) {
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
@@ -45354,8 +45382,13 @@ if (SpeechRecognition) {
                             }
                         }
                         if (skipSpeaking) {
-                            speechSynthesis.cancel();
-                            if (currentAudio) {
+                            if (canInterruptSynthesis) {
+                                speechSynthesis.cancel();
+                            }
+                            else {
+                                if (currentAudio) {
+                                    currentAudio.pause();
+                                }
                             }
                             return;
                         }

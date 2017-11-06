@@ -518,6 +518,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     //#endregion   
     //#region setup
     //#region get command states
+    
     getDefaultState(acrossClues: Clue[], downClues: Clue[]): CommandState {
         function getWordRegExpr() {
             //1 across | one down | 2 across | two across etc
@@ -543,6 +544,29 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             return new RegExp(navWordCommandString, "i");
         }
         var self = this;
+
+        var testInterruptCommand: StateCommand = {
+            name: "Test interrupt",
+            regExp: /^Interrupt$/i,
+            callback: function () {
+                var response: CommandCallbackResponse = {
+                    canInterrupt: true,
+                    sound:"assets/sounds/To_Interrupt.mp3"
+                }
+                return response;
+            }
+        }
+        var testCannotInterruptCommand: StateCommand = {
+            name: "Test interrupt",
+            regExp: /^Listen$/i,
+            callback: function () {
+                var response: CommandCallbackResponse = {
+                    canInterrupt: false,
+                    sound: "assets/sounds/Cannot_be_interrupted.mp3"
+                }
+                return response;
+            }
+        }
 
         var solveCommand: StateCommand = {
             name: "Click solve bulb",
@@ -595,7 +619,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             name: "Default",
             enter: function () { return { sound: "assets/sounds/default-state.mp3" } },
             exit: function () { console.log("Exit default state"); return null },
-            commands: [navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
+            commands: [testInterruptCommand, testCannotInterruptCommand, navWordCommand, detailsCommand, spellCommand, undoCommand, cheatCommand, solveCommand]
         }
     }
     getWordState(clueProviders: ClueProvider[]) {
@@ -1071,13 +1095,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     }
     //#endregion
 
-    speakAndPlay = () => {
-        var sound = "assets/sounds/To_Be_Recognised.mp3";
-        var audio = new Audio(sound);
-        audio.play();
-        var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
-        speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
-    }
+
     
     render() {
         this.setAutoSolve();
@@ -1098,7 +1116,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     <span onClick={this.solveClicked}>
                         <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Solving} rayColour="yellow" onGlowColour="yellow" text="Solve" id="solveBulb" bulbOuterColour="yellow" innerGlowColour="yellow" />
                     </span>
-                    <button onClick={this.speakAndPlay}>Speak and play</button>
+                    
                     
                     <IsOnline/>
                 </div>

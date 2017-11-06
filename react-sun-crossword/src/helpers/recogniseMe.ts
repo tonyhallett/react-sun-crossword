@@ -1068,9 +1068,9 @@ if (SpeechRecognition) {
         function playAudio(audio: HTMLAudioElement) {
 
             audio.onplaying = function (evt) {
-                canInterruptSoundResponse = false;
+                canInterruptAudio = false;
                 if (!pauseListening) {
-                    canInterruptSoundResponse = canInterrupt;
+                    canInterruptAudio = canInterrupt;
                     shouldResume = true;
                 }
                 currentAudio = audio;
@@ -1089,7 +1089,8 @@ if (SpeechRecognition) {
         }
         
     }
-    var canInterruptSoundResponse = false;
+    var canInterruptSynthesis = false;
+    var canInterruptAudio = false;
     //may change to always never recognise and have a boolean of interrupt from the command
     var utterances: SpeechSynthesisUtterance[] = [];
     var speak = function (speech: string,canInterrupt:boolean) {
@@ -1098,9 +1099,9 @@ if (SpeechRecognition) {
         utterances.push(utterance);
         var shouldResume = false;
         utterance.onstart = function () {
-            canInterruptSoundResponse = false;
+            canInterruptSynthesis = false;
             if (!pauseListening) {
-                canInterruptSoundResponse = canInterrupt;
+                canInterruptSynthesis = canInterrupt;
                 shouldResume = true;
                 recogniseMe.pause();
             }
@@ -1309,7 +1310,7 @@ if (SpeechRecognition) {
                 var matchedSynthesis = speechSynthesis.speaking;
                 
                 console.log("Speech synthesis speaking:" + matchedSynthesis);
-                if (canInterruptSoundResponse) {
+                if (canInterruptSynthesis||canInterruptAudio) {
                     if (skipSpeakingCommand) {
                         
                         var skipSpeaking = false;
@@ -1321,9 +1322,12 @@ if (SpeechRecognition) {
                             }
                         }
                         if (skipSpeaking) {
-                            speechSynthesis.cancel();
-                            if (currentAudio) {
-                               
+                            if (canInterruptSynthesis) {
+                                speechSynthesis.cancel();
+                            } else {
+                                if (currentAudio) {
+                                    currentAudio.pause();
+                                }
                             }
                             return;
                         }
