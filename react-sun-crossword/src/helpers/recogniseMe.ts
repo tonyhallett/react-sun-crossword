@@ -1055,6 +1055,8 @@ if (SpeechRecognition) {
             audioFinished = true;
             
             console.log("end of audio");
+            var audio = audioQueue[0];
+            audioQueue = audioQueue.slice(1);
             audioTimeoutId=window.setTimeout(() => {
                 console.log("in audio timeout");
                 canInterruptAudio = false;
