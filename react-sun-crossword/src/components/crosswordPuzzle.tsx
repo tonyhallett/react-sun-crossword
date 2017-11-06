@@ -96,15 +96,12 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 }
             }
             this.speechUndos.push(speechUndo);
-            //sound: "assets/sounds/small-bell-ring.mp3"
             response = {
-                synthesisMessage:"Correct"
+                sound: "assets/sounds/small-bell-ring.mp3"
             }
         } else {
-            //sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
             response = {
-                synthesisMessage:"Incorrect"
-
+                sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
             }
         }
 
@@ -1097,7 +1094,14 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     }
     //#endregion
 
-
+    playMultipleSounds = () => {
+        var sound1 = "assets/sounds/To_Be-Recognised.mp3";
+        var sound2 = "assets/sounds/To_Interrupt.mp3";
+        var audio1 = new Audio(sound1);
+        var audio2 = new Audio(sound2);
+        audio1.play();
+        audio2.play();
+    }
     
     render() {
         this.setAutoSolve();
@@ -1118,7 +1122,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     <span onClick={this.solveClicked}>
                         <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Solving} rayColour="yellow" onGlowColour="yellow" text="Solve" id="solveBulb" bulbOuterColour="yellow" innerGlowColour="yellow" />
                     </span>
-                    
+                    <button onClick={this.playMultipleSounds}>Test multiple sound</button>
                     
                     <IsOnline/>
                 </div>

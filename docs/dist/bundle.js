@@ -40536,15 +40536,13 @@ var CrosswordPuzzle = (function (_super) {
                     }
                 }
                 _this.speechUndos.push(speechUndo);
-                //sound: "assets/sounds/small-bell-ring.mp3"
                 response = {
-                    synthesisMessage: "Correct"
+                    sound: "assets/sounds/small-bell-ring.mp3"
                 };
             }
             else {
-                //sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
                 response = {
-                    synthesisMessage: "Incorrect"
+                    sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
                 };
             }
             return response;
@@ -40984,6 +40982,15 @@ var CrosswordPuzzle = (function (_super) {
             }
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
+        };
+        //#endregion
+        _this.playMultipleSounds = function () {
+            var sound1 = "assets/sounds/To_Be-Recognised.mp3";
+            var sound2 = "assets/sounds/To_Interrupt.mp3";
+            var audio1 = new Audio(sound1);
+            var audio2 = new Audio(sound2);
+            audio1.play();
+            audio2.play();
         };
         _this.autoSolve = true;
         _this.solveExact = false;
@@ -41495,7 +41502,6 @@ var CrosswordPuzzle = (function (_super) {
         });
         return mappedGrid;
     };
-    //#endregion
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -41511,6 +41517,7 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
+                React.createElement("button", { onClick: this.playMultipleSounds }, "Test multiple sound"),
                 React.createElement(isOnline_1.IsOnline, null)));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
