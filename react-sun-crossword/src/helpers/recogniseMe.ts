@@ -1069,22 +1069,28 @@ if (SpeechRecognition) {
         }
         
     }
-    var canRecogniseSoundResponse = false;
+    var canInterruptSoundResponse = false;
     //may change to always never recognise and have a boolean of interrupt from the command
-    var speak = function (speech: string,recognise:boolean) {
+    var utterances: SpeechSynthesisUtterance[] = [];
+    var speak = function (speech: string,canInterrupt:boolean) {
         
         var utterance = new SpeechSynthesisUtterance(speech);
+        utterances.push(utterance);
         var shouldResume = false;
         utterance.onstart = function () {
-            canRecogniseSoundResponse = false;
+            canInterruptSoundResponse = false;
             if (!pauseListening) {
-                canRecogniseSoundResponse = recognise;
+                canInterruptSoundResponse = canInterrupt;
                 shouldResume = true;
                 recogniseMe.pause();
             }
         }
 
         utterance.onend = function () {
+            var index = utterances.indexOf(utterance);
+            if (index > -1) {
+                utterances.splice(index, 1);
+            }
             console.log("onend");
             if (shouldResume) {
                 window.setTimeout(() => {
@@ -1283,7 +1289,7 @@ if (SpeechRecognition) {
                 var matchedSynthesis = speechSynthesis.speaking;
                 
                 console.log("Speech synthesis speaking:" + matchedSynthesis);
-                if (canRecogniseSoundResponse) {
+                if (canInterruptSoundResponse) {
                     if (skipSpeakingCommand) {
                         
                         var skipSpeaking = false;
