@@ -45157,7 +45157,7 @@ if (SpeechRecognition) {
                     window.setTimeout(function () {
                         console.log("resuming");
                         exports.recogniseMe.resume();
-                    }, 0);
+                    }, 500);
                 }
             };
         }
