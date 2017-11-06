@@ -1077,13 +1077,13 @@ if (SpeechRecognition) {
         if (!recognise) {
             var shouldResume = false;
             utterance.onstart = function () {
-                console.log("In onstart speaking: " + speechSynthesis.isSpeaking);
+                console.log("In onstart speaking: " + speechSynthesis.speaking);
                 shouldResume = !pauseListening;
                 recogniseMe.pause();
             }
             
             utterance.onend = function () {
-                console.log("In onend speaking: " + speechSynthesis.isSpeaking);
+                console.log("In onend speaking: " + speechSynthesis.speaking);
                 if (shouldResume) {
                     recogniseMe.resume();
                 }
