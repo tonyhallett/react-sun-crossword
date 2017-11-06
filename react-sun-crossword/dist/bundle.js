@@ -40542,7 +40542,7 @@ var CrosswordPuzzle = (function (_super) {
             }
             else {
                 response = {
-                    matches: false,
+                    sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
                 };
             }
             return response;
@@ -41205,7 +41205,7 @@ var CrosswordPuzzle = (function (_super) {
             //spellState navigation command is assuming that the crossword is 13*13 ( which it currently will always be) - later let this be dynamic based upon the crossword
             recogniseMe_1.recogniseMe.addStates([this.getDefaultState(clueProviders[0].acrossClues, clueProviders[0].downClues), this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()]);
             if (!this.recognising) {
-                recogniseMe_1.recogniseMe.allStatesNoMatchSoundResponse = { sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3" };
+                recogniseMe_1.recogniseMe.allStatesNoMatchSoundResponse = { synthesisMessage: "I did not get that." };
                 recogniseMe_1.recogniseMe.setSkipSpeakingCommand("quiet please");
                 recogniseMe_1.recogniseMe.setLanguage("en-GB");
                 recogniseMe_1.recogniseMe.setStartStopCommands({ defaultStartStopPhrases: true, defaultStartStopSynthesis: true });
@@ -45133,11 +45133,12 @@ if (SpeechRecognition) {
     var playingAudio = false;
     var audioQueue = [];
     var currentAudio;
+    var audioTimeoutId;
     var playSound = function (sound, canInterrupt) {
         function endOfAudio() {
             currentAudio = null;
             console.log("end of audio");
-            window.setTimeout(function () {
+            audioTimeoutId = window.setTimeout(function () {
                 console.log("in audio timeout");
                 canInterruptAudio = false;
                 playingAudio = false;
@@ -45151,6 +45152,10 @@ if (SpeechRecognition) {
         function playAudio(audio) {
             audio.onplaying = function (evt) {
                 console.log("Playing audio ");
+                if (audioTimeoutId) {
+                    window.clearTimeout(audioTimeoutId);
+                    audioTimeoutId = null;
+                }
                 playingAudio = true;
                 canInterruptAudio = canInterrupt;
                 currentAudio = audio;
@@ -45171,10 +45176,15 @@ if (SpeechRecognition) {
     var canInterruptAudio = false;
     //may change to always never recognise and have a boolean of interrupt from the command
     var utterances = [];
+    var synthesisTimeoutId;
     var speak = function (speech, canInterrupt) {
         var utterance = new SpeechSynthesisUtterance(speech);
         utterances.push(utterance);
         utterance.onstart = function () {
+            if (synthesisTimeoutId) {
+                window.clearTimeout(synthesisTimeoutId);
+                synthesisTimeoutId = null;
+            }
             canInterruptSynthesis = canInterrupt;
             synthesisIsSpeaking = true;
         };
@@ -45184,7 +45194,7 @@ if (SpeechRecognition) {
                 utterances.splice(index, 1);
             }
             console.log("onend");
-            window.setTimeout(function () {
+            synthesisTimeoutId = window.setTimeout(function () {
                 console.log("synthesis timeout");
                 synthesisIsSpeaking = false;
                 canInterruptSynthesis = false;

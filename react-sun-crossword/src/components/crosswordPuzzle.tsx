@@ -102,7 +102,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             }
         } else {
             response = {
-                matches: false,
+                sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
 
             }
         }
@@ -748,7 +748,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             recogniseMe.addStates([this.getDefaultState(clueProviders[0].acrossClues, clueProviders[0].downClues), this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()])
             
             if (!this.recognising) {
-                recogniseMe.allStatesNoMatchSoundResponse = { sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3" }
+                recogniseMe.allStatesNoMatchSoundResponse = { synthesisMessage:"I did not get that." }
                 
                 recogniseMe.setSkipSpeakingCommand("quiet please");
                 recogniseMe.setLanguage("en-GB")

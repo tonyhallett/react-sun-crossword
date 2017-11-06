@@ -1047,11 +1047,12 @@ if (SpeechRecognition) {
     var playingAudio: boolean = false;
     var audioQueue: HTMLAudioElement[] = [];
     var currentAudio: HTMLAudioElement;
+    var audioTimeoutId;
     var playSound = function (sound: string, canInterrupt: boolean) {
         function endOfAudio() {
             currentAudio = null;
             console.log("end of audio");
-            window.setTimeout(() => {
+            audioTimeoutId=window.setTimeout(() => {
                 console.log("in audio timeout");
                 canInterruptAudio = false;
                 playingAudio = false;
@@ -1065,6 +1066,11 @@ if (SpeechRecognition) {
         function playAudio(audio: HTMLAudioElement) {
             audio.onplaying = function (evt) {
                 console.log("Playing audio ");
+                if (audioTimeoutId) {
+                    window.clearTimeout(audioTimeoutId);
+                    audioTimeoutId = null;
+                }
+                
                 playingAudio = true;
                 canInterruptAudio = canInterrupt;   
                 currentAudio = audio;
@@ -1088,12 +1094,17 @@ if (SpeechRecognition) {
     var canInterruptAudio = false;
     //may change to always never recognise and have a boolean of interrupt from the command
     var utterances: SpeechSynthesisUtterance[] = [];
+    var synthesisTimeoutId;
     var speak = function (speech: string,canInterrupt:boolean) {
         
         var utterance = new SpeechSynthesisUtterance(speech);
         utterances.push(utterance);
         
         utterance.onstart = function () {
+            if (synthesisTimeoutId) {
+                window.clearTimeout(synthesisTimeoutId);
+                synthesisTimeoutId = null;
+            }
             canInterruptSynthesis = canInterrupt;
             synthesisIsSpeaking = true;
         }
@@ -1105,7 +1116,7 @@ if (SpeechRecognition) {
             }
             console.log("onend");
             
-            window.setTimeout(() => {
+            synthesisTimeoutId=window.setTimeout(() => {
                 console.log("synthesis timeout");
                 synthesisIsSpeaking = false;
                 canInterruptSynthesis = false;
@@ -1360,8 +1371,6 @@ if (SpeechRecognition) {
                     console.log(results[i]);
                 }
                 parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
-
-
                 
             };
 
