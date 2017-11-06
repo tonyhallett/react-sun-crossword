@@ -40538,7 +40538,7 @@ var CrosswordPuzzle = (function (_super) {
                 _this.speechUndos.push(speechUndo);
                 //sound: "assets/sounds/small-bell-ring.mp3"
                 response = {
-                    sound: "assets/sounds/To_Be_Recognised.mp3"
+                    sound: "assets/sounds/Cannot_be_interrupted.mp3"
                 };
             }
             else {
