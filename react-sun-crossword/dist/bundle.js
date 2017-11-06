@@ -45163,6 +45163,9 @@ if (SpeechRecognition) {
                 }, 1000);
             }
         };
+        utterance.onerror = function () {
+            console.log("Utterance error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        };
         speechSynthesis.speak(utterance);
     };
     var stateTimeoutIdentifier;
