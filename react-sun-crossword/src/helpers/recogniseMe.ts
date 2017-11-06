@@ -1092,7 +1092,7 @@ if (SpeechRecognition) {
                     window.setTimeout(() => {
                         console.log("resuming");
                         recogniseMe.resume();
-                    }, 500);
+                    }, 1000);
                     
                 }
             }
