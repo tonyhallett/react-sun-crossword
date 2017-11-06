@@ -45145,12 +45145,16 @@ if (SpeechRecognition) {
             var shouldResume = false;
             utterance.onstart = function () {
                 console.log("In onstart speaking: " + speechSynthesis.speaking);
-                shouldResume = !pauseListening;
-                exports.recogniseMe.pause();
+                if (!pauseListening) {
+                    shouldResume = true;
+                    console.log("pausing");
+                    exports.recogniseMe.pause();
+                }
             };
             utterance.onend = function () {
                 console.log("In onend speaking: " + speechSynthesis.speaking);
                 if (shouldResume) {
+                    console.log("resuming");
                     exports.recogniseMe.resume();
                 }
             };

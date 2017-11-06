@@ -1078,13 +1078,18 @@ if (SpeechRecognition) {
             var shouldResume = false;
             utterance.onstart = function () {
                 console.log("In onstart speaking: " + speechSynthesis.speaking);
-                shouldResume = !pauseListening;
-                recogniseMe.pause();
+                if (!pauseListening) {
+                    shouldResume = true;
+                    console.log("pausing");
+                    recogniseMe.pause();
+                } 
+                
             }
             
             utterance.onend = function () {
                 console.log("In onend speaking: " + speechSynthesis.speaking);
                 if (shouldResume) {
+                    console.log("resuming");
                     recogniseMe.resume();
                 }
             }
