@@ -85,7 +85,7 @@ export type CommandOrCommands = Command | Command[]
 export interface SoundResponse {
     sound?: string
     synthesisMessage?: string
-    recognise?:boolean
+    canInterrupt?:boolean
 }
 export interface CommandState {
     name: string,
@@ -130,7 +130,6 @@ export interface StateCommand {
 export interface RecogniseMe {
     allStatesNoMatchSoundResponse: SoundResponse
 
-    doNotListenWhenSpeaking:boolean
     setSkipSpeakingCommand:(command:string)=>void
 
     //these to become private
@@ -1037,27 +1036,48 @@ if (SpeechRecognition) {
     var doSoundResponse = function (response: SoundResponse) {
         if (response) {
             if (response.sound) {
-                playSound(response.sound);
+                playSound(response.sound, response.canInterrupt);
             }
             if (response.synthesisMessage) {
-                speak(response.synthesisMessage, response.recognise);
+                speak(response.synthesisMessage, response.canInterrupt);
             }
         }
         
     }
     var playingAudio: boolean = false;
     var audioQueue: HTMLAudioElement[] = [];
-    var playSound = function (sound: string) {
-        function playAudio(audio: HTMLAudioElement) {
-            audio.onended = function (evt) {
-                if (audioQueue.length > 0) {
-                    var nextAudio = audioQueue[0];
-                    audioQueue = audioQueue.slice(1);
-                    playAudio(nextAudio);
-                } else {
-                    playingAudio = false;
-                }
+    var currentAudio: HTMLAudioElement;
+    var playSound = function (sound: string, canInterrupt: boolean) {
+        var shouldResume = false;
+        function endOfAudio() {
+            if (shouldResume) {
+                window.setTimeout(() => {
+                    recogniseMe.resume();
+                    if (audioQueue.length > 0) {
+                        var nextAudio = audioQueue[0];
+                        audioQueue = audioQueue.slice(1);
+                        playAudio(nextAudio);
+                    } else {
+                        playingAudio = false;
+                    }
+                }, 1000);
             }
+
+            
+        }
+        function playAudio(audio: HTMLAudioElement) {
+
+            audio.onplaying = function (evt) {
+                canInterruptSoundResponse = false;
+                if (!pauseListening) {
+                    canInterruptSoundResponse = canInterrupt;
+                    shouldResume = true;
+                }
+                currentAudio = audio;
+            }
+            audio.onended = endOfAudio;
+            audio.onpause = endOfAudio;
+
             playingAudio = true;
             audio.play();
         }
@@ -1150,7 +1170,7 @@ if (SpeechRecognition) {
     var stopSound: SoundResponse
     var skipSpeakingCommand: RegExp
     recogniseMe = {
-        doNotListenWhenSpeaking: true,
+        
         setSkipSpeakingCommand: function (skipCommand: string) {
             skipSpeakingCommand = new RegExp(skipCommand,"i");
         },
@@ -1302,6 +1322,9 @@ if (SpeechRecognition) {
                         }
                         if (skipSpeaking) {
                             speechSynthesis.cancel();
+                            if (currentAudio) {
+                               
+                            }
                             return;
                         }
                     }

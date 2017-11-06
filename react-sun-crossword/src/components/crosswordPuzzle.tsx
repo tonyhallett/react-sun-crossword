@@ -262,7 +262,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         }
         var response: CommandCallbackResponse = {
             synthesisMessage: synthesis,
-            recognise: true
+            canInterrupt: true
         }
         return response;
     }
@@ -324,7 +324,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         }
         var response: CommandCallbackResponse = {
             synthesisMessage: synthesis,
-            recognise:true
+            canInterrupt: true
         }
         return response;
     }
@@ -725,7 +725,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             
             if (!this.recognising) {
                 recogniseMe.allStatesNoMatchSoundResponse = { sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3" }
-                recogniseMe.doNotListenWhenSpeaking = true;
+                
                 recogniseMe.setSkipSpeakingCommand("quiet please");
                 recogniseMe.setLanguage("en-GB")
                 recogniseMe.setStartStopCommands({ defaultStartStopPhrases: true, defaultStartStopSynthesis: true })
@@ -1071,14 +1071,14 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     }
     //#endregion
 
-    speakLong = () => {
+    speakAndPlay = () => {
+        var sound = "assets/sounds/To_Be_Recognised.mp3";
+        var audio = new Audio(sound);
+        audio.play();
         var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
         speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
     }
-    speakShort = () => {
-        var speech = "Jessica";
-        speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
-    }
+    
     render() {
         this.setAutoSolve();
         var squares = this._mapGrid(this.props.crosswordModel.grid);
@@ -1098,8 +1098,8 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     <span onClick={this.solveClicked}>
                         <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Solving} rayColour="yellow" onGlowColour="yellow" text="Solve" id="solveBulb" bulbOuterColour="yellow" innerGlowColour="yellow" />
                     </span>
-                    <button onClick={this.speakLong}>Speak long</button>
-                    <button onClick={this.speakShort}>Speak short</button>
+                    <button onClick={this.speakAndPlay}>Speak and play</button>
+                    
                     <IsOnline/>
                 </div>
             </div>

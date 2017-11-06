@@ -40699,7 +40699,7 @@ var CrosswordPuzzle = (function (_super) {
             }
             var response = {
                 synthesisMessage: synthesis,
-                recognise: true
+                canInterrupt: true
             };
             return response;
         };
@@ -40762,7 +40762,7 @@ var CrosswordPuzzle = (function (_super) {
             }
             var response = {
                 synthesisMessage: synthesis,
-                recognise: true
+                canInterrupt: true
             };
             return response;
         };
@@ -40984,12 +40984,11 @@ var CrosswordPuzzle = (function (_super) {
             //want to select it and force across/down
         };
         //#endregion
-        _this.speakLong = function () {
+        _this.speakAndPlay = function () {
+            var sound = "assets/sounds/To_Be_Recognised.mp3";
+            var audio = new Audio(sound);
+            audio.play();
             var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
-            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
-        };
-        _this.speakShort = function () {
-            var speech = "Jessica";
             speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
         };
         _this.autoSolve = true;
@@ -41193,7 +41192,6 @@ var CrosswordPuzzle = (function (_super) {
             recogniseMe_1.recogniseMe.addStates([this.getDefaultState(clueProviders[0].acrossClues, clueProviders[0].downClues), this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()]);
             if (!this.recognising) {
                 recogniseMe_1.recogniseMe.allStatesNoMatchSoundResponse = { sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3" };
-                recogniseMe_1.recogniseMe.doNotListenWhenSpeaking = true;
                 recogniseMe_1.recogniseMe.setSkipSpeakingCommand("quiet please");
                 recogniseMe_1.recogniseMe.setLanguage("en-GB");
                 recogniseMe_1.recogniseMe.setStartStopCommands({ defaultStartStopPhrases: true, defaultStartStopSynthesis: true });
@@ -41495,8 +41493,7 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
-                React.createElement("button", { onClick: this.speakLong }, "Speak long"),
-                React.createElement("button", { onClick: this.speakShort }, "Speak short"),
+                React.createElement("button", { onClick: this.speakAndPlay }, "Speak and play"),
                 React.createElement(isOnline_1.IsOnline, null)));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
@@ -45108,17 +45105,21 @@ if (SpeechRecognition) {
     var doSoundResponse = function (response) {
         if (response) {
             if (response.sound) {
-                playSound(response.sound);
+                playSound(response.sound, response.canInterrupt);
             }
             if (response.synthesisMessage) {
-                speak(response.synthesisMessage, response.recognise);
+                speak(response.synthesisMessage, response.canInterrupt);
             }
         }
     };
     var playingAudio = false;
     var audioQueue = [];
-    var playSound = function (sound) {
+    var currentAudio;
+    var playSound = function (sound, canInterrupt) {
         function playAudio(audio) {
+            audio.onplaying = function (evt) {
+                currentAudio = audio;
+            };
             audio.onended = function (evt) {
                 if (audioQueue.length > 0) {
                     var nextAudio = audioQueue[0];
@@ -45216,7 +45217,6 @@ if (SpeechRecognition) {
     var stopSound;
     var skipSpeakingCommand;
     exports.recogniseMe = {
-        doNotListenWhenSpeaking: true,
         setSkipSpeakingCommand: function (skipCommand) {
             skipSpeakingCommand = new RegExp(skipCommand, "i");
         },
@@ -45355,6 +45355,8 @@ if (SpeechRecognition) {
                         }
                         if (skipSpeaking) {
                             speechSynthesis.cancel();
+                            if (currentAudio) {
+                            }
                             return;
                         }
                     }

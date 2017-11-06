@@ -72,6 +72,7 @@
     <Content Include="assets\css\firebaseui.css" />
     <Content Include="assets\css\flipclock.css" />
     <Content Include="assets\css\muiBtn.css" />
+    <Content Include="assets\sounds\To_Be_Recognised.mp3" />
     <Content Include="packages.config" />
     <Content Include="package.json" />
     <None Include="src\sunCrosswordJsons\23825.json" />
