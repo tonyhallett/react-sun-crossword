@@ -11441,7 +11441,8 @@ var Settings = (function (_super) {
             var stringSetting = event.target.value;
             _this.setState({ stringSetting: stringSetting });
             if (_this.storageAvailable) {
-                _this.storage.setItem("stringSetting", stringSetting); //for others will need to use the JSON.parse - Dates not parsed - there is a reviver function ....
+                //Dates not parsed - there is a reviver function ....
+                _this.setTypedStorageItem("stringSetting", stringSetting);
             }
         };
         _this.storageAvailable = _this.isStorageAvailable("localStorage");
@@ -11458,6 +11459,9 @@ var Settings = (function (_super) {
             return JSON.parse(setting);
         }
         return defaultValue;
+    };
+    Settings.prototype.setTypedStorageItem = function (itemKey, value) {
+        this.storage.setItem(itemKey, JSON.stringify(value));
     };
     Settings.prototype.isStorageAvailable = function (type) {
         try {

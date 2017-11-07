@@ -64,6 +64,9 @@ export class Settings extends React.Component<undefined, SettingsState> {
         }
         return defaultValue;
     }
+    setTypedStorageItem(itemKey: string, value: any) {
+        this.storage.setItem(itemKey, JSON.stringify(value));
+    }
     isStorageAvailable(type) {
         try {
             var storage = window[type],
@@ -91,8 +94,8 @@ export class Settings extends React.Component<undefined, SettingsState> {
         var stringSetting = event.target.value;
         this.setState({ stringSetting: stringSetting });
         if (this.storageAvailable) {
-            this.storage.setItem("stringSetting", stringSetting);//for others will need to use the JSON.parse - Dates not parsed - there is a reviver function ....
-            
+            //Dates not parsed - there is a reviver function ....
+            this.setTypedStorageItem("stringSetting", stringSetting);
         }
     }
     //would still show settings but will note that they cannot be saved
