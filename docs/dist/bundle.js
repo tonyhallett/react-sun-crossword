@@ -11526,8 +11526,8 @@ var Crossword = (function (_super) {
         //need to also remember what the previous was
         console.log(this.props.location.pathname);
         return React.createElement("div", null,
-            React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword),
-            React.createElement(DisableLink, { enabled: this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
+            React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword.toString()),
+            React.createElement(DisableLink, { enabled: !this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
             React.createElement(react_router_dom_1.Link, { to: this.props.match.url + "/chooser" }, "Chooser"));
     };
     return Crossword;
