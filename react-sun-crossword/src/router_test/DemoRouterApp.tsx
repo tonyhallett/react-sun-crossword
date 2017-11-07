@@ -44,12 +44,15 @@ interface Setting {
 export class Settings extends React.Component<undefined, SettingsState> {
     storage: Storage;
     storageAvailable: boolean;
-    componentDidMount() {
+    constructor() {
+        super(null);
         this.storageAvailable = this.isStorageAvailable("localStorage");
         this.storage = window["localStorage"];
-        
+
         this.setState({ storageAvailable: this.storageAvailable, booleanSetting: this.getTypedStorageItem("booleanSetting", false), stringSetting: this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: this.getTypedStorageItem("numberSetting", 1) });
+
     }
+
     getTypedStorageItem(itemKey: string, defaultValue: any): any {
         if (!this.storageAvailable) {
             return defaultValue;

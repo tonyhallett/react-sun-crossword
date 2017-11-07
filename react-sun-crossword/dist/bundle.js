@@ -11435,7 +11435,7 @@ exports.Introduction = Introduction;
 var Settings = (function (_super) {
     __extends(Settings, _super);
     function Settings() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super.call(this, null) || this;
         _this.stringSettingChanged = function (event) {
             var stringSetting = event.target.value;
             _this.setState({ stringSetting: stringSetting });
@@ -11443,13 +11443,11 @@ var Settings = (function (_super) {
                 _this.storage.setItem("stringSetting", stringSetting); //for others will need to use the JSON.parse - Dates not parsed - there is a reviver function ....
             }
         };
+        _this.storageAvailable = _this.isStorageAvailable("localStorage");
+        _this.storage = window["localStorage"];
+        _this.setState({ storageAvailable: _this.storageAvailable, booleanSetting: _this.getTypedStorageItem("booleanSetting", false), stringSetting: _this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: _this.getTypedStorageItem("numberSetting", 1) });
         return _this;
     }
-    Settings.prototype.componentDidMount = function () {
-        this.storageAvailable = this.isStorageAvailable("localStorage");
-        this.storage = window["localStorage"];
-        this.setState({ storageAvailable: this.storageAvailable, booleanSetting: this.getTypedStorageItem("booleanSetting", false), stringSetting: this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: this.getTypedStorageItem("numberSetting", 1) });
-    };
     Settings.prototype.getTypedStorageItem = function (itemKey, defaultValue) {
         if (!this.storageAvailable) {
             return defaultValue;
