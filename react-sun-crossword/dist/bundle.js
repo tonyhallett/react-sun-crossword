@@ -11435,10 +11435,59 @@ exports.Introduction = Introduction;
 var Settings = (function (_super) {
     __extends(Settings, _super);
     function Settings() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.stringSettingChanged = function (event) {
+            var stringSetting = event.target.value;
+            _this.setState({ stringSetting: stringSetting });
+            if (_this.storageAvailable) {
+                _this.storage.setItem("stringSetting", stringSetting); //for others will need to use the JSON.parse - Dates not parsed - there is a reviver function ....
+            }
+        };
+        return _this;
     }
+    Settings.prototype.componentDidMount = function () {
+        this.storageAvailable = this.isStorageAvailable("localStorage");
+        this.storage = window["localStorage"];
+        this.setState({ storageAvailable: this.storageAvailable, booleanSetting: this.getTypedStorageItem("booleanSetting", false), stringSetting: this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: this.getTypedStorageItem("numberSetting", 1) });
+    };
+    Settings.prototype.getTypedStorageItem = function (itemKey, defaultValue) {
+        if (!this.storageAvailable) {
+            return defaultValue;
+        }
+        var setting = this.storage.getItem(itemKey);
+        if (setting != null) {
+            return JSON.parse(setting);
+        }
+        return defaultValue;
+    };
+    Settings.prototype.isStorageAvailable = function (type) {
+        try {
+            var storage = window[type], x = '__storage_test__';
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        }
+        catch (e) {
+            return e instanceof DOMException && (
+            // everything except Firefox
+            e.code === 22 ||
+                // Firefox
+                e.code === 1014 ||
+                // test name field too, because code might not be present
+                // everything except Firefox
+                e.name === 'QuotaExceededError' ||
+                // Firefox
+                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+                // acknowledge QuotaExceededError only if there's something already stored
+                storage.length !== 0;
+        }
+    };
+    //would still show settings but will note that they cannot be saved
     Settings.prototype.render = function () {
-        return React.createElement("div", null, "This is settings where will look at local storage");
+        return React.createElement("div", null,
+            !this.state.storageAvailable &&
+                React.createElement("div", null, "Local storage is not available in your browser, settings will not be persisted"),
+            React.createElement("input", { type: "text", value: this.state.stringSetting, onChange: this.stringSettingChanged }));
     };
     return Settings;
 }(React.Component));
