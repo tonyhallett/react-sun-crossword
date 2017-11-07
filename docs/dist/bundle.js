@@ -11509,8 +11509,8 @@ var Settings = (function (_super) {
 exports.Settings = Settings;
 var Crossword = (function (_super) {
     __extends(Crossword, _super);
-    function Crossword() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function Crossword(props) {
+        var _this = _super.call(this, props) || this;
         _this.toggleHasCrossword = function () {
             _this.setState(function (prevState) {
                 return {
@@ -11518,6 +11518,7 @@ var Crossword = (function (_super) {
                 };
             });
         };
+        _this.state = { hasCrossword: false };
         return _this;
     }
     Crossword.prototype.render = function () {

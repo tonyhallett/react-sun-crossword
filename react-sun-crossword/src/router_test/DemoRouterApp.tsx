@@ -183,6 +183,11 @@ interface IgnoreParams {
 
 }
 export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>, CrosswordState> {
+
+    constructor(props) {
+        super(props);
+        this.state = { hasCrossword:false }
+    }
     toggleHasCrossword = () => {
         this.setState((prevState) => {
             return {
