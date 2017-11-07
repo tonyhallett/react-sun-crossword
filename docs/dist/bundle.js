@@ -11398,7 +11398,7 @@ var DemoRouterApp = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     DemoRouterApp.prototype.render = function () {
-        return React.createElement(react_router_dom_1.BrowserRouter, null,
+        return React.createElement(react_router_dom_1.BrowserRouter, { basename: "/react-sun-crossword" },
             React.createElement(RouterAwareApp, null));
     };
     return DemoRouterApp;
@@ -11411,16 +11411,17 @@ var RouterAwareApp = (function (_super) {
     }
     RouterAwareApp.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(react_router_dom_1.Link, { to: "/react-sun-crossword/" }, "Introduction"),
-            React.createElement(react_router_dom_1.Link, { to: "/react-sun-crossword/settings" }, "Settings"),
-            React.createElement(react_router_dom_1.Link, { to: "/react-sun-crossword/crossword" }, "Crossword"),
-            React.createElement(react_router_dom_1.Route, { exact: true, path: "/react-sun-crossword/", component: Introduction }),
-            React.createElement(react_router_dom_1.Route, { path: "/react-sun-crossword/settings", component: Settings }),
-            React.createElement(react_router_dom_1.Route, { path: "/react-sun-crossword/crossword", component: Crossword }));
+            React.createElement(react_router_dom_1.Link, { to: "/" }, "Introduction"),
+            React.createElement(react_router_dom_1.Link, { to: "/settings" }, "Settings"),
+            React.createElement(react_router_dom_1.Link, { to: "/crossword" }, "Crossword"),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: Introduction }),
+            React.createElement(react_router_dom_1.Route, { path: "/settings", component: Settings }),
+            React.createElement(react_router_dom_1.Route, { path: "/crossword", component: Crossword }));
     };
     return RouterAwareApp;
 }(React.Component));
 exports.RouterAwareApp = RouterAwareApp;
+//#endregion
 var Introduction = (function (_super) {
     __extends(Introduction, _super);
     function Introduction() {
@@ -11432,7 +11433,18 @@ var Introduction = (function (_super) {
     return Introduction;
 }(React.Component));
 exports.Introduction = Introduction;
-//create the Router props 
+var DisableLink = (function (_super) {
+    __extends(DisableLink, _super);
+    function DisableLink() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DisableLink.prototype.render = function () {
+        var element = this.props.enabled ? React.createElement("span", { className: "disableLinkDisabled" }, this.props.linkText) : React.createElement(react_router_dom_1.Link, { to: this.props.to, replace: this.props.replace }, this.props.linkText);
+        return element;
+    };
+    return DisableLink;
+}(React.Component));
+exports.DisableLink = DisableLink;
 var Settings = (function (_super) {
     __extends(Settings, _super);
     function Settings(props) {
@@ -11498,14 +11510,50 @@ exports.Settings = Settings;
 var Crossword = (function (_super) {
     __extends(Crossword, _super);
     function Crossword() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.toggleHasCrossword = function () {
+            _this.setState(function (prevState) {
+                return {
+                    hasCrossword: !prevState.hasCrossword
+                };
+            });
+        };
+        return _this;
     }
     Crossword.prototype.render = function () {
-        return React.createElement("div", null, "This is where have to have chooser and the crossword, clues, buttons etc");
+        //think that will use this and state to determine what will be rendered inside
+        //need to also remember what the previous was
+        console.log(this.props.location.pathname);
+        return React.createElement("div", null,
+            React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword),
+            React.createElement(DisableLink, { enabled: this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
+            React.createElement(react_router_dom_1.Link, { to: this.props.match.url + "/chooser" }, "Chooser"));
     };
     return Crossword;
 }(React.Component));
 exports.Crossword = Crossword;
+var DemoCrosswordChooser = (function (_super) {
+    __extends(DemoCrosswordChooser, _super);
+    function DemoCrosswordChooser() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DemoCrosswordChooser.prototype.render = function () {
+        return React.createElement("div", null, "Crossword chooser to go here");
+    };
+    return DemoCrosswordChooser;
+}(React.Component));
+exports.DemoCrosswordChooser = DemoCrosswordChooser;
+var DemoCrossword = (function (_super) {
+    __extends(DemoCrossword, _super);
+    function DemoCrossword() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DemoCrossword.prototype.render = function () {
+        return React.createElement("div", null, "This is where the crossword, clues and buttons go !");
+    };
+    return DemoCrossword;
+}(React.Component));
+exports.DemoCrossword = DemoCrossword;
 
 
 /***/ }),

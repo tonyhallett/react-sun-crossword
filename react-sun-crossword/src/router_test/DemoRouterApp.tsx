@@ -2,46 +2,113 @@
 import { BrowserRouter,Link,Route } from 'react-router-dom'
 export class DemoRouterApp extends React.Component<undefined, undefined> {
     render() {
-        return <BrowserRouter>
+        return <BrowserRouter basename="/react-sun-crossword">
             <RouterAwareApp />
         </BrowserRouter>
     }
 }
-
+type BrowserRouter= {
+    basename?:string
+}
 export class RouterAwareApp extends React.Component<undefined, undefined> {
     render() {  
         return <div>
-            <Link to="/react-sun-crossword/">Introduction</Link>
-            <Link to="/react-sun-crossword/settings">Settings</Link>
-            <Link to="/react-sun-crossword/crossword">Crossword</Link>
+            <Link to="/">Introduction</Link>
+            <Link to="/settings">Settings</Link>
+            <Link to="/crossword">Crossword</Link>
 
-            <Route exact path="/react-sun-crossword/" component={Introduction} />
-            <Route path="/react-sun-crossword/settings" component={Settings} />
-            <Route path="/react-sun-crossword/crossword" component={Crossword} />
+            <Route exact path="/" component={Introduction} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/crossword" component={Crossword} />
 
             </div>
     }
 }
+//#region type definitions
+export interface Location {
+    pathname: string;	
+    search: string;
+    state: any;
+    hash: string;
+    key ?: string;
+}
+type Action = 'PUSH' | 'POP' | 'REPLACE';
+type UnregisterCallback = () => void;
+export type LocationListener = (location: Location, action: Action) => void;
+export interface LocationDescriptorObject {
+    pathname?: string;
+    search?: string;
+    state?: any;
+    hash?: string;
+    key?: string;
 
+}
+//not sure how up to date the @types was - properties and methods are described https://reacttraining.com/react-router/web/api/history
+export interface History {
+    length: number;
+    action: Action;
+    location: Location,
+    push(path: string, state?: any): void;
+    //no mention of this overload on the react router page link above
+    push(location: LocationDescriptorObject): void;
+    replace(path: string, state?: any): void;
+    //no mention of this overload on the react router page link above
+    replace(location: LocationDescriptorObject): void;
+    go(n: number): void; goBack(): void;
+    goForward(): void;
+    block(prompt?: boolean): UnregisterCallback;
+    //no mention of this overload on the react router page link above
+    listen(listener: LocationListener): UnregisterCallback;
+
+    //need to npm install the @types again - no mention of this overload on the react router page link above
+    //createHref(location: LocationDescriptorObject): Href;
+}
+export interface RouteComponentProps<P> {
+    match: match<P>
+    location: Location;
+    history: History;
+    staticContext?: any;
+}
+export interface match<P> {
+    params: P;
+    isExact: boolean;
+    path: string;
+    url: string;
+}
+//#endregion
 export class Introduction extends React.Component<undefined, undefined> {
     render() {
         return <div>This is an introduction</div>
     }
 }
+interface LinkProps {
+    to: string | Location
+    replace?:boolean
+}
+interface DisableLinkProps extends LinkProps {
+    enabled: boolean
+    linkText:string
+}
+
+export class DisableLink extends React.Component<DisableLinkProps, undefined> {
+    render() {
+        var element= this.props.enabled ? <span className="disableLinkDisabled">{this.props.linkText}</span> : <Link to={this.props.to} replace={this.props.replace}>{this.props.linkText}</Link>
+        return element;
+    }
+}
+
+//could read the type and provide the appropriate ui
+//interface Setting {
+//    defaultValue: any,
+//    label: string,
+//    id:string
+//}
 interface SettingsState {
     storageAvailable: boolean,
     booleanSetting: boolean,
     stringSetting: string,
     numberSetting: number
 }
-
-//could read the type and provide the appropriate ui
-interface Setting {
-    defaultValue: any,
-    label: string,
-    id:string
-}
-//create the Router props 
 export class Settings extends React.Component<undefined, SettingsState> {
     storage: Storage;
     storageAvailable: boolean;
@@ -109,10 +176,41 @@ export class Settings extends React.Component<undefined, SettingsState> {
     }
 }
 
-export class Crossword extends React.Component<undefined, undefined> {
+interface CrosswordState {
+    hasCrossword:boolean
+}
+interface IgnoreParams {
+
+}
+export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>, CrosswordState> {
+    toggleHasCrossword = () => {
+        this.setState((prevState) => {
+            return {
+                hasCrossword: !prevState.hasCrossword
+            }
+        });
+    }
     render() {
-        return <div>This is where have to have chooser and the crossword, clues, buttons etc</div>
+        //think that will use this and state to determine what will be rendered inside
+        //need to also remember what the previous was
+
+        console.log(this.props.location.pathname);
+        return <div>
+            <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword}</button>
+            <DisableLink enabled={this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
+            <Link to={this.props.match.url + "/chooser"}>Chooser</Link>
+
+        </div>
     }
 }
-
+export class DemoCrosswordChooser extends React.Component<undefined, undefined> {
+    render() {
+        return <div>Crossword chooser to go here</div>
+    }
+}
+export class DemoCrossword extends React.Component<undefined, undefined> {
+    render() {
+        return <div>This is where the crossword, clues and buttons go !</div>
+    }
+}
 
