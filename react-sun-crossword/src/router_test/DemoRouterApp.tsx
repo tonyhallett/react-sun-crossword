@@ -41,15 +41,16 @@ interface Setting {
     label: string,
     id:string
 }
+//create the Router props 
 export class Settings extends React.Component<undefined, SettingsState> {
     storage: Storage;
     storageAvailable: boolean;
-    constructor() {
-        super(null);
+    constructor(props:any) {
+        super(props);
         this.storageAvailable = this.isStorageAvailable("localStorage");
         this.storage = window["localStorage"];
 
-        this.setState({ storageAvailable: this.storageAvailable, booleanSetting: this.getTypedStorageItem("booleanSetting", false), stringSetting: this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: this.getTypedStorageItem("numberSetting", 1) });
+        this.state={ storageAvailable: this.storageAvailable, booleanSetting: this.getTypedStorageItem("booleanSetting", false), stringSetting: this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: this.getTypedStorageItem("numberSetting", 1) };
 
     }
 

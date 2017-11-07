@@ -11432,10 +11432,11 @@ var Introduction = (function (_super) {
     return Introduction;
 }(React.Component));
 exports.Introduction = Introduction;
+//create the Router props 
 var Settings = (function (_super) {
     __extends(Settings, _super);
-    function Settings() {
-        var _this = _super.call(this, null) || this;
+    function Settings(props) {
+        var _this = _super.call(this, props) || this;
         _this.stringSettingChanged = function (event) {
             var stringSetting = event.target.value;
             _this.setState({ stringSetting: stringSetting });
@@ -11445,7 +11446,7 @@ var Settings = (function (_super) {
         };
         _this.storageAvailable = _this.isStorageAvailable("localStorage");
         _this.storage = window["localStorage"];
-        _this.setState({ storageAvailable: _this.storageAvailable, booleanSetting: _this.getTypedStorageItem("booleanSetting", false), stringSetting: _this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: _this.getTypedStorageItem("numberSetting", 1) });
+        _this.state = { storageAvailable: _this.storageAvailable, booleanSetting: _this.getTypedStorageItem("booleanSetting", false), stringSetting: _this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: _this.getTypedStorageItem("numberSetting", 1) };
         return _this;
     }
     Settings.prototype.getTypedStorageItem = function (itemKey, defaultValue) {
