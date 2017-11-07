@@ -11,13 +11,13 @@ export class DemoRouterApp extends React.Component<undefined, undefined> {
 export class RouterAwareApp extends React.Component<undefined, undefined> {
     render() {
         return <div>
-            <Link to="/">Introduction</Link>
-            <Link to="/settings">Settings</Link>
-            <Link to="/crossword">Crossword</Link>
+            <Link to="/react-sun-crossword/">Introduction</Link>
+            <Link to="/react-sun-crossword/settings">Settings</Link>
+            <Link to="/react-sun-crossword/crossword">Crossword</Link>
 
-            <Route exact path="/" component={Introduction} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/crossword" component={Crossword} />
+            <Route exact path="/react-sun-crossword/" component={Introduction} />
+            <Route path="/react-sun-crossword/settings" component={Settings} />
+            <Route path="/react-sun-crossword/crossword" component={Crossword} />
 
             </div>
     }

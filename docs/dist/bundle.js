@@ -11411,12 +11411,12 @@ var RouterAwareApp = (function (_super) {
     }
     RouterAwareApp.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(react_router_dom_1.Link, { to: "/" }, "Introduction"),
-            React.createElement(react_router_dom_1.Link, { to: "/settings" }, "Settings"),
-            React.createElement(react_router_dom_1.Link, { to: "/crossword" }, "Crossword"),
-            React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: Introduction }),
-            React.createElement(react_router_dom_1.Route, { path: "/settings", component: Settings }),
-            React.createElement(react_router_dom_1.Route, { path: "/crossword", component: Crossword }));
+            React.createElement(react_router_dom_1.Link, { to: "/react-sun-crossword/" }, "Introduction"),
+            React.createElement(react_router_dom_1.Link, { to: "/react-sun-crossword/settings" }, "Settings"),
+            React.createElement(react_router_dom_1.Link, { to: "/react-sun-crossword/crossword" }, "Crossword"),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: "/react-sun-crossword/", component: Introduction }),
+            React.createElement(react_router_dom_1.Route, { path: "/react-sun-crossword/settings", component: Settings }),
+            React.createElement(react_router_dom_1.Route, { path: "/react-sun-crossword/crossword", component: Crossword }));
     };
     return RouterAwareApp;
 }(React.Component));
