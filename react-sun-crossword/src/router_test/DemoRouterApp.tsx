@@ -11,19 +11,8 @@ type BrowserRouter= {
     basename?:string
 }
 export class RouterAwareApp extends React.Component<undefined, undefined> {
-    introduction: JSX.Element;
-    componentDidMount() {
-        console.log("RouterAwareApp did mount");
-    }
-    componentWillUnmount() {
-        console.log("RouterAwareApp will unmount *******************");
-    }
     constructor(props) {
         super(props);
-        console.log("RouteAwareApp constructor");
-        this.introduction = React.createElement(Introduction);
-        console.log("after setting introduction property");
-
     }
     render() {  
 
@@ -32,19 +21,9 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
             <Link to="/settings">Settings</Link>
             <Link to="/crossword">Crossword</Link>
 
-            <Route exact path="/" render={props => {
-                console.log("in route render - introduction");
-                return this.introduction;
-            }} />
-            <Route path="/settings" render={props => {
-                console.log("in route render - settings");
-                return <Settings/>
-            }}/>
-            <Route path="/crossword" render={props => {
-                console.log("in route render - crossword");
-                
-                return <Crossword {...props}/>
-            }}/>
+            <Route exact path="/" component={Introduction}/>
+            <Route path="/settings" component={Settings}/>
+            <Route path="/crossword" component={Crossword}/>
 
             </div>
     }
@@ -220,24 +199,22 @@ export class Settings extends React.Component<undefined, SettingsState> {
 }
 
 interface CrosswordState {
-    hasCrossword:boolean
+    hasCrossword: boolean,
+   
 }
 interface IgnoreParams {
 
 }
+
+var crosswordState = { hasCrossword: false, previousNavToCrossword:false };
 export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>, CrosswordState> {
 
     constructor(props) {
         super(props);
-        console.log("In crossword constructor");
-        this.state = { hasCrossword:false }
+        this.state = { hasCrossword: crosswordState.hasCrossword };
+        this.previousNavToCrossword = crosswordState.previousNavToCrossword;
     }
-    componentDidMount() {
-        console.log("Crossword did mount")
-    }
-    componentWillUnmount() {
-        console.log("Crossword will unmount **********************")
-    }
+    previousNavToCrossword:boolean
     toggleHasCrossword = () => {
         this.setState((prevState) => {
             return {
@@ -245,8 +222,9 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             }
         });
     }
-    previousNavToCrossword = false;
-    
+    componentWillUnmount() {
+        crosswordState = { hasCrossword: this.state.hasCrossword, previousNavToCrossword: this.previousNavToCrossword };
+    }
     render() {
         console.log("Render: " + this.props.location.pathname);
         if (this.props.match.isExact) {
