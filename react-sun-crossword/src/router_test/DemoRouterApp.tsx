@@ -31,6 +31,7 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
             }}/>
             <Route path="/crossword" render={props => {
                 console.log("in render route crossword");
+                
                 return <Crossword {...props}/>
             }}/>
 
@@ -90,6 +91,12 @@ export interface match<P> {
 }
 //#endregion
 export class Introduction extends React.Component<undefined, undefined> {
+    componentWillUnmount() {
+        console.log("Introduction unmounting ************");
+    }
+    componentDidMount() {
+        console.log("Introduction did mount ");
+    }
     render() {
         return <div>This is an introduction</div>
     }
@@ -135,7 +142,12 @@ export class Settings extends React.Component<undefined, SettingsState> {
         this.state={ storageAvailable: this.storageAvailable, booleanSetting: this.getTypedStorageItem("booleanSetting", false), stringSetting: this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: this.getTypedStorageItem("numberSetting", 1) };
 
     }
-
+    componentWillUnmount() {
+        console.log("Settings unmounting ************");
+    }
+    componentDidMount() {
+        console.log("Settings did mount ");
+    }
     getTypedStorageItem(itemKey: string, defaultValue: any): any {
         if (!this.storageAvailable) {
             return defaultValue;

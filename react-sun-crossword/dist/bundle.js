@@ -11448,6 +11448,12 @@ var Introduction = (function (_super) {
     function Introduction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    Introduction.prototype.componentWillUnmount = function () {
+        console.log("Introduction unmounting ************");
+    };
+    Introduction.prototype.componentDidMount = function () {
+        console.log("Introduction did mount ");
+    };
     Introduction.prototype.render = function () {
         return React.createElement("div", null, "This is an introduction");
     };
@@ -11483,6 +11489,12 @@ var Settings = (function (_super) {
         _this.state = { storageAvailable: _this.storageAvailable, booleanSetting: _this.getTypedStorageItem("booleanSetting", false), stringSetting: _this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: _this.getTypedStorageItem("numberSetting", 1) };
         return _this;
     }
+    Settings.prototype.componentWillUnmount = function () {
+        console.log("Settings unmounting ************");
+    };
+    Settings.prototype.componentDidMount = function () {
+        console.log("Settings did mount ");
+    };
     Settings.prototype.getTypedStorageItem = function (itemKey, defaultValue) {
         if (!this.storageAvailable) {
             return defaultValue;
