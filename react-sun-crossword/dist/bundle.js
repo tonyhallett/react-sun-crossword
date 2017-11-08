@@ -11389,6 +11389,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(8);
 var react_router_dom_1 = __webpack_require__(207);
@@ -11414,9 +11422,15 @@ var RouterAwareApp = (function (_super) {
             React.createElement(react_router_dom_1.Link, { to: "/" }, "Introduction"),
             React.createElement(react_router_dom_1.Link, { to: "/settings" }, "Settings"),
             React.createElement(react_router_dom_1.Link, { to: "/crossword" }, "Crossword"),
-            React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: Introduction }),
-            React.createElement(react_router_dom_1.Route, { path: "/settings", component: Settings }),
-            React.createElement(react_router_dom_1.Route, { path: "/crossword", component: Crossword }));
+            React.createElement(react_router_dom_1.Route, { exact: true, path: "/", render: function (props) {
+                    return React.createElement(Introduction, null);
+                } }),
+            React.createElement(react_router_dom_1.Route, { path: "/settings", render: function (props) {
+                    return React.createElement(Settings, null);
+                } }),
+            React.createElement(react_router_dom_1.Route, { path: "/crossword", render: function (props) {
+                    return React.createElement(Crossword, __assign({}, props));
+                } }));
     };
     return RouterAwareApp;
 }(React.Component));
@@ -11522,12 +11536,6 @@ var Crossword = (function (_super) {
         _this.state = { hasCrossword: false };
         return _this;
     }
-    Crossword.prototype.componentDidMount = function () {
-        console.log("Crossword did mount");
-    };
-    Crossword.prototype.componentWillUnmount = function () {
-        console.log("Crossword will unmount");
-    };
     Crossword.prototype.render = function () {
         var _this = this;
         console.log("Render: " + this.props.location.pathname);

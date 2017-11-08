@@ -17,9 +17,15 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
             <Link to="/settings">Settings</Link>
             <Link to="/crossword">Crossword</Link>
 
-            <Route exact path="/" component={Introduction} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/crossword" component={Crossword} />
+            <Route exact path="/" render={props => {
+                return <Introduction/>
+            }} />
+            <Route path="/settings" render={props => {
+                return <Settings/>
+            }}/>
+            <Route path="/crossword" render={props => {
+                return <Crossword {...props}/>
+            }}/>
 
             </div>
     }
@@ -81,6 +87,7 @@ export class Introduction extends React.Component<undefined, undefined> {
         return <div>This is an introduction</div>
     }
 }
+//#region links
 interface LinkProps {
     to: string | Location
     replace?:boolean
@@ -89,14 +96,13 @@ interface DisableLinkProps extends LinkProps {
     enabled: boolean
     linkText:string
 }
-
 export class DisableLink extends React.Component<DisableLinkProps, undefined> {
     render() {
         var element= this.props.enabled ? <span className="disableLinkDisabled">{this.props.linkText}</span> : <Link to={this.props.to} replace={this.props.replace}>{this.props.linkText}</Link>
         return element;
     }
 }
-
+//#endregion
 
 //could read the type and provide the appropriate ui
 //interface Setting {
@@ -104,6 +110,7 @@ export class DisableLink extends React.Component<DisableLinkProps, undefined> {
 //    label: string,
 //    id:string
 //}
+
 interface SettingsState {
     storageAvailable: boolean,
     booleanSetting: boolean,
@@ -197,12 +204,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         });
     }
     previousNavToCrossword = false;
-    componentDidMount() {
-        console.log("Crossword did mount");
-    }
-    componentWillUnmount() {
-        console.log("Crossword will unmount");
-    }
+    
     render() {
         console.log("Render: " + this.props.location.pathname);
         if (this.props.match.isExact) {
