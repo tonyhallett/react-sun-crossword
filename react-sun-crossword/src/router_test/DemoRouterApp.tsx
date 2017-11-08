@@ -99,6 +99,10 @@ export interface match<P> {
 }
 //#endregion
 export class Introduction extends React.Component<undefined, undefined> {
+    constructor(props) {
+        super(props);
+        console.log("In introduction ctor");
+    }
     componentWillUnmount() {
         console.log("Introduction unmounting ************");
     }
@@ -144,6 +148,7 @@ export class Settings extends React.Component<undefined, SettingsState> {
     storageAvailable: boolean;
     constructor(props:any) {
         super(props);
+        console.log("In settings constructor");
         this.storageAvailable = this.isStorageAvailable("localStorage");
         this.storage = window["localStorage"];
 

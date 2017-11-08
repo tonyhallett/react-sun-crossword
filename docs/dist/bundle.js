@@ -11450,8 +11450,10 @@ exports.RouterAwareApp = RouterAwareApp;
 //#endregion
 var Introduction = (function (_super) {
     __extends(Introduction, _super);
-    function Introduction() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function Introduction(props) {
+        var _this = _super.call(this, props) || this;
+        console.log("In introduction ctor");
+        return _this;
     }
     Introduction.prototype.componentWillUnmount = function () {
         console.log("Introduction unmounting ************");
@@ -11489,6 +11491,7 @@ var Settings = (function (_super) {
                 _this.setTypedStorageItem("stringSetting", stringSetting);
             }
         };
+        console.log("In settings constructor");
         _this.storageAvailable = _this.isStorageAvailable("localStorage");
         _this.storage = window["localStorage"];
         _this.state = { storageAvailable: _this.storageAvailable, booleanSetting: _this.getTypedStorageItem("booleanSetting", false), stringSetting: _this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: _this.getTypedStorageItem("numberSetting", 1) };
