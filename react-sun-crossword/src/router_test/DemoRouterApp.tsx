@@ -20,7 +20,7 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
     render() {  
 
         return <div>
-            <NavLink activeStyle={navLinkActiveStyle} to="/">Introduction</NavLink>
+            <NavLink exact={true} activeStyle={navLinkActiveStyle} to="/">Introduction</NavLink>
             <NavLink activeStyle={navLinkActiveStyle} to="/settings">Settings</NavLink>
             <NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
 
@@ -264,7 +264,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         return <div>
             <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword.toString()}</button>
             <DisableNavLink enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
-            <Link  to={this.props.match.url + "/chooser"}>Chooser</Link>
+            <NavLink  to={this.props.match.url + "/chooser"}>Chooser</NavLink>
             
             <Route path={this.props.match.url + "/play"} render={props => {
                 if (this.state.hasCrossword) {
