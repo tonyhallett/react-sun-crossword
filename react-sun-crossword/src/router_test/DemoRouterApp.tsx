@@ -197,20 +197,16 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         });
     }
     previousNavToCrossword = false;
-    componentWillReceiveProps(nextProps: RouteComponentProps<IgnoreParams>) {
-        console.log("Crossword will receive props, next location pathname: " + nextProps.location.pathname);
-        if (nextProps.match.isExact) {
-            console.log("Is exact match");//redirect to either of the two child routes
-            var redirectPath = nextProps.match.url + "/chooser";
-            if (this.previousNavToCrossword) {
-                redirectPath = nextProps.match.url + "/play";
-            }
-            nextProps.history.push(redirectPath);
-        } else {
-            console.log("Is not exact match");
-        }
-    }
+    
     render() {
+        console.log("Render: " + this.props.location.pathname);
+        if (this.props.match.isExact) {
+            var redirectPath = this.props.match.url + "/chooser";
+            if (this.previousNavToCrossword) {
+                redirectPath = this.props.match.url + "/play";
+            }
+            return <Redirect to={redirectPath}/>
+        }
         console.log(this.props.location.pathname);
         return <div>
             <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword.toString()}</button>

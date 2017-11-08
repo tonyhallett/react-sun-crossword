@@ -11522,22 +11522,16 @@ var Crossword = (function (_super) {
         _this.state = { hasCrossword: false };
         return _this;
     }
-    Crossword.prototype.componentWillReceiveProps = function (nextProps) {
-        console.log("Crossword will receive props, next location pathname: " + nextProps.location.pathname);
-        if (nextProps.match.isExact) {
-            console.log("Is exact match"); //redirect to either of the two child routes
-            var redirectPath = nextProps.match.url + "/chooser";
-            if (this.previousNavToCrossword) {
-                redirectPath = nextProps.match.url + "/play";
-            }
-            nextProps.history.push(redirectPath);
-        }
-        else {
-            console.log("Is not exact match");
-        }
-    };
     Crossword.prototype.render = function () {
         var _this = this;
+        console.log("Render: " + this.props.location.pathname);
+        if (this.props.match.isExact) {
+            var redirectPath = this.props.match.url + "/chooser";
+            if (this.previousNavToCrossword) {
+                redirectPath = this.props.match.url + "/play";
+            }
+            return React.createElement(react_router_dom_1.Redirect, { to: redirectPath });
+        }
         console.log(this.props.location.pathname);
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword.toString()),
