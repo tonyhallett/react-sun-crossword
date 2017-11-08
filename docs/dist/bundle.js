@@ -11522,6 +11522,12 @@ var Crossword = (function (_super) {
         _this.state = { hasCrossword: false };
         return _this;
     }
+    Crossword.prototype.componentDidMount = function () {
+        console.log("Crossword did mount");
+    };
+    Crossword.prototype.componentWillUnmount = function () {
+        console.log("Crossword will unmount");
+    };
     Crossword.prototype.render = function () {
         var _this = this;
         console.log("Render: " + this.props.location.pathname);
@@ -11530,9 +11536,9 @@ var Crossword = (function (_super) {
             if (this.previousNavToCrossword) {
                 redirectPath = this.props.match.url + "/play";
             }
+            console.log("redirecting");
             return React.createElement(react_router_dom_1.Redirect, { to: redirectPath });
         }
-        console.log(this.props.location.pathname);
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword.toString()),
             React.createElement(DisableLink, { enabled: !this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),

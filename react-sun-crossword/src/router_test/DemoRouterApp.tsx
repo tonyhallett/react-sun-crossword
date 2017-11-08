@@ -197,7 +197,12 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         });
     }
     previousNavToCrossword = false;
-    
+    componentDidMount() {
+        console.log("Crossword did mount");
+    }
+    componentWillUnmount() {
+        console.log("Crossword will unmount");
+    }
     render() {
         console.log("Render: " + this.props.location.pathname);
         if (this.props.match.isExact) {
@@ -205,9 +210,10 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             if (this.previousNavToCrossword) {
                 redirectPath = this.props.match.url + "/play";
             }
+            console.log("redirecting");
             return <Redirect to={redirectPath}/>
         }
-        console.log(this.props.location.pathname);
+        
         return <div>
             <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword.toString()}</button>
             <DisableLink enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
