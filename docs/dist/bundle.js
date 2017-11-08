@@ -11536,6 +11536,12 @@ var Crossword = (function (_super) {
         _this.state = { hasCrossword: false };
         return _this;
     }
+    Crossword.prototype.componentDidMount = function () {
+        console.log("Crossword did mount");
+    };
+    Crossword.prototype.componentWillUnmount = function () {
+        console.log("Crossword will unmount **********************");
+    };
     Crossword.prototype.render = function () {
         var _this = this;
         console.log("Render: " + this.props.location.pathname);

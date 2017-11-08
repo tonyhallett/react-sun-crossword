@@ -196,6 +196,12 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         super(props);
         this.state = { hasCrossword:false }
     }
+    componentDidMount() {
+        console.log("Crossword did mount")
+    }
+    componentWillUnmount() {
+        console.log("Crossword will unmount **********************")
+    }
     toggleHasCrossword = () => {
         this.setState((prevState) => {
             return {
