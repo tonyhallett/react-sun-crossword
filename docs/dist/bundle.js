@@ -11417,7 +11417,7 @@ var RouterAwareApp = (function (_super) {
     function RouterAwareApp(props) {
         var _this = _super.call(this, props) || this;
         console.log("RouteAwareApp constructor");
-        _this.introduction = React.createElement(Introduction, null);
+        _this.introduction = React.createElement(Introduction);
         console.log("after setting introduction property");
         return _this;
     }

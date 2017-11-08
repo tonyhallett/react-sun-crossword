@@ -21,7 +21,7 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
     constructor(props) {
         super(props);
         console.log("RouteAwareApp constructor");
-        this.introduction = <Introduction />
+        this.introduction = React.createElement(Introduction);
         console.log("after setting introduction property");
 
     }
