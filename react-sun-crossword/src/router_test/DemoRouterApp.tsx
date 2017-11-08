@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import { BrowserRouter,Link,Route } from 'react-router-dom'
+import { BrowserRouter,Link,Route,Redirect } from 'react-router-dom'
 export class DemoRouterApp extends React.Component<undefined, undefined> {
     render() {
         return <BrowserRouter basename="/react-sun-crossword">
@@ -96,6 +96,7 @@ export class DisableLink extends React.Component<DisableLinkProps, undefined> {
         return element;
     }
 }
+
 
 //could read the type and provide the appropriate ui
 //interface Setting {
@@ -195,16 +196,39 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             }
         });
     }
+    previousNavToCrossword = false;
+    componentWillReceiveProps(nextProps: RouteComponentProps<IgnoreParams>) {
+        console.log("Crossword will receive props, next location pathname: " + nextProps.location.pathname);
+        if (nextProps.match.isExact) {
+            console.log("Is exact match");//redirect to either of the two child routes
+            var redirectPath = nextProps.match.url + "/chooser";
+            if (this.previousNavToCrossword) {
+                redirectPath = nextProps.match.url + "/play";
+            }
+            nextProps.history.push(redirectPath);
+        } else {
+            console.log("Is not exact match");
+        }
+    }
     render() {
-        //think that will use this and state to determine what will be rendered inside
-        //need to also remember what the previous was
-
         console.log(this.props.location.pathname);
         return <div>
             <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword.toString()}</button>
             <DisableLink enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
             <Link to={this.props.match.url + "/chooser"}>Chooser</Link>
-
+            
+            <Route path={this.props.match.url + "/play"} render={props => {
+                if (this.state.hasCrossword) {
+                    this.previousNavToCrossword = true;
+                    return <DemoCrossword />
+                }
+                return  <Redirect to={this.props.match.url + "/chooser"}/>
+            }}/>
+            
+            <Route path={this.props.match.url + "/chooser"} render={props => {
+                this.previousNavToCrossword = false;
+                return <DemoCrosswordChooser />
+            }} /> 
         </div>
     }
 }

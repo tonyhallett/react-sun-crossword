@@ -16,8 +16,6 @@
     "@types/radium": "^0.18.21",
     "@types/react": "^15.0.23",
     "@types/react-dom": "^15.5.0",
-    "@types/react-router": "^4.0.16",
-    "@types/react-router-dom": "^4.2.0",
     "@types/react-select": "^1.0.46",
     "@types/webspeechapi": "0.0.27",
     "color": "^1.0.3",

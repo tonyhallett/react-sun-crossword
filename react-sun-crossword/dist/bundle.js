@@ -11518,17 +11518,42 @@ var Crossword = (function (_super) {
                 };
             });
         };
+        _this.previousNavToCrossword = false;
         _this.state = { hasCrossword: false };
         return _this;
     }
+    Crossword.prototype.componentWillReceiveProps = function (nextProps) {
+        console.log("Crossword will receive props, next location pathname: " + nextProps.location.pathname);
+        if (nextProps.match.isExact) {
+            console.log("Is exact match"); //redirect to either of the two child routes
+            var redirectPath = nextProps.match.url + "/chooser";
+            if (this.previousNavToCrossword) {
+                redirectPath = nextProps.match.url + "/play";
+            }
+            nextProps.history.push(redirectPath);
+        }
+        else {
+            console.log("Is not exact match");
+        }
+    };
     Crossword.prototype.render = function () {
-        //think that will use this and state to determine what will be rendered inside
-        //need to also remember what the previous was
+        var _this = this;
         console.log(this.props.location.pathname);
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword.toString()),
             React.createElement(DisableLink, { enabled: !this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
-            React.createElement(react_router_dom_1.Link, { to: this.props.match.url + "/chooser" }, "Chooser"));
+            React.createElement(react_router_dom_1.Link, { to: this.props.match.url + "/chooser" }, "Chooser"),
+            React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/play", render: function (props) {
+                    if (_this.state.hasCrossword) {
+                        _this.previousNavToCrossword = true;
+                        return React.createElement(DemoCrossword, null);
+                    }
+                    return React.createElement(react_router_dom_1.Redirect, { to: _this.props.match.url + "/chooser" });
+                } }),
+            React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/chooser", render: function (props) {
+                    _this.previousNavToCrossword = false;
+                    return React.createElement(DemoCrosswordChooser, null);
+                } }));
     };
     return Crossword;
 }(React.Component));
