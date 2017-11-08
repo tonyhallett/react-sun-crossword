@@ -11,26 +11,34 @@ type BrowserRouter= {
     basename?:string
 }
 export class RouterAwareApp extends React.Component<undefined, undefined> {
+    introduction: JSX.Element;
     componentDidMount() {
         console.log("RouterAwareApp did mount");
     }
     componentWillUnmount() {
         console.log("RouterAwareApp will unmount *******************");
     }
+    constructor(props) {
+        super(props);
+        this.introduction = <Introduction />
+    }
     render() {  
+
         return <div>
             <Link to="/">Introduction</Link>
             <Link to="/settings">Settings</Link>
             <Link to="/crossword">Crossword</Link>
 
             <Route exact path="/" render={props => {
-                return <Introduction/>
+                console.log("in route render - introduction");
+                return this.introduction;
             }} />
             <Route path="/settings" render={props => {
+                console.log("in route render - settings");
                 return <Settings/>
             }}/>
             <Route path="/crossword" render={props => {
-                console.log("in render route crossword");
+                console.log("in route render - crossword");
                 
                 return <Crossword {...props}/>
             }}/>

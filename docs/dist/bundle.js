@@ -11414,8 +11414,10 @@ var DemoRouterApp = (function (_super) {
 exports.DemoRouterApp = DemoRouterApp;
 var RouterAwareApp = (function (_super) {
     __extends(RouterAwareApp, _super);
-    function RouterAwareApp() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function RouterAwareApp(props) {
+        var _this = _super.call(this, props) || this;
+        _this.introduction = React.createElement(Introduction, null);
+        return _this;
     }
     RouterAwareApp.prototype.componentDidMount = function () {
         console.log("RouterAwareApp did mount");
@@ -11424,18 +11426,21 @@ var RouterAwareApp = (function (_super) {
         console.log("RouterAwareApp will unmount *******************");
     };
     RouterAwareApp.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", null,
             React.createElement(react_router_dom_1.Link, { to: "/" }, "Introduction"),
             React.createElement(react_router_dom_1.Link, { to: "/settings" }, "Settings"),
             React.createElement(react_router_dom_1.Link, { to: "/crossword" }, "Crossword"),
             React.createElement(react_router_dom_1.Route, { exact: true, path: "/", render: function (props) {
-                    return React.createElement(Introduction, null);
+                    console.log("in route render - introduction");
+                    return _this.introduction;
                 } }),
             React.createElement(react_router_dom_1.Route, { path: "/settings", render: function (props) {
+                    console.log("in route render - settings");
                     return React.createElement(Settings, null);
                 } }),
             React.createElement(react_router_dom_1.Route, { path: "/crossword", render: function (props) {
-                    console.log("in render route crossword");
+                    console.log("in route render - crossword");
                     return React.createElement(Crossword, __assign({}, props));
                 } }));
     };
