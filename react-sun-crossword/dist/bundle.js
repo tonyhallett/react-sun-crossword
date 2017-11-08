@@ -11577,8 +11577,8 @@ var Crossword = (function (_super) {
         }
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword.toString()),
-            React.createElement(DisableNavLink, { enabled: !this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
-            React.createElement(react_router_dom_1.NavLink, { to: this.props.match.url + "/chooser" }, "Chooser"),
+            React.createElement(DisableNavLink, { activeStyle: navLinkActiveStyle, enabled: !this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
+            React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: this.props.match.url + "/chooser" }, "Chooser"),
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/play", render: function (props) {
                     if (_this.state.hasCrossword) {
                         _this.previousNavToCrossword = true;

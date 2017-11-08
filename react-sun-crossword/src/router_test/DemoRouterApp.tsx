@@ -263,8 +263,8 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         
         return <div>
             <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword.toString()}</button>
-            <DisableNavLink enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
-            <NavLink  to={this.props.match.url + "/chooser"}>Chooser</NavLink>
+            <DisableNavLink activeStyle={navLinkActiveStyle} enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
+            <NavLink activeStyle={navLinkActiveStyle}  to={this.props.match.url + "/chooser"}>Chooser</NavLink>
             
             <Route path={this.props.match.url + "/play"} render={props => {
                 if (this.state.hasCrossword) {
