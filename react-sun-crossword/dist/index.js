@@ -2,6 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var ReactDOM = require("react-dom");
-var crosswordPuzzleApp_1 = require("./components/crosswordPuzzleApp");
-ReactDOM.render(React.createElement(crosswordPuzzleApp_1.CrosswordPuzzleApp, null), document.getElementById("example"));
+var DemoRouterApp_1 = require("./router_test/DemoRouterApp");
+//ReactDOM.render(
+//    <CrosswordPuzzleApp/>,
+//    document.getElementById("example")
+//);
+ReactDOM.render(React.createElement(DemoRouterApp_1.DemoRouterApp, null), document.getElementById("example"));
 //# sourceMappingURL=index.js.map

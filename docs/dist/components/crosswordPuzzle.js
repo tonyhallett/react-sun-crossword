@@ -66,7 +66,7 @@ var CrosswordPuzzle = (function (_super) {
             }
             else {
                 response = {
-                    matches: false,
+                    sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3"
                 };
             }
             return response;
@@ -222,7 +222,8 @@ var CrosswordPuzzle = (function (_super) {
                 synthesis = "Crossword is solved";
             }
             var response = {
-                synthesisMessage: synthesis
+                synthesisMessage: synthesis,
+                canInterrupt: true
             };
             return response;
         };
@@ -284,7 +285,8 @@ var CrosswordPuzzle = (function (_super) {
                 synthesis = "Crossword is solved";
             }
             var response = {
-                synthesisMessage: synthesis
+                synthesisMessage: synthesis,
+                canInterrupt: true
             };
             return response;
         };
@@ -505,15 +507,6 @@ var CrosswordPuzzle = (function (_super) {
             _this.performSelection(firstSquare, wordSelectMode);
             //want to select it and force across/down
         };
-        //#endregion
-        _this.speakLong = function () {
-            var speech = "Once upon a time there were three bears.  Daddy bear, Mummy bear and baby bear";
-            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
-        };
-        _this.speakShort = function () {
-            var speech = "Jessica";
-            speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
-        };
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
@@ -551,6 +544,28 @@ var CrosswordPuzzle = (function (_super) {
             return new RegExp(navWordCommandString, "i");
         }
         var self = this;
+        var testInterruptCommand = {
+            name: "Test interrupt",
+            regExp: /^Interrupt$/i,
+            callback: function () {
+                var response = {
+                    canInterrupt: true,
+                    sound: "assets/sounds/To_Interrupt.mp3"
+                };
+                return response;
+            }
+        };
+        var testCannotInterruptCommand = {
+            name: "Test interrupt",
+            regExp: /^Listen$/i,
+            callback: function () {
+                var response = {
+                    canInterrupt: false,
+                    sound: "assets/sounds/Cannot_be_interrupted.mp3"
+                };
+                return response;
+            }
+        };
         var solveCommand = {
             name: "Click solve bulb",
             regExp: /^Solve$/i,
@@ -594,6 +609,8 @@ var CrosswordPuzzle = (function (_super) {
             regExp: /^undo$/i,
             callback: this.undo
         };
+        //testInterruptCommand, testCannotInterruptCommand,
+        //
         return {
             isDefault: true,
             name: "Default",
@@ -631,13 +648,14 @@ var CrosswordPuzzle = (function (_super) {
                     name: "Letters",
                     regExp: /^Letters/i,
                     callback: this.letters,
-                }, {
-                    name: "Guess",
-                    regExp: recogniseMe_1.sentenceRegExp,
-                    callback: this.solveAny,
-                    nextState: "Default"
                 }
-            ]
+            ],
+            catchCommand: {
+                name: "Guess",
+                regExp: recogniseMe_1.sentenceRegExp,
+                callback: this.solveAny,
+                nextState: "Default"
+            }
         };
         return wordState;
     };
@@ -694,12 +712,13 @@ var CrosswordPuzzle = (function (_super) {
             enter: function () { console.log("Entering the spell state"); return { synthesisMessage: "Spelling" }; },
             exit: function () { console.log("Exiting the spell state"); return null; },
             commands: [
-                navDirectionCommand, {
-                    name: "Spell or delete",
-                    regExp: recogniseMe_1.sentenceRegExp,
-                    callback: this.spellAny,
-                },
-            ]
+                navDirectionCommand
+            ],
+            catchCommand: {
+                name: "Spell or delete",
+                regExp: recogniseMe_1.sentenceRegExp,
+                callback: this.spellAny,
+            }
         };
         return spellState;
     };
@@ -712,8 +731,7 @@ var CrosswordPuzzle = (function (_super) {
             //spellState navigation command is assuming that the crossword is 13*13 ( which it currently will always be) - later let this be dynamic based upon the crossword
             recogniseMe_1.recogniseMe.addStates([this.getDefaultState(clueProviders[0].acrossClues, clueProviders[0].downClues), this.getWordState(clueProviders), this.getSpellState(), this.getDetailsState()]);
             if (!this.recognising) {
-                recogniseMe_1.recogniseMe.allStatesNoMatchSoundResponse = { sound: "assets/sounds/family-fortunes-wrong-buzzer.mp3" };
-                recogniseMe_1.recogniseMe.doNotListenWhenSpeaking = true;
+                recogniseMe_1.recogniseMe.allStatesNoMatchSoundResponse = { synthesisMessage: "I did not get that." };
                 recogniseMe_1.recogniseMe.setSkipSpeakingCommand("quiet please");
                 recogniseMe_1.recogniseMe.setLanguage("en-GB");
                 recogniseMe_1.recogniseMe.setStartStopCommands({ defaultStartStopPhrases: true, defaultStartStopSynthesis: true });
@@ -1000,6 +1018,7 @@ var CrosswordPuzzle = (function (_super) {
         });
         return mappedGrid;
     };
+    //#endregion
     CrosswordPuzzle.prototype.render = function () {
         var _this = this;
         this.setAutoSolve();
@@ -1015,8 +1034,6 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
-                React.createElement("button", { onClick: this.speakLong }, "Speak long"),
-                React.createElement("button", { onClick: this.speakShort }, "Speak short"),
                 React.createElement(isOnline_1.IsOnline, null)));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {

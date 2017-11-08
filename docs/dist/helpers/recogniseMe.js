@@ -767,19 +767,14 @@ if (SpeechRecognition) {
                 if (debugState) {
                     logMessage('Speech recognized: %c' + commandText, debugStyle);
                 }
-                var finishedExecuting = false;
                 for (var j = 0, l = commands.length; j < l; j++) {
                     var executionDetails = executeCommand(commands[j], commandText, confidences, results, i);
                     if (!commandMatched) {
                         commandMatched = executionDetails.matched;
                     }
                     if (!executionDetails.executeFurther) {
-                        finishedExecuting = true;
-                        break;
+                        return;
                     }
-                }
-                if (finishedExecuting) {
-                    break;
                 }
             }
             if (currentState.catchCommand) {
@@ -807,42 +802,91 @@ if (SpeechRecognition) {
     var doSoundResponse = function (response) {
         if (response) {
             if (response.sound) {
-                playSound(response.sound);
+                playSound(response.sound, response.canInterrupt);
             }
             if (response.synthesisMessage) {
-                speak(response.synthesisMessage);
+                speak(response.synthesisMessage, response.canInterrupt);
             }
         }
     };
     var playingAudio = false;
     var audioQueue = [];
-    var playSound = function (sound) {
-        function playAudio(audio) {
-            audio.onended = function (evt) {
-                if (audioQueue.length > 0) {
-                    var nextAudio = audioQueue[0];
-                    audioQueue = audioQueue.slice(1);
-                    playAudio(nextAudio);
-                }
-                else {
-                    playingAudio = false;
-                }
-            };
-            playingAudio = true;
-            audio.play();
+    var currentAudio;
+    var audioTimeoutId;
+    var audioFinished = true;
+    var playSound = function (audioSource, canInterrupt) {
+        function endOfAudio() {
+            currentAudio = null;
+            audioFinished = true;
+            console.log("end of audio");
+            console.log("audio queue length: " + audioQueue.length);
+            audioTimeoutId = window.setTimeout(function () {
+                console.log("in audio timeout");
+                canInterruptAudio = false;
+                playingAudio = false;
+            }, 1000);
+            if (audioQueue.length > 0) {
+                playAudio();
+            }
         }
-        var audio = new Audio(sound);
-        if (playingAudio) {
+        function addToQueue(audioSource) {
+            console.log("adding to queue: " + audioSource);
+            var audio = new Audio(audioSource);
             audioQueue.push(audio);
+            audio.onplaying = function (evt) {
+                console.log("Playing audio ");
+                if (audioTimeoutId) {
+                    window.clearTimeout(audioTimeoutId);
+                    audioTimeoutId = null;
+                }
+                playingAudio = true;
+                canInterruptAudio = canInterrupt;
+                currentAudio = audio;
+            };
+            audio.onpause = endOfAudio;
         }
-        else {
-            playAudio(audio);
+        function playAudio() {
+            if (audioFinished) {
+                var audio = audioQueue[0];
+                console.log("playing audio: " + audio.src);
+                audioQueue = audioQueue.slice(1);
+                audioFinished = false;
+                audio.play();
+            }
         }
+        addToQueue(audioSource);
+        playAudio();
     };
-    var currentSpeech;
-    var speak = function (speech) {
-        currentSpeech = speech;
-        speechSynthesis.speak(new SpeechSynthesisUtterance(speech));
+    var synthesisIsSpeaking = false;
+    var canInterruptSynthesis = false;
+    var canInterruptAudio = false;
+    //may change to always never recognise and have a boolean of interrupt from the command
+    var utterances = [];
+    var synthesisTimeoutId;
+    var speak = function (speech, canInterrupt) {
+        var utterance = new SpeechSynthesisUtterance(speech);
+        utterances.push(utterance);
+        utterance.onstart = function () {
+            if (synthesisTimeoutId) {
+                window.clearTimeout(synthesisTimeoutId);
+                synthesisTimeoutId = null;
+            }
+            canInterruptSynthesis = canInterrupt;
+            synthesisIsSpeaking = true;
+        };
+        utterance.onend = function () {
+            var index = utterances.indexOf(utterance);
+            if (index > -1) {
+                utterances.splice(index, 1);
+            }
+            console.log("onend");
+            synthesisTimeoutId = window.setTimeout(function () {
+                console.log("synthesis timeout");
+                synthesisIsSpeaking = false;
+                canInterruptSynthesis = false;
+            }, 1000);
+        };
+        speechSynthesis.speak(utterance);
     };
     var stateTimeoutIdentifier;
     var clearStateTimeout = function clearStateTimeout() {
@@ -886,7 +930,6 @@ if (SpeechRecognition) {
     var stopSound;
     var skipSpeakingCommand;
     exports.recogniseMe = {
-        doNotListenWhenSpeaking: true,
         setSkipSpeakingCommand: function (skipCommand) {
             skipSpeakingCommand = new RegExp(skipCommand, "i");
         },
@@ -961,14 +1004,7 @@ if (SpeechRecognition) {
                 var currentState = exports.recogniseMe.currentState;
                 if (currentState && currentState.noMatch) {
                     var response = currentState.noMatch([], []);
-                    if (response) {
-                        if (response.synthesisMessage) {
-                            speak(response.synthesisMessage);
-                        }
-                        if (response.sound) {
-                            playSound(response.sound);
-                        }
-                    }
+                    doSoundResponse(response);
                 }
                 invokeCallbacks(callbacks.nomatch, event);
             };
@@ -1016,10 +1052,10 @@ if (SpeechRecognition) {
                 }
             };
             recognition.onresult = function (event) {
+                invokeCallbacks(callbacks.originalResult, event);
                 var resultsAndConfidences = extractFromSpeechRecognitionEvent(event);
                 var results = resultsAndConfidences.results;
-                var matchedSynthesis = speechSynthesis.speaking;
-                if (matchedSynthesis) {
+                if (canInterruptSynthesis || canInterruptAudio) {
                     if (skipSpeakingCommand) {
                         var skipSpeaking = false;
                         for (var i = 0; i < results.length; i++) {
@@ -1030,57 +1066,52 @@ if (SpeechRecognition) {
                             }
                         }
                         if (skipSpeaking) {
-                            speechSynthesis.cancel();
-                            return;
-                        }
-                    }
-                }
-                else {
-                    if (currentSpeech) {
-                        for (var i = 0; i < results.length; i++) {
-                            var result = results[i];
-                            if (result.trim().toLowerCase() == currentSpeech.trim().toLowerCase()) {
-                                matchedSynthesis = true;
-                                break;
+                            if (canInterruptSynthesis) {
+                                speechSynthesis.cancel();
+                            }
+                            else {
+                                if (currentAudio) {
+                                    currentAudio.pause();
+                                }
                             }
                         }
                     }
+                    return;
                 }
-                currentSpeech = null;
-                if (!(matchedSynthesis && exports.recogniseMe.doNotListenWhenSpeaking)) {
-                    if (listeningForStartStop) {
-                        var phrase = stopPhrase;
-                        var action = exports.recogniseMe.pause;
-                        var sound = stopSound;
-                        if (pauseListening) {
-                            phrase = startPhrase;
-                            action = exports.recogniseMe.resume;
-                            sound = startSound;
-                        }
-                        var results = resultsAndConfidences.results;
-                        var match = false;
-                        for (var i = 0; i < results.length; i++) {
-                            if (phrase.exec(results[i])) {
-                                match = true;
-                                break;
-                            }
-                        }
-                        if (match) {
-                            action();
-                            doSoundResponse(sound);
-                            return false;
-                        }
-                    }
+                if (listeningForStartStop) {
+                    var phrase = stopPhrase;
+                    var action = exports.recogniseMe.pause;
+                    var sound = stopSound;
                     if (pauseListening) {
-                        if (debugState) {
-                            logMessage('Speech heard, but annyang is paused');
+                        phrase = startPhrase;
+                        action = exports.recogniseMe.resume;
+                        sound = startSound;
+                    }
+                    var results = resultsAndConfidences.results;
+                    var match = false;
+                    for (var i = 0; i < results.length; i++) {
+                        if (phrase.exec(results[i])) {
+                            match = true;
+                            break;
                         }
+                    }
+                    if (match) {
+                        action();
+                        doSoundResponse(sound);
                         return false;
                     }
-                    invokeCallbacks(callbacks.originalResult, event);
-                    resultsAndConfidences = resultsAndConfidences ? resultsAndConfidences : extractFromSpeechRecognitionEvent(event);
-                    parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
                 }
+                if (pauseListening || playingAudio || synthesisIsSpeaking) {
+                    if (debugState) {
+                        logMessage('Speech heard, but annyang is paused or not listening as audio is being played or synthesis is speaking');
+                    }
+                    return false;
+                }
+                console.log("about to parse results");
+                for (var i = 0; i < results.length; i++) {
+                    console.log(results[i]);
+                }
+                parseResults(resultsAndConfidences.results, resultsAndConfidences.confidences);
             };
             if (resetStates) {
                 commandStates = [];
