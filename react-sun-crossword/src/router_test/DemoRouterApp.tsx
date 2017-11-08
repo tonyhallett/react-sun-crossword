@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import { BrowserRouter,Link,Route,Redirect } from 'react-router-dom'
+import { BrowserRouter,Link,NavLink,Route,Redirect } from 'react-router-dom'
 export class DemoRouterApp extends React.Component<undefined, undefined> {
     render() {
         return <BrowserRouter basename="/react-sun-crossword">
@@ -10,6 +10,9 @@ export class DemoRouterApp extends React.Component<undefined, undefined> {
 type BrowserRouter= {
     basename?:string
 }
+var navLinkActiveStyle = {
+    color:"yellow"
+}
 export class RouterAwareApp extends React.Component<undefined, undefined> {
     constructor(props) {
         super(props);
@@ -17,9 +20,9 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
     render() {  
 
         return <div>
-            <Link to="/">Introduction</Link>
-            <Link to="/settings">Settings</Link>
-            <Link to="/crossword">Crossword</Link>
+            <NavLink activeStyle={navLinkActiveStyle} to="/">Introduction</NavLink>
+            <NavLink activeStyle={navLinkActiveStyle} to="/settings">Settings</NavLink>
+            <NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
 
             <Route exact path="/" component={Introduction}/>
             <Route path="/settings" component={Settings}/>
@@ -96,14 +99,36 @@ export class Introduction extends React.Component<undefined, undefined> {
     }
 }
 //#region links
+
 interface LinkProps {
     to: string | Location
     replace?:boolean
 }
-interface DisableLinkProps extends LinkProps {
-    enabled: boolean
-    linkText:string
+
+export interface NavLinkProps extends LinkProps {
+    activeClassName?: string;
+    activeStyle?: React.CSSProperties;
+    exact?: boolean;
+    strict?: boolean;
+    isActive?<P>(match: match<P>, location: Location): boolean;
+    location?: string|Location;
 }
+
+
+interface DisableProps {
+    enabled: boolean
+    linkText: string
+}
+interface DisableLinkProps extends LinkProps, DisableProps { }
+   
+interface DisableNavLinkProps extends NavLinkProps, DisableProps { }
+export class DisableNavLink extends React.Component<DisableNavLinkProps, undefined> {
+    render() {
+        var element = this.props.enabled ? <span className="disableLinkDisabled">{this.props.linkText}</span> : <NavLink {...this.props} >{this.props.linkText}</NavLink>
+        return element;
+    }
+}
+
 export class DisableLink extends React.Component<DisableLinkProps, undefined> {
     render() {
         var element= this.props.enabled ? <span className="disableLinkDisabled">{this.props.linkText}</span> : <Link to={this.props.to} replace={this.props.replace}>{this.props.linkText}</Link>
@@ -238,8 +263,8 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         
         return <div>
             <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword.toString()}</button>
-            <DisableLink enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
-            <Link activeStyle={{ color: 'pink' }} to={this.props.match.url + "/chooser"}>Chooser</Link>
+            <DisableNavLink enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
+            <Link  to={this.props.match.url + "/chooser"}>Chooser</Link>
             
             <Route path={this.props.match.url + "/play"} render={props => {
                 if (this.state.hasCrossword) {
