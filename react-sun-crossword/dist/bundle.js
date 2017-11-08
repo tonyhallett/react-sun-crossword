@@ -11417,6 +11417,12 @@ var RouterAwareApp = (function (_super) {
     function RouterAwareApp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    RouterAwareApp.prototype.componentDidMount = function () {
+        console.log("RouterAwareApp did mount");
+    };
+    RouterAwareApp.prototype.componentWillUnmount = function () {
+        console.log("RouterAwareApp will unmount *******************");
+    };
     RouterAwareApp.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement(react_router_dom_1.Link, { to: "/" }, "Introduction"),
@@ -11429,6 +11435,7 @@ var RouterAwareApp = (function (_super) {
                     return React.createElement(Settings, null);
                 } }),
             React.createElement(react_router_dom_1.Route, { path: "/crossword", render: function (props) {
+                    console.log("in render route crossword");
                     return React.createElement(Crossword, __assign({}, props));
                 } }));
     };
@@ -11533,6 +11540,7 @@ var Crossword = (function (_super) {
             });
         };
         _this.previousNavToCrossword = false;
+        console.log("In crossword constructor");
         _this.state = { hasCrossword: false };
         return _this;
     }
