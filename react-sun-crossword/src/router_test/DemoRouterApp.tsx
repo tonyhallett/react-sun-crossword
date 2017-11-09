@@ -257,7 +257,8 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         
     }
     updateNavState() {
-        var url = this.props.match.url
+        //this.props.match.url is incorrect - does not show the search !
+        var url = this.props.location.pathname + this.props.location.search;
         window.setTimeout(() => {
             this.props.history.replace(url, this.navState);
         },0)

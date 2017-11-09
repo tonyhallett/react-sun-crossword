@@ -11594,7 +11594,8 @@ var Crossword = (function (_super) {
     }
     Crossword.prototype.updateNavState = function () {
         var _this = this;
-        var url = this.props.match.url;
+        //this.props.match.url is incorrect - does not show the search !
+        var url = this.props.location.pathname + this.props.location.search;
         window.setTimeout(function () {
             _this.props.history.replace(url, _this.navState);
         }, 0);
