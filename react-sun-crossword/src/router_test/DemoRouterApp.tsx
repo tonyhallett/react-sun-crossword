@@ -306,7 +306,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             
             console.log("redirecting");
             //will this replace the state !!!!!!??????
-            return <Redirect to={{ pathname: this.props.match.url, search: this.navState.previousNavToCrossword ? this.getChooserSearch() : this.getPlaySearch() }} />
+            return <Redirect to={{ pathname: this.props.match.url+this.navState.previousNavToCrossword ? this.getChooserSearch() : this.getPlaySearch() }} />
         }
         //if I remove Route will I get the re-render when redirect
         return <div>

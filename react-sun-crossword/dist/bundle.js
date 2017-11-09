@@ -12194,7 +12194,7 @@ var Crossword = (function (_super) {
         if (this.props.match.isExact) {
             console.log("redirecting");
             //will this replace the state !!!!!!??????
-            return React.createElement(react_router_dom_1.Redirect, { to: { pathname: this.props.match.url, search: this.navState.previousNavToCrossword ? this.getChooserSearch() : this.getPlaySearch() } });
+            return React.createElement(react_router_dom_1.Redirect, { to: { pathname: this.props.match.url + this.navState.previousNavToCrossword ? this.getChooserSearch() : this.getPlaySearch() } });
         }
         //if I remove Route will I get the re-render when redirect
         return React.createElement("div", null,
