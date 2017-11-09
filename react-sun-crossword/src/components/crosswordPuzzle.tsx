@@ -15,6 +15,8 @@ import { numberToNumberString, numberStringToNumber } from "../helpers/numberStr
 import { wordsFromSquashedWords } from "../helpers/stringHelpers";
 import SSML = require('ssml');
 import { IsOnline } from "./isOnline";
+import { FlipClock24 } from "./stopwatchController";
+import { ExpandableKeyboard } from "./expandableKeyboard";
 
 interface RowColIndices {
     row: number,
@@ -60,10 +62,10 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.state = { testCommand: "" };
     }
     componentWillReceiveProps(nextProps: CrosswordPuzzleProps) {
-        this.setUpRecognition(nextProps.crosswordModel);
+        //this.setUpRecognition(nextProps.crosswordModel);
     }
     componentDidMount() {
-        this.setUpRecognition(this.props.crosswordModel);
+        //this.setUpRecognition(this.props.crosswordModel);
     }
    
     //#region recognition
@@ -90,7 +92,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             var numLetters = letters.length;
             for (var i = 0; i < numLetters; i++) {
                 var letter = letters[i];
-                self.keyGuess(null, letter);
+                self.keyGuess(letter);
                 if (i < numLetters - 1) {
                     speechUndo.originalGuesses.push(this.props.crosswordModel.selectedSquare.guess);
                 }
@@ -397,7 +399,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 for (var i = 0; i < phonetics.length; i++) {
                     var word = phonetics[i];
                     var letter = word.split("")[0];
-                    self.keyGuess(null, letter);
+                    self.keyGuess(letter);
                     if (i < phonetics.length - 1) {
                         originalGuesses.push(this.props.crosswordModel.selectedSquare.guess);
                     }
@@ -431,7 +433,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             this.performSelection(speechUndo.startingSquare, speechUndo.wordSelectMode);
 
             speechUndo.originalGuesses.forEach(function (originalGuess) {
-                self.keyGuess(null, originalGuess);
+                self.keyGuess(originalGuess);
             });
 
         }
@@ -948,8 +950,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         }
 
     }
-
-    keyGuess(event, keyValue: string) {
+    keyGuess(keyValue: string) {
         var selectedSquare = this.props.crosswordModel.selectedSquare;
         if (selectedSquare) {
             var guess = keyValue.toUpperCase();
@@ -972,6 +973,9 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 }
             }
         }
+    }
+    keyGuessEvent(event, keyValue: string) {
+        this.keyGuess(keyValue);
     }
 
     //#endregion
@@ -1116,9 +1120,11 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     <span onClick={this.solveClicked}>
                         <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Solving} rayColour="yellow" onGlowColour="yellow" text="Solve" id="solveBulb" bulbOuterColour="yellow" innerGlowColour="yellow" />
                     </span>
+                    <FlipClock24 shouldUpdateSameDuration={true} startDuration={this.props.crosswordModel.duration} />
+
+                    <ExpandableKeyboard keyboardColour="gray" buttonBackgroundColour="orange" backspacePressed={this.backspace} keyPressed={this.keyGuess} />
                     
-                    
-                    <IsOnline/>
+                   
                 </div>
             </div>
 
@@ -1140,7 +1146,7 @@ var alphaKeysLower = alphaKeysUpper.map(u => u.toLowerCase());
 var alphaKeys = alphaKeysUpper.concat(alphaKeysLower);
 var alphaMatches=alphaKeys.map(alphaKey => {
     return {
-        methodName: "keyGuess",
+        methodName: "keyGuessEvent",
         keyMatches: [alphaKey]
     }
 });
