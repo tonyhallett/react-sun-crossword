@@ -11572,7 +11572,7 @@ var Crossword = (function (_super) {
                     _this.updateNavState();
                     return React.createElement(DemoCrossword, null);
                 }
-                return React.createElement(react_router_dom_1.Redirect, { location: { pathname: _this.props.match.url, search: _this.getChooserSearch() } });
+                return React.createElement(react_router_dom_1.Redirect, { to: { pathname: _this.props.match.url, search: _this.getChooserSearch() } });
             }
             else if (_this.props.location.search == _this.getChooserSearch()) {
                 _this.navState.previousNavToCrossword = false;
