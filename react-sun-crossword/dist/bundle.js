@@ -11567,9 +11567,6 @@ var Crossword = (function (_super) {
         _this.state = { hasCrossword: _this.navState.hasCrossword };
         return _this;
     }
-    Crossword.prototype.componentWillUnmount = function () {
-        this.props.history.replace(this.props.match.path, this.navState);
-    };
     Crossword.prototype.updateNavState = function () {
         var _this = this;
         window.setTimeout(function () {
@@ -11594,14 +11591,14 @@ var Crossword = (function (_super) {
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/play", render: function (props) {
                     if (_this.state.hasCrossword) {
                         _this.navState.previousNavToCrossword = true;
-                        //this.updateNavState();
+                        _this.updateNavState();
                         return React.createElement(DemoCrossword, null);
                     }
                     return React.createElement(react_router_dom_1.Redirect, { to: _this.props.match.url + "/chooser" });
                 } }),
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/chooser", render: function (props) {
                     _this.navState.previousNavToCrossword = false;
-                    //this.updateNavState();
+                    _this.updateNavState();
                     return React.createElement(DemoCrosswordChooser, null);
                 } }));
     };
