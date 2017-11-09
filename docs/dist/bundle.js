@@ -11441,6 +11441,7 @@ var Introduction = (function (_super) {
         return _this;
     }
     Introduction.prototype.componentWillUnmount = function () {
+        alert("Component will unmount");
         console.log("Introduction unmounting ************");
     };
     Introduction.prototype.componentDidMount = function () {

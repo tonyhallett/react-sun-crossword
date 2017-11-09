@@ -89,6 +89,7 @@ export class Introduction extends React.Component<undefined, undefined> {
         console.log("In introduction ctor");
     }
     componentWillUnmount() {
+        alert("Component will unmount");
         console.log("Introduction unmounting ************");
     }
     componentDidMount() {
