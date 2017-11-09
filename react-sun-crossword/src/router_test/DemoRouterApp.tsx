@@ -27,7 +27,7 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
 
             <Route exact path="/" component={Introduction}/>
             <Route path="/settings" component={Settings}/>
-            <Route path="/crossword" component={Crossword}/>
+            <Route exact path="/crossword" component={Crossword}/>
 
             </div>
     }
@@ -279,25 +279,21 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
     }
     //need to check the differece between match url and path !
     getNonExactElement = () => {
-        if (matchPath(this.props.match.url, {
-            path: this.props.match.path + this.getPlaySearch(),
-            exact:true
-        }).isExact) {
+        if (this.props.location.search==this.getPlaySearch())
+        {
             if (this.state.hasCrossword) {
                 this.navState.previousNavToCrossword = true;
                 this.updateNavState();
                 return <DemoCrossword />
             }
             return <Redirect location={{ pathname: this.props.match.url, search: this.getChooserSearch() }} />
-        } else if (matchPath(this.props.match.path, {
-            path: this.props.match.path + this.getChooserSearch(),
-            exact: true
-        }).isExact){
+        } else if (this.props.location.search == this.getChooserSearch()) {
             this.navState.previousNavToCrossword = false;
             this.updateNavState();
             return <DemoCrosswordChooser />
         } else {
             //should redirect to bad path ?
+            return null;
         }
     }
     render() {
