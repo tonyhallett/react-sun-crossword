@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
-import { BrowserRouter,Link,NavLink,Route,Redirect } from 'react-router-dom'
+import { BrowserRouter, Link, NavLink, Route, Redirect } from 'react-router-dom'
+import { matchPath } from 'react-router'
 export class DemoRouterApp extends React.Component<undefined, undefined> {
     render() {
         return <BrowserRouter basename="/react-sun-crossword">
@@ -38,6 +39,12 @@ export interface Location {
     state: any;
     hash: string;
     key ?: string;
+}
+export interface LocationProps {
+    pathname: string;
+    search?: string;
+    state?: any;
+    hash?: string;
 }
 type Action = 'PUSH' | 'POP' | 'REPLACE';
 type UnregisterCallback = () => void;
@@ -89,7 +96,6 @@ export class Introduction extends React.Component<undefined, undefined> {
         console.log("In introduction ctor");
     }
     componentWillUnmount() {
-        alert("Component will unmount");
         console.log("Introduction unmounting ************");
     }
     componentDidMount() {
@@ -102,7 +108,7 @@ export class Introduction extends React.Component<undefined, undefined> {
 //#region links
 
 interface LinkProps {
-    to: string | Location
+    to: string | LocationProps
     replace?:boolean
 }
 
@@ -250,16 +256,10 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         this.state = { hasCrossword: this.navState.hasCrossword };
         
     }
-    componentWillUnmount() {
-        this.updateNavState();
+    updateNavState(){
+        this.props.history.replace(this.props.match.path, this.navState);
     }
-    updateNavState() {//what happens if there is no history ?
-        console.log("Location: " + this.props.history.location.pathname + ", this path: " + this.props.match.path);
-        //window.setTimeout(() => {
-        //    this.props.history.replace(this.props.match.path, this.navState);
-        //}, 0);
-        
-    }
+    
     
     toggleHasCrossword = () => {
         this.setState((prevState) => {
@@ -271,37 +271,50 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             }
         });
     }
-    
+    getChooserSearch = () => {
+        return "?chooser";
+    }
+    getPlaySearch = () => {
+        return "?play";
+    }
+    //need to check the differece between match url and path !
+    getNonExactElement = () => {
+        if (matchPath(this.props.match.url, {
+            path: this.props.match.path + this.getPlaySearch(),
+            exact:true
+        }).isExact) {
+            if (this.state.hasCrossword) {
+                this.navState.previousNavToCrossword = true;
+                this.updateNavState();
+                return <DemoCrossword />
+            }
+            return <Redirect location={{ pathname: this.props.match.url, search: this.getChooserSearch() }} />
+        } else if (matchPath(this.props.match.path, {
+            path: this.props.match.path + this.getChooserSearch(),
+            exact: true
+        }).isExact){
+            this.navState.previousNavToCrossword = false;
+            this.updateNavState();
+            return <DemoCrosswordChooser />
+        } else {
+            //should redirect to bad path ?
+        }
+    }
     render() {
         console.log("Render: " + this.props.location.pathname);
         if (this.props.match.isExact) {
-            var redirectPath = this.props.match.url + "/chooser";
-            if (this.navState.previousNavToCrossword) {
-                redirectPath = this.props.match.url + "/play";
-            }
+            
             console.log("redirecting");
-            return <Redirect to={redirectPath}/>
+            //will this replace the state !!!!!!??????
+            return <Redirect to={{ pathname: this.props.match.url, search: this.navState.previousNavToCrossword ? this.getChooserSearch() : this.getPlaySearch() }} />
         }
-        
+        //if I remove Route will I get the re-render when redirect
         return <div>
             <button onClick={this.toggleHasCrossword}>{this.state.hasCrossword.toString()}</button>
-            <DisableNavLink activeStyle={navLinkActiveStyle} enabled={!this.state.hasCrossword} linkText="Play" to={this.props.match.url + "/play"} />
-            <NavLink activeStyle={navLinkActiveStyle}  to={this.props.match.url + "/chooser"}>Chooser</NavLink>
+            <DisableNavLink activeStyle={navLinkActiveStyle} enabled={!this.state.hasCrossword} linkText="Play" to={{ pathname: this.props.match.url, search:"?play"}} />
+            <NavLink activeStyle={navLinkActiveStyle} to={{ pathname: this.props.match.url, search: "?chooser" }}>Chooser</NavLink>
+            {this.getNonExactElement()}
             
-            <Route path={this.props.match.url + "/play"} render={props => {
-                if (this.state.hasCrossword) {
-                    this.navState.previousNavToCrossword = true;
-                    
-                    return <DemoCrossword />
-                }
-                return  <Redirect to={this.props.match.url + "/chooser"}/>
-            }}/>
-            
-            <Route path={this.props.match.url + "/chooser"} render={props => {
-                this.navState.previousNavToCrossword = false;
-                
-                return <DemoCrosswordChooser />
-            }} /> 
         </div>
     }
 }
