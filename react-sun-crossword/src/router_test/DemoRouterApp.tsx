@@ -270,7 +270,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         this.setState((prevState) => {
             var hasCrossword = !prevState.hasCrossword;
             this.navState.hasCrossword = hasCrossword;
-            
+            this.updateNavState();
             return {
                 hasCrossword: hasCrossword
             }
@@ -287,14 +287,20 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         if (this.props.location.search==this.getPlaySearch())
         {
             if (this.state.hasCrossword) {
-                this.navState.previousNavToCrossword = true;
-                this.updateNavState();
+                if (!this.navState.previousNavToCrossword) {
+                    this.navState.previousNavToCrossword = true;
+                    this.updateNavState();
+                }
+                
                 return <DemoCrossword />
             }
             return <Redirect to={{ pathname: this.props.match.url, search: this.getChooserSearch() }} />
         } else if (this.props.location.search == this.getChooserSearch()) {
-            this.navState.previousNavToCrossword = false;
-            this.updateNavState();
+            if (this.navState.previousNavToCrossword) {
+                this.navState.previousNavToCrossword = false;
+                this.updateNavState();
+            }
+            
             return <DemoCrosswordChooser />
         } else {
             //should redirect to bad path ?

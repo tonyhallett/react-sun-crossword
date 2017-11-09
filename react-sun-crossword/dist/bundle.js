@@ -11553,6 +11553,7 @@ var Crossword = (function (_super) {
             _this.setState(function (prevState) {
                 var hasCrossword = !prevState.hasCrossword;
                 _this.navState.hasCrossword = hasCrossword;
+                _this.updateNavState();
                 return {
                     hasCrossword: hasCrossword
                 };
@@ -11568,15 +11569,19 @@ var Crossword = (function (_super) {
         _this.getNonExactElement = function () {
             if (_this.props.location.search == _this.getPlaySearch()) {
                 if (_this.state.hasCrossword) {
-                    _this.navState.previousNavToCrossword = true;
-                    _this.updateNavState();
+                    if (!_this.navState.previousNavToCrossword) {
+                        _this.navState.previousNavToCrossword = true;
+                        _this.updateNavState();
+                    }
                     return React.createElement(DemoCrossword, null);
                 }
                 return React.createElement(react_router_dom_1.Redirect, { to: { pathname: _this.props.match.url, search: _this.getChooserSearch() } });
             }
             else if (_this.props.location.search == _this.getChooserSearch()) {
-                _this.navState.previousNavToCrossword = false;
-                _this.updateNavState();
+                if (_this.navState.previousNavToCrossword) {
+                    _this.navState.previousNavToCrossword = false;
+                    _this.updateNavState();
+                }
                 return React.createElement(DemoCrosswordChooser, null);
             }
             else {
