@@ -11593,7 +11593,10 @@ var Crossword = (function (_super) {
         return _this;
     }
     Crossword.prototype.updateNavState = function () {
-        this.props.history.replace(this.props.match.path, this.navState);
+        var _this = this;
+        window.setTimeout(function () {
+            _this.props.history.replace(_this.props.match.url, _this.navState);
+        }, 0);
     };
     Crossword.prototype.render = function () {
         console.log("Render: " + this.props.location.pathname);

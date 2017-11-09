@@ -256,8 +256,11 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         this.state = { hasCrossword: this.navState.hasCrossword };
         
     }
-    updateNavState(){
-        this.props.history.replace(this.props.match.path, this.navState);
+    updateNavState() {
+        window.setTimeout(() => {
+            this.props.history.replace(this.props.match.url, this.navState);
+        },0)
+        
     }
     
     
@@ -296,6 +299,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             return null;
         }
     }
+
     render() {
         console.log("Render: " + this.props.location.pathname);
         //search could be null or undefined ?
