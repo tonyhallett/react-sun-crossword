@@ -32,12 +32,13 @@ interface CrosswordPuzzleAppState {
     crosswordModel: ICrosswordModel,
     crosswordModelDuration:number,
     userLoggedIn: string,
+    choosing:boolean
 }
 export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzzleAppState> {
 
     constructor(props) {
         super(props);
-        this.state = { crosswordModel: null, userLoggedIn: null, crosswordModelDuration:0 };
+        this.state = { crosswordModel: null, userLoggedIn: null, crosswordModelDuration:0,choosing:true };
     }
     componentDidMount() {
         auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
@@ -48,7 +49,7 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         if (!crosswordModel.dateStarted) {
             crosswordModel.dateStarted = new Date();
         }
-        this.setState({ crosswordModel: crosswordModel, crosswordModelDuration: crosswordModel.duration });
+        this.setState({ crosswordModel: crosswordModel, crosswordModelDuration: crosswordModel.duration,choosing:false });
     }
     saveUserCrossword = () => {
         var modelJson = ConvertCrosswordModelToJson(this.state.crosswordModel);
@@ -97,6 +98,9 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
             }
         }
     }
+    choose = () => {
+        this.setState({choosing:true})
+    }
     render() {
         var primaryColour ="gold"
         var buttonStyle: React.CSSProperties =  {
@@ -113,14 +117,19 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
             ButtonType: MuiButtonWrapper,
             buttonProps: buttonProps
         }
-        //explicit height allows room for the Select 
-        var leftContent = <div style={{ minHeight: "1000px" }}>
-            <CrosswordPuzzleChooser emailLogOnStyleProps={{ signInButtonProps: buttonProps, dividerColor: primaryColour }} selectChooserProps={selectChooserProps} userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} /> 
-            {this.state.crosswordModel &&
+
+        /*
+        {this.state.crosswordModel &&
                 <FlipClock24 shouldUpdateSameDuration={true} startDuration={this.state.crosswordModelDuration} />
             }
             <MuiButtonWrapper disabled={!this.state.userLoggedIn || this.state.crosswordModel === null} text="Click to save" onClick={this.saveUserCrossword}   {...buttonProps}></MuiButtonWrapper>
-        </div>
+        */
+
+        //explicit height allows room for the Select 
+        //var leftContent = <div style={{ minHeight: "1000px" }}>
+        //    <CrosswordPuzzleChooser emailLogOnStyleProps={{ signInButtonProps: buttonProps, dividerColor: primaryColour }} selectChooserProps={selectChooserProps} userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} /> 
+            
+        //</div>
         var rightContent = <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel} />
         if (this.state.crosswordModel === null) {
             rightContent=<div/>
@@ -135,11 +144,16 @@ export class CrosswordPuzzleApp extends React.Component<undefined, CrosswordPuzz
         */
 
         console.log("App render");
+        //<TwoCol leftContent={leftContent} rightContent={rightContent}></TwoCol>
+
         return <div >
+            {this.state.choosing?<CrosswordPuzzleChooser emailLogOnStyleProps={{ signInButtonProps: buttonProps, dividerColor: primaryColour }} selectChooserProps={selectChooserProps} userLoggedIn={this.state.userLoggedIn} crosswordSelected={this.crosswordSelected} /> :
+                <div>
+                    <button onClick={this.choose}>Choose Crosword</button>
+                    {this.state.crosswordModel && <CrosswordPuzzleKeyEvents crosswordModel={this.state.crosswordModel} />}
+                </div>
+            }
             
-            <TwoCol leftContent={leftContent} rightContent={rightContent}>
-            
-            </TwoCol>
             </div>
 
         //<button onClick={}>Pause</button>
