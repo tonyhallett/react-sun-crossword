@@ -11594,8 +11594,9 @@ var Crossword = (function (_super) {
     }
     Crossword.prototype.updateNavState = function () {
         var _this = this;
+        var url = this.props.match.url;
         window.setTimeout(function () {
-            _this.props.history.replace(_this.props.match.url, _this.navState);
+            _this.props.history.replace(url, _this.navState);
         }, 0);
     };
     Crossword.prototype.render = function () {
