@@ -90,10 +90,15 @@ export interface match<P> {
     url: string;
 }
 //#endregion
-export class Introduction extends React.Component<undefined, undefined> {
+export class Introduction extends React.Component<RouteComponentProps<IgnoreParams>, undefined> {
     constructor(props) {
         super(props);
         console.log("In introduction ctor");
+        if (props.location.state) {
+            console.log("There is state");
+        } else {
+            console.log("There is no state ");
+        }
     }
     componentWillUnmount() {
         console.log("Introduction unmounting ************");
@@ -101,8 +106,13 @@ export class Introduction extends React.Component<undefined, undefined> {
     componentDidMount() {
         console.log("Introduction did mount ");
     }
+    addHistoryState = () => {
+        this.props.history.replace(this.props.match.path, { myKey: "Some state" });
+    }
     render() {
-        return <div>This is an introduction</div>
+        return <div>
+            <button onClick={this.addHistoryState}>Add history</button>
+            <div>This is an introduction</div></div>
     }
 }
 //#region links

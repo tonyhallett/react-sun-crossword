@@ -11437,7 +11437,16 @@ var Introduction = (function (_super) {
     __extends(Introduction, _super);
     function Introduction(props) {
         var _this = _super.call(this, props) || this;
+        _this.addHistoryState = function () {
+            _this.props.history.replace(_this.props.match.path, { myKey: "Some state" });
+        };
         console.log("In introduction ctor");
+        if (props.location.state) {
+            console.log("There is state");
+        }
+        else {
+            console.log("There is no state ");
+        }
         return _this;
     }
     Introduction.prototype.componentWillUnmount = function () {
@@ -11447,7 +11456,9 @@ var Introduction = (function (_super) {
         console.log("Introduction did mount ");
     };
     Introduction.prototype.render = function () {
-        return React.createElement("div", null, "This is an introduction");
+        return React.createElement("div", null,
+            React.createElement("button", { onClick: this.addHistoryState }, "Add history"),
+            React.createElement("div", null, "This is an introduction"));
     };
     return Introduction;
 }(React.Component));
