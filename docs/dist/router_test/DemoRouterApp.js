@@ -32,39 +32,22 @@ var DemoRouterApp = (function (_super) {
     return DemoRouterApp;
 }(React.Component));
 exports.DemoRouterApp = DemoRouterApp;
+var navLinkActiveStyle = {
+    color: "yellow"
+};
 var RouterAwareApp = (function (_super) {
     __extends(RouterAwareApp, _super);
     function RouterAwareApp(props) {
-        var _this = _super.call(this, props) || this;
-        console.log("RouteAwareApp constructor");
-        _this.introduction = React.createElement(Introduction, null);
-        console.log("after setting introduction property");
-        return _this;
+        return _super.call(this, props) || this;
     }
-    RouterAwareApp.prototype.componentDidMount = function () {
-        console.log("RouterAwareApp did mount");
-    };
-    RouterAwareApp.prototype.componentWillUnmount = function () {
-        console.log("RouterAwareApp will unmount *******************");
-    };
     RouterAwareApp.prototype.render = function () {
-        var _this = this;
         return React.createElement("div", null,
-            React.createElement(react_router_dom_1.Link, { to: "/" }, "Introduction"),
-            React.createElement(react_router_dom_1.Link, { to: "/settings" }, "Settings"),
-            React.createElement(react_router_dom_1.Link, { to: "/crossword" }, "Crossword"),
-            React.createElement(react_router_dom_1.Route, { exact: true, path: "/", render: function (props) {
-                    console.log("in route render - introduction");
-                    return _this.introduction;
-                } }),
-            React.createElement(react_router_dom_1.Route, { path: "/settings", render: function (props) {
-                    console.log("in route render - settings");
-                    return React.createElement(Settings, null);
-                } }),
-            React.createElement(react_router_dom_1.Route, { path: "/crossword", render: function (props) {
-                    console.log("in route render - crossword");
-                    return React.createElement(Crossword, __assign({}, props));
-                } }));
+            React.createElement(react_router_dom_1.NavLink, { exact: true, activeStyle: navLinkActiveStyle, to: "/" }, "Introduction"),
+            React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: "/settings" }, "Settings"),
+            React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: "/crossword" }, "Crossword"),
+            React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: Introduction }),
+            React.createElement(react_router_dom_1.Route, { path: "/settings", component: Settings }),
+            React.createElement(react_router_dom_1.Route, { path: "/crossword", component: Crossword }));
     };
     return RouterAwareApp;
 }(React.Component));
@@ -89,6 +72,18 @@ var Introduction = (function (_super) {
     return Introduction;
 }(React.Component));
 exports.Introduction = Introduction;
+var DisableNavLink = (function (_super) {
+    __extends(DisableNavLink, _super);
+    function DisableNavLink() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DisableNavLink.prototype.render = function () {
+        var element = this.props.enabled ? React.createElement("span", { className: "disableLinkDisabled" }, this.props.linkText) : React.createElement(react_router_dom_1.NavLink, __assign({}, this.props), this.props.linkText);
+        return element;
+    };
+    return DisableNavLink;
+}(React.Component));
+exports.DisableNavLink = DisableNavLink;
 var DisableLink = (function (_super) {
     __extends(DisableLink, _super);
     function DisableLink() {
@@ -170,6 +165,7 @@ var Settings = (function (_super) {
     return Settings;
 }(React.Component));
 exports.Settings = Settings;
+var crosswordState = { hasCrossword: false, previousNavToCrossword: false };
 var Crossword = (function (_super) {
     __extends(Crossword, _super);
     function Crossword(props) {
@@ -181,16 +177,12 @@ var Crossword = (function (_super) {
                 };
             });
         };
-        _this.previousNavToCrossword = false;
-        console.log("In crossword constructor");
-        _this.state = { hasCrossword: false };
+        _this.state = { hasCrossword: crosswordState.hasCrossword };
+        _this.previousNavToCrossword = crosswordState.previousNavToCrossword;
         return _this;
     }
-    Crossword.prototype.componentDidMount = function () {
-        console.log("Crossword did mount");
-    };
     Crossword.prototype.componentWillUnmount = function () {
-        console.log("Crossword will unmount **********************");
+        crosswordState = { hasCrossword: this.state.hasCrossword, previousNavToCrossword: this.previousNavToCrossword };
     };
     Crossword.prototype.render = function () {
         var _this = this;
@@ -205,8 +197,8 @@ var Crossword = (function (_super) {
         }
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleHasCrossword }, this.state.hasCrossword.toString()),
-            React.createElement(DisableLink, { enabled: !this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
-            React.createElement(react_router_dom_1.Link, { to: this.props.match.url + "/chooser" }, "Chooser"),
+            React.createElement(DisableNavLink, { activeStyle: navLinkActiveStyle, enabled: !this.state.hasCrossword, linkText: "Play", to: this.props.match.url + "/play" }),
+            React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: this.props.match.url + "/chooser" }, "Chooser"),
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/play", render: function (props) {
                     if (_this.state.hasCrossword) {
                         _this.previousNavToCrossword = true;

@@ -11545,31 +11545,37 @@ var Settings = (function (_super) {
     return Settings;
 }(React.Component));
 exports.Settings = Settings;
-var crosswordState = { hasCrossword: false, previousNavToCrossword: false };
 var Crossword = (function (_super) {
     __extends(Crossword, _super);
     function Crossword(props) {
         var _this = _super.call(this, props) || this;
         _this.toggleHasCrossword = function () {
             _this.setState(function (prevState) {
+                var hasCrossword = !prevState.hasCrossword;
+                _this.navState.hasCrossword = hasCrossword;
+                _this.updateNavState();
                 return {
-                    hasCrossword: !prevState.hasCrossword
+                    hasCrossword: hasCrossword
                 };
             });
         };
-        _this.state = { hasCrossword: crosswordState.hasCrossword };
-        _this.previousNavToCrossword = crosswordState.previousNavToCrossword;
+        //will state be null if not set ? or {}
+        _this.navState = props.location.state ? props.location.state : {
+            hasCrossword: false,
+            previousNavToCrossword: false
+        };
+        _this.state = { hasCrossword: _this.navState.hasCrossword };
         return _this;
     }
-    Crossword.prototype.componentWillUnmount = function () {
-        crosswordState = { hasCrossword: this.state.hasCrossword, previousNavToCrossword: this.previousNavToCrossword };
+    Crossword.prototype.updateNavState = function () {
+        this.props.history.replace(this.props.match.path, this.navState);
     };
     Crossword.prototype.render = function () {
         var _this = this;
         console.log("Render: " + this.props.location.pathname);
         if (this.props.match.isExact) {
             var redirectPath = this.props.match.url + "/chooser";
-            if (this.previousNavToCrossword) {
+            if (this.navState.previousNavToCrossword) {
                 redirectPath = this.props.match.url + "/play";
             }
             console.log("redirecting");
@@ -11581,13 +11587,15 @@ var Crossword = (function (_super) {
             React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: this.props.match.url + "/chooser" }, "Chooser"),
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/play", render: function (props) {
                     if (_this.state.hasCrossword) {
-                        _this.previousNavToCrossword = true;
+                        _this.navState.previousNavToCrossword = true;
+                        _this.updateNavState();
                         return React.createElement(DemoCrossword, null);
                     }
                     return React.createElement(react_router_dom_1.Redirect, { to: _this.props.match.url + "/chooser" });
                 } }),
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/chooser", render: function (props) {
-                    _this.previousNavToCrossword = false;
+                    _this.navState.previousNavToCrossword = false;
+                    _this.updateNavState();
                     return React.createElement(DemoCrosswordChooser, null);
                 } }));
     };
