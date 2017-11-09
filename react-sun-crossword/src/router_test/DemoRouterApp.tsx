@@ -107,9 +107,9 @@ export class Introduction extends React.Component<RouteComponentProps<IgnorePara
         console.log("Introduction did mount ");
     }
     addHistoryState = () => {
-        //this.props.history.push(this.props.match.path, { myKey: "Some state" });
-        this.props.history.push("somepath", { myKey: "Some state" });
-        console.log(window.history.state);
+        this.props.history.push(this.props.match.path, { myKey: "Some state" });
+        
+        
     }
     render() {
         return <div>

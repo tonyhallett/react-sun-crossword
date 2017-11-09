@@ -11438,9 +11438,7 @@ var Introduction = (function (_super) {
     function Introduction(props) {
         var _this = _super.call(this, props) || this;
         _this.addHistoryState = function () {
-            //this.props.history.push(this.props.match.path, { myKey: "Some state" });
-            _this.props.history.push("somepath", { myKey: "Some state" });
-            console.log(window.history.state);
+            _this.props.history.push(_this.props.match.path, { myKey: "Some state" });
         };
         console.log("In introduction ctor");
         if (props.location.state) {
