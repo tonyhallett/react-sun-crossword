@@ -11553,7 +11553,6 @@ var Crossword = (function (_super) {
             _this.setState(function (prevState) {
                 var hasCrossword = !prevState.hasCrossword;
                 _this.navState.hasCrossword = hasCrossword;
-                _this.updateNavState();
                 return {
                     hasCrossword: hasCrossword
                 };
@@ -11567,11 +11566,14 @@ var Crossword = (function (_super) {
         _this.state = { hasCrossword: _this.navState.hasCrossword };
         return _this;
     }
+    Crossword.prototype.componentWillUnmount = function () {
+        this.updateNavState();
+    };
     Crossword.prototype.updateNavState = function () {
-        var _this = this;
-        window.setTimeout(function () {
-            _this.props.history.replace(_this.props.match.path, _this.navState);
-        }, 0);
+        console.log("Location: " + this.props.history.location.pathname + ", this path: " + this.props.match.path);
+        //window.setTimeout(() => {
+        //    this.props.history.replace(this.props.match.path, this.navState);
+        //}, 0);
     };
     Crossword.prototype.render = function () {
         var _this = this;
@@ -11591,14 +11593,12 @@ var Crossword = (function (_super) {
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/play", render: function (props) {
                     if (_this.state.hasCrossword) {
                         _this.navState.previousNavToCrossword = true;
-                        _this.updateNavState();
                         return React.createElement(DemoCrossword, null);
                     }
                     return React.createElement(react_router_dom_1.Redirect, { to: _this.props.match.url + "/chooser" });
                 } }),
             React.createElement(react_router_dom_1.Route, { path: this.props.match.url + "/chooser", render: function (props) {
                     _this.navState.previousNavToCrossword = false;
-                    _this.updateNavState();
                     return React.createElement(DemoCrosswordChooser, null);
                 } }));
     };

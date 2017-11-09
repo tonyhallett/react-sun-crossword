@@ -249,11 +249,14 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         this.state = { hasCrossword: this.navState.hasCrossword };
         
     }
-    
+    componentWillUnmount() {
+        this.updateNavState();
+    }
     updateNavState() {//what happens if there is no history ?
-        window.setTimeout(() => {
-            this.props.history.replace(this.props.match.path, this.navState);
-        }, 0);
+        console.log("Location: " + this.props.history.location.pathname + ", this path: " + this.props.match.path);
+        //window.setTimeout(() => {
+        //    this.props.history.replace(this.props.match.path, this.navState);
+        //}, 0);
         
     }
     
@@ -261,7 +264,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
         this.setState((prevState) => {
             var hasCrossword = !prevState.hasCrossword;
             this.navState.hasCrossword = hasCrossword;
-            this.updateNavState();
+            
             return {
                 hasCrossword: hasCrossword
             }
@@ -287,7 +290,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             <Route path={this.props.match.url + "/play"} render={props => {
                 if (this.state.hasCrossword) {
                     this.navState.previousNavToCrossword = true;
-                    this.updateNavState();
+                    
                     return <DemoCrossword />
                 }
                 return  <Redirect to={this.props.match.url + "/chooser"}/>
@@ -295,7 +298,7 @@ export class Crossword extends React.Component<RouteComponentProps<IgnoreParams>
             
             <Route path={this.props.match.url + "/chooser"} render={props => {
                 this.navState.previousNavToCrossword = false;
-                this.updateNavState();
+                
                 return <DemoCrosswordChooser />
             }} /> 
         </div>
