@@ -12191,7 +12191,9 @@ var Crossword = (function (_super) {
     };
     Crossword.prototype.render = function () {
         console.log("Render: " + this.props.location.pathname);
-        if (this.props.match.isExact) {
+        //search could be null or undefined ?
+        //match.isExact is returning true when have the query string which is not specified in the link !!!
+        if (this.props.location.pathname === "/crossword" && this.props.location.search == "") {
             console.log("redirecting");
             //will this replace the state !!!!!!??????
             return React.createElement(react_router_dom_1.Redirect, { to: { pathname: this.props.match.url + this.navState.previousNavToCrossword ? this.getChooserSearch() : this.getPlaySearch() } });
