@@ -60,6 +60,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.autoSolve = true;
         this.solveExact = false;
         this.state = { testCommand: "" };
+        this.keyGuess = this.keyGuess.bind(this);
     }
     componentWillReceiveProps(nextProps: CrosswordPuzzleProps) {
         //this.setUpRecognition(nextProps.crosswordModel);

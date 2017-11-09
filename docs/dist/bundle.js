@@ -41618,6 +41618,7 @@ var CrosswordPuzzle = (function (_super) {
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
+        _this.keyGuess = _this.keyGuess.bind(_this);
         return _this;
     }
     CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
