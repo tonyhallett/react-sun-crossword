@@ -64,12 +64,22 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.backspace = this.backspace.bind(this);
     }
     componentWillReceiveProps(nextProps: CrosswordPuzzleProps) {
-        //this.setUpRecognition(nextProps.crosswordModel);
+        this.initialize(nextProps);
     }
     componentDidMount() {
-        //this.setUpRecognition(this.props.crosswordModel);
+        this.initialize(this.props);
     }
-   
+    initialize(props: CrosswordPuzzleProps) {
+        var crosswordModel = props.crosswordModel;
+        this.ensureSelectedSquare(crosswordModel);
+        //this.setUpRecognition(crosswordModel);
+    }
+    ensureSelectedSquare(crosswordModel: ICrosswordModel) {
+        if (!crosswordModel.selectedSquare) {
+            var firstSquare = crosswordModel.words[0].squares[0];
+            crosswordModel.selectSquare(firstSquare);
+        }
+    }
     //#region recognition
     //#region recognition callbacks
     solveAny = (context: StateCommandCallbackContext) => {

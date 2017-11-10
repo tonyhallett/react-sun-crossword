@@ -41623,10 +41623,21 @@ var CrosswordPuzzle = (function (_super) {
         return _this;
     }
     CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
-        //this.setUpRecognition(nextProps.crosswordModel);
+        this.initialize(nextProps);
     };
     CrosswordPuzzle.prototype.componentDidMount = function () {
-        //this.setUpRecognition(this.props.crosswordModel);
+        this.initialize(this.props);
+    };
+    CrosswordPuzzle.prototype.initialize = function (props) {
+        var crosswordModel = props.crosswordModel;
+        this.ensureSelectedSquare(crosswordModel);
+        //this.setUpRecognition(crosswordModel);
+    };
+    CrosswordPuzzle.prototype.ensureSelectedSquare = function (crosswordModel) {
+        if (!crosswordModel.selectedSquare) {
+            var firstSquare = crosswordModel.words[0].squares[0];
+            crosswordModel.selectSquare(firstSquare);
+        }
     };
     //#endregion   
     //#region setup
