@@ -71,6 +71,26 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     }
     initialize(props: CrosswordPuzzleProps) {
         var crosswordModel = props.crosswordModel;
+
+        var crosswordHasGuesses = false;
+        var words = crosswordModel.words;
+        for (var i = 0; i < words.length; i++) {
+            var squares = words[i].squares;
+            var squareHasGuess = false;
+            for (var j = 0; j < squares.length; j++) {
+                var square = squares[i];
+                if (square.guess && square.guess != "") {
+                    squareHasGuess = true;
+                    break;
+                }
+            }
+            if (squareHasGuess) {
+                crosswordHasGuesses = true;
+                break;
+            }
+        }
+        console.log("crossword has guesses: " + crosswordHasGuesses);
+
         this.ensureSelectedSquare(crosswordModel);
         //this.setUpRecognition(crosswordModel);
     }
