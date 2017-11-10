@@ -1122,7 +1122,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                     <span onClick={this.solveClicked}>
                         <Lightbulb on={this.props.crosswordModel.solvingMode === SolvingMode.Solving} rayColour="yellow" onGlowColour="yellow" text="Solve" id="solveBulb" bulbOuterColour="yellow" innerGlowColour="yellow" />
                     </span>
-                    <FlipClock24 shouldUpdateSameDuration={true} startDuration={this.props.crosswordModel.duration} />
+                    <FlipClock24 shouldUpdateSameDuration={false} startDuration={this.props.crosswordModel.duration} />
 
                     <ExpandableKeyboard keyboardColour="gray" buttonBackgroundColour="orange" backspacePressed={this.backspace} keyPressed={this.keyGuess} />
                     

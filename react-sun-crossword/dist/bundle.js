@@ -42147,7 +42147,7 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
-                React.createElement(stopwatchController_1.FlipClock24, { shouldUpdateSameDuration: true, startDuration: this.props.crosswordModel.duration }),
+                React.createElement(stopwatchController_1.FlipClock24, { shouldUpdateSameDuration: false, startDuration: this.props.crosswordModel.duration }),
                 React.createElement(expandableKeyboard_1.ExpandableKeyboard, { keyboardColour: "gray", buttonBackgroundColour: "orange", backspacePressed: this.backspace, keyPressed: this.keyGuess })));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
