@@ -78,7 +78,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
             var squares = words[i].squares;
             var squareHasGuess = false;
             for (var j = 0; j < squares.length; j++) {
-                var square = squares[i];
+                var square = squares[j];
                 if (square.guess && square.guess != "") {
                     squareHasGuess = true;
                     break;
