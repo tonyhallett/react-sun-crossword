@@ -66,7 +66,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
     componentWillReceiveProps(nextProps: CrosswordPuzzleProps) {
         this.initialize(nextProps);
     }
-    componentDidMount() {
+    componentWillMount() {
         this.initialize(this.props);
     }
     initialize(props: CrosswordPuzzleProps) {

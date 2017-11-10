@@ -41625,7 +41625,7 @@ var CrosswordPuzzle = (function (_super) {
     CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
         this.initialize(nextProps);
     };
-    CrosswordPuzzle.prototype.componentDidMount = function () {
+    CrosswordPuzzle.prototype.componentWillMount = function () {
         this.initialize(this.props);
     };
     CrosswordPuzzle.prototype.initialize = function (props) {
