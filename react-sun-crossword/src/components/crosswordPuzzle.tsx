@@ -61,6 +61,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
         this.solveExact = false;
         this.state = { testCommand: "" };
         this.keyGuess = this.keyGuess.bind(this);
+        this.backspace = this.backspace.bind(this);
     }
     componentWillReceiveProps(nextProps: CrosswordPuzzleProps) {
         //this.setUpRecognition(nextProps.crosswordModel);
@@ -785,7 +786,7 @@ export class CrosswordPuzzle extends React.Component<CrosswordPuzzleProps, Cross
                 requiresRender = true;
             }
             var wordToSelect: IWord;
-            if (square.acrossWord !== null && square.downWord !== null) {
+            if (square.acrossWord && square.downWord) {
                 if (wordSelectMode == WordSelectMode.across) {
                     wordToSelect = square.acrossWord;
                 } else if (wordSelectMode == WordSelectMode.down) {

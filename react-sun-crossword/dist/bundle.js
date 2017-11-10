@@ -41619,6 +41619,7 @@ var CrosswordPuzzle = (function (_super) {
         _this.solveExact = false;
         _this.state = { testCommand: "" };
         _this.keyGuess = _this.keyGuess.bind(_this);
+        _this.backspace = _this.backspace.bind(_this);
         return _this;
     }
     CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
@@ -41862,7 +41863,7 @@ var CrosswordPuzzle = (function (_super) {
                 requiresRender = true;
             }
             var wordToSelect;
-            if (square.acrossWord !== null && square.downWord !== null) {
+            if (square.acrossWord && square.downWord) {
                 if (wordSelectMode == WordSelectMode.across) {
                     wordToSelect = square.acrossWord;
                 }
