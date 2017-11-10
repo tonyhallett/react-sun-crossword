@@ -41635,8 +41635,9 @@ var CrosswordPuzzle = (function (_super) {
     };
     CrosswordPuzzle.prototype.ensureSelectedSquare = function (crosswordModel) {
         if (!crosswordModel.selectedSquare) {
-            var firstSquare = crosswordModel.words[0].squares[0];
-            crosswordModel.selectSquare(firstSquare);
+            var firstWord = crosswordModel.words[0];
+            crosswordModel.selectWord(firstWord);
+            crosswordModel.selectSquare(firstWord.squares[0]);
         }
     };
     //#endregion   
