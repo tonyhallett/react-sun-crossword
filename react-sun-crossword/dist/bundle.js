@@ -11420,20 +11420,14 @@ var RouterAwareApp = (function (_super) {
     function RouterAwareApp(props) {
         return _super.call(this, props) || this;
     }
+    //<NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
+    //<Route exact path="/crossword" component={Crossword}/>
     RouterAwareApp.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement(react_router_dom_1.NavLink, { exact: true, activeStyle: navLinkActiveStyle, to: "/" }, "Introduction"),
-            React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: "/settings" }, "Settings")
-        //<NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
-        ,
-            "//",
-            React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: "/crossword" }, "Crossword"),
+            React.createElement(react_router_dom_1.NavLink, { activeStyle: navLinkActiveStyle, to: "/settings" }, "Settings"),
             React.createElement(react_router_dom_1.Route, { exact: true, path: "/", component: Introduction }),
-            React.createElement(react_router_dom_1.Route, { path: "/settings", component: Settings })
-        //<Route exact path="/crossword" component={Crossword}/>
-        ,
-            "//",
-            React.createElement(react_router_dom_1.Route, { exact: true, path: "/crossword", component: Crossword }));
+            React.createElement(react_router_dom_1.Route, { path: "/settings", component: Settings }));
     };
     return RouterAwareApp;
 }(React.Component));
