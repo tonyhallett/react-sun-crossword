@@ -12725,6 +12725,7 @@ var mapDispatchToProps = function (dispatch) {
             dispatch(changeDemoStateStringAction(newValue));
         }
     };
+    return dispatchToProps;
 };
 //selector
 var getDemoStateProps = function (state) {

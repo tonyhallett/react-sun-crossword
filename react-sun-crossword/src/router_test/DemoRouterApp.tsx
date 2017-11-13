@@ -93,6 +93,7 @@ const mapDispatchToProps = dispatch => {
             dispatch(changeDemoStateStringAction(newValue))
         }
     }
+    return dispatchToProps;
 }
 
 //selector
