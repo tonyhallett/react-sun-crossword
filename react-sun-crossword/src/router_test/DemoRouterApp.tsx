@@ -23,11 +23,11 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
         return <div>
             <NavLink exact={true} activeStyle={navLinkActiveStyle} to="/">Introduction</NavLink>
             <NavLink activeStyle={navLinkActiveStyle} to="/settings">Settings</NavLink>
-            <NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
+            //<NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
 
             <Route exact path="/" component={Introduction}/>
             <Route path="/settings" component={Settings}/>
-            <Route exact path="/crossword" component={Crossword}/>
+            //<Route exact path="/crossword" component={Crossword}/>
 
             </div>
     }
@@ -90,31 +90,14 @@ export interface match<P> {
     url: string;
 }
 //#endregion
+
 export class Introduction extends React.Component<RouteComponentProps<IgnoreParams>, undefined> {
     constructor(props) {
         super(props);
-        console.log("In introduction ctor");
-        if (props.location.state) {
-            console.log("There is state");
-        } else {
-            console.log("There is no state ");
-        }
-    }
-    componentWillUnmount() {
-        console.log("Introduction unmounting ************");
-    }
-    componentDidMount() {
-        console.log("Introduction did mount ");
-    }
-    addHistoryState = () => {
-        this.props.history.push(this.props.match.path, { myKey: "Some state" });
-        
         
     }
     render() {
-        return <div>
-            <button onClick={this.addHistoryState}>Add history</button>
-            <div>This is an introduction</div></div>
+        return <div>This is an introduction</div>
     }
 }
 //#region links
@@ -174,18 +157,11 @@ export class Settings extends React.Component<undefined, SettingsState> {
     storageAvailable: boolean;
     constructor(props:any) {
         super(props);
-        console.log("In settings constructor");
         this.storageAvailable = this.isStorageAvailable("localStorage");
         this.storage = window["localStorage"];
 
         this.state={ storageAvailable: this.storageAvailable, booleanSetting: this.getTypedStorageItem("booleanSetting", false), stringSetting: this.getTypedStorageItem("stringSetting", "Default value"), numberSetting: this.getTypedStorageItem("numberSetting", 1) };
 
-    }
-    componentWillUnmount() {
-        console.log("Settings unmounting ************");
-    }
-    componentDidMount() {
-        console.log("Settings did mount ");
     }
     getTypedStorageItem(itemKey: string, defaultValue: any): any {
         if (!this.storageAvailable) {
@@ -231,7 +207,6 @@ export class Settings extends React.Component<undefined, SettingsState> {
             this.setTypedStorageItem("stringSetting", stringSetting);
         }
     }
-    //would still show settings but will note that they cannot be saved
     render() {
         return <div>
             {!this.state.storageAvailable &&

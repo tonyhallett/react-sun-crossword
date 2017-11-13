@@ -38,6 +38,7 @@ namespace DocCopy
             GetDirectories();
             CopyDist();
             CopyIndexHtml();
+            Copy404();
             CopyAssets();
             Application.Current.Shutdown();
         }
@@ -59,6 +60,10 @@ namespace DocCopy
         private void CopyIndexHtml()
         {
             File.Copy(System.IO.Path.Combine(reactCrosswordDir.FullName, "index.html"), System.IO.Path.Combine(docsDir.FullName, txtIndexHtml.Text + ".html"),true);
+        }
+        private void Copy404()
+        {
+            File.Copy(System.IO.Path.Combine(reactCrosswordDir.FullName, "404.html"), System.IO.Path.Combine(docsDir.FullName, "404.html"), true);
         }
         private void CopyAssets()
         {
