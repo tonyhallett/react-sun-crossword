@@ -1,6 +1,7 @@
 ﻿import * as React from "react";
 import { BrowserRouter, Link, NavLink, Route, Redirect } from 'react-router-dom'
 import { matchPath } from 'react-router'
+import { connect } from 'react-redux'
 export class DemoRouterApp extends React.Component<undefined, undefined> {
     render() {
         return <BrowserRouter basename="/react-sun-crossword">
@@ -25,15 +26,88 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
         return <div>
             <NavLink exact={true} activeStyle={navLinkActiveStyle} to="/">Introduction</NavLink>
             <NavLink activeStyle={navLinkActiveStyle} to="/settings">Settings</NavLink>
-            
+            <NavLink activeStyle={navLinkActiveStyle} to="/demoRedux">Demo redux</NavLink>
 
             <Route exact path="/" component={Introduction}/>
-            <Route path="/settings" component={Settings}/>
+            <Route path="/settings" component={Settings} />
+            <Route path="/demoRedux" component={ConnectedDemoPresentationComponent} />
             
 
             </div>
     }
 }
+export interface DemoState {
+    demoValue: string,
+    someOtherValue: any
+}
+//#region demo action
+const DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
+export function changeDemoStateStringAction(newString: string) {
+    return {
+        type: DEMO_CHANGE_STRING,
+        text: newString
+    }
+}
+//#endregion
+export function reducer(state: DemoState = { demoValue: "", someOtherValue:9 }, action):DemoState {
+    switch (action.type) {
+        case DEMO_CHANGE_STRING:
+            return {
+                demoValue: action.text,
+                someOtherValue: state.someOtherValue
+            }
+        default:
+            return state;
+    }
+}
+
+interface DemoPresentationComponentDispatchProps {
+    demoDispatchAction: (newValue: string) => void
+}
+interface DemoPresentationComponentStateProps {
+    demoValue:string
+}
+interface DemoPresentationComponentProps extends DemoPresentationComponentDispatchProps, DemoPresentationComponentStateProps {}
+interface DemoPresentationComponentState {
+    inputValue:string
+}
+class DemoPresentationComponent extends React.Component<DemoPresentationComponentProps, DemoPresentationComponentState> {
+    constructor(props) {
+        super(props);
+        this.state = { inputValue:"" }
+    }
+    render() {
+        return <div>
+            <button onClick={() => { this.props.demoDispatchAction(this.state.inputValue) }}>Dispatch action</button>
+            <div>{this.props.demoValue}</div>
+            <input type="text" value={this.state.inputValue} onChange={(evt) => this.setState({ inputValue: evt.target.value })} />
+        </div>
+    }
+
+}
+
+//#region connected component
+const mapDispatchToProps = dispatch => {
+    var dispatchToProps: DemoPresentationComponentDispatchProps = {
+        demoDispatchAction: newValue => {
+            dispatch(changeDemoStateStringAction(newValue))
+        }
+    }
+}
+
+//selector
+const getDemoStateProps = function (state: DemoState) {
+    var demoState: DemoPresentationComponentStateProps = {
+        demoValue: state.demoValue
+    }
+    return demoState;
+}
+const mapStateToProps = state => {
+    return getDemoStateProps(state);
+}
+export const ConnectedDemoPresentationComponent=connect(mapStateToProps, mapDispatchToProps)(DemoPresentationComponent)
+//#endregion
+
 //#region type definitions
 export interface Location {
     pathname: string;	
