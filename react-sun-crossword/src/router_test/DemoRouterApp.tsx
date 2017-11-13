@@ -18,16 +18,18 @@ export class RouterAwareApp extends React.Component<undefined, undefined> {
     constructor(props) {
         super(props);
     }
+    //<NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
+    //<Route exact path="/crossword" component={Crossword}/>
     render() {  
 
         return <div>
             <NavLink exact={true} activeStyle={navLinkActiveStyle} to="/">Introduction</NavLink>
             <NavLink activeStyle={navLinkActiveStyle} to="/settings">Settings</NavLink>
-            //<NavLink activeStyle={navLinkActiveStyle} to="/crossword">Crossword</NavLink>
+            
 
             <Route exact path="/" component={Introduction}/>
             <Route path="/settings" component={Settings}/>
-            //<Route exact path="/crossword" component={Crossword}/>
+            
 
             </div>
     }
