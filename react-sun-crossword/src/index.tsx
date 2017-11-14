@@ -11,7 +11,7 @@ import { DemoRouterApp,reducer } from "./router_test/DemoRouterApp"
 //    document.getElementById("example")
 //);
 var anyWindow = window as any;
-var store = createStore(reducer,null, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
+var store = createStore(reducer, {}, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 ReactDOM.render(
     <Provider store={store}>
         <DemoRouterApp />

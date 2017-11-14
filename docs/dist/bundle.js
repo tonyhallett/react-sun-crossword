@@ -29843,7 +29843,7 @@ var DemoRouterApp_1 = __webpack_require__(121);
 //    document.getElementById("example")
 //);
 var anyWindow = window;
-var store = redux_1.createStore(DemoRouterApp_1.reducer, null, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
+var store = redux_1.createStore(DemoRouterApp_1.reducer, {}, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(DemoRouterApp_1.DemoRouterApp, null)), document.getElementById("example"));
 
