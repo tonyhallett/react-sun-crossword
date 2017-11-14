@@ -10,8 +10,8 @@ import { DemoRouterApp,reducer } from "./router_test/DemoRouterApp"
 //    <CrosswordPuzzleApp/>,
 //    document.getElementById("example")
 //);
-var  window:any;
-var store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+var anyWindow = window as any;
+var store = createStore(reducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 ReactDOM.render(
     <Provider store={store}>
         <DemoRouterApp />

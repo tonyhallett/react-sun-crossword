@@ -29842,8 +29842,8 @@ var DemoRouterApp_1 = __webpack_require__(121);
 //    <CrosswordPuzzleApp/>,
 //    document.getElementById("example")
 //);
-var window;
-var store = redux_1.createStore(DemoRouterApp_1.reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+var anyWindow = window;
+var store = redux_1.createStore(DemoRouterApp_1.reducer, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(DemoRouterApp_1.DemoRouterApp, null)), document.getElementById("example"));
 
