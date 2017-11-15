@@ -26,7 +26,7 @@ const store = createStore(
     composeWithDevTools(applyMiddleware(middleware))
     
 )
-//var store = createStore(reducer, {}, anyWindow.__REDUX_DEVTOOLS_EXTENSION__ && anyWindow.__REDUX_DEVTOOLS_EXTENSION__());
+
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
