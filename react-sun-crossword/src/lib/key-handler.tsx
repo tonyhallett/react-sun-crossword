@@ -239,31 +239,31 @@ export interface KeyHandleDecoratorState {
  * KeyHandler decorators.
  */
 
-//...any: any[]
+//in future will look at https://dev.to/danhomola/react-higher-order-components-in-typescript-made-simple and get a snippet 
 function keyHandleDecorator<P>(matcher?: typeof matchesKeyboardEvent) {
-    return (props?: DecoratorProps): <P>(component: React.ComponentClass<P & KeyHandleDecoratorState>) => React.ComponentClass<P & KeyHandleDecoratorState> => {
+    return (props?: DecoratorProps) => {
     
         const { keyValue, keyCode, keyEventName, keyMatches } = props || {} as DecoratorProps;
 
-        return (Component) => (
+        return <P extends {}>(Component: React.ComponentClass<P & KeyHandleDecoratorState>) => (
             //the decorator needs to have the same property interface 
             class KeyHandleDecorator extends React.Component<P, KeyHandleDecoratorState> {
-                state: KeyHandleDecoratorState = { keyValue: null, keyCode: null, modifiers:null };
+                state: KeyHandleDecoratorState = { keyValue: null, keyCode: null, modifiers: null };
 
-                wrappedInstance: any;
-        
+                wrappedInstance: React.Component<P & KeyHandleDecoratorState,any>;
+
                 render() {
                     function isKeyMatchesMethodName(toDetermine: string | ModKey | KeyMatchesMethodName): toDetermine is KeyMatchesMethodName {
                         return (toDetermine as KeyMatchesMethodName).methodName !== undefined;
                     }
                     var mappedKeyMatches = keyMatches as KeyMatches;
-            
+
                     if (keyMatches) {
                         if (keyMatches instanceof Array) {
                             var testEntry = keyMatches[0];
                             if (isKeyMatchesMethodName(testEntry)) {
                                 var keyMatchesMethodNameArray = keyMatches as KeyMatchesMethodName[];
-                                var allModKeys: ModKey[]=[]
+                                var allModKeys: ModKey[] = []
                                 keyMatchesMethodNameArray.forEach(keyMatchesMethodName => {
                                     var methodName = keyMatchesMethodName.methodName;
                                     var kMatches = keyMatchesMethodName.keyMatches;
@@ -299,46 +299,46 @@ function keyHandleDecorator<P>(matcher?: typeof matchesKeyboardEvent) {
                                 });
                                 mappedKeyMatches = allModKeys;
                             }
-                        } 
+                        }
                     }
-            
 
-                  return (
-                      <div>
-                          <KeyHandler keyValue={keyValue} keyCode={keyCode} keyMatches={mappedKeyMatches} keyEventName={keyEventName} onKeyHandle={this.handleKey} />
-                          <Component ref={(instance) => { this.wrappedInstance = instance; }} {...this.props} {...this.state} />
-                    </div>
-                  );
+
+                    return (
+                        <div>
+                            <KeyHandler keyValue={keyValue} keyCode={keyCode} keyMatches={mappedKeyMatches} keyEventName={keyEventName} onKeyHandle={this.handleKey} />
+                            <Component ref={(instance) => { this.wrappedInstance = instance; }} {...this.props} {...this.state} />
+                        </div>
+                    );
                 }
 
                 handleKey = (event: KeyboardEvent, ids: any[]): void => {
                     //console.log("HOC handleKey");
-                  if (matcher && matcher(event, this.state)) {
-                    this.setState({ keyValue: null, keyCode: null });
-                    return;
+                    if (matcher && matcher(event, this.state)) {
+                        this.setState({ keyValue: null, keyCode: null });
+                        return;
                     }
-                  var modifiers = KeyModifiersEnum.none;
-                  if (event.altKey) {
-                      modifiers |= KeyModifiersEnum.alt;
-                  }
-                  if (event.ctrlKey) {
-                      modifiers |= KeyModifiersEnum.ctrl;
-                  }
-                  if (event.shiftKey) {
-                      modifiers |= KeyModifiersEnum.shift;
-                  }
-                  var keyValue = eventKey(event);
-                  var keyCode = event.keyCode;
-                  if (ids.length > 0) {
-                      ids.forEach(methodName => {
-                          this.wrappedInstance[methodName](event, keyValue, keyCode, modifiers);
-                      })
+                    var modifiers = KeyModifiersEnum.none;
+                    if (event.altKey) {
+                        modifiers |= KeyModifiersEnum.alt;
+                    }
+                    if (event.ctrlKey) {
+                        modifiers |= KeyModifiersEnum.ctrl;
+                    }
+                    if (event.shiftKey) {
+                        modifiers |= KeyModifiersEnum.shift;
+                    }
+                    var keyValue = eventKey(event);
+                    var keyCode = event.keyCode;
+                    if (ids.length > 0) {
+                        ids.forEach(methodName => {
+                            this.wrappedInstance[methodName](event, keyValue, keyCode, modifiers);
+                        })
 
-                  } else {
-                      this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
-                  }
-                  
-          
+                    } else {
+                        this.setState({ keyValue: keyValue, keyCode: keyCode, modifiers: modifiers });
+                    }
+
+
                 };
             }
     );

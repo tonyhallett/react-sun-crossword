@@ -1,5 +1,7 @@
 ﻿import { CrosswordLookupJson, CrosswordModelJson } from "../models/index";
 import { database } from './firebaseApp'
+import * as firebase from 'firebase'
+ 
 
 export interface IConnectedDatabase {
     connectionChanged(callback: (isConnected: boolean) => void);

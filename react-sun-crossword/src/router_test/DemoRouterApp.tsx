@@ -1,17 +1,9 @@
 ﻿import * as React from "react";
-import { BrowserRouter, Link, NavLink, Route, Redirect } from 'react-router-dom'
-import { matchPath } from 'react-router'
+import { Link, NavLink, Route, Redirect, LinkProps, NavLinkProps } from 'react-router-dom'
+import { matchPath, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-export class DemoRouterApp extends React.Component<undefined, undefined> {
-    render() {
-        return <BrowserRouter basename="/react-sun-crossword">
-            <RouterAwareApp />
-        </BrowserRouter>
-    }
-}
-type BrowserRouter= {
-    basename?:string
-}
+
+
 var navLinkActiveStyle = {
     color:"yellow"
 }
@@ -109,66 +101,71 @@ const mapStateToProps = state => {
 export const ConnectedDemoPresentationComponent=connect(mapStateToProps, mapDispatchToProps)(DemoPresentationComponent)
 //#endregion
 
-//#region type definitions
-export interface Location {
-    pathname: string;	
-    search: string;
-    state: any;
-    hash: string;
-    key ?: string;
-}
-export interface LocationProps {
-    pathname: string;
-    search?: string;
-    state?: any;
-    hash?: string;
-}
-type Action = 'PUSH' | 'POP' | 'REPLACE';
-type UnregisterCallback = () => void;
-export type LocationListener = (location: Location, action: Action) => void;
-export interface LocationDescriptorObject {
-    pathname?: string;
-    search?: string;
-    state?: any;
-    hash?: string;
-    key?: string;
+//#region routing type definitions
+//export interface Location {
+//    pathname: string;	
+//    search: string;
+//    state: any;
+//    hash: string;
+//    key ?: string;
+//}
+//export interface LocationProps {
+//    pathname: string;
+//    search?: string;
+//    state?: any;
+//    hash?: string;
+//}
+//type Action = 'PUSH' | 'POP' | 'REPLACE';
+//type UnregisterCallback = () => void;
+//export type LocationListener = (location: Location, action: Action) => void;
+//export interface LocationDescriptorObject {
+//    pathname?: string;
+//    search?: string;
+//    state?: any;
+//    hash?: string;
+//    key?: string;
 
-}
-//not sure how up to date the @types was - properties and methods are described https://reacttraining.com/react-router/web/api/history
-export interface History {
-    length: number;
-    action: Action;
-    location: Location,
-    push(path: string, state?: any): void;
-    //no mention of this overload on the react router page link above
-    push(location: LocationDescriptorObject): void;
-    replace(path: string, state?: any): void;
-    //no mention of this overload on the react router page link above
-    replace(location: LocationDescriptorObject): void;
-    go(n: number): void; goBack(): void;
-    goForward(): void;
-    block(prompt?: boolean): UnregisterCallback;
-    //no mention of this overload on the react router page link above
-    listen(listener: LocationListener): UnregisterCallback;
+//}
+////not sure how up to date the @types was - properties and methods are described https://reacttraining.com/react-router/web/api/history
+//export interface History {
+//    length: number;
+//    action: Action;
+//    location: Location,
+//    push(path: string, state?: any): void;
+//    //no mention of this overload on the react router page link above
+//    push(location: LocationDescriptorObject): void;
+//    replace(path: string, state?: any): void;
+//    //no mention of this overload on the react router page link above
+//    replace(location: LocationDescriptorObject): void;
+//    go(n: number): void; goBack(): void;
+//    goForward(): void;
+//    block(prompt?: boolean): UnregisterCallback;
+//    //no mention of this overload on the react router page link above
+//    listen(listener: LocationListener): UnregisterCallback;
 
-    //need to npm install the @types again - no mention of this overload on the react router page link above
-    //createHref(location: LocationDescriptorObject): Href;
-}
-export interface RouteComponentProps<P> {
-    match: match<P>
-    location: Location;
-    history: History;
-    staticContext?: any;
-}
-export interface match<P> {
-    params: P;
-    isExact: boolean;
-    path: string;
-    url: string;
-}
+//    //need to npm install the @types again - no mention of this overload on the react router page link above
+//    //createHref(location: LocationDescriptorObject): Href;
+//}
+//export interface RouteComponentProps<P> {
+//    match: match<P>
+//    location: Location;
+//    history: History;
+//    staticContext?: any;
+//}
+//export interface match<P> {
+//    params: P;
+//    isExact: boolean;
+//    path: string;
+//    url: string;
+//}
 //#endregion
 
-export class Introduction extends React.Component<RouteComponentProps<IgnoreParams>, undefined> {
+//#region route components
+
+
+
+
+export class Introduction extends React.Component<RouteComponentProps<any>, undefined> {
     constructor(props) {
         super(props);
         
@@ -179,19 +176,19 @@ export class Introduction extends React.Component<RouteComponentProps<IgnorePara
 }
 //#region links
 
-interface LinkProps {
-    to: string | LocationProps
-    replace?:boolean
-}
+//interface LinkProps {
+//    to: string | LocationProps
+//    replace?:boolean
+//}
 
-export interface NavLinkProps extends LinkProps {
-    activeClassName?: string;
-    activeStyle?: React.CSSProperties;
-    exact?: boolean;
-    strict?: boolean;
-    isActive?<P>(match: match<P>, location: Location): boolean;
-    location?: string|Location;
-}
+//export interface NavLinkProps extends LinkProps {
+//    activeClassName?: string;
+//    activeStyle?: React.CSSProperties;
+//    exact?: boolean;
+//    strict?: boolean;
+//    isActive?<P>(match: match<P>, location: Location): boolean;
+//    location?: string|Location;
+//}
 
 
 interface DisableProps {
@@ -404,4 +401,4 @@ export class DemoCrossword extends React.Component<undefined, undefined> {
         return <div>This is where the crossword, clues and buttons go !</div>
     }
 }
-
+//#endregion

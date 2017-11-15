@@ -43,7 +43,7 @@ interface ClueProviderClue {
     providerName: string;
 }
 
-export interface CrosswordPuzzleProps {
+export interface CrosswordPuzzleProps extends KeyEvents.KeyHandleDecoratorState {
     crosswordModel: ICrosswordModel
 }
 interface CrosswordPuzzleState {

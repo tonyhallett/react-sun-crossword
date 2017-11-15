@@ -1,4 +1,4 @@
-﻿
+﻿import * as firebase from 'firebase'
 import * as React from "react";
 import { ICrosswordModel, ConvertCrosswordJsonToModel, ConvertCrosswordModelToJson, CrosswordModelJson, SolvingMode } from '../models/index'
 import { CrosswordPuzzleKeyEvents } from "./crosswordPuzzle";
@@ -18,8 +18,7 @@ import { MuiButton, MuiButtonProps } from "./muiButton";
 import { MuiButtonWrapper } from "./muiWrappedButton";
 import { StopwatchController, Duration, FlipClock24 } from "./stopwatchController";
 
-import { Bounded, ElementQueries } from '../components/testBounds'
-import { ElementQuery, Matches, makeElementQuery } from 'react-element-queries';
+
 import { Keyboard } from "./keyboard";
 import { ExpandableKeyboard } from "./expandableKeyboard";
 

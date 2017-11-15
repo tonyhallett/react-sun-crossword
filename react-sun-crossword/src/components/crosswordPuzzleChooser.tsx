@@ -5,7 +5,7 @@ import { EmailLogOnComp, EmailLogOnCompProps} from "./emailLogOn";
 import { auth } from '../helpers/firebaseApp'
 import Select = require("react-select")
 
-export import Select = require("react-select")
+//export import Select = require("react-select")
 import { SimpleButtonProps } from "./simpleButtonProps";
 import { MuiButtonWrapper } from "./muiWrappedButton";
 
@@ -74,7 +74,7 @@ export class DefaultSelectChooser extends React.Component<DefaultSelectChooserPr
     render() {
         var Button = displayNameHOC(this.props.ButtonType, "Button");
         return <div>
-            <Select value={this.state.selectedValue} onChange={this.optionChange} disabled={this.props.disabled} isLoading={this.props.isLoadingLookups} placeholder={this.props.placeholderText} options={this.mapOptions()} />
+            <Select.Creatable value={this.state.selectedValue} onChange={this.optionChange} disabled={this.props.disabled} isLoading={this.props.isLoadingLookups} placeholder={this.props.placeholderText} options={this.mapOptions()} />
             <div style={{paddingTop:"10px"}}>
                 <Button {...this.props.buttonProps} text="Play Crossword" onClick={this.buttonClicked} disabled={this.props.disabled || !this.state.selectedValue} />
             </div>
