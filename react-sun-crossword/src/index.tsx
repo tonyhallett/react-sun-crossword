@@ -44,6 +44,9 @@ ReactDOM.render(
                 <Route component={Pathless}>
                     <Route path="pathlessChild" component={PathlessChild} />
                 </Route>
+                <Route path="multiple" component={Multiple} components={{child1:Child1,child2:Child2}}>
+                    
+                </Route>
 
             </Route>
         </Router>

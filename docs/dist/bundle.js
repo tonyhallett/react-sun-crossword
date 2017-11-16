@@ -6376,6 +6376,43 @@ var PathlessChild = /** @class */ (function (_super) {
     return PathlessChild;
 }(React.Component));
 exports.PathlessChild = PathlessChild;
+var Multiple = /** @class */ (function (_super) {
+    __extends(Multiple, _super);
+    function Multiple() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Multiple.prototype.render = function () {
+        var route = this.props.route;
+        return React.createElement("div", null,
+            React.createElement("div", null, "This route component receives child components through the components property"),
+            route.child1,
+            route.child2);
+    };
+    return Multiple;
+}(React.Component));
+exports.Multiple = Multiple;
+var Child1 = /** @class */ (function (_super) {
+    __extends(Child1, _super);
+    function Child1() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Child1.prototype.render = function () {
+        return "Chil12 from Route components property";
+    };
+    return Child1;
+}(React.Component));
+exports.Child1 = Child1;
+var Child2 = /** @class */ (function (_super) {
+    __extends(Child2, _super);
+    function Child2() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Child2.prototype.render = function () {
+        return "Child2 from Route components property";
+    };
+    return Child2;
+}(React.Component));
+exports.Child2 = Child2;
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {
