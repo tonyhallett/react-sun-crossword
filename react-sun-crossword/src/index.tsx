@@ -33,7 +33,7 @@ const store = createStore(
     composeWithDevTools(applyMiddleware(middleware))
     
 )
-var additionalProps = "This is additional";
+var additionalPropsValue = "This is additional";
 
 interface RouteAdditionalProps {
     additionalProp:string
@@ -64,7 +64,7 @@ ReactDOM.render(
                     <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
                 <Redirect from="many" to="multiple" />
-                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalProps} />
+                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
                 <Route path="leaveHook" component={LeaveHook}>
                     
                 </Route>
