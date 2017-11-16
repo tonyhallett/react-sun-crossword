@@ -6412,6 +6412,18 @@ var Child2 = /** @class */ (function (_super) {
     return Child2;
 }(React.Component));
 exports.Child2 = Child2;
+var AdditionalProps = /** @class */ (function (_super) {
+    __extends(AdditionalProps, _super);
+    function AdditionalProps() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    AdditionalProps.prototype.render = function () {
+        var additionalProp = this.props.route.additionalProp;
+        return "Received additional prop from route " + additionalProp;
+    };
+    return AdditionalProps;
+}(React.Component));
+exports.AdditionalProps = AdditionalProps;
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {
@@ -30713,6 +30725,24 @@ function symbolObservablePonyfill(root) {
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(3);
 var ReactDOM = __webpack_require__(84);
@@ -30737,6 +30767,17 @@ var store = redux_1.createStore(redux_1.combineReducers({
     reducer: DemoRouterApp_1.reducer,
     router: react_router_redux_1.routerReducer
 }), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
+var additionalProps = "This is additional";
+var RouteAdditional = /** @class */ (function (_super) {
+    __extends(RouteAdditional, _super);
+    function RouteAdditional() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RouteAdditional.prototype.render = function () {
+        return React.createElement(react_router_2.Route, __assign({}, this.props));
+    };
+    return RouteAdditional;
+}(React.Component));
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },
         React.createElement(react_router_2.Route, { path: "/", component: DemoRouterApp_1.App },
@@ -30747,7 +30788,8 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
             React.createElement(react_router_2.Route, { path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
-            React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" })))), document.getElementById("example"));
+            React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
+            React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalProps })))), document.getElementById("example"));
 
 
 /***/ })

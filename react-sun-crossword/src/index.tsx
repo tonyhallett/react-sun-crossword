@@ -12,7 +12,7 @@ import { useRouterHistory } from 'react-router'
 import { createHistory } from 'history'
 import {  routerReducer, routerMiddleware, push } from 'react-router-redux'
 import { Router, Route, IndexRoute, Redirect } from "react-router";
-import { RouteProps } from "@types/react-router/lib/Route";
+import { RouteProps } from "react-router/lib/Route";
 
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
@@ -35,10 +35,10 @@ const store = createStore(
 )
 var additionalProps = "This is additional";
 
-interface AdditionalProps {
+interface RouteAdditionalProps {
     additionalProp:string
 }
-class RouteAdditional extends React.Component<AdditionalProps&RouteProps,undefined>{
+class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,undefined>{
     render() {
         return <Route {...this.props}/>
     }
