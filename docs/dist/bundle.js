@@ -6382,11 +6382,10 @@ var Multiple = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Multiple.prototype.render = function () {
-        var route = this.props.route;
         return React.createElement("div", null,
             React.createElement("div", null, "This route component receives child components through the components property"),
-            route.child1,
-            route.child2);
+            this.props["child1"],
+            this.props["child2"]);
     };
     return Multiple;
 }(React.Component));

@@ -40,16 +40,14 @@ export class PathlessChild extends React.Component<undefined, undefined> {
         return "This component has been rendered without its route being a subpath";
     }
 }
-interface MultipleProps {
 
-}
 export class Multiple extends React.Component<RouteComponentProps<undefined,undefined>, undefined> {
     render() {
-        var route = this.props.route as any;
+        
         return <div>
             <div>This route component receives child components through the components property</div>
-            {route.child1}
-            {route.child2}
+            {this.props["child1"]}
+            {this.props["child2"]}
             </div>
     }
 }
