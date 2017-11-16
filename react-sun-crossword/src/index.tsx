@@ -44,8 +44,13 @@ ReactDOM.render(
                 <Route component={Pathless}>
                     <Route path="pathlessChild" component={PathlessChild} />
                 </Route>
-                <Route path="multiple" component={Multiple} components={{child1:Child1,child2:Child2}}>
-                    
+                <Route path="multiple" component={Multiple} >
+                    {/* Just to demonstrate the concept 
+                        in practice there would be multiple child routes - where the matching one
+                        will provide the child components
+                        Also not that child routes of those child routes will provide a child component to components !
+                    */}
+                    <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
 
             </Route>
