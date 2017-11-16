@@ -5,13 +5,14 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2 } from "./router_test/DemoRouterApp"
+import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, AdditionalProps } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
 import { createHistory } from 'history'
 import {  routerReducer, routerMiddleware, push } from 'react-router-redux'
 import { Router, Route, IndexRoute, Redirect } from "react-router";
+import { RouteProps } from "@types/react-router/lib/Route";
 
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
@@ -32,6 +33,16 @@ const store = createStore(
     composeWithDevTools(applyMiddleware(middleware))
     
 )
+var additionalProps = "This is additional";
+
+interface AdditionalProps {
+    additionalProp:string
+}
+class RouteAdditional extends React.Component<AdditionalProps&RouteProps,undefined>{
+    render() {
+        return <Route {...this.props}/>
+    }
+}
 
 ReactDOM.render(
     <Provider store={store}>
@@ -52,7 +63,8 @@ ReactDOM.render(
                     */}
                     <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
-                <Redirect from="many" to="multiple"/>
+                <Redirect from="many" to="multiple" />
+                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalProps}/>
             </Route>
         </Router>
     </Provider>,

@@ -61,6 +61,12 @@ export class Child2 extends React.Component<undefined, undefined> {
         return "Child2 from Route components property";
     }
 }
+export class AdditionalProps extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
+    render() {
+        var additionalProp = (this.props.route as any).additionalProp;
+        return "Received additional prop from route " + additionalProp;
+    }
+}
 
 //#endregion
 
