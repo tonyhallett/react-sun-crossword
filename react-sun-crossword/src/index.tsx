@@ -5,18 +5,24 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { RouterAwareApp, reducer } from "./router_test/DemoRouterApp"
+import { reducer, App, Introduction } from "./router_test/DemoRouterApp"
+
+import { useRouterHistory } from 'react-router'
 
 import createHistory from 'history/createBrowserHistory'
-import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
+import {  routerReducer, routerMiddleware, push } from 'react-router-redux'
+import { Router, Route, IndexRoute } from "react-router";
 
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
 //    document.getElementById("example")
 //);
 var anyWindow = window as any;
-const history = createHistory();
-const middleware = routerMiddleware(history);//need to check how this works with the dev tools
+const history = useRouterHistory(createHistory)({
+    basename: '/react-sun-crossword'
+})
+
+const middleware = routerMiddleware(history);
 
 const store = createStore(
     combineReducers({
@@ -29,9 +35,11 @@ const store = createStore(
 
 ReactDOM.render(
     <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <RouterAwareApp/>
-        </ConnectedRouter>
+        <Router history={history}>
+            <Route path="/" component={App}>
+                <IndexRoute component={Introduction} />
+            </Route>
+        </Router>
     </Provider>,
 
     document.getElementById("example")
