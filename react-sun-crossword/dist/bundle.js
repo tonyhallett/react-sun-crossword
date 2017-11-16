@@ -30708,7 +30708,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { path: "pathless", component: DemoRouterApp_1.Pathless },
                 React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PathlessIndex })),
             React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.Route, { path: "pathless", component: DemoRouterApp_1.PathlessChild }))))), document.getElementById("example"));
+                React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild }))))), document.getElementById("example"));
 
 
 /***/ })

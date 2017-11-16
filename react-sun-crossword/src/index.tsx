@@ -42,7 +42,7 @@ ReactDOM.render(
                     <IndexRoute component={PathlessIndex}/>
                 </Route>
                 <Route component={Pathless}>
-                    <Route path="pathless" component={PathlessChild} />
+                    <Route path="pathlessChild" component={PathlessChild} />
                 </Route>
 
             </Route>
