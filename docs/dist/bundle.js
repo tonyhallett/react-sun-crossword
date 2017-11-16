@@ -30819,7 +30819,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
-            React.createElement(RouteAdditional, { path: "additionalProps", component: AdditionalProps, additionalProp: additionalProps }),
+            React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalProps }),
             React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHook })))), document.getElementById("example"));
 
 
