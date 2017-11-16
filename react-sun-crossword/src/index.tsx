@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, AdditionalProps } from "./router_test/DemoRouterApp"
+import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHook } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -64,7 +64,10 @@ ReactDOM.render(
                     <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
                 <Redirect from="many" to="multiple" />
-                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalProps}/>
+                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalProps} />
+                <Route path="leaveHook" component={LeaveHook}>
+                    
+                </Route>
             </Route>
         </Router>
     </Provider>,

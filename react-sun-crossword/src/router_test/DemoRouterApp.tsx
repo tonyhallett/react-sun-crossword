@@ -67,6 +67,37 @@ export class AdditionalProps extends React.Component<RouteComponentProps<undefin
         return "Received additional prop from route " + additionalProp;
     }
 }
+interface LeaveHookState {
+    canLeave:boolean
+}
+export class LeaveHook extends React.Component<RouteComponentProps<undefined, undefined>, LeaveHookState> {
+    constructor(props) {
+        super(props);
+        this.state = { canLeave:false }
+    }
+    componentDidMount() {
+        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave)
+    }
+
+    routerWillLeave(nextLocation) {
+        // return false to prevent a transition w/o prompting the user,
+        // or return a string to allow the user to decide:
+        // return `null` or nothing to let other hooks to be executed
+        //
+        // NOTE: if you return true, other hooks will not be executed!
+        if (!this.state.canLeave)
+            return 'Your cannot leave !!!!!'
+    }
+    toggleCanLeave = () => {
+        this.setState((prevState, props) => {
+            return { canLeave: !prevState.canLeave };
+        });
+    }
+    render() {
+        return <button onClick={this.toggleCanLeave}>{this.state.canLeave?"Can leave":"Can't leave"}</button>
+    }
+}
+
 
 //#endregion
 

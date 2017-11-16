@@ -6424,6 +6424,36 @@ var AdditionalProps = /** @class */ (function (_super) {
     return AdditionalProps;
 }(React.Component));
 exports.AdditionalProps = AdditionalProps;
+var LeaveHook = /** @class */ (function (_super) {
+    __extends(LeaveHook, _super);
+    function LeaveHook(props) {
+        var _this = _super.call(this, props) || this;
+        _this.toggleCanLeave = function () {
+            _this.setState(function (prevState, props) {
+                return { canLeave: !prevState.canLeave };
+            });
+        };
+        _this.state = { canLeave: false };
+        return _this;
+    }
+    LeaveHook.prototype.componentDidMount = function () {
+        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+    };
+    LeaveHook.prototype.routerWillLeave = function (nextLocation) {
+        // return false to prevent a transition w/o prompting the user,
+        // or return a string to allow the user to decide:
+        // return `null` or nothing to let other hooks to be executed
+        //
+        // NOTE: if you return true, other hooks will not be executed!
+        if (!this.state.canLeave)
+            return 'Your cannot leave !!!!!';
+    };
+    LeaveHook.prototype.render = function () {
+        return React.createElement("button", { onClick: this.toggleCanLeave }, this.state.canLeave ? "Can leave" : "Can't leave");
+    };
+    return LeaveHook;
+}(React.Component));
+exports.LeaveHook = LeaveHook;
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {
@@ -30789,7 +30819,8 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
-            React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalProps })))), document.getElementById("example"));
+            React.createElement(RouteAdditional, { path: "additionalProps", component: AdditionalProps, additionalProp: additionalProps }),
+            React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHook })))), document.getElementById("example"));
 
 
 /***/ })
