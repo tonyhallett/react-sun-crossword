@@ -6341,6 +6341,41 @@ var Introduction = /** @class */ (function (_super) {
     return Introduction;
 }(React.Component));
 exports.Introduction = Introduction;
+var Pathless = /** @class */ (function (_super) {
+    __extends(Pathless, _super);
+    function Pathless() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Pathless.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("div", null, "This component can have a child whose path is not a subpath"),
+            this.props.children);
+    };
+    return Pathless;
+}(React.Component));
+exports.Pathless = Pathless;
+var PathlessIndex = /** @class */ (function (_super) {
+    __extends(PathlessIndex, _super);
+    function PathlessIndex() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PathlessIndex.prototype.render = function () {
+        return "This is the index route component";
+    };
+    return PathlessIndex;
+}(React.Component));
+exports.PathlessIndex = PathlessIndex;
+var PathlessChild = /** @class */ (function (_super) {
+    __extends(PathlessChild, _super);
+    function PathlessChild() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PathlessChild.prototype.render = function () {
+        return "This component has been rendered without its route being a subpath";
+    };
+    return PathlessChild;
+}(React.Component));
+exports.PathlessChild = PathlessChild;
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {
@@ -30669,7 +30704,11 @@ var store = redux_1.createStore(redux_1.combineReducers({
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },
         React.createElement(react_router_2.Route, { path: "/", component: DemoRouterApp_1.App },
-            React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.Introduction })))), document.getElementById("example"));
+            React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.Introduction }),
+            React.createElement(react_router_2.Route, { path: "pathless", component: DemoRouterApp_1.Pathless },
+                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PathlessIndex })),
+            React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
+                React.createElement(react_router_2.Route, { path: "pathless", component: DemoRouterApp_1.PathlessChild }))))), document.getElementById("example"));
 
 
 /***/ })

@@ -22,6 +22,24 @@ export class Introduction extends React.Component<undefined, undefined> {
         return "This is the introduction - the index route";
     }
 }
+export class Pathless extends React.Component<undefined, undefined> {
+    render() {
+        return <div>
+            <div>This component can have a child whose path is not a subpath</div>
+            {this.props.children}
+            </div>
+    }
+}
+export class PathlessIndex extends React.Component<undefined, undefined> {
+    render() {
+        return "This is the index route component";
+    }
+}
+export class PathlessChild extends React.Component<undefined, undefined> {
+    render() {
+        return "This component has been rendered without its route being a subpath";
+    }
+}
 
 //#endregion
 

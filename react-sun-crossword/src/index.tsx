@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { reducer, App, Introduction } from "./router_test/DemoRouterApp"
+import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -38,6 +38,13 @@ ReactDOM.render(
         <Router history={history}>
             <Route path="/" component={App}>
                 <IndexRoute component={Introduction} />
+                <Route path="pathless" component={Pathless}>
+                    <IndexRoute component={PathlessIndex}/>
+                </Route>
+                <Route component={Pathless}>
+                    <Route path="pathless" component={PathlessChild} />
+                </Route>
+
             </Route>
         </Router>
     </Provider>,
