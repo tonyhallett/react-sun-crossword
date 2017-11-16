@@ -96,7 +96,7 @@ export class LeaveHook extends React.Component<RouteComponentProps<undefined, un
     render() {
         return <div>
             <button onClick={this.toggleCanLeave}>{this.state.canLeave ? "Can leave" : "Can't leave"}</button>
-            <Link to="/multiple"></Link>
+            <Link to="/multiple">Leave !</Link>
             </div>
     }
 }

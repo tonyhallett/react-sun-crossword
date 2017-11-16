@@ -6452,7 +6452,7 @@ var LeaveHook = /** @class */ (function (_super) {
     LeaveHook.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleCanLeave }, this.state.canLeave ? "Can leave" : "Can't leave"),
-            React.createElement(react_router_1.Link, { to: "/multiple" }));
+            React.createElement(react_router_1.Link, { to: "/multiple" }, "Leave !"));
     };
     return LeaveHook;
 }(React.Component));
