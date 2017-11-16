@@ -6438,7 +6438,7 @@ var LeaveHook = /** @class */ (function (_super) {
         return _this;
     }
     LeaveHook.prototype.componentDidMount = function () {
-        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
+        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this));
     };
     LeaveHook.prototype.routerWillLeave = function (nextLocation) {
         // return false to prevent a transition w/o prompting the user,

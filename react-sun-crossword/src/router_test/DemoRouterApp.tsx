@@ -76,7 +76,7 @@ export class LeaveHook extends React.Component<RouteComponentProps<undefined, un
         this.state = { canLeave:false }
     }
     componentDidMount() {
-        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave)
+        this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this));
     }
 
     routerWillLeave(nextLocation) {
