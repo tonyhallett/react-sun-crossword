@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex } from "./router_test/DemoRouterApp"
+import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2 } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
