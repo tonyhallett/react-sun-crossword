@@ -45,7 +45,7 @@ export class Multiple extends React.Component<RouteComponentProps<undefined,unde
     render() {
         
         return <div>
-            <div>This route component receives child components through the components property</div>
+            <div>This route component receives child components through a matching child route's components property</div>
             {this.props["child1"]}
             {this.props["child2"]}
             </div>
@@ -53,7 +53,7 @@ export class Multiple extends React.Component<RouteComponentProps<undefined,unde
 }
 export class Child1 extends React.Component<undefined, undefined> {
     render() {
-        return "Chil12 from Route components property";
+        return "Child1 from Route components property";
     }
 }
 export class Child2 extends React.Component<undefined, undefined> {

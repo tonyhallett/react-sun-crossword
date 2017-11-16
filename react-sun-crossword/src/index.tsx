@@ -11,7 +11,7 @@ import { useRouterHistory } from 'react-router'
 
 import { createHistory } from 'history'
 import {  routerReducer, routerMiddleware, push } from 'react-router-redux'
-import { Router, Route, IndexRoute } from "react-router";
+import { Router, Route, IndexRoute, Redirect } from "react-router";
 
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
@@ -52,7 +52,7 @@ ReactDOM.render(
                     */}
                     <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
-
+                <Redirect from="many" to="multiple"/>
             </Route>
         </Router>
     </Provider>,

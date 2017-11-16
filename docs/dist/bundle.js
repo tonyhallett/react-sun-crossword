@@ -6383,7 +6383,7 @@ var Multiple = /** @class */ (function (_super) {
     }
     Multiple.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement("div", null, "This route component receives child components through the components property"),
+            React.createElement("div", null, "This route component receives child components through a matching child route's components property"),
             this.props["child1"],
             this.props["child2"]);
     };
@@ -6396,7 +6396,7 @@ var Child1 = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Child1.prototype.render = function () {
-        return "Chil12 from Route components property";
+        return "Child1 from Route components property";
     };
     return Child1;
 }(React.Component));
@@ -30746,7 +30746,8 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
                 React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
             React.createElement(react_router_2.Route, { path: "multiple", component: DemoRouterApp_1.Multiple },
-                React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } }))))), document.getElementById("example"));
+                React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
+            React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" })))), document.getElementById("example"));
 
 
 /***/ })
