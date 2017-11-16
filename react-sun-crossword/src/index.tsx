@@ -9,7 +9,7 @@ import { reducer, App, Introduction } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
-import createHistory from 'history/createBrowserHistory'
+import { createHistory } from 'history'
 import {  routerReducer, routerMiddleware, push } from 'react-router-redux'
 import { Router, Route, IndexRoute } from "react-router";
 
