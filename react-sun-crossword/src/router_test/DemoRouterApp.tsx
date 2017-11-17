@@ -151,7 +151,7 @@ export class PropsFromParentChild extends React.Component<PropsFromParentParentS
     render() {
         return <div>
             <div>{"this prop has come from parent:" + this.props.someState}</div>
-            <div>{"this prop ( route.path ) has come from the router: " + this.props.route.path}</div>
+            <div>{"this prop ( location.pathname ) has come from the router: " + this.props.location.pathname}</div>
 
         </div>
     }
