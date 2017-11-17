@@ -4,23 +4,34 @@ import { RouteComponentProps, IndexLink } from 'react-router'
 import { connect } from 'react-redux'
 
 
-var navLinkActiveStyle = {
+var linkActiveStyle: React.CSSProperties = {
     color:"yellow"
+}
+var linkStyle: React.CSSProperties = {
+    margin:"5px"
+}
+export class Container extends React.Component<undefined, undefined>{
+    render() {
+        return <div style={{ padding: "10px", borderStyle: "solid", borderColor: "green", borderWidth:"2px" }}>
+            {this.props.children}
+        </div>
+    }
 }
 //#region v3 route components
 export class App extends React.Component<undefined, undefined> {
     render() {
-        //will add links in here
         return <div>
             <div>This is the app, has children from sub routes including the index route</div>
             <IndexLink to="/">Introduction</IndexLink>
             <Link to="/pathless">Pathless root</Link>
             <Link to="/pathlessChild">Pathless</Link>
-            <Link to="/pathlessChild">Multiple</Link>
+            <Link to="/multiple">Multiple</Link>
             <Link to="/many">Redirected</Link>
             <Link to="/additionalProps">Additional props</Link>
             <Link to="/leaveHook">Leave hook</Link>
-            {this.props.children}
+            <Container>
+                {this.props.children}
+            </Container>
         </div>
     }
 }
@@ -33,8 +44,10 @@ export class Pathless extends React.Component<undefined, undefined> {
     render() {
         return <div>
             <div>This component can have a child whose path is not a subpath</div>
-            {this.props.children}
-            </div>
+            <Container>
+                {this.props.children}
+             </Container>
+        </div>
     }
 }
 export class PathlessIndex extends React.Component<undefined, undefined> {
@@ -53,9 +66,13 @@ export class Multiple extends React.Component<RouteComponentProps<undefined,unde
         
         return <div>
             <div>This route component receives child components through a matching child route's components property</div>
-            {this.props["child1"]}
-            {this.props["child2"]}
-            </div>
+            <Container>
+                {this.props["child1"]}
+            </Container>
+            <Container>
+                {this.props["child2"]}
+            </Container>
+        </div>
     }
 }
 export class Child1 extends React.Component<undefined, undefined> {
@@ -71,7 +88,7 @@ export class Child2 extends React.Component<undefined, undefined> {
 export class AdditionalProps extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
     render() {
         var additionalProp = (this.props.route as any).additionalProp;
-        return "Received additional prop from route " + additionalProp;
+        return <div>{"Received additional prop from route " + additionalProp}</div>
     }
 }
 interface LeaveHookState {

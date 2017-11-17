@@ -6314,9 +6314,23 @@ var React = __webpack_require__(3);
 var react_router_1 = __webpack_require__(14);
 var react_router_2 = __webpack_require__(14);
 var react_redux_1 = __webpack_require__(43);
-var navLinkActiveStyle = {
+var linkActiveStyle = {
     color: "yellow"
 };
+var linkStyle = {
+    margin: "5px"
+};
+var Container = /** @class */ (function (_super) {
+    __extends(Container, _super);
+    function Container() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Container.prototype.render = function () {
+        return React.createElement("div", { style: { padding: "10px", borderStyle: "solid", borderColor: "green", borderWidth: "2px" } }, this.props.children);
+    };
+    return Container;
+}(React.Component));
+exports.Container = Container;
 //#region v3 route components
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
@@ -6324,17 +6338,16 @@ var App = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     App.prototype.render = function () {
-        //will add links in here
         return React.createElement("div", null,
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
             React.createElement(react_router_2.IndexLink, { to: "/" }, "Introduction"),
             React.createElement(react_router_1.Link, { to: "/pathless" }, "Pathless root"),
             React.createElement(react_router_1.Link, { to: "/pathlessChild" }, "Pathless"),
-            React.createElement(react_router_1.Link, { to: "/pathlessChild" }, "Multiple"),
+            React.createElement(react_router_1.Link, { to: "/multiple" }, "Multiple"),
             React.createElement(react_router_1.Link, { to: "/many" }, "Redirected"),
             React.createElement(react_router_1.Link, { to: "/additionalProps" }, "Additional props"),
             React.createElement(react_router_1.Link, { to: "/leaveHook" }, "Leave hook"),
-            this.props.children);
+            React.createElement(Container, null, this.props.children));
     };
     return App;
 }(React.Component));
@@ -6358,7 +6371,7 @@ var Pathless = /** @class */ (function (_super) {
     Pathless.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "This component can have a child whose path is not a subpath"),
-            this.props.children);
+            React.createElement(Container, null, this.props.children));
     };
     return Pathless;
 }(React.Component));
@@ -6393,8 +6406,8 @@ var Multiple = /** @class */ (function (_super) {
     Multiple.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "This route component receives child components through a matching child route's components property"),
-            this.props["child1"],
-            this.props["child2"]);
+            React.createElement(Container, null, this.props["child1"]),
+            React.createElement(Container, null, this.props["child2"]));
     };
     return Multiple;
 }(React.Component));
@@ -6428,7 +6441,7 @@ var AdditionalProps = /** @class */ (function (_super) {
     }
     AdditionalProps.prototype.render = function () {
         var additionalProp = this.props.route.additionalProp;
-        return "Received additional prop from route " + additionalProp;
+        return React.createElement("div", null, "Received additional prop from route " + additionalProp);
     };
     return AdditionalProps;
 }(React.Component));
