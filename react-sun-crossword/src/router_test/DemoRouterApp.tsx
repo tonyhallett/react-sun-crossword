@@ -3,7 +3,7 @@ import { Link,  Route, Redirect, LinkProps } from 'react-router'
 import { RouteComponentProps, IndexLink } from 'react-router'
 import { connect } from 'react-redux'
 
-
+//should create a hoc styled link
 var linkActiveStyle: React.CSSProperties = {
     color:"yellow"
 }
@@ -23,12 +23,12 @@ export class App extends React.Component<undefined, undefined> {
         return <div>
             <div>This is the app, has children from sub routes including the index route</div>
             <IndexLink to="/">Introduction</IndexLink>
-            <Link to="/pathless">Pathless root</Link>
-            <Link to="/pathlessChild">Pathless</Link>
-            <Link to="/multiple">Multiple</Link>
-            <Link to="/many">Redirected</Link>
-            <Link to="/additionalProps">Additional props</Link>
-            <Link to="/leaveHook">Leave hook</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathless">Pathless root</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathlessChild">Pathless</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/multiple">Multiple</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/many">Redirected</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/additionalProps">Additional props</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/leaveHook">Leave hook</Link>
             <Container>
                 {this.props.children}
             </Container>

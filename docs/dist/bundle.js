@@ -6314,6 +6314,7 @@ var React = __webpack_require__(3);
 var react_router_1 = __webpack_require__(14);
 var react_router_2 = __webpack_require__(14);
 var react_redux_1 = __webpack_require__(43);
+//should create a hoc styled link
 var linkActiveStyle = {
     color: "yellow"
 };
@@ -6341,12 +6342,12 @@ var App = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
             React.createElement(react_router_2.IndexLink, { to: "/" }, "Introduction"),
-            React.createElement(react_router_1.Link, { to: "/pathless" }, "Pathless root"),
-            React.createElement(react_router_1.Link, { to: "/pathlessChild" }, "Pathless"),
-            React.createElement(react_router_1.Link, { to: "/multiple" }, "Multiple"),
-            React.createElement(react_router_1.Link, { to: "/many" }, "Redirected"),
-            React.createElement(react_router_1.Link, { to: "/additionalProps" }, "Additional props"),
-            React.createElement(react_router_1.Link, { to: "/leaveHook" }, "Leave hook"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/pathless" }, "Pathless root"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/pathlessChild" }, "Pathless"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/multiple" }, "Multiple"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/many" }, "Redirected"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/additionalProps" }, "Additional props"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/leaveHook" }, "Leave hook"),
             React.createElement(Container, null, this.props.children));
     };
     return App;
