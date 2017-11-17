@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 import { Link,  Route, Redirect, LinkProps } from 'react-router'
-import {  RouteComponentProps } from 'react-router'
+import { RouteComponentProps, IndexLink } from 'react-router'
 import { connect } from 'react-redux'
 
 
@@ -13,6 +13,13 @@ export class App extends React.Component<undefined, undefined> {
         //will add links in here
         return <div>
             <div>This is the app, has children from sub routes including the index route</div>
+            <IndexLink to="/">Introduction</IndexLink>
+            <Link to="/pathless">Pathless root</Link>
+            <Link to="/pathlessChild">Pathless</Link>
+            <Link to="/pathlessChild">Multiple</Link>
+            <Link to="/many">Redirected</Link>
+            <Link to="/additionalProps">Additional props</Link>
+            <Link to="/leaveHook">Leave hook</Link>
             {this.props.children}
         </div>
     }
@@ -86,7 +93,7 @@ export class LeaveHook extends React.Component<RouteComponentProps<undefined, un
         //
         // NOTE: if you return true, other hooks will not be executed!
         if (!this.state.canLeave)
-            return 'Your cannot leave !!!!!'
+            return "Please don't leave. Ok to leave, cancel to stay";
     }
     toggleCanLeave = () => {
         this.setState((prevState, props) => {
@@ -96,7 +103,7 @@ export class LeaveHook extends React.Component<RouteComponentProps<undefined, un
     render() {
         return <div>
             <button onClick={this.toggleCanLeave}>{this.state.canLeave ? "Can leave" : "Can't leave"}</button>
-            <Link to="/multiple">Leave !</Link>
+            
             </div>
     }
 }
