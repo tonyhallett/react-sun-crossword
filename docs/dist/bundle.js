@@ -30854,7 +30854,7 @@ var store = redux_1.createStore(redux_1.combineReducers({
     reducer: DemoRouterApp_1.reducer,
     router: react_router_redux_1.routerReducer
 }), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
-var additionalPropsValue = "This is additional";
+var additionalPropsValue = { additional: "This is additional" };
 var RouteAdditional = /** @class */ (function (_super) {
     __extends(RouteAdditional, _super);
     function RouteAdditional() {
@@ -30875,7 +30875,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
             React.createElement(react_router_2.Route, { onEnter: function () {
                     console.log("onEnter");
-                    additionalPropsValue = "have entered multiple";
+                    additionalPropsValue.additional = "have entered multiple";
                 }, path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
