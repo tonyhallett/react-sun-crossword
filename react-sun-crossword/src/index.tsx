@@ -55,7 +55,10 @@ ReactDOM.render(
                 <Route component={Pathless}>
                     <Route path="pathlessChild" component={PathlessChild} />
                 </Route>
-                <Route onEnter={() => additionalPropsValue="have entered multiple"} path="multiple" component={Multiple} >
+                <Route onEnter={() => {
+                    console.log("onEnter");
+                    additionalPropsValue = "have entered multiple";
+                }} path="multiple" component={Multiple} >
                     {/* Just to demonstrate the concept 
                         in practice there would be multiple child routes - where the matching one
                         will provide the child components
