@@ -2,6 +2,7 @@
 import { Link,  Route, Redirect, LinkProps } from 'react-router'
 import { RouteComponentProps, IndexLink } from 'react-router'
 import { connect } from 'react-redux'
+import { ReactElement } from "react";
 
 //should create a hoc styled link
 var linkActiveStyle: React.CSSProperties = {
@@ -29,6 +30,7 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/many">Redirected</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/additionalProps">Additional props</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/leaveHook">Leave hook</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/propsFromParent">Props from parent</Link>
             <Container>
                 {this.props.children}
             </Container>
@@ -125,7 +127,35 @@ export class LeaveHook extends React.Component<RouteComponentProps<undefined, un
     }
 }
 
+interface PropsFromParentParentState {
+    someState:string
+}
+export class PropsFromParentParent extends React.Component<undefined, PropsFromParentParentState>{
+    constructor(props) {
+        super(props);
+        this.state = { someState:"Initial from parent" }
+    }
+    changeState = () => {
+        this.setState({someState:"Change by parent"});
+    }
+    render() {
+        return <div>
+            <button onClick={this.changeState}>Change state</button>
+            <Container>
+                {React.Children.map(this.props.children, c => React.cloneElement(c as ReactElement<any>, { someState: this.state.someState }))}
+            </Container>
+        </div>
+    }
+}
+export class PropsFromParentChild extends React.Component<PropsFromParentParentState & RouteComponentProps<undefined, undefined>, undefined>{
+    render() {
+        return <div>
+            <div>{"this prop has come from parent:" + this.props.someState}</div>
+            <div>{"this prop ( route.path ) has come from the router: " + this.props.route.path}</div>
 
+        </div>
+    }
+}
 //#endregion
 
 

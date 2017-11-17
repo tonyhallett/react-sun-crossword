@@ -6348,6 +6348,7 @@ var App = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/many" }, "Redirected"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/additionalProps" }, "Additional props"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/leaveHook" }, "Leave hook"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/propsFromParent" }, "Props from parent"),
             React.createElement(Container, null, this.props.children));
     };
     return App;
@@ -6478,6 +6479,38 @@ var LeaveHook = /** @class */ (function (_super) {
     return LeaveHook;
 }(React.Component));
 exports.LeaveHook = LeaveHook;
+var PropsFromParentParent = /** @class */ (function (_super) {
+    __extends(PropsFromParentParent, _super);
+    function PropsFromParentParent(props) {
+        var _this = _super.call(this, props) || this;
+        _this.changeState = function () {
+            _this.setState({ someState: "Change by parent" });
+        };
+        _this.state = { someState: "Initial from parent" };
+        return _this;
+    }
+    PropsFromParentParent.prototype.render = function () {
+        var _this = this;
+        return React.createElement("div", null,
+            React.createElement("button", { onClick: this.changeState }, "Change state"),
+            React.createElement(Container, null, React.Children.map(this.props.children, function (c) { return React.cloneElement(c, { someState: _this.state.someState }); })));
+    };
+    return PropsFromParentParent;
+}(React.Component));
+exports.PropsFromParentParent = PropsFromParentParent;
+var PropsFromParentChild = /** @class */ (function (_super) {
+    __extends(PropsFromParentChild, _super);
+    function PropsFromParentChild() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PropsFromParentChild.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("div", null, "this prop has come from parent:" + this.props.someState),
+            React.createElement("div", null, "this prop ( route.path ) has come from the router: " + this.props.route.path));
+    };
+    return PropsFromParentChild;
+}(React.Component));
+exports.PropsFromParentChild = PropsFromParentChild;
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {
@@ -30844,7 +30877,9 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
             React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
-            React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHook })))), document.getElementById("example"));
+            React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHook }),
+            React.createElement(react_router_2.Route, { path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
+                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PropsFromParentChild }))))), document.getElementById("example"));
 
 
 /***/ })
