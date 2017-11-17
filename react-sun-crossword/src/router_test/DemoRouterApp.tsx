@@ -89,7 +89,7 @@ export class Child2 extends React.Component<undefined, undefined> {
 }
 export class AdditionalProps extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
     render() {
-        var additionalProp = (this.props.route as any).additionalProp;
+        var additionalProp = (this.props.route as any).additionalProp.additional;
         return <div>{"Received additional prop from route " + additionalProp}</div>
     }
 }

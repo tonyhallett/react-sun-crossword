@@ -6442,7 +6442,7 @@ var AdditionalProps = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     AdditionalProps.prototype.render = function () {
-        var additionalProp = this.props.route.additionalProp;
+        var additionalProp = this.props.route.additionalProp.additional;
         return React.createElement("div", null, "Received additional prop from route " + additionalProp);
     };
     return AdditionalProps;

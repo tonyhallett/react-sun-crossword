@@ -33,10 +33,11 @@ const store = createStore(
     composeWithDevTools(applyMiddleware(middleware))
     
 )
-var additionalPropsValue = "This is additional";
+
+var additionalPropsValue = { additional: "This is additional" };
 
 interface RouteAdditionalProps {
-    additionalProp:string
+    additionalProp: typeof additionalPropsValue
 }
 class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,undefined>{
     render() {
@@ -57,7 +58,7 @@ ReactDOM.render(
                 </Route>
                 <Route onEnter={() => {
                     console.log("onEnter");
-                    additionalPropsValue = "have entered multiple";
+                    additionalPropsValue.additional = "have entered multiple";
                 }} path="multiple" component={Multiple} >
                     {/* Just to demonstrate the concept 
                         in practice there would be multiple child routes - where the matching one
