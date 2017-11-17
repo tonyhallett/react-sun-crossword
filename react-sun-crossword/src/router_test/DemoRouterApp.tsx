@@ -1,27 +1,33 @@
 ﻿import * as React from "react";
-import { Link,  Route, Redirect, LinkProps } from 'react-router'
+import { Link,  Route, Redirect, LinkProps ,RouterState} from 'react-router'
 import { RouteComponentProps, IndexLink } from 'react-router'
 import { connect } from 'react-redux'
 import { ReactElement } from "react";
+import ReactJson from 'react-json-view'
 
+
+
+//#region v3 route components
+//#region link styling
 //should create a hoc styled link
 var linkActiveStyle: React.CSSProperties = {
-    color:"yellow"
+    color: "yellow"
 }
 var linkStyle: React.CSSProperties = {
-    margin:"5px"
+    margin: "5px"
 }
+//#endregion
 export class Container extends React.Component<undefined, undefined>{
     render() {
-        return <div style={{ padding: "10px", borderStyle: "solid", borderColor: "green", borderWidth:"2px" }}>
+        return <div style={{ padding: "10px", borderStyle: "solid", borderColor: "green", borderWidth: "2px" }}>
             {this.props.children}
         </div>
     }
 }
-//#region v3 route components
 export class App extends React.Component<undefined, undefined> {
     render() {
         return <div>
+            <ReactJsonContainer />
             <div>This is the app, has children from sub routes including the index route</div>
             <IndexLink to="/">Introduction</IndexLink>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathless">Pathless root</Link>
@@ -37,6 +43,26 @@ export class App extends React.Component<undefined, undefined> {
         </div>
     }
 }
+
+interface ReactJsonSrcProps {
+    src?: any
+}
+interface OwnProps { }
+//#region typing for ReactJson
+interface ReactJsonProps {
+    src:any
+}
+type ReactJson = React.ComponentClass<ReactJsonProps>
+
+//#endregion
+const ReactJsonContainer = connect((state: RouterAppState, ownProps: OwnProps) => {
+    return {
+        src: {
+            hookAndMounts: state.hooksAndMounts
+        }
+    } as ReactJsonSrcProps
+})(ReactJson);
+
 export class Introduction extends React.Component<undefined, undefined> {
     render() {
         return "This is the introduction - the index route";
@@ -156,10 +182,78 @@ export class PropsFromParentChild extends React.Component<PropsFromParentParentS
         </div>
     }
 }
+
+
+//#region actions/reducers/state/selectors
+const HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
+
+//note that this does not agree with flux standard actions
+export function HookOrMountActionCreator(type:hookOrMountType,details: object) {
+    return {
+        type: HOOK_OR_MOUNT,
+        hookOrMountType: type,
+        details:details
+    }
+}
+type hookOrMountType = "EnterHook" | "LeaveHook" | "ComponentDidMount" | "ComponentWillUnmount"
+interface HookOrMountAction{
+    type: string,
+    hookOrMountType: hookOrMountType,
+    details:object
+}
+interface HookOrMountDetail {
+    type: hookOrMountType,
+    details:any
+}
+interface RouterAppState {
+    hooksAndMounts: HookOrMountDetail[]
+}
+
+//could have typed To RouterState for this demo default
+export function rootReducer(state: RouterAppState = {
+    hooksAndMounts: [
+        {
+            type: "EnterHook",
+            details: {
+                location: {
+                    pathname: "somepathname",
+                    search: "somesearch",
+                    query: "query",
+                    state: null,
+                    action: "POP",
+                    key:"someKey"
+
+                },
+                routes: [
+                    { path: "SomePath" },
+                    {path:"SomePath/segment2"}
+                ],
+                params: {
+                    someParam: "SomeValue",
+                    otherParam:"OtherValue"
+                }
+            }
+        }
+    ]
+}, action): RouterAppState {
+    switch (action.type) {
+        case HOOK_OR_MOUNT:
+            var hookOrMountAction = action as HookOrMountAction;
+            return {
+                hooksAndMounts: [...state.hooksAndMounts, {
+                    type: hookOrMountAction.hookOrMountType,
+                    details: hookOrMountAction.details
+                }]
+            }
+        default:
+            return state;
+    }
+}
+//#endregion
 //#endregion
 
 
-//#region redux
+//#region old redux
 export interface DemoState {
     demoValue: string,
     someOtherValue: any

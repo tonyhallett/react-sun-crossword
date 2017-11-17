@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { reducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHook, AdditionalProps, PropsFromParentParent, PropsFromParentChild } from "./router_test/DemoRouterApp"
+import { rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHook, AdditionalProps, PropsFromParentParent, PropsFromParentChild } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -27,13 +27,13 @@ const middleware = routerMiddleware(history);
 
 const store = createStore(
     combineReducers({
-        reducer,
+        rootReducer,
         router: routerReducer
     }),
     composeWithDevTools(applyMiddleware(middleware))
     
 )
-
+//note that if want to be able to change then needs to be an object
 var additionalPropsValue = { additional: "This is additional" };
 
 interface RouteAdditionalProps {
