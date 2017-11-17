@@ -30873,7 +30873,10 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PathlessIndex })),
             React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
                 React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
-            React.createElement(react_router_2.Route, { onEnter: function () { return additionalPropsValue = "have entered multiple"; }, path: "multiple", component: DemoRouterApp_1.Multiple },
+            React.createElement(react_router_2.Route, { onEnter: function () {
+                    console.log("onEnter");
+                    additionalPropsValue = "have entered multiple";
+                }, path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
             React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
