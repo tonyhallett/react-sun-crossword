@@ -90,7 +90,7 @@ ReactDOM.render(
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="propsFromParent" component={PropsFromParentParent}>
                     <IndexRoute component={PropsFromParentChild} />
                 </Route>
-                <Route path="onChange" onChange={onChange} component={OnChangeComponent}>
+                <Route path="onChange" component={OnChangeComponent}>
                     <Route path="change1" component={OnChangeChild1} />
                     <Route path="change2" component={OnChangeChild2} />
                 </Route>

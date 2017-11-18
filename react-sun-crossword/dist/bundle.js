@@ -31074,7 +31074,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
                 React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PropsFromParentChild })),
-            React.createElement(react_router_2.Route, { path: "onChange", onChange: onChange, component: DemoRouterApp_1.OnChangeComponent },
+            React.createElement(react_router_2.Route, { path: "onChange", component: DemoRouterApp_1.OnChangeComponent },
                 React.createElement(react_router_2.Route, { path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
                 React.createElement(react_router_2.Route, { path: "change2", component: DemoRouterApp_1.OnChangeChild2 }))))), document.getElementById("example"));
 
