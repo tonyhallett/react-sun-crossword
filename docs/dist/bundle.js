@@ -30993,7 +30993,7 @@ var RouteAdditional = /** @class */ (function (_super) {
 var onEnter = function routeOnEnter(nextState, replace, callback) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }));
+    //store.dispatch(hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }))
 };
 var onLeave = function routeOnLeave(prevState) {
 };

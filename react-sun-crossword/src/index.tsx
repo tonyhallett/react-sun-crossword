@@ -50,7 +50,7 @@ type AnyFunction = (...args: any[]) => any;
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction, callback?: AnyFunction) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
-    store.dispatch(hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }))
+    //store.dispatch(hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }))
 
 }
 var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
