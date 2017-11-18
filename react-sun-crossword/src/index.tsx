@@ -50,15 +50,19 @@ type AnyFunction = (...args: any[]) => any;
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction, callback?: AnyFunction) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
-    //store.dispatch(hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }))
+    store.dispatch(hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }))
 
 }
 var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
-    var debugThis = "debug this";
+    var prevStateLocationPathname = prevState.location.pathname;
+    store.dispatch(hookOrMountActionCreator("LeaveHook", { prevStateLocationPathname: prevStateLocationPathname }))
 }
 
 var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextState: RouterState, replace: RedirectFunction, callback?: AnyFunction) {
-    var debugThis = "debug this";
+    var nextStateLocationPathname = nextState.location.pathname;
+    var prevStateLocationPathname = prevState.location.pathname;
+    store.dispatch(hookOrMountActionCreator("LeaveHook", { prevStateLocationPathname: prevStateLocationPathname, nextStateLocationPathname: nextStateLocationPathname  }))
+
 }
 
 ReactDOM.render(

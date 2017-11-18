@@ -31048,13 +31048,16 @@ var RouteAdditional = /** @class */ (function (_super) {
 var onEnter = function routeOnEnter(nextState, replace, callback) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
-    //store.dispatch(hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }))
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }));
 };
 var onLeave = function routeOnLeave(prevState) {
-    var debugThis = "debug this";
+    var prevStateLocationPathname = prevState.location.pathname;
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("LeaveHook", { prevStateLocationPathname: prevStateLocationPathname }));
 };
 var onChange = function routeOnChange(prevState, nextState, replace, callback) {
-    var debugThis = "debug this";
+    var nextStateLocationPathname = nextState.location.pathname;
+    var prevStateLocationPathname = prevState.location.pathname;
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("LeaveHook", { prevStateLocationPathname: prevStateLocationPathname, nextStateLocationPathname: nextStateLocationPathname }));
 };
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },
