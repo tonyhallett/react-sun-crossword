@@ -6360,7 +6360,6 @@ var App = /** @class */ (function (_super) {
     }
     App.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(ReactJsonContainer, null),
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
             React.createElement(react_router_2.IndexLink, { to: "/" }, "Introduction"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/pathless" }, "Pathless root"),
@@ -6370,12 +6369,13 @@ var App = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/additionalProps" }, "Additional props"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/leaveHook" }, "Leave hook"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/propsFromParent" }, "Props from parent"),
+            React.createElement(ReactJsonContainer, null),
             React.createElement(Container, null, this.props.children));
     };
     return App;
 }(React.Component));
 exports.App = App;
-function wrapMountDispatch(Component) {
+function wrapMountDispatch(Component, displayName) {
     var wrapper = /** @class */ (function (_super) {
         __extends(MountWrapper, _super);
         function MountWrapper() {
@@ -6397,7 +6397,7 @@ function wrapMountDispatch(Component) {
     return react_redux_1.connect(null, (function (dispatch) {
         var wrapperProps = {
             mountUnmount: function (isMount) {
-                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: Component.displayName }));
+                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: displayName }));
             }
         };
         return wrapperProps;
@@ -6411,6 +6411,7 @@ var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {
         }
     };
 })(react_json_view_1.default);
+//#region Introduction
 var IntroductionComp = /** @class */ (function (_super) {
     __extends(IntroductionComp, _super);
     function IntroductionComp() {
@@ -6422,98 +6423,105 @@ var IntroductionComp = /** @class */ (function (_super) {
     return IntroductionComp;
 }(React.Component));
 exports.IntroductionComp = IntroductionComp;
-IntroductionComp.displayName = "Introduction";
-exports.Introduction = wrapMountDispatch(IntroductionComp);
+exports.Introduction = wrapMountDispatch(IntroductionComp, "Introduction");
+//#endregion
 //#region Pathless
-var Pathless = /** @class */ (function (_super) {
-    __extends(Pathless, _super);
-    function Pathless() {
+var PathlessComp = /** @class */ (function (_super) {
+    __extends(PathlessComp, _super);
+    function PathlessComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Pathless.prototype.render = function () {
+    PathlessComp.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "This component can have a child whose path is not a subpath"),
             React.createElement(Container, null, this.props.children));
     };
-    return Pathless;
+    return PathlessComp;
 }(React.Component));
-exports.Pathless = Pathless;
-var PathlessIndex = /** @class */ (function (_super) {
-    __extends(PathlessIndex, _super);
-    function PathlessIndex() {
+exports.PathlessComp = PathlessComp;
+exports.Pathless = wrapMountDispatch(PathlessComp, "Pathless");
+var PathlessIndexComp = /** @class */ (function (_super) {
+    __extends(PathlessIndexComp, _super);
+    function PathlessIndexComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PathlessIndex.prototype.render = function () {
+    PathlessIndexComp.prototype.render = function () {
         return "This is the index route component";
     };
-    return PathlessIndex;
+    return PathlessIndexComp;
 }(React.Component));
-exports.PathlessIndex = PathlessIndex;
-var PathlessChild = /** @class */ (function (_super) {
-    __extends(PathlessChild, _super);
-    function PathlessChild() {
+exports.PathlessIndexComp = PathlessIndexComp;
+exports.PathlessIndex = wrapMountDispatch(PathlessIndexComp, "PathlessIndex");
+var PathlessChildComp = /** @class */ (function (_super) {
+    __extends(PathlessChildComp, _super);
+    function PathlessChildComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PathlessChild.prototype.render = function () {
+    PathlessChildComp.prototype.render = function () {
         return "This component has been rendered without its route being a subpath";
     };
-    return PathlessChild;
+    return PathlessChildComp;
 }(React.Component));
-exports.PathlessChild = PathlessChild;
+exports.PathlessChildComp = PathlessChildComp;
+exports.PathlessChild = wrapMountDispatch(PathlessChildComp, "PathlessChild");
 //#endregion
 //#region multiple
-var Multiple = /** @class */ (function (_super) {
-    __extends(Multiple, _super);
-    function Multiple() {
+var MultipleComp = /** @class */ (function (_super) {
+    __extends(MultipleComp, _super);
+    function MultipleComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Multiple.prototype.render = function () {
+    MultipleComp.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "This route component receives child components through a matching child route's components property"),
             React.createElement(Container, null, this.props["child1"]),
             React.createElement(Container, null, this.props["child2"]));
     };
-    return Multiple;
+    return MultipleComp;
 }(React.Component));
-exports.Multiple = Multiple;
-var Child1 = /** @class */ (function (_super) {
-    __extends(Child1, _super);
-    function Child1() {
+exports.MultipleComp = MultipleComp;
+exports.Multiple = wrapMountDispatch(MultipleComp, "Multiple");
+var Child1Comp = /** @class */ (function (_super) {
+    __extends(Child1Comp, _super);
+    function Child1Comp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Child1.prototype.render = function () {
+    Child1Comp.prototype.render = function () {
         return "Child1 from Route components property";
     };
-    return Child1;
+    return Child1Comp;
 }(React.Component));
-exports.Child1 = Child1;
-var Child2 = /** @class */ (function (_super) {
-    __extends(Child2, _super);
-    function Child2() {
+exports.Child1Comp = Child1Comp;
+exports.Child1 = wrapMountDispatch(Child1Comp, "MultipleChild1");
+var Child2Comp = /** @class */ (function (_super) {
+    __extends(Child2Comp, _super);
+    function Child2Comp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Child2.prototype.render = function () {
+    Child2Comp.prototype.render = function () {
         return "Child2 from Route components property";
     };
-    return Child2;
+    return Child2Comp;
 }(React.Component));
-exports.Child2 = Child2;
+exports.Child2Comp = Child2Comp;
+exports.Child2 = wrapMountDispatch(Child2Comp, "MultipleChild2");
 //#endregion
-var AdditionalProps = /** @class */ (function (_super) {
-    __extends(AdditionalProps, _super);
-    function AdditionalProps() {
+var AdditionalPropsComp = /** @class */ (function (_super) {
+    __extends(AdditionalPropsComp, _super);
+    function AdditionalPropsComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    AdditionalProps.prototype.render = function () {
+    AdditionalPropsComp.prototype.render = function () {
         var additionalProp = this.props.route.additionalProp.additional;
         return React.createElement("div", null, "Received additional prop from route " + additionalProp);
     };
-    return AdditionalProps;
+    return AdditionalPropsComp;
 }(React.Component));
-exports.AdditionalProps = AdditionalProps;
-var LeaveHookComponent = /** @class */ (function (_super) {
-    __extends(LeaveHookComponent, _super);
-    function LeaveHookComponent(props) {
+exports.AdditionalPropsComp = AdditionalPropsComp;
+exports.AdditionalProps = wrapMountDispatch(AdditionalPropsComp, "AdditionalProps");
+var LeaveHookComponentComp = /** @class */ (function (_super) {
+    __extends(LeaveHookComponentComp, _super);
+    function LeaveHookComponentComp(props) {
         var _this = _super.call(this, props) || this;
         _this.toggleCanLeave = function () {
             _this.setState(function (prevState, props) {
@@ -6523,10 +6531,10 @@ var LeaveHookComponent = /** @class */ (function (_super) {
         _this.state = { canLeave: false };
         return _this;
     }
-    LeaveHookComponent.prototype.componentDidMount = function () {
+    LeaveHookComponentComp.prototype.componentDidMount = function () {
         this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this));
     };
-    LeaveHookComponent.prototype.routerWillLeave = function (nextLocation) {
+    LeaveHookComponentComp.prototype.routerWillLeave = function (nextLocation) {
         // return false to prevent a transition w/o prompting the user,
         // or return a string to allow the user to decide:
         // return `null` or nothing to let other hooks to be executed
@@ -6535,16 +6543,17 @@ var LeaveHookComponent = /** @class */ (function (_super) {
         if (!this.state.canLeave)
             return "Please don't leave. Ok to leave, cancel to stay";
     };
-    LeaveHookComponent.prototype.render = function () {
+    LeaveHookComponentComp.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleCanLeave }, this.state.canLeave ? "Can leave" : "Can't leave"));
     };
-    return LeaveHookComponent;
+    return LeaveHookComponentComp;
 }(React.Component));
-exports.LeaveHookComponent = LeaveHookComponent;
-var PropsFromParentParent = /** @class */ (function (_super) {
-    __extends(PropsFromParentParent, _super);
-    function PropsFromParentParent(props) {
+exports.LeaveHookComponentComp = LeaveHookComponentComp;
+exports.LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp, "LeaveHook");
+var PropsFromParentParentComp = /** @class */ (function (_super) {
+    __extends(PropsFromParentParentComp, _super);
+    function PropsFromParentParentComp(props) {
         var _this = _super.call(this, props) || this;
         _this.changeState = function () {
             _this.setState({ someState: "Change by parent" });
@@ -6552,28 +6561,30 @@ var PropsFromParentParent = /** @class */ (function (_super) {
         _this.state = { someState: "Initial from parent" };
         return _this;
     }
-    PropsFromParentParent.prototype.render = function () {
+    PropsFromParentParentComp.prototype.render = function () {
         var _this = this;
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.changeState }, "Change state"),
             React.createElement(Container, null, React.Children.map(this.props.children, function (c) { return React.cloneElement(c, { someState: _this.state.someState }); })));
     };
-    return PropsFromParentParent;
+    return PropsFromParentParentComp;
 }(React.Component));
-exports.PropsFromParentParent = PropsFromParentParent;
-var PropsFromParentChild = /** @class */ (function (_super) {
-    __extends(PropsFromParentChild, _super);
-    function PropsFromParentChild() {
+exports.PropsFromParentParentComp = PropsFromParentParentComp;
+exports.PropsFromParentParent = wrapMountDispatch(PropsFromParentParentComp, "PropsFromParentParent");
+var PropsFromParentChildComp = /** @class */ (function (_super) {
+    __extends(PropsFromParentChildComp, _super);
+    function PropsFromParentChildComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PropsFromParentChild.prototype.render = function () {
+    PropsFromParentChildComp.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "this prop has come from parent:" + this.props.someState),
             React.createElement("div", null, "this prop ( location.pathname ) has come from the router: " + this.props.location.pathname));
     };
-    return PropsFromParentChild;
+    return PropsFromParentChildComp;
 }(React.Component));
-exports.PropsFromParentChild = PropsFromParentChild;
+exports.PropsFromParentChildComp = PropsFromParentChildComp;
+exports.PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
 //#endregion
 //#region actions/reducers/state/selectors
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";

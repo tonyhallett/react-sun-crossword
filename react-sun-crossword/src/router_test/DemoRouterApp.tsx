@@ -27,7 +27,7 @@ export class Container extends React.Component<undefined, undefined>{
 export class App extends React.Component<undefined, undefined> {
     render() {
         return <div>
-            <ReactJsonContainer />
+            
             <div>This is the app, has children from sub routes including the index route</div>
             <IndexLink to="/">Introduction</IndexLink>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathless">Pathless root</Link>
@@ -37,6 +37,7 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/additionalProps">Additional props</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/leaveHook">Leave hook</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/propsFromParent">Props from parent</Link>
+            <ReactJsonContainer />
             <Container>
                 {this.props.children}
             </Container>
@@ -52,7 +53,7 @@ interface WrapperProps {
     mountUnmount: MountDispatchFunction
 }
 
-function wrapMountDispatch<P>(Component: React.ComponentClass<P>){
+function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:string){
 
     var wrapper = class MountWrapper extends React.Component<P & WrapperProps, any>{
         componentDidMount() {
@@ -70,7 +71,7 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>){
     return connect(null, (dispatch => {
         var wrapperProps: WrapperProps= {
             mountUnmount: (isMount: boolean) => {
-                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: Component.displayName }));
+                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: displayName }));
             }
         }
         return wrapperProps;
@@ -95,16 +96,17 @@ const ReactJsonContainer = connect((state: RouterAppState, ownProps: OwnProps) =
     } as ReactJsonSrcProps
 })(ReactJson);
 
+//#region Introduction
 export class IntroductionComp extends React.Component<undefined, undefined> {
     render() {
         return "This is the introduction - the index route";
     }
 }
-(IntroductionComp as React.ComponentClass<undefined>).displayName = "Introduction";
 
-export const  Introduction = wrapMountDispatch(IntroductionComp);
+export const Introduction = wrapMountDispatch(IntroductionComp,"Introduction");
+//#endregion
 //#region Pathless
-export class Pathless extends React.Component<undefined, undefined> {
+export class PathlessComp extends React.Component<undefined, undefined> {
     render() {
         return <div>
             <div>This component can have a child whose path is not a subpath</div>
@@ -114,19 +116,23 @@ export class Pathless extends React.Component<undefined, undefined> {
         </div>
     }
 }
-export class PathlessIndex extends React.Component<undefined, undefined> {
+
+export const Pathless = wrapMountDispatch(PathlessComp, "Pathless");
+export class PathlessIndexComp extends React.Component<undefined, undefined> {
     render() {
         return "This is the index route component";
     }
 }
-export class PathlessChild extends React.Component<undefined, undefined> {
+export const PathlessIndex = wrapMountDispatch(PathlessIndexComp, "PathlessIndex");
+export class PathlessChildComp extends React.Component<undefined, undefined> {
     render() {
         return "This component has been rendered without its route being a subpath";
     }
 }
+export const PathlessChild = wrapMountDispatch(PathlessChildComp, "PathlessChild");
 //#endregion
 //#region multiple
-export class Multiple extends React.Component<RouteComponentProps<undefined,undefined>, undefined> {
+export class MultipleComp extends React.Component<RouteComponentProps<undefined,undefined>, undefined> {
     render() {
         
         return <div>
@@ -140,28 +146,32 @@ export class Multiple extends React.Component<RouteComponentProps<undefined,unde
         </div>
     }
 }
-export class Child1 extends React.Component<undefined, undefined> {
+export const Multiple = wrapMountDispatch(MultipleComp, "Multiple");
+export class Child1Comp extends React.Component<undefined, undefined> {
     render() {
         return "Child1 from Route components property";
     }
 }
-export class Child2 extends React.Component<undefined, undefined> {
+export const Child1 = wrapMountDispatch(Child1Comp, "MultipleChild1");
+export class Child2Comp extends React.Component<undefined, undefined> {
     render() {
         return "Child2 from Route components property";
     }
 }
+export const Child2 = wrapMountDispatch(Child2Comp, "MultipleChild2");
 //#endregion
-export class AdditionalProps extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
+export class AdditionalPropsComp extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
     render() {
         var additionalProp = (this.props.route as any).additionalProp.additional;
         return <div>{"Received additional prop from route " + additionalProp}</div>
     }
 }
+export const AdditionalProps = wrapMountDispatch(AdditionalPropsComp, "AdditionalProps");
 //#region leave hook
 interface LeaveHookState {
     canLeave:boolean
 }
-export class LeaveHookComponent extends React.Component<RouteComponentProps<undefined, undefined>, LeaveHookState> {
+export class LeaveHookComponentComp extends React.Component<RouteComponentProps<undefined, undefined>, LeaveHookState> {
     constructor(props) {
         super(props);
         this.state = { canLeave:false }
@@ -191,12 +201,13 @@ export class LeaveHookComponent extends React.Component<RouteComponentProps<unde
             </div>
     }
 }
+export const LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp, "LeaveHook");
 //#endregion
 //#region props from parent
 interface PropsFromParentParentState {
     someState:string
 }
-export class PropsFromParentParent extends React.Component<undefined, PropsFromParentParentState>{
+export class PropsFromParentParentComp extends React.Component<undefined, PropsFromParentParentState>{
     constructor(props) {
         super(props);
         this.state = { someState:"Initial from parent" }
@@ -213,7 +224,8 @@ export class PropsFromParentParent extends React.Component<undefined, PropsFromP
         </div>
     }
 }
-export class PropsFromParentChild extends React.Component<PropsFromParentParentState & RouteComponentProps<undefined, undefined>, undefined>{
+export const PropsFromParentParent = wrapMountDispatch(PropsFromParentParentComp, "PropsFromParentParent");
+export class PropsFromParentChildComp extends React.Component<PropsFromParentParentState & RouteComponentProps<undefined, undefined>, undefined>{
     render() {
         return <div>
             <div>{"this prop has come from parent:" + this.props.someState}</div>
@@ -222,6 +234,7 @@ export class PropsFromParentChild extends React.Component<PropsFromParentParentS
         </div>
     }
 }
+export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
 //#endregion
 
 //#region actions/reducers/state/selectors
