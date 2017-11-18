@@ -31057,7 +31057,7 @@ var onLeave = function routeOnLeave(prevState) {
 var onChange = function routeOnChange(prevState, nextState, replace, callback) {
     var nextStateLocationPathname = nextState.location.pathname;
     var prevStateLocationPathname = prevState.location.pathname;
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("LeaveHook", { prevStateLocationPathname: prevStateLocationPathname, nextStateLocationPathname: nextStateLocationPathname }));
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevStateLocationPathname: prevStateLocationPathname, nextStateLocationPathname: nextStateLocationPathname }));
 };
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },

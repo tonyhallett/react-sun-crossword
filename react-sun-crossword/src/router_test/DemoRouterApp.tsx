@@ -278,7 +278,7 @@ export function hookOrMountActionCreator(type:hookOrMountType,details: object) {
         details:details
     }
 }
-type hookOrMountType = "EnterHook" | "LeaveHook" | "ComponentDidMount" | "ComponentWillUnmount"
+type hookOrMountType = "EnterHook" | "LeaveHook"|"ChangeHook" | "ComponentDidMount" | "ComponentWillUnmount"
 interface HookOrMountAction{
     type: string,
     hookOrMountType: hookOrMountType,

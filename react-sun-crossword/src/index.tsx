@@ -61,7 +61,7 @@ var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
 var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextState: RouterState, replace: RedirectFunction, callback?: AnyFunction) {
     var nextStateLocationPathname = nextState.location.pathname;
     var prevStateLocationPathname = prevState.location.pathname;
-    store.dispatch(hookOrMountActionCreator("LeaveHook", { prevStateLocationPathname: prevStateLocationPathname, nextStateLocationPathname: nextStateLocationPathname  }))
+    store.dispatch(hookOrMountActionCreator("ChangeHook", { prevStateLocationPathname: prevStateLocationPathname, nextStateLocationPathname: nextStateLocationPathname  }))
 
 }
 
