@@ -96,12 +96,12 @@ const ReactJsonContainer = connect((state: RouterAppState, ownProps: OwnProps) =
     } as ReactJsonSrcProps
 })(ReactJson);
 
-export class IntroductionComp extends React.Component<undefined, undefined> {
+export class Introduction extends React.Component<undefined, undefined> {
     render() {
         return "This is the introduction - the index route";
     }
 }
-export const  Introduction = wrapMountDispatch(IntroductionComp);
+//export const  Introduction = wrapMountDispatch(IntroductionComp);
 //#region Pathless
 export class Pathless extends React.Component<undefined, undefined> {
     render() {

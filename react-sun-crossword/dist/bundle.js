@@ -6411,18 +6411,18 @@ var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {
         }
     };
 })(react_json_view_1.default);
-var IntroductionComp = /** @class */ (function (_super) {
-    __extends(IntroductionComp, _super);
-    function IntroductionComp() {
+var Introduction = /** @class */ (function (_super) {
+    __extends(Introduction, _super);
+    function Introduction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    IntroductionComp.prototype.render = function () {
+    Introduction.prototype.render = function () {
         return "This is the introduction - the index route";
     };
-    return IntroductionComp;
+    return Introduction;
 }(React.Component));
-exports.IntroductionComp = IntroductionComp;
-exports.Introduction = wrapMountDispatch(IntroductionComp);
+exports.Introduction = Introduction;
+//export const  Introduction = wrapMountDispatch(IntroductionComp);
 //#region Pathless
 var Pathless = /** @class */ (function (_super) {
     __extends(Pathless, _super);
