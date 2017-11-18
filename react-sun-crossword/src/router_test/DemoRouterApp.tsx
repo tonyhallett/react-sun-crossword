@@ -100,6 +100,8 @@ export class IntroductionComp extends React.Component<undefined, undefined> {
         return "This is the introduction - the index route";
     }
 }
+(IntroductionComp as React.ComponentClass<undefined>).displayName = "Introduction";
+
 export const  Introduction = wrapMountDispatch(IntroductionComp);
 //#region Pathless
 export class Pathless extends React.Component<undefined, undefined> {

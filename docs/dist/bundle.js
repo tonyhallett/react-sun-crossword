@@ -6422,6 +6422,7 @@ var IntroductionComp = /** @class */ (function (_super) {
     return IntroductionComp;
 }(React.Component));
 exports.IntroductionComp = IntroductionComp;
+IntroductionComp.displayName = "Introduction";
 exports.Introduction = wrapMountDispatch(IntroductionComp);
 //#region Pathless
 var Pathless = /** @class */ (function (_super) {
