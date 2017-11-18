@@ -6359,8 +6359,8 @@ var App = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     App.prototype.render = function () {
-        //<ReactJsonContainer />
         return React.createElement("div", null,
+            React.createElement(ReactJsonContainer, null),
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
             React.createElement(react_router_2.IndexLink, { to: "/" }, "Introduction"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/pathless" }, "Pathless root"),
@@ -6411,18 +6411,18 @@ var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {
         }
     };
 })(react_json_view_1.default);
-var Introduction = /** @class */ (function (_super) {
-    __extends(Introduction, _super);
-    function Introduction() {
+var IntroductionComp = /** @class */ (function (_super) {
+    __extends(IntroductionComp, _super);
+    function IntroductionComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Introduction.prototype.render = function () {
+    IntroductionComp.prototype.render = function () {
         return "This is the introduction - the index route";
     };
-    return Introduction;
+    return IntroductionComp;
 }(React.Component));
-exports.Introduction = Introduction;
-//export const  Introduction = wrapMountDispatch(IntroductionComp);
+exports.IntroductionComp = IntroductionComp;
+exports.Introduction = wrapMountDispatch(IntroductionComp);
 //#region Pathless
 var Pathless = /** @class */ (function (_super) {
     __extends(Pathless, _super);
@@ -30999,20 +30999,53 @@ var onLeave = function routeOnLeave(prevState) {
 };
 var onChange = function routeOnChange(prevState, nextState, replace, callback) {
 };
+/*
+ReactDOM.render(
+    <Provider store={store}>
+        <Router history={history}>
+            <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="/" component={App}>
+                <IndexRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave} component={Introduction} />
+                <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="pathless" component={Pathless}>
+                    <IndexRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave} component={PathlessIndex}/>
+                </Route>
+                <Route  component={Pathless}>
+                    <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="pathlessChild" component={PathlessChild} />
+                </Route>
+                <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="multiple" component={Multiple} >
+                   
+<IndexRoute components={{ child1: Child1, child2: Child2 }} />
+                </Route >
+    <Redirect from="many" to="multiple" />
+    <RouteAdditional onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
+    <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="leaveHook" component={LeaveHookComponent}></Route>
+    <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="propsFromParent" component={PropsFromParentParent}>
+        <IndexRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave} component={PropsFromParentChild} />
+    </Route>
+                    
+               
+            </Route >
+        </Router >
+    </Provider >,
+
+    document.getElementById("example")
+);
+*/
+{
+}
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },
-        React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "/", component: DemoRouterApp_1.App },
-            React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, component: DemoRouterApp_1.Introduction }),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "pathless", component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, component: DemoRouterApp_1.PathlessIndex })),
+        React.createElement(react_router_2.Route, { path: "/", component: DemoRouterApp_1.App },
+            React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.Introduction }),
+            React.createElement(react_router_2.Route, { path: "pathless", component: DemoRouterApp_1.Pathless },
+                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PathlessIndex })),
             React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "multiple", component: DemoRouterApp_1.Multiple },
+                React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
+            React.createElement(react_router_2.Route, { path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
-            React.createElement(RouteAdditional, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
+            React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
+            React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
+            React.createElement(react_router_2.Route, { path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
                 React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, component: DemoRouterApp_1.PropsFromParentChild }))))), document.getElementById("example"));
 
 

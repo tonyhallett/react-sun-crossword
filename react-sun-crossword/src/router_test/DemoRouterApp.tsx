@@ -26,9 +26,8 @@ export class Container extends React.Component<undefined, undefined>{
 }
 export class App extends React.Component<undefined, undefined> {
     render() {
-        //<ReactJsonContainer />
         return <div>
-            
+            <ReactJsonContainer />
             <div>This is the app, has children from sub routes including the index route</div>
             <IndexLink to="/">Introduction</IndexLink>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathless">Pathless root</Link>
@@ -45,8 +44,7 @@ export class App extends React.Component<undefined, undefined> {
     }
 }
 
-//DispatchWrapper needs additional props - p & function that does the dispatch
-//a) Start with the connect mapDispatchToProps and how can do so it has different signature - boolean didMount - can name details be done for the wrapper as well
+
 interface MountDispatchFunction {
     (isMount: boolean):void;
 }
@@ -97,12 +95,12 @@ const ReactJsonContainer = connect((state: RouterAppState, ownProps: OwnProps) =
     } as ReactJsonSrcProps
 })(ReactJson);
 
-export class Introduction extends React.Component<undefined, undefined> {
+export class IntroductionComp extends React.Component<undefined, undefined> {
     render() {
         return "This is the introduction - the index route";
     }
 }
-//export const  Introduction = wrapMountDispatch(IntroductionComp);
+export const  Introduction = wrapMountDispatch(IntroductionComp);
 //#region Pathless
 export class Pathless extends React.Component<undefined, undefined> {
     render() {
