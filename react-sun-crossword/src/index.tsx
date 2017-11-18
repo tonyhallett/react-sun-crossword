@@ -60,48 +60,13 @@ var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
 var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextState: RouterState, replace: RedirectFunction, callback?: AnyFunction) {
 
 }
-/*
-ReactDOM.render(
-    <Provider store={store}>
-        <Router history={history}>
-            <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="/" component={App}>
-                <IndexRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave} component={Introduction} />
-                <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="pathless" component={Pathless}>
-                    <IndexRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave} component={PathlessIndex}/>
-                </Route>
-                <Route  component={Pathless}>
-                    <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="pathlessChild" component={PathlessChild} />
-                </Route>
-                <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="multiple" component={Multiple} >
-                   
-<IndexRoute components={{ child1: Child1, child2: Child2 }} />
-                </Route >
-    <Redirect from="many" to="multiple" />
-    <RouteAdditional onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
-    <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="leaveHook" component={LeaveHookComponent}></Route>
-    <Route onEnter={onEnter} onChange={onChange} onLeave={onLeave} path="propsFromParent" component={PropsFromParentParent}>
-        <IndexRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave} component={PropsFromParentChild} />
-    </Route>
-                    
-               
-            </Route >
-        </Router >
-    </Provider >,
 
-    document.getElementById("example")
-);
-*/
-{/* Just to demonstrate the concept 
-                        in practice there would be multiple child routes - where the matching one
-                        will provide the child components
-                        Also not that child routes of those child routes will provide a child component to components !
-                    */}
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
             <Route  path="/" component={App}>
                 <IndexRoute  component={Introduction} />
-                <Route  path="pathless" component={Pathless}>
+                <Route onEnter={onEnter} path="pathless" component={Pathless}>
                     <IndexRoute component={PathlessIndex}/>
                 </Route>
                 <Route  component={Pathless}>
