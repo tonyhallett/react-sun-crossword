@@ -26,8 +26,9 @@ export class Container extends React.Component<undefined, undefined>{
 }
 export class App extends React.Component<undefined, undefined> {
     render() {
+        //<ReactJsonContainer />
         return <div>
-            <ReactJsonContainer />
+            
             <div>This is the app, has children from sub routes including the index route</div>
             <IndexLink to="/">Introduction</IndexLink>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathless">Pathless root</Link>

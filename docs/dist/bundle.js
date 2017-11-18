@@ -6359,8 +6359,8 @@ var App = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     App.prototype.render = function () {
+        //<ReactJsonContainer />
         return React.createElement("div", null,
-            React.createElement(ReactJsonContainer, null),
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
             React.createElement(react_router_2.IndexLink, { to: "/" }, "Introduction"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/pathless" }, "Pathless root"),
