@@ -45,7 +45,7 @@ export class App extends React.Component<undefined, undefined> {
     }
 }
 
-
+//#region mount dispatch wrapper
 interface MountDispatchFunction {
     (isMount: boolean):void;
 }
@@ -77,6 +77,7 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:str
         return wrapperProps;
     }))(wrapper);
 }
+//#endregion
 interface ReactJsonSrcProps {
     src?: any
 }
@@ -160,6 +161,7 @@ export class Child2Comp extends React.Component<undefined, undefined> {
 }
 export const Child2 = wrapMountDispatch(Child2Comp, "MultipleChild2");
 //#endregion
+//#region additional props
 export class AdditionalPropsComp extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
     render() {
         var additionalProp = (this.props.route as any).additionalProp.additional;
@@ -167,6 +169,7 @@ export class AdditionalPropsComp extends React.Component<RouteComponentProps<und
     }
 }
 export const AdditionalProps = wrapMountDispatch(AdditionalPropsComp, "AdditionalProps");
+//#endregion
 //#region leave hook
 interface LeaveHookState {
     canLeave:boolean

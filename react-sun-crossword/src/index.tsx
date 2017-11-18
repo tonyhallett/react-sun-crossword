@@ -118,8 +118,8 @@ ReactDOM.render(
                 <Redirect  from="many" to="multiple" />
                 <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
                 <Route path="leaveHook" component={LeaveHookComponent}></Route>
-                <Route  path="propsFromParent" component={PropsFromParentParent}>
-                    <IndexRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave}component={PropsFromParentChild} />
+                <Route path="propsFromParent" component={PropsFromParentParent}>
+                    <IndexRoute component={PropsFromParentChild} />
                 </Route>
                     
                

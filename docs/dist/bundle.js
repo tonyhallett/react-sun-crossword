@@ -6506,6 +6506,7 @@ var Child2Comp = /** @class */ (function (_super) {
 exports.Child2Comp = Child2Comp;
 exports.Child2 = wrapMountDispatch(Child2Comp, "MultipleChild2");
 //#endregion
+//#region additional props
 var AdditionalPropsComp = /** @class */ (function (_super) {
     __extends(AdditionalPropsComp, _super);
     function AdditionalPropsComp() {
@@ -31058,7 +31059,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
             React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
             React.createElement(react_router_2.Route, { path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
-                React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, component: DemoRouterApp_1.PropsFromParentChild }))))), document.getElementById("example"));
+                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PropsFromParentChild }))))), document.getElementById("example"));
 
 
 /***/ })
