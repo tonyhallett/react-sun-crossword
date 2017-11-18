@@ -54,11 +54,11 @@ var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: 
 
 }
 var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
-
+    var debugThis = "debug this";
 }
 
 var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextState: RouterState, replace: RedirectFunction, callback?: AnyFunction) {
-
+    var debugThis = "debug this";
 }
 
 ReactDOM.render(
@@ -66,13 +66,13 @@ ReactDOM.render(
         <Router history={history}>
             <Route  path="/" component={App}>
                 <IndexRoute  component={Introduction} />
-                <Route onEnter={onEnter} path="pathless" component={Pathless}>
+                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
                     <IndexRoute component={PathlessIndex}/>
                 </Route>
                 <Route  component={Pathless}>
                     <Route  path="pathlessChild" component={PathlessChild} />
                 </Route>
-                <Route  path="multiple" component={Multiple} >
+                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange}  path="multiple" component={Multiple} >
                     {/* Just to demonstrate the concept 
                         in practice there would be multiple child routes - where the matching one
                         will provide the child components
@@ -81,9 +81,9 @@ ReactDOM.render(
                     <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
                 <Redirect  from="many" to="multiple" />
-                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
-                <Route path="leaveHook" component={LeaveHookComponent}></Route>
-                <Route path="propsFromParent" component={PropsFromParentParent}>
+                <RouteAdditional onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
+                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="leaveHook" component={LeaveHookComponent}></Route>
+                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="propsFromParent" component={PropsFromParentParent}>
                     <IndexRoute component={PropsFromParentChild} />
                 </Route>
                     
