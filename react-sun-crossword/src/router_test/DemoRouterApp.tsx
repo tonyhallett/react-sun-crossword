@@ -37,6 +37,8 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/additionalProps">Additional props</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/leaveHook">Leave hook</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/propsFromParent">Props from parent</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change1">On change child route 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change2">On change child route 2</Link>
             <ReactJsonContainer />
             <Container>
                 {this.props.children}
@@ -205,6 +207,31 @@ export class LeaveHookComponentComp extends React.Component<RouteComponentProps<
     }
 }
 export const LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp, "LeaveHook");
+//#endregion
+
+//#region change component
+export class OnChangeComp extends React.Component<undefined, undefined> {
+    render() {
+        return <div>By switching between the child routes, the onChange hook should be fired
+        <Container>
+            {this.props.children}
+        </Container>
+        </div>
+    }
+}
+export const OnChangeComponent = wrapMountDispatch(OnChangeComp, "OnChange");
+export class OnChangeChild1Comp extends React.Component<undefined, undefined> {
+    render() {
+        return "On change child 1";
+    }
+}
+export const OnChangeChild1 = wrapMountDispatch(OnChangeChild1Comp, "OnChangeChild1");
+export class OnChangeChild2Comp extends React.Component<undefined, undefined> {
+    render() {
+        return "On change child 2";
+    }
+}
+export const OnChangeChild2 = wrapMountDispatch(OnChangeChild2Comp, "OnChangeChild2");
 //#endregion
 //#region props from parent
 interface PropsFromParentParentState {
