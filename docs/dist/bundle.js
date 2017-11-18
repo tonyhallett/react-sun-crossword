@@ -6361,7 +6361,7 @@ var App = /** @class */ (function (_super) {
     App.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
-            React.createElement(react_router_2.IndexLink, { to: "/" }, "Introduction"),
+            React.createElement(react_router_2.IndexLink, { style: linkStyle, activeStyle: linkActiveStyle, to: "/" }, "Introduction"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/pathless" }, "Pathless root"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/pathlessChild" }, "Pathless"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/multiple" }, "Multiple"),

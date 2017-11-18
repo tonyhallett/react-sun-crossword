@@ -29,7 +29,7 @@ export class App extends React.Component<undefined, undefined> {
         return <div>
             
             <div>This is the app, has children from sub routes including the index route</div>
-            <IndexLink to="/">Introduction</IndexLink>
+            <IndexLink style={linkStyle} activeStyle={linkActiveStyle} to="/">Introduction</IndexLink>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathless">Pathless root</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathlessChild">Pathless</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/multiple">Multiple</Link>
