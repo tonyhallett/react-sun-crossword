@@ -6309,6 +6309,23 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
 var react_router_1 = __webpack_require__(14);
@@ -6358,25 +6375,55 @@ var App = /** @class */ (function (_super) {
     return App;
 }(React.Component));
 exports.App = App;
+function wrapMountDispatch(Component) {
+    var wrapper = /** @class */ (function (_super) {
+        __extends(MountWrapper, _super);
+        function MountWrapper() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        MountWrapper.prototype.componentDidMount = function () {
+            this.props.mountUnmount(true);
+        };
+        MountWrapper.prototype.componentWillUnmount = function () {
+            this.props.mountUnmount(false);
+        };
+        MountWrapper.prototype.render = function () {
+            //cast necessary for spread operator - https://github.com/Microsoft/TypeScript/issues/10727
+            var _a = this.props, mountUnmount = _a.mountUnmount, passThroughProps = __rest(_a, ["mountUnmount"]);
+            return React.createElement(Component, __assign({}, passThroughProps));
+        };
+        return MountWrapper;
+    }(React.Component));
+    return react_redux_1.connect(null, (function (dispatch) {
+        var wrapperProps = {
+            mountUnmount: function (isMount) {
+                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: Component.displayName }));
+            }
+        };
+        return wrapperProps;
+    }))(wrapper);
+}
 //#endregion
 var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {
     return {
         src: {
-            hookAndMounts: state.hooksAndMounts
+            hookAndMounts: hooksAndMountsSelector(state)
         }
     };
 })(react_json_view_1.default);
-var Introduction = /** @class */ (function (_super) {
-    __extends(Introduction, _super);
-    function Introduction() {
+var IntroductionComp = /** @class */ (function (_super) {
+    __extends(IntroductionComp, _super);
+    function IntroductionComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Introduction.prototype.render = function () {
+    IntroductionComp.prototype.render = function () {
         return "This is the introduction - the index route";
     };
-    return Introduction;
+    return IntroductionComp;
 }(React.Component));
-exports.Introduction = Introduction;
+exports.IntroductionComp = IntroductionComp;
+exports.Introduction = wrapMountDispatch(IntroductionComp);
+//#region Pathless
 var Pathless = /** @class */ (function (_super) {
     __extends(Pathless, _super);
     function Pathless() {
@@ -6412,6 +6459,8 @@ var PathlessChild = /** @class */ (function (_super) {
     return PathlessChild;
 }(React.Component));
 exports.PathlessChild = PathlessChild;
+//#endregion
+//#region multiple
 var Multiple = /** @class */ (function (_super) {
     __extends(Multiple, _super);
     function Multiple() {
@@ -6448,6 +6497,7 @@ var Child2 = /** @class */ (function (_super) {
     return Child2;
 }(React.Component));
 exports.Child2 = Child2;
+//#endregion
 var AdditionalProps = /** @class */ (function (_super) {
     __extends(AdditionalProps, _super);
     function AdditionalProps() {
@@ -6460,9 +6510,9 @@ var AdditionalProps = /** @class */ (function (_super) {
     return AdditionalProps;
 }(React.Component));
 exports.AdditionalProps = AdditionalProps;
-var LeaveHook = /** @class */ (function (_super) {
-    __extends(LeaveHook, _super);
-    function LeaveHook(props) {
+var LeaveHookComponent = /** @class */ (function (_super) {
+    __extends(LeaveHookComponent, _super);
+    function LeaveHookComponent(props) {
         var _this = _super.call(this, props) || this;
         _this.toggleCanLeave = function () {
             _this.setState(function (prevState, props) {
@@ -6472,10 +6522,10 @@ var LeaveHook = /** @class */ (function (_super) {
         _this.state = { canLeave: false };
         return _this;
     }
-    LeaveHook.prototype.componentDidMount = function () {
+    LeaveHookComponent.prototype.componentDidMount = function () {
         this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this));
     };
-    LeaveHook.prototype.routerWillLeave = function (nextLocation) {
+    LeaveHookComponent.prototype.routerWillLeave = function (nextLocation) {
         // return false to prevent a transition w/o prompting the user,
         // or return a string to allow the user to decide:
         // return `null` or nothing to let other hooks to be executed
@@ -6484,13 +6534,13 @@ var LeaveHook = /** @class */ (function (_super) {
         if (!this.state.canLeave)
             return "Please don't leave. Ok to leave, cancel to stay";
     };
-    LeaveHook.prototype.render = function () {
+    LeaveHookComponent.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleCanLeave }, this.state.canLeave ? "Can leave" : "Can't leave"));
     };
-    return LeaveHook;
+    return LeaveHookComponent;
 }(React.Component));
-exports.LeaveHook = LeaveHook;
+exports.LeaveHookComponent = LeaveHookComponent;
 var PropsFromParentParent = /** @class */ (function (_super) {
     __extends(PropsFromParentParent, _super);
     function PropsFromParentParent(props) {
@@ -6523,17 +6573,21 @@ var PropsFromParentChild = /** @class */ (function (_super) {
     return PropsFromParentChild;
 }(React.Component));
 exports.PropsFromParentChild = PropsFromParentChild;
+//#endregion
 //#region actions/reducers/state/selectors
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
 //note that this does not agree with flux standard actions
-function HookOrMountActionCreator(type, details) {
+function hookOrMountActionCreator(type, details) {
     return {
         type: HOOK_OR_MOUNT,
         hookOrMountType: type,
         details: details
     };
 }
-exports.HookOrMountActionCreator = HookOrMountActionCreator;
+exports.hookOrMountActionCreator = hookOrMountActionCreator;
+function hooksAndMountsSelector(state) {
+    return state.rootReducer.hooksAndMounts;
+}
 //could have typed To RouterState for this demo default
 function rootReducer(state, action) {
     if (state === void 0) { state = {
@@ -30936,24 +30990,30 @@ var RouteAdditional = /** @class */ (function (_super) {
     };
     return RouteAdditional;
 }(React.Component));
+var onEnter = function routeOnEnter(nextState, replace, callback) {
+    var nextStateLocationPathname = nextState.location.pathname;
+    additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }));
+};
+var onLeave = function routeOnLeave(prevState) {
+};
+var onChange = function routeOnChange(prevState, nextState, replace, callback) {
+};
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },
-        React.createElement(react_router_2.Route, { path: "/", component: DemoRouterApp_1.App },
-            React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.Introduction }),
-            React.createElement(react_router_2.Route, { path: "pathless", component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PathlessIndex })),
+        React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "/", component: DemoRouterApp_1.App },
+            React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, component: DemoRouterApp_1.Introduction }),
+            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "pathless", component: DemoRouterApp_1.Pathless },
+                React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, component: DemoRouterApp_1.PathlessIndex })),
             React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
-            React.createElement(react_router_2.Route, { onEnter: function () {
-                    console.log("onEnter");
-                    additionalPropsValue.additional = "have entered multiple";
-                }, path: "multiple", component: DemoRouterApp_1.Multiple },
+                React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
+            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
-            React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
-            React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHook }),
-            React.createElement(react_router_2.Route, { path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
-                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PropsFromParentChild }))))), document.getElementById("example"));
+            React.createElement(RouteAdditional, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
+            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
+            React.createElement(react_router_2.Route, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
+                React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, component: DemoRouterApp_1.PropsFromParentChild }))))), document.getElementById("example"));
 
 
 /***/ })

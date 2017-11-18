@@ -44,6 +44,39 @@ export class App extends React.Component<undefined, undefined> {
     }
 }
 
+//DispatchWrapper needs additional props - p & function that does the dispatch
+//a) Start with the connect mapDispatchToProps and how can do so it has different signature - boolean didMount - can name details be done for the wrapper as well
+interface MountDispatchFunction {
+    (isMount: boolean):void;
+}
+interface WrapperProps {
+    mountUnmount: MountDispatchFunction
+}
+
+function wrapMountDispatch<P>(Component: React.ComponentClass<P>){
+
+    var wrapper = class MountWrapper extends React.Component<P & WrapperProps, any>{
+        componentDidMount() {
+            this.props.mountUnmount(true);
+        }
+        componentWillUnmount() {
+            this.props.mountUnmount(false);
+        }
+        render() {
+            //cast necessary for spread operator - https://github.com/Microsoft/TypeScript/issues/10727
+            const { mountUnmount, ...passThroughProps } = (this as any).props;
+            return <Component {...passThroughProps} />
+        }
+    }
+    return connect(null, (dispatch => {
+        var wrapperProps: WrapperProps= {
+            mountUnmount: (isMount: boolean) => {
+                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: Component.displayName }));
+            }
+        }
+        return wrapperProps;
+    }))(wrapper);
+}
 interface ReactJsonSrcProps {
     src?: any
 }
@@ -58,16 +91,18 @@ type ReactJson = React.ComponentClass<ReactJsonProps>
 const ReactJsonContainer = connect((state: RouterAppState, ownProps: OwnProps) => {
     return {
         src: {
-            hookAndMounts: state.hooksAndMounts
+            hookAndMounts: hooksAndMountsSelector(state)
         }
     } as ReactJsonSrcProps
 })(ReactJson);
 
-export class Introduction extends React.Component<undefined, undefined> {
+export class IntroductionComp extends React.Component<undefined, undefined> {
     render() {
         return "This is the introduction - the index route";
     }
 }
+export const  Introduction = wrapMountDispatch(IntroductionComp);
+//#region Pathless
 export class Pathless extends React.Component<undefined, undefined> {
     render() {
         return <div>
@@ -88,7 +123,8 @@ export class PathlessChild extends React.Component<undefined, undefined> {
         return "This component has been rendered without its route being a subpath";
     }
 }
-
+//#endregion
+//#region multiple
 export class Multiple extends React.Component<RouteComponentProps<undefined,undefined>, undefined> {
     render() {
         
@@ -113,16 +149,18 @@ export class Child2 extends React.Component<undefined, undefined> {
         return "Child2 from Route components property";
     }
 }
+//#endregion
 export class AdditionalProps extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
     render() {
         var additionalProp = (this.props.route as any).additionalProp.additional;
         return <div>{"Received additional prop from route " + additionalProp}</div>
     }
 }
+//#region leave hook
 interface LeaveHookState {
     canLeave:boolean
 }
-export class LeaveHook extends React.Component<RouteComponentProps<undefined, undefined>, LeaveHookState> {
+export class LeaveHookComponent extends React.Component<RouteComponentProps<undefined, undefined>, LeaveHookState> {
     constructor(props) {
         super(props);
         this.state = { canLeave:false }
@@ -152,7 +190,8 @@ export class LeaveHook extends React.Component<RouteComponentProps<undefined, un
             </div>
     }
 }
-
+//#endregion
+//#region props from parent
 interface PropsFromParentParentState {
     someState:string
 }
@@ -182,13 +221,13 @@ export class PropsFromParentChild extends React.Component<PropsFromParentParentS
         </div>
     }
 }
-
+//#endregion
 
 //#region actions/reducers/state/selectors
 const HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
 
 //note that this does not agree with flux standard actions
-export function HookOrMountActionCreator(type:hookOrMountType,details: object) {
+export function hookOrMountActionCreator(type:hookOrMountType,details: object) {
     return {
         type: HOOK_OR_MOUNT,
         hookOrMountType: type,
@@ -205,12 +244,21 @@ interface HookOrMountDetail {
     type: hookOrMountType,
     details:any
 }
-interface RouterAppState {
+interface RootReducerState {
     hooksAndMounts: HookOrMountDetail[]
 }
-
+interface RouterAppState {
+    rootReducer: RootReducerState
+    router: {
+        locationBeforeTransitions:any//should be Location ?
+    }
+    
+}
+function hooksAndMountsSelector(state: RouterAppState) {
+    return state.rootReducer.hooksAndMounts
+}
 //could have typed To RouterState for this demo default
-export function rootReducer(state: RouterAppState = {
+export function rootReducer(state: RootReducerState = {
     hooksAndMounts: [
         {
             type: "EnterHook",
@@ -235,7 +283,7 @@ export function rootReducer(state: RouterAppState = {
             }
         }
     ]
-}, action): RouterAppState {
+}, action): RootReducerState {
     switch (action.type) {
         case HOOK_OR_MOUNT:
             var hookOrMountAction = action as HookOrMountAction;
