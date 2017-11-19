@@ -4,7 +4,8 @@ import { RouteComponentProps, IndexLink, PlainRoute, IndexRoute, RouteComponents
 import { connect } from 'react-redux'
 import { ReactElement } from "react";
 import ReactJson from 'react-json-view'
-
+import { LocationDescriptor } from "history";
+import { push }  from 'react-router-redux'
 
 
 //#region v3 route components
@@ -40,6 +41,7 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/propsFromParent">Props from parent</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change1">On change child route 1</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change2">On change child route 2</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
             <ReactJsonContainer />
             <Container>
                 {this.props.children}
@@ -267,6 +269,36 @@ export class PropsFromParentChildComp extends React.Component<PropsFromParentPar
         </div>
     }
 }
+
+//this will pro
+interface NavigationDispatchProps {
+    navThroughDispatch:(location:LocationDescriptor)=>void
+}
+interface NavigationCompProps extends NavigationDispatchProps {
+
+}
+export class NavigationComp extends React.Component<NavigationDispatchProps, undefined>{
+    doPush = () => {
+        this.props.navThroughDispatch("/leaveHook");
+    }
+    render() {
+        return <div>
+            <button onClick={this.doPush}>Test push ( leave hook )</button>
+        </div>
+    }
+}
+//going to have an issue with connecting that ?
+//export const Navigation = wrapMountDispatch(NavigationComp, "Navigation");
+export const Navigation = connect(null, (dispatch) => {
+    var mappedDispatch: NavigationDispatchProps = {
+        navThroughDispatch: function (location: LocationDescriptor) {
+            dispatch(push(location));
+        }
+    }
+    return mappedDispatch;
+})(NavigationComp)
+
+
 export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
 //#endregion
 

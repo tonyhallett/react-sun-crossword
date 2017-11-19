@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2 } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -94,7 +94,8 @@ ReactDOM.render(
                     <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="change1" component={OnChangeChild1} />
                     <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="change2" component={OnChangeChild2} />
                 </Route>
-                <Route path="redirect" onEnter={onEnter} onLeave={onLeave} onChange={onChange}/>
+                <Route path="redirect" onEnter={onEnter} onLeave={onLeave} onChange={onChange} />
+                <Route path="navigation" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Navigation}  />
             </Route>
         </Router>
     </Provider>,
