@@ -6686,8 +6686,8 @@ function rootReducer(state, action) {
     if (state === void 0) { state = { hooksAndMounts: [] }; }
     switch (action.type) {
         case HOOK_OR_MOUNT:
-            var details = hookOrMountAction.details;
             var hookOrMountAction = action;
+            var details = hookOrMountAction.details;
             if (hookOrMountAction.hookOrMountType == ENTERHOOK || hookOrMountAction.hookOrMountType == CHANGEHOOK || hookOrMountAction.hookOrMountType == LEAVEHOOK) {
                 details = filterRouterState(details);
             }
