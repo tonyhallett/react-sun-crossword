@@ -6641,43 +6641,60 @@ function hookOrMountActionCreator(type, details) {
     };
 }
 exports.hookOrMountActionCreator = hookOrMountActionCreator;
+var ENTERHOOK = "EnterHook";
+var LEAVEHOOK = "LeaveHook";
+var CHANGEHOOK = "ChangeHook";
 function hooksAndMountsSelector(state) {
     return state.rootReducer.hooksAndMounts;
 }
-//could have typed To RouterState for this demo default
+function clone(orig, blacklistedProps) {
+    var newProps = {};
+    Object.keys(orig).forEach(function (key) {
+        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
+            newProps[key] = orig[key];
+        }
+    });
+    return newProps;
+}
+function filterRoute(route) {
+    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes"]);
+    if (route.indexRoute) {
+        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+    }
+    if (route.childRoutes) {
+        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+    }
+    return filteredRoute;
+}
+function filterIndexRoute(indexRoute) {
+    filterRoute(indexRoute);
+}
+function filterRoutes(routes) {
+    return routes.map(function (route) {
+        return filterRoute(route);
+    });
+}
+function filterRouterState(routerState) {
+    return {
+        location: routerState.location,
+        params: routerState.params,
+        components: routerState.components,
+        routes: filterRoutes(routerState.routes)
+    };
+}
 function rootReducer(state, action) {
-    if (state === void 0) { state = {
-        hooksAndMounts: [
-            {
-                type: "EnterHook",
-                details: {
-                    location: {
-                        pathname: "somepathname",
-                        search: "somesearch",
-                        query: "query",
-                        state: null,
-                        action: "POP",
-                        key: "someKey"
-                    },
-                    routes: [
-                        { path: "SomePath" },
-                        { path: "SomePath/segment2" }
-                    ],
-                    params: {
-                        someParam: "SomeValue",
-                        otherParam: "OtherValue"
-                    }
-                }
-            }
-        ]
-    }; }
+    if (state === void 0) { state = { hooksAndMounts: [] }; }
     switch (action.type) {
         case HOOK_OR_MOUNT:
+            var details = hookOrMountAction.details;
             var hookOrMountAction = action;
+            if (hookOrMountAction.hookOrMountType == ENTERHOOK || hookOrMountAction.hookOrMountType == CHANGEHOOK || hookOrMountAction.hookOrMountType == LEAVEHOOK) {
+                details = filterRouterState(details);
+            }
             return {
                 hooksAndMounts: state.hooksAndMounts.concat([{
                         type: hookOrMountAction.hookOrMountType,
-                        details: hookOrMountAction.details
+                        details: details
                     }])
             };
         default:

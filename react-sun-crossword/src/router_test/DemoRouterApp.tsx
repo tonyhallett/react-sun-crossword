@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 import { Link,  Route, Redirect, LinkProps ,RouterState} from 'react-router'
-import { RouteComponentProps, IndexLink } from 'react-router'
+import { RouteComponentProps, IndexLink, PlainRoute, IndexRoute } from 'react-router'
 import { connect } from 'react-redux'
 import { ReactElement } from "react";
 import ReactJson from 'react-json-view'
@@ -279,7 +279,12 @@ export function hookOrMountActionCreator(type:hookOrMountType,details: object) {
         details:details
     }
 }
-type hookOrMountType = "EnterHook" | "LeaveHook"|"ChangeHook" | "ComponentDidMount" | "ComponentWillUnmount"
+
+const ENTERHOOK = "EnterHook";
+const LEAVEHOOK = "LeaveHook";
+const CHANGEHOOK = "ChangeHook"
+type hookType = typeof ENTERHOOK | typeof LEAVEHOOK | typeof CHANGEHOOK
+type hookOrMountType = hookType | "ComponentDidMount" | "ComponentWillUnmount"
 interface HookOrMountAction{
     type: string,
     hookOrMountType: hookOrMountType,
@@ -295,47 +300,61 @@ interface RootReducerState {
 interface RouterAppState {
     rootReducer: RootReducerState
     router: {
-        locationBeforeTransitions:any//should be Location ?
+        locationBeforeTransitions:any//should be type Location ?
     }
     
 }
 function hooksAndMountsSelector(state: RouterAppState) {
     return state.rootReducer.hooksAndMounts
 }
-//could have typed To RouterState for this demo default
-export function rootReducer(state: RootReducerState = {
-    hooksAndMounts: [
-        {
-            type: "EnterHook",
-            details: {
-                location: {
-                    pathname: "somepathname",
-                    search: "somesearch",
-                    query: "query",
-                    state: null,
-                    action: "POP",
-                    key:"someKey"
 
-                },
-                routes: [
-                    { path: "SomePath" },
-                    {path:"SomePath/segment2"}
-                ],
-                params: {
-                    someParam: "SomeValue",
-                    otherParam:"OtherValue"
-                }
-            }
+function clone(orig, blacklistedProps) {
+    var newProps = {};
+    Object.keys(orig).forEach(function (key) {
+        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
+            newProps[key] = orig[key];
         }
-    ]
-}, action): RootReducerState {
+    });
+    return newProps;
+}
+function filterRoute(route:PlainRoute) {
+    var filteredRoute = clone(route, ["getComponent","getComponents","onEnter","onChange","onLeave","getChildRoutes","getIndexRoute","indexRoute","childRoutes"]) as any;
+    if (route.indexRoute) {
+        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+    }
+    if (route.childRoutes) {
+        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+    }
+    return filteredRoute;
+}
+function filterIndexRoute(indexRoute: PlainRoute) {
+    filterRoute(indexRoute);
+}
+function filterRoutes(routes: PlainRoute[]) {
+    return routes.map((route) => {
+        return filterRoute(route);
+    })
+}
+function filterRouterState(routerState: RouterState): object {
+    return {
+        location: routerState.location,
+        params: routerState.params,
+        components: routerState.components,
+        routes: filterRoutes(routerState.routes)
+    }
+}
+export function rootReducer(state: RootReducerState = { hooksAndMounts:[] }, action): RootReducerState {
     switch (action.type) {
         case HOOK_OR_MOUNT:
+            var details = hookOrMountAction.details;
             var hookOrMountAction = action as HookOrMountAction;
+            if (hookOrMountAction.hookOrMountType == ENTERHOOK || hookOrMountAction.hookOrMountType == CHANGEHOOK || hookOrMountAction.hookOrMountType == LEAVEHOOK) {
+                details = filterRouterState(details as RouterState);
+            }
             return {
                 hooksAndMounts: [...state.hooksAndMounts, {
                     type: hookOrMountAction.hookOrMountType,
-                    details: hookOrMountAction.details
+                    details: details
                 }]
             }
         default:
