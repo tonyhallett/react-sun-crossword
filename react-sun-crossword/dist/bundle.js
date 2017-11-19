@@ -6688,8 +6688,14 @@ function rootReducer(state, action) {
         case HOOK_OR_MOUNT:
             var hookOrMountAction = action;
             var details = hookOrMountAction.details;
-            if (hookOrMountAction.hookOrMountType == ENTERHOOK || hookOrMountAction.hookOrMountType == CHANGEHOOK || hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = filterRouterState(details);
+            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
+                details = { nextState: filterRouterState(details.nextState) };
+            }
+            else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
+                details = { prevState: filterRouterState(details.prevState) };
+            }
+            else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
+                details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
             }
             return {
                 hooksAndMounts: state.hooksAndMounts.concat([{

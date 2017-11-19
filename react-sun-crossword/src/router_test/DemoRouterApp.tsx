@@ -285,10 +285,13 @@ const LEAVEHOOK = "LeaveHook";
 const CHANGEHOOK = "ChangeHook"
 type hookType = typeof ENTERHOOK | typeof LEAVEHOOK | typeof CHANGEHOOK
 type hookOrMountType = hookType | "ComponentDidMount" | "ComponentWillUnmount"
+interface ObjectAny {
+    [key: string]: any
+}
 interface HookOrMountAction{
     type: string,
     hookOrMountType: hookOrMountType,
-    details:object
+    details:ObjectAny
 }
 interface HookOrMountDetail {
     type: hookOrMountType,
@@ -348,8 +351,12 @@ export function rootReducer(state: RootReducerState = { hooksAndMounts:[] }, act
         case HOOK_OR_MOUNT:
             var hookOrMountAction = action as HookOrMountAction;
             var details = hookOrMountAction.details;
-            if (hookOrMountAction.hookOrMountType == ENTERHOOK || hookOrMountAction.hookOrMountType == CHANGEHOOK || hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = filterRouterState(details as RouterState);
+            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
+                details = { nextState: filterRouterState(details.nextState as RouterState) };
+            }else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
+                details = { prevState: filterRouterState(details.prevState as RouterState) };
+            } else if (hookOrMountAction.hookOrMountType == LEAVEHOOK){
+                details = { prevState: filterRouterState(details.prevState as RouterState), nextState: filterRouterState(details.nextState as RouterState)  };
             }
             return {
                 hooksAndMounts: [...state.hooksAndMounts, {
