@@ -323,7 +323,7 @@ function clone(orig, blacklistedProps) {
     return newProps;
 }
 function filterComponent(component) {
-    return component.displayName ? component.displayName : name;
+    return component.displayName ? component.displayName : component.name;
 }
 function filterComponents(components: RouteComponents) {
     var filteredComponents = {};
@@ -331,6 +331,7 @@ function filterComponents(components: RouteComponents) {
         var component = components[k];
         filteredComponents[k] = filterComponent(component);
     })
+    return filteredComponents;
 }
 function filterRoute(route:PlainRoute) {
     var filteredRoute = clone(route, ["getComponent","getComponents","onEnter","onChange","onLeave","getChildRoutes","getIndexRoute","indexRoute","childRoutes","component","components"]) as any;
@@ -357,12 +358,20 @@ function filterRoutes(routes: PlainRoute[]) {
     })
 }
 function filterRouterState(routerState: RouterState): object {
-    return {
+    var components: string[];
+
+    var filteredState = {
         location: routerState.location,
         params: routerState.params,
-        components: routerState.components,
+
         routes: filterRoutes(routerState.routes)
+    } as any;
+    if (routerState.components) {
+        filteredState.components =routerState.components.map(c => filterComponent(c));
+    } else {
+        filteredState.components = routerState.components;
     }
+    return filteredState;
 }
 export function rootReducer(state: RootReducerState = { hooksAndMounts:[] }, action): RootReducerState {
     switch (action.type) {

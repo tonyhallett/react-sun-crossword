@@ -6659,7 +6659,7 @@ function clone(orig, blacklistedProps) {
     return newProps;
 }
 function filterComponent(component) {
-    return component.displayName ? component.displayName : name;
+    return component.displayName ? component.displayName : component.name;
 }
 function filterComponents(components) {
     var filteredComponents = {};
@@ -6667,6 +6667,7 @@ function filterComponents(components) {
         var component = components[k];
         filteredComponents[k] = filterComponent(component);
     });
+    return filteredComponents;
 }
 function filterRoute(route) {
     var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
@@ -6693,12 +6694,19 @@ function filterRoutes(routes) {
     });
 }
 function filterRouterState(routerState) {
-    return {
+    var components;
+    var filteredState = {
         location: routerState.location,
         params: routerState.params,
-        components: routerState.components,
         routes: filterRoutes(routerState.routes)
     };
+    if (routerState.components) {
+        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
+    }
+    else {
+        filteredState.components = routerState.components;
+    }
+    return filteredState;
 }
 function rootReducer(state, action) {
     if (state === void 0) { state = { hooksAndMounts: [] }; }
