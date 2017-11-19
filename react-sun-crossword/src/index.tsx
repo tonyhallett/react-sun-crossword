@@ -50,18 +50,18 @@ type AnyFunction = (...args: any[]) => any;
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
-    store.dispatch(hookOrMountActionCreator("EnterHook", { nextStateLocationPathname: nextStateLocationPathname }))
 
+    store.dispatch(hookOrMountActionCreator("EnterHook", { nextState: nextState }))
+    if (nextState.location.pathname == "/redirect") {
+        replace("/multiple");
+    }
 }
 var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
-    var prevStateLocationPathname = prevState.location.pathname;
-    store.dispatch(hookOrMountActionCreator("LeaveHook", { prevStateLocationPathname: prevStateLocationPathname }))
+    store.dispatch(hookOrMountActionCreator("LeaveHook", { prevState: prevState }))
 }
 
 var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextState: RouterState, replace: RedirectFunction) {
-    var nextStateLocationPathname = nextState.location.pathname;
-    var prevStateLocationPathname = prevState.location.pathname;
-    store.dispatch(hookOrMountActionCreator("ChangeHook", { prevStateLocationPathname: prevStateLocationPathname, nextStateLocationPathname: nextStateLocationPathname  }))
+    store.dispatch(hookOrMountActionCreator("ChangeHook", { prevState:prevState,nextState:nextState }))
 
 }
 
@@ -73,7 +73,7 @@ ReactDOM.render(
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
                     <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathlessIndex}/>
                 </Route>
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Pathless}>
+                <Route component={Pathless}>
                     <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange}  path="pathlessChild" component={PathlessChild} />
                 </Route>
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="multiple" component={Multiple} >
@@ -94,7 +94,7 @@ ReactDOM.render(
                     <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="change1" component={OnChangeChild1} />
                     <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="change2" component={OnChangeChild2} />
                 </Route>
-               
+                <Route path="redirect" onEnter={onEnter} onLeave={onLeave} onChange={onChange}/>
             </Route>
         </Router>
     </Provider>,

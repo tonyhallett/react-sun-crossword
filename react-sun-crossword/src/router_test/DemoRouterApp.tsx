@@ -34,6 +34,7 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/pathlessChild">Pathless</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/multiple">Multiple</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/many">Redirected</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/redirect">Redirect in hook</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/additionalProps">Additional props</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/leaveHook">Leave hook</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/propsFromParent">Props from parent</Link>
