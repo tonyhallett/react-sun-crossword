@@ -80,8 +80,7 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:str
         return wrapperProps;
     }))(wrapper);
     connected.displayName = displayName;
-    return new Function("connected", "return function " + displayName + "(props,context){ return new connected(props,context) };")(connected);
-    //return connected;
+    return connected;
 }
 //#endregion
 interface ReactJsonSrcProps {
