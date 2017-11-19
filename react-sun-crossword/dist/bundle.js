@@ -6406,7 +6406,8 @@ function wrapMountDispatch(Component, displayName) {
         return wrapperProps;
     }))(wrapper);
     connected.displayName = displayName;
-    return connected;
+    return new Function("connected", "return function " + displayName + "(props,context){connected(props,context) };")(connected);
+    //return connected;
 }
 //#endregion
 var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {
