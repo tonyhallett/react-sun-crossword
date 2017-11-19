@@ -355,9 +355,9 @@ export function rootReducer(state: RootReducerState = { hooksAndMounts:[] }, act
             var details = hookOrMountAction.details;
             if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
                 details = { nextState: filterRouterState(details.nextState as RouterState) };
-            }else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
+            } else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
                 details = { prevState: filterRouterState(details.prevState as RouterState) };
-            } else if (hookOrMountAction.hookOrMountType == LEAVEHOOK){
+            } else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
                 details = { prevState: filterRouterState(details.prevState as RouterState), nextState: filterRouterState(details.nextState as RouterState)  };
             }
             return {
