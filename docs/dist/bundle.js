@@ -6667,7 +6667,7 @@ function filterRoute(route) {
     return filteredRoute;
 }
 function filterIndexRoute(indexRoute) {
-    filterRoute(indexRoute);
+    return filterRoute(indexRoute);
 }
 function filterRoutes(routes) {
     return routes.map(function (route) {

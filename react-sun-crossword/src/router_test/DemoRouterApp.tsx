@@ -331,7 +331,7 @@ function filterRoute(route:PlainRoute) {
     return filteredRoute;
 }
 function filterIndexRoute(indexRoute: PlainRoute) {
-    filterRoute(indexRoute);
+    return filterRoute(indexRoute);
 }
 function filterRoutes(routes: PlainRoute[]) {
     return routes.map((route) => {
