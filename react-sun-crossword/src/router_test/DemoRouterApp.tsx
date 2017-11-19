@@ -323,7 +323,8 @@ function clone(orig, blacklistedProps) {
     return newProps;
 }
 function filterComponent(component) {
-    return component.displayName ? component.displayName : component.name;
+    var componentName = component.displayName ? component.displayName : component.name;
+    return componentName;
 }
 function filterComponents(components: RouteComponents) {
     var filteredComponents = {};
