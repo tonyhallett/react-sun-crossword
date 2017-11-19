@@ -195,7 +195,7 @@ exports.KeyHandler = KeyHandler;
 /**
  * KeyHandler decorators.
  */
-//...any: any[]
+//in future will look at https://dev.to/danhomola/react-higher-order-components-in-typescript-made-simple and get a snippet 
 function keyHandleDecorator(matcher) {
     return function (props) {
         var _a = props || {}, keyValue = _a.keyValue, keyCode = _a.keyCode, keyEventName = _a.keyEventName, keyMatches = _a.keyMatches;

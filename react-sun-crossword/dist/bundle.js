@@ -6397,7 +6397,7 @@ function wrapMountDispatch(Component, displayName) {
         };
         return MountWrapper;
     }(React.Component));
-    return react_redux_1.connect(null, (function (dispatch) {
+    var connected = react_redux_1.connect(null, (function (dispatch) {
         var wrapperProps = {
             mountUnmount: function (isMount) {
                 dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: displayName }));
@@ -6405,6 +6405,8 @@ function wrapMountDispatch(Component, displayName) {
         };
         return wrapperProps;
     }))(wrapper);
+    connected.displayName = displayName;
+    return connected;
 }
 //#endregion
 var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {

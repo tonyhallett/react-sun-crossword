@@ -71,7 +71,7 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:str
             return <Component {...passThroughProps} />
         }
     }
-    return connect(null, (dispatch => {
+    var connected= connect(null, (dispatch => {
         var wrapperProps: WrapperProps= {
             mountUnmount: (isMount: boolean) => {
                 dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: displayName }));
@@ -79,6 +79,8 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:str
         }
         return wrapperProps;
     }))(wrapper);
+    connected.displayName = displayName;
+    return connected;
 }
 //#endregion
 interface ReactJsonSrcProps {

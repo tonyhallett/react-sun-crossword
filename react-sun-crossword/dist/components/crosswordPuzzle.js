@@ -19,7 +19,8 @@ var clues_1 = require("./clues");
 var lightbulb_1 = require("./lightbulb");
 var recogniseMe_1 = require("../helpers/recogniseMe");
 var numberStrings_1 = require("../helpers/numberStrings");
-var isOnline_1 = require("./isOnline");
+var stopwatchController_1 = require("./stopwatchController");
+var expandableKeyboard_1 = require("./expandableKeyboard");
 var WordSelectMode;
 (function (WordSelectMode) {
     WordSelectMode[WordSelectMode["select"] = 0] = "select";
@@ -54,7 +55,7 @@ var CrosswordPuzzle = (function (_super) {
                 var numLetters = letters.length;
                 for (var i = 0; i < numLetters; i++) {
                     var letter = letters[i];
-                    self.keyGuess(null, letter);
+                    self.keyGuess(letter);
                     if (i < numLetters - 1) {
                         speechUndo.originalGuesses.push(_this.props.crosswordModel.selectedSquare.guess);
                     }
@@ -355,7 +356,7 @@ var CrosswordPuzzle = (function (_super) {
                     for (var i = 0; i < phonetics.length; i++) {
                         var word = phonetics[i];
                         var letter = word.split("")[0];
-                        self.keyGuess(null, letter);
+                        self.keyGuess(letter);
                         if (i < phonetics.length - 1) {
                             originalGuesses.push(_this.props.crosswordModel.selectedSquare.guess);
                         }
@@ -383,7 +384,7 @@ var CrosswordPuzzle = (function (_super) {
                 _this.speechUndos = _this.speechUndos.slice(0, numUndos - 1);
                 _this.performSelection(speechUndo.startingSquare, speechUndo.wordSelectMode);
                 speechUndo.originalGuesses.forEach(function (originalGuess) {
-                    self.keyGuess(null, originalGuess);
+                    self.keyGuess(originalGuess);
                 });
             }
             return {
@@ -510,13 +511,45 @@ var CrosswordPuzzle = (function (_super) {
         _this.autoSolve = true;
         _this.solveExact = false;
         _this.state = { testCommand: "" };
+        _this.keyGuess = _this.keyGuess.bind(_this);
+        _this.backspace = _this.backspace.bind(_this);
         return _this;
     }
     CrosswordPuzzle.prototype.componentWillReceiveProps = function (nextProps) {
-        this.setUpRecognition(nextProps.crosswordModel);
+        this.initialize(nextProps);
     };
-    CrosswordPuzzle.prototype.componentDidMount = function () {
-        this.setUpRecognition(this.props.crosswordModel);
+    CrosswordPuzzle.prototype.componentWillMount = function () {
+        this.initialize(this.props);
+    };
+    CrosswordPuzzle.prototype.initialize = function (props) {
+        var crosswordModel = props.crosswordModel;
+        var crosswordHasGuesses = false;
+        var words = crosswordModel.words;
+        for (var i = 0; i < words.length; i++) {
+            var squares = words[i].squares;
+            var squareHasGuess = false;
+            for (var j = 0; j < squares.length; j++) {
+                var square = squares[j];
+                if (square.guess && square.guess != "") {
+                    squareHasGuess = true;
+                    break;
+                }
+            }
+            if (squareHasGuess) {
+                crosswordHasGuesses = true;
+                break;
+            }
+        }
+        console.log("crossword has guesses: " + crosswordHasGuesses);
+        this.ensureSelectedSquare(crosswordModel);
+        //this.setUpRecognition(crosswordModel);
+    };
+    CrosswordPuzzle.prototype.ensureSelectedSquare = function (crosswordModel) {
+        if (!crosswordModel.selectedSquare) {
+            var firstWord = crosswordModel.words[0];
+            crosswordModel.selectWord(firstWord);
+            crosswordModel.selectSquare(firstWord.squares[0]);
+        }
     };
     //#endregion   
     //#region setup
@@ -753,7 +786,7 @@ var CrosswordPuzzle = (function (_super) {
                 requiresRender = true;
             }
             var wordToSelect;
-            if (square.acrossWord !== null && square.downWord !== null) {
+            if (square.acrossWord && square.downWord) {
                 if (wordSelectMode == WordSelectMode.across) {
                     wordToSelect = square.acrossWord;
                 }
@@ -921,7 +954,7 @@ var CrosswordPuzzle = (function (_super) {
             }
         }
     };
-    CrosswordPuzzle.prototype.keyGuess = function (event, keyValue) {
+    CrosswordPuzzle.prototype.keyGuess = function (keyValue) {
         var selectedSquare = this.props.crosswordModel.selectedSquare;
         if (selectedSquare) {
             var guess = keyValue.toUpperCase();
@@ -945,6 +978,9 @@ var CrosswordPuzzle = (function (_super) {
                 }
             }
         }
+    };
+    CrosswordPuzzle.prototype.keyGuessEvent = function (event, keyValue) {
+        this.keyGuess(keyValue);
     };
     //#endregion
     //#region auto solving
@@ -1034,7 +1070,8 @@ var CrosswordPuzzle = (function (_super) {
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Cheating, rayColour: "red", onGlowColour: "red", text: "Cheat", id: "cheatBulb", bulbOuterColour: "red", innerGlowColour: "red" })),
                 React.createElement("span", { onClick: this.solveClicked },
                     React.createElement(lightbulb_1.Lightbulb, { on: this.props.crosswordModel.solvingMode === index_1.SolvingMode.Solving, rayColour: "yellow", onGlowColour: "yellow", text: "Solve", id: "solveBulb", bulbOuterColour: "yellow", innerGlowColour: "yellow" })),
-                React.createElement(isOnline_1.IsOnline, null)));
+                React.createElement(stopwatchController_1.FlipClock24, { shouldUpdateSameDuration: false, startDuration: this.props.crosswordModel.duration }),
+                React.createElement(expandableKeyboard_1.ExpandableKeyboard, { keyboardColour: "gray", buttonBackgroundColour: "orange", backspacePressed: this.backspace, keyPressed: this.keyGuess })));
         var mappedClueProviders = this.props.crosswordModel.clueProviders.map(function (cp) {
             return {
                 name: cp.name,
@@ -1054,7 +1091,7 @@ var alphaKeysLower = alphaKeysUpper.map(function (u) { return u.toLowerCase(); }
 var alphaKeys = alphaKeysUpper.concat(alphaKeysLower);
 var alphaMatches = alphaKeys.map(function (alphaKey) {
     return {
-        methodName: "keyGuess",
+        methodName: "keyGuessEvent",
         keyMatches: [alphaKey]
     };
 });

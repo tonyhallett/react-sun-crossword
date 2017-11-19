@@ -23,7 +23,6 @@ var connectedDatabase_1 = require("../helpers/connectedDatabase");
 var emailLogOn_1 = require("./emailLogOn");
 var firebaseApp_1 = require("../helpers/firebaseApp");
 var Select = require("react-select");
-exports.Select = require("react-select");
 var muiWrappedButton_1 = require("./muiWrappedButton");
 function displayNameHOC(Component, displayName) {
     var DisplayNameComponent = (function (_super) {
@@ -83,7 +82,7 @@ var DefaultSelectChooser = (function (_super) {
     DefaultSelectChooser.prototype.render = function () {
         var Button = displayNameHOC(this.props.ButtonType, "Button");
         return React.createElement("div", null,
-            React.createElement(Select, { value: this.state.selectedValue, onChange: this.optionChange, disabled: this.props.disabled, isLoading: this.props.isLoadingLookups, placeholder: this.props.placeholderText, options: this.mapOptions() }),
+            React.createElement(Select.Creatable, { value: this.state.selectedValue, onChange: this.optionChange, disabled: this.props.disabled, isLoading: this.props.isLoadingLookups, placeholder: this.props.placeholderText, options: this.mapOptions() }),
             React.createElement("div", { style: { paddingTop: "10px" } },
                 React.createElement(Button, __assign({}, this.props.buttonProps, { text: "Play Crossword", onClick: this.buttonClicked, disabled: this.props.disabled || !this.state.selectedValue }))));
     };
