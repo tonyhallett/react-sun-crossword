@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 import { Link,  Route, Redirect, LinkProps ,RouterState} from 'react-router'
-import { RouteComponentProps, IndexLink, PlainRoute, IndexRoute } from 'react-router'
+import { RouteComponentProps, IndexLink, PlainRoute, IndexRoute, RouteComponents } from 'react-router'
 import { connect } from 'react-redux'
 import { ReactElement } from "react";
 import ReactJson from 'react-json-view'
@@ -322,8 +322,24 @@ function clone(orig, blacklistedProps) {
     });
     return newProps;
 }
+function filterComponent(component) {
+    return component.displayName ? component.displayName : name;
+}
+function filterComponents(components: RouteComponents) {
+    var filteredComponents = {};
+    Object.keys(components).forEach(k => {
+        var component = components[k];
+        filteredComponents[k] = filterComponent(component);
+    })
+}
 function filterRoute(route:PlainRoute) {
-    var filteredRoute = clone(route, ["getComponent","getComponents","onEnter","onChange","onLeave","getChildRoutes","getIndexRoute","indexRoute","childRoutes"]) as any;
+    var filteredRoute = clone(route, ["getComponent","getComponents","onEnter","onChange","onLeave","getChildRoutes","getIndexRoute","indexRoute","childRoutes","component","components"]) as any;
+    if (route.component) {
+        filteredRoute.component = filterComponent(route.component);
+    }
+    if (route.components) {
+        filteredRoute.components = filterComponents(route.components);
+    }
     if (route.indexRoute) {
         filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
     }

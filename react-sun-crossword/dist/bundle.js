@@ -6658,8 +6658,24 @@ function clone(orig, blacklistedProps) {
     });
     return newProps;
 }
+function filterComponent(component) {
+    return component.displayName ? component.displayName : name;
+}
+function filterComponents(components) {
+    var filteredComponents = {};
+    Object.keys(components).forEach(function (k) {
+        var component = components[k];
+        filteredComponents[k] = filterComponent(component);
+    });
+}
 function filterRoute(route) {
-    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes"]);
+    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
+    if (route.component) {
+        filteredRoute.component = filterComponent(route.component);
+    }
+    if (route.components) {
+        filteredRoute.components = filterComponents(route.components);
+    }
     if (route.indexRoute) {
         filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
     }
