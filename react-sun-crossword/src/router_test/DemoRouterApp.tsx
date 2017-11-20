@@ -270,9 +270,15 @@ export class PropsFromParentChildComp extends React.Component<PropsFromParentPar
     }
 }
 
-//this will pro
+
+
+
+
+export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
+//#endregion
+//#region navigation
 interface NavigationDispatchProps {
-    navThroughDispatch:(location:LocationDescriptor)=>void
+    navThroughDispatch: (location: LocationDescriptor) => void
 }
 interface NavigationCompProps extends NavigationDispatchProps {
 
@@ -287,20 +293,17 @@ export class NavigationComp extends React.Component<NavigationDispatchProps, und
         </div>
     }
 }
-//going to have an issue with connecting that ?
-//export const Navigation = wrapMountDispatch(NavigationComp, "Navigation");
-export const Navigation = connect(null, (dispatch) => {
+
+export const Navigation = wrapMountDispatch(connect(null, (dispatch) => {
     var mappedDispatch: NavigationDispatchProps = {
         navThroughDispatch: function (location: LocationDescriptor) {
             dispatch(push(location));
         }
     }
     return mappedDispatch;
-})(NavigationComp)
+})(NavigationComp), "Navigation");
 
-
-export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
-//#endregion
+//endregion
 
 //#region actions/reducers/state/selectors
 const HOOK_OR_MOUNT = "HOOK_OR_MOUNT";

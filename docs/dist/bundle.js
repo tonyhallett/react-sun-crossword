@@ -6632,6 +6632,7 @@ var PropsFromParentChildComp = /** @class */ (function (_super) {
     return PropsFromParentChildComp;
 }(React.Component));
 exports.PropsFromParentChildComp = PropsFromParentChildComp;
+exports.PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
 var NavigationComp = /** @class */ (function (_super) {
     __extends(NavigationComp, _super);
     function NavigationComp() {
@@ -6648,18 +6649,15 @@ var NavigationComp = /** @class */ (function (_super) {
     return NavigationComp;
 }(React.Component));
 exports.NavigationComp = NavigationComp;
-//going to have an issue with connecting that ?
-//export const Navigation = wrapMountDispatch(NavigationComp, "Navigation");
-exports.Navigation = react_redux_1.connect(null, function (dispatch) {
+exports.Navigation = wrapMountDispatch(react_redux_1.connect(null, function (dispatch) {
     var mappedDispatch = {
         navThroughDispatch: function (location) {
             dispatch(react_router_redux_1.push(location));
         }
     };
     return mappedDispatch;
-})(NavigationComp);
-exports.PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
-//#endregion
+})(NavigationComp), "Navigation");
+//endregion
 //#region actions/reducers/state/selectors
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
 //note that this does not agree with flux standard actions
