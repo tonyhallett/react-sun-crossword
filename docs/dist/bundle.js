@@ -6682,9 +6682,10 @@ function createNavigationComponent(Component, displayName) {
             return _this;
         }
         Wrapper.prototype.render = function () {
+            // location: this.props.location - possibly location.query.omeSearch:null causing issue 
             return React.createElement("div", null,
                 React.createElement(Component, __assign({}, this.props)),
-                React.createElement(react_json_view_1.default, { src: { location: this.props.location, params: this.props.params, routeParams: this.props.routeParams } }));
+                React.createElement(react_json_view_1.default, { src: { params: this.props.params, routeParams: this.props.routeParams } }));
         };
         return Wrapper;
     }(React.Component));
