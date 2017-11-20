@@ -330,27 +330,51 @@ export const Navigation = wrapMountDispatch(connect(null, (dispatch) => {
 })(NavigationComp), "Navigation");
 
 
-function createNavigationComponent(renderFunction: () => React.ReactNode,displayName:string) {
-    var wrapper= class Wrapper extends React.Component<RouteComponentProps<any,any>, undefined>{
+function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayName:string) {
+    var wrapper= class Wrapper extends React.Component<P&RouteComponentProps<any,any>, undefined>{
         render() {
-            var details = renderFunction.bind(this)();
+            
             return <div>
-                {details}
+                <Component {...this.props}/>
                 <ReactJson src={{ location: this.props.location, params: this.props.params,routeParams:this.props.routeParams }} />
             </div>
         }
     }
-    return wrapMountDispatch(wrapper, displayName);   
+    return wrapMountDispatch(wrapper, displayName); 
+    
 }
-export const ParamParent = createNavigationComponent(() => {
-    return <div>
-        <div>ParamParent</div>
-        {this.props.children}
+
+class ParamParentComp extends React.Component<undefined, undefined>{
+    render() {
+        return <div>
+            <div>ParamParent</div>
+            <Container>
+                {this.props.children}
+            </Container>
+            </div>
+    }
+}
+class ParamChildComp extends React.Component<undefined, undefined>{
+    render() {
+        return <div>
+            <div>ParamChild</div>
         </div>
-    }, "ParamParent");
-export const ParamChild = createNavigationComponent(() => <div>ParamChild</div>, "ParamChild");
-export const Optional = createNavigationComponent(() => <div>Optional</div>, "Optional");
-export const QuerySearchState = createNavigationComponent(() => <div>QuerySearchState</div>, "QuerySearchState");
+    }
+}
+class OptionalComp extends React.Component<undefined, undefined>{
+    render() {
+        return <div>Optional</div>
+    }
+}
+class QuerySearchStateComp extends React.Component<undefined, undefined>{
+    render() {
+        return <div>Query Search State</div>
+    }
+}
+export const ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
+export const ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
+export const Optional = createNavigationComponent(OptionalComp, "Optional");
+export const QuerySearchState = createNavigationComponent(QuerySearchStateComp, "QuerySearchState");
 
 //endregion
 
