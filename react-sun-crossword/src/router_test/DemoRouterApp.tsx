@@ -310,8 +310,8 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "someSearch", state: { someState: this.state.someState } }} >Query + State</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: ["someQuery1","someQuery2"],  state: { someState: this.state.someState } }} >Query + State</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
 
             <button onClick={this.doPush}>Test push ( leave hook )</button>
             <button onClick={this.incrementLinkState}>Increment link state</button>
