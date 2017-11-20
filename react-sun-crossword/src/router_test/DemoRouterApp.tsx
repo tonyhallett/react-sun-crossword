@@ -280,13 +280,13 @@ export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, 
 interface NavigationDispatchProps {
     navThroughDispatch: (location: LocationDescriptor) => void
 }
-interface NavigationCompProps extends NavigationDispatchProps {
+interface NavigationCompProps extends NavigationDispatchProps,RouteComponentProps<any,any> {
 
 }
 interface NavigationCompState {
     someState:number
 }
-export class NavigationComp extends React.Component<NavigationDispatchProps, NavigationCompState>{
+export class NavigationComp extends React.Component<NavigationCompProps, NavigationCompState>{
     constructor(props) {
         super(props);
         this.state = { someState:0 }
@@ -301,16 +301,16 @@ export class NavigationComp extends React.Component<NavigationDispatchProps, Nav
     }
     render() {
         return <div>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="params/someParamValue1/greedySplat1MatchPart">Params 1</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="params/someParamValue2/greedySplat2MatchPart">Params 2</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "/params/someParamValue1/greedySplat1MatchPart"}>Params 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "params/someParamValue2/greedySplat2MatchPart"}>Params 2</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="optionalPartNotOptional">Optional 1</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="NotOptional">Optional 2</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "optionalPartNotOptional"}>Optional 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "NotOptional"}>Optional 2</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="noMatchingChildRoute">No matching child route</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "noMatchingChildRoute"}>No matching child route</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "/noMatchingRoute"}>No matching route</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } }} >Query Searh State</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: this.props.location.pathname + "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } }} >Query Searh State</Link>
 
             <button onClick={this.doPush}>Test push ( leave hook )</button>
             <button onClick={this.incrementLinkState}>Increment link state</button>

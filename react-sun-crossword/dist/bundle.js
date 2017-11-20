@@ -6650,13 +6650,13 @@ var NavigationComp = /** @class */ (function (_super) {
     }
     NavigationComp.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue2/greedySplat2MatchPart" }, "Params 2"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "optionalPartNotOptional" }, "Optional 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "NotOptional" }, "Optional 2"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "noMatchingChildRoute" }, "No matching child route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } } }, "Query Searh State"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: this.props.location.pathname + "/params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: this.props.location.pathname + "params/someParamValue2/greedySplat2MatchPart" }, "Params 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: this.props.location.pathname + "optionalPartNotOptional" }, "Optional 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: this.props.location.pathname + "NotOptional" }, "Optional 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: this.props.location.pathname + "noMatchingChildRoute" }, "No matching child route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: this.props.location.pathname + "/noMatchingRoute" }, "No matching route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: this.props.location.pathname + "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } } }, "Query Searh State"),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
             React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state"));
     };
