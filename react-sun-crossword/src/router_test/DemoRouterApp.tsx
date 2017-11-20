@@ -301,16 +301,16 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
     }
     render() {
         return <div>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "/params/someParamValue1/greedySplat1MatchPart"}>Params 1</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "params/someParamValue2/greedySplat2MatchPart"}>Params 2</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/params/someParamValue1/greedySplat1MatchPart">Params 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/params/someParamValue2/greedySplat2MatchPart">Params 2</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "optionalPartNotOptional"}>Optional 1</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "NotOptional"}>Optional 2</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/optionalPartNotOptional">Optional 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/NotOptional">Optional 2</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "noMatchingChildRoute"}>No matching child route</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={this.props.location.pathname + "/noMatchingRoute"}>No matching route</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: this.props.location.pathname + "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } }} >Query Searh State</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } }} >Query Searh State</Link>
 
             <button onClick={this.doPush}>Test push ( leave hook )</button>
             <button onClick={this.incrementLinkState}>Increment link state</button>
