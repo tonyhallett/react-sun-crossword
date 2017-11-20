@@ -314,6 +314,8 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
 
             <button onClick={this.doPush}>Test push ( leave hook )</button>
             <button onClick={this.incrementLinkState}>Increment link state</button>
+
+            {this.props.children}
         </div>
     }
 }
