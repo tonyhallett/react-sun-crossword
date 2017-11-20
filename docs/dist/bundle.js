@@ -6326,6 +6326,7 @@ var __rest = (this && this.__rest) || function (s, e) {
             t[p[i]] = s[p[i]];
     return t;
 };
+var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
 var react_router_1 = __webpack_require__(14);
@@ -6679,7 +6680,7 @@ function createNavigationComponent(renderFunction, displayName) {
             return _super !== null && _super.apply(this, arguments) || this;
         }
         Wrapper.prototype.render = function () {
-            var details = renderFunction();
+            var details = renderFunction.bind(this)();
             return React.createElement("div", null,
                 details,
                 React.createElement(react_json_view_1.default, { src: { location: this.props.location, params: this.props.params, routeParams: this.props.routeParams } }));
@@ -6688,7 +6689,11 @@ function createNavigationComponent(renderFunction, displayName) {
     }(React.Component));
     return wrapMountDispatch(wrapper, displayName);
 }
-exports.ParamParent = createNavigationComponent(function () { return React.createElement("div", null, "ParamParent"); }, "ParamParent ");
+exports.ParamParent = createNavigationComponent(function () {
+    return React.createElement("div", null,
+        React.createElement("div", null, "ParamParent"),
+        _this.props.children);
+}, "ParamParent");
 exports.ParamChild = createNavigationComponent(function () { return React.createElement("div", null, "ParamChild"); }, "ParamChild");
 exports.Optional = createNavigationComponent(function () { return React.createElement("div", null, "Optional"); }, "Optional");
 exports.QuerySearchState = createNavigationComponent(function () { return React.createElement("div", null, "QuerySearchState"); }, "QuerySearchState");

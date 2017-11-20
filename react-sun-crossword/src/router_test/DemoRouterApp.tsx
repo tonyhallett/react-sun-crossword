@@ -333,7 +333,7 @@ export const Navigation = wrapMountDispatch(connect(null, (dispatch) => {
 function createNavigationComponent(renderFunction: () => React.ReactNode,displayName:string) {
     var wrapper= class Wrapper extends React.Component<RouteComponentProps<any,any>, undefined>{
         render() {
-            var details = renderFunction();
+            var details = renderFunction.bind(this)();
             return <div>
                 {details}
                 <ReactJson src={{ location: this.props.location, params: this.props.params,routeParams:this.props.routeParams }} />
@@ -342,7 +342,12 @@ function createNavigationComponent(renderFunction: () => React.ReactNode,display
     }
     return wrapMountDispatch(wrapper, displayName);   
 }
-export const ParamParent = createNavigationComponent(() => <div>ParamParent</div>, "ParamParent ");
+export const ParamParent = createNavigationComponent(() => {
+    return <div>
+        <div>ParamParent</div>
+        {this.props.children}
+        </div>
+    }, "ParamParent");
 export const ParamChild = createNavigationComponent(() => <div>ParamChild</div>, "ParamChild");
 export const Optional = createNavigationComponent(() => <div>Optional</div>, "Optional");
 export const QuerySearchState = createNavigationComponent(() => <div>QuerySearchState</div>, "QuerySearchState");
