@@ -340,7 +340,7 @@ function createNavigationComponent(renderFunction: () => React.ReactNode,display
     }
     return wrapMountDispatch(wrapper, displayName);   
 }
-export const ParamParent = createNavigationComponent(() => <div>ParamParent</div>, "ParamParent");
+export const ParamParent = createNavigationComponent(() => <div>ParamParent</div>, "ParamParent ");
 export const ParamChild = createNavigationComponent(() => <div>ParamChild</div>, "ParamChild");
 export const Optional = createNavigationComponent(() => <div>Optional</div>, "Optional");
 export const QuerySearchState = createNavigationComponent(() => <div>QuerySearchState</div>, "QuerySearchState");

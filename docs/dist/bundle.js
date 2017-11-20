@@ -6687,7 +6687,7 @@ function createNavigationComponent(renderFunction, displayName) {
     }(React.Component));
     return wrapMountDispatch(wrapper, displayName);
 }
-exports.ParamParent = createNavigationComponent(function () { return React.createElement("div", null, "ParamParent"); }, "ParamParent");
+exports.ParamParent = createNavigationComponent(function () { return React.createElement("div", null, "ParamParent"); }, "ParamParent ");
 exports.ParamChild = createNavigationComponent(function () { return React.createElement("div", null, "ParamChild"); }, "ParamChild");
 exports.Optional = createNavigationComponent(function () { return React.createElement("div", null, "Optional"); }, "Optional");
 exports.QuerySearchState = createNavigationComponent(function () { return React.createElement("div", null, "QuerySearchState"); }, "QuerySearchState");
