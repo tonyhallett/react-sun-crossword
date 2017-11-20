@@ -6676,7 +6676,9 @@ function createNavigationComponent(Component, displayName) {
     var wrapper = /** @class */ (function (_super) {
         __extends(Wrapper, _super);
         function Wrapper() {
-            return _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.displayName = displayName;
+            return _this;
         }
         Wrapper.prototype.render = function () {
             return React.createElement("div", null,
@@ -6685,7 +6687,8 @@ function createNavigationComponent(Component, displayName) {
         };
         return Wrapper;
     }(React.Component));
-    return wrapMountDispatch(wrapper, displayName);
+    return wrapper;
+    //return wrapMountDispatch(wrapper, displayName); 
 }
 var ParamParentComp = /** @class */ (function (_super) {
     __extends(ParamParentComp, _super);

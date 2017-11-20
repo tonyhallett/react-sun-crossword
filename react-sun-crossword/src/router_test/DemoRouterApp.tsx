@@ -331,7 +331,8 @@ export const Navigation = wrapMountDispatch(connect(null, (dispatch) => {
 
 
 function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayName:string) {
-    var wrapper= class Wrapper extends React.Component<P&RouteComponentProps<any,any>, undefined>{
+    var wrapper = class Wrapper extends React.Component<P & RouteComponentProps<any, any>, undefined>{
+        displayName = displayName;
         render() {
             
             return <div>
@@ -340,7 +341,9 @@ function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayN
             </div>
         }
     }
-    return wrapMountDispatch(wrapper, displayName); 
+    
+    return wrapper;
+    //return wrapMountDispatch(wrapper, displayName); 
     
 }
 
