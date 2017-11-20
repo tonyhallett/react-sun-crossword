@@ -400,6 +400,12 @@ function clone(orig, blacklistedProps) {
     return newProps;
 }
 function filterComponent(component) {
+    if (component === null) {
+        return "null";
+    }
+    if (component === undefined) {
+        return "undefined";
+    }
     var componentName = component.displayName ? component.displayName : component.name;
     return componentName;
 }
