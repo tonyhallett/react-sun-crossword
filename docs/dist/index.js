@@ -67,6 +67,7 @@ var onLeave = function routeOnLeave(prevState) {
 var onChange = function routeOnChange(prevState, nextState, replace) {
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState }));
 };
+var getWrappedNavigationComponent = function getWrappedNavigationComponent() { };
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
@@ -85,5 +86,11 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "onChange", component: DemoRouterApp_1.OnChangeComponent },
                 React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
                 React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "change2", component: DemoRouterApp_1.OnChangeChild2 })),
-            React.createElement(react_router_2.Route, { path: "redirect", onEnter: onEnter, onLeave: onLeave, onChange: onChange })))), document.getElementById("example"));
+            React.createElement(react_router_2.Route, { path: "redirect", onEnter: onEnter, onLeave: onLeave, onChange: onChange }),
+            React.createElement(react_router_2.Route, { path: "navigation", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Navigation },
+                React.createElement(react_router_2.Route, { path: "params" },
+                    React.createElement(react_router_2.Route, { path: ":someParam", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: ParamParent },
+                        React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: ParamChild }))),
+                React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: Optional }),
+                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: QuerySearchState }))))), document.getElementById("example"));
 //# sourceMappingURL=index.js.map

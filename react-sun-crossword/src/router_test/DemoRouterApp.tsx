@@ -283,13 +283,37 @@ interface NavigationDispatchProps {
 interface NavigationCompProps extends NavigationDispatchProps {
 
 }
-export class NavigationComp extends React.Component<NavigationDispatchProps, undefined>{
+interface NavigationCompState {
+    someState:number
+}
+export class NavigationComp extends React.Component<NavigationDispatchProps, NavigationCompState>{
+    constructor(props) {
+        super(props);
+        this.state = { someState:0 }
+    }
     doPush = () => {
         this.props.navThroughDispatch("/leaveHook");
     }
+    incrementLinkState = () => {
+        this.setState((prevState) => {
+            return { someState: prevState.someState + 1 }
+        });
+    }
     render() {
         return <div>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="params/someParamValue1/greedySplat1MatchPart">Params 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="params/someParamValue2/greedySplat2MatchPart">Params 2</Link>
+
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="optionalPartNotOptional">Optional 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="NotOptional">Optional 2</Link>
+
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="noMatchingChildRoute">No matching child route</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
+
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } }} >Query Searh State</Link>
+
             <button onClick={this.doPush}>Test push ( leave hook )</button>
+            <button onClick={this.incrementLinkState}>Increment link state</button>
         </div>
     }
 }
@@ -302,6 +326,24 @@ export const Navigation = wrapMountDispatch(connect(null, (dispatch) => {
     }
     return mappedDispatch;
 })(NavigationComp), "Navigation");
+
+
+function createNavigationComponent(renderFunction: () => React.ReactNode,displayName:string) {
+    var wrapper= class Wrapper extends React.Component<RouteComponentProps<any,any>, undefined>{
+        render() {
+            var details = renderFunction();
+            return <div>
+                {details}
+                <ReactJson src={{ location: this.props.location, params: this.props.params,routeParams:this.props.routeParams }} />
+            </div>
+        }
+    }
+    return wrapMountDispatch(wrapper, displayName);   
+}
+export const ParamParent = createNavigationComponent(() => <div>ParamParent</div>, "ParamParent");
+export const ParamChild = createNavigationComponent(() => <div>ParamChild</div>, "ParamChild");
+export const Optional = createNavigationComponent(() => <div>Optional</div>, "Optional");
+export const QuerySearchState = createNavigationComponent(() => <div>QuerySearchState</div>, "QuerySearchState");
 
 //endregion
 

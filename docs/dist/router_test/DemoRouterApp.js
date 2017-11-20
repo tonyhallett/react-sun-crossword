@@ -32,6 +32,7 @@ var react_router_1 = require("react-router");
 var react_router_2 = require("react-router");
 var react_redux_1 = require("react-redux");
 var react_json_view_1 = require("react-json-view");
+var react_router_redux_1 = require("react-router-redux");
 //#region v3 route components
 //#region link styling
 //should create a hoc styled link
@@ -72,6 +73,7 @@ var App = (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/propsFromParent" }, "Props from parent"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change1" }, "On change child route 1"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change2" }, "On change child route 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
             React.createElement(ReactJsonContainer, null),
             React.createElement(Container, null, this.props.children));
     };
@@ -331,7 +333,58 @@ var PropsFromParentChildComp = (function (_super) {
 }(React.Component));
 exports.PropsFromParentChildComp = PropsFromParentChildComp;
 exports.PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
-//#endregion
+var NavigationComp = (function (_super) {
+    __extends(NavigationComp, _super);
+    function NavigationComp(props) {
+        var _this = _super.call(this, props) || this;
+        _this.doPush = function () {
+            _this.props.navThroughDispatch("/leaveHook");
+        };
+        _this.incrementLinkState = function () {
+            _this.setState(function (prevState) {
+                return { someState: prevState.someState + 1 };
+            });
+        };
+        _this.state = { someState: 0 };
+        return _this;
+    }
+    NavigationComp.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue2/greedySplat2MatchPart" }, "Params 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "optionalPartNotOptional" }, "Optional 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "NotOptional" }, "Optional 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "noMatchingChildRoute" }, "No matching child route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } } }, "Query Searh State"),
+            React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
+            React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state"));
+    };
+    return NavigationComp;
+}(React.Component));
+exports.NavigationComp = NavigationComp;
+exports.Navigation = wrapMountDispatch(react_redux_1.connect(null, function (dispatch) {
+    var mappedDispatch = {
+        navThroughDispatch: function (location) {
+            dispatch(react_router_redux_1.push(location));
+        }
+    };
+    return mappedDispatch;
+})(NavigationComp), "Navigation");
+function createNavigationComponent(renderFunction) {
+    var Wrapper = (function (_super) {
+        __extends(Wrapper, _super);
+        function Wrapper() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Wrapper.prototype.render = function () {
+            var details = renderFunction();
+            return React.createElement("div", null, details);
+        };
+        return Wrapper;
+    }(React.Component));
+}
+//endregion
 //#region actions/reducers/state/selectors
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
 //note that this does not agree with flux standard actions
@@ -358,8 +411,26 @@ function clone(orig, blacklistedProps) {
     });
     return newProps;
 }
+function filterComponent(component) {
+    var componentName = component.displayName ? component.displayName : component.name;
+    return componentName;
+}
+function filterComponents(components) {
+    var filteredComponents = {};
+    Object.keys(components).forEach(function (k) {
+        var component = components[k];
+        filteredComponents[k] = filterComponent(component);
+    });
+    return filteredComponents;
+}
 function filterRoute(route) {
-    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes"]);
+    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
+    if (route.component) {
+        filteredRoute.component = filterComponent(route.component);
+    }
+    if (route.components) {
+        filteredRoute.components = filterComponents(route.components);
+    }
     if (route.indexRoute) {
         filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
     }
@@ -377,12 +448,19 @@ function filterRoutes(routes) {
     });
 }
 function filterRouterState(routerState) {
-    return {
+    var components;
+    var filteredState = {
         location: routerState.location,
         params: routerState.params,
-        components: routerState.components,
         routes: filterRoutes(routerState.routes)
     };
+    if (routerState.components) {
+        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
+    }
+    else {
+        filteredState.components = routerState.components;
+    }
+    return filteredState;
 }
 function rootReducer(state, action) {
     if (state === void 0) { state = { hooksAndMounts: [] }; }
@@ -393,10 +471,10 @@ function rootReducer(state, action) {
             if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
                 details = { nextState: filterRouterState(details.nextState) };
             }
-            else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
+            else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
                 details = { prevState: filterRouterState(details.prevState) };
             }
-            else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
+            else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
                 details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
             }
             return {

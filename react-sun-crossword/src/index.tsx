@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -64,10 +64,11 @@ var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextSt
     store.dispatch(hookOrMountActionCreator("ChangeHook", { prevState:prevState,nextState:nextState }))
 
 }
+var getWrappedNavigationComponent = function getWrappedNavigationComponent() { }
 
 ReactDOM.render(
     <Provider store={store}>
-        <Router history={history}>
+        <Router  history={history}>
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute  onEnter={onEnter} onLeave={onLeave} onChange={onChange}  component={Introduction} />
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
@@ -95,7 +96,17 @@ ReactDOM.render(
                     <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="change2" component={OnChangeChild2} />
                 </Route>
                 <Route path="redirect" onEnter={onEnter} onLeave={onLeave} onChange={onChange} />
-                <Route path="navigation" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Navigation}  />
+                <Route path="navigation" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Navigation}>
+                    <Route path="params">
+                        <Route path=":someParam" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={ParamParent}>
+                            <Route path="*MatchPart" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={ParamChild} />
+                        </Route>
+                    </Route>
+                    <Route path="(optionalPart)NotOptional" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Optional}/>
+                    <Route path="querySearchState" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={QuerySearchState}/>
+                        
+
+                </Route>
             </Route>
         </Router>
     </Provider>,

@@ -6635,16 +6635,30 @@ exports.PropsFromParentChildComp = PropsFromParentChildComp;
 exports.PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
 var NavigationComp = /** @class */ (function (_super) {
     __extends(NavigationComp, _super);
-    function NavigationComp() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function NavigationComp(props) {
+        var _this = _super.call(this, props) || this;
         _this.doPush = function () {
             _this.props.navThroughDispatch("/leaveHook");
         };
+        _this.incrementLinkState = function () {
+            _this.setState(function (prevState) {
+                return { someState: prevState.someState + 1 };
+            });
+        };
+        _this.state = { someState: 0 };
         return _this;
     }
     NavigationComp.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"));
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue2/greedySplat2MatchPart" }, "Params 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "optionalPartNotOptional" }, "Optional 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "NotOptional" }, "Optional 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "noMatchingChildRoute" }, "No matching child route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } } }, "Query Searh State"),
+            React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
+            React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state"));
     };
     return NavigationComp;
 }(React.Component));
@@ -6657,6 +6671,26 @@ exports.Navigation = wrapMountDispatch(react_redux_1.connect(null, function (dis
     };
     return mappedDispatch;
 })(NavigationComp), "Navigation");
+function createNavigationComponent(renderFunction, displayName) {
+    var wrapper = /** @class */ (function (_super) {
+        __extends(Wrapper, _super);
+        function Wrapper() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        Wrapper.prototype.render = function () {
+            var details = renderFunction();
+            return React.createElement("div", null,
+                details,
+                React.createElement(react_json_view_1.default, { src: { location: this.props.location, params: this.props.params, routeParams: this.props.routeParams } }));
+        };
+        return Wrapper;
+    }(React.Component));
+    return wrapMountDispatch(wrapper, displayName);
+}
+exports.ParamParent = createNavigationComponent(function () { return React.createElement("div", null, "ParamParent"); }, "ParamParent");
+exports.ParamChild = createNavigationComponent(function () { return React.createElement("div", null, "ParamChild"); }, "ParamChild");
+exports.Optional = createNavigationComponent(function () { return React.createElement("div", null, "Optional"); }, "Optional");
+exports.QuerySearchState = createNavigationComponent(function () { return React.createElement("div", null, "QuerySearchState"); }, "QuerySearchState");
 //endregion
 //#region actions/reducers/state/selectors
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
@@ -31136,6 +31170,7 @@ var onLeave = function routeOnLeave(prevState) {
 var onChange = function routeOnChange(prevState, nextState, replace) {
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState }));
 };
+var getWrappedNavigationComponent = function getWrappedNavigationComponent() { };
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(react_router_2.Router, { history: history },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
@@ -31155,7 +31190,12 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
                 React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "change2", component: DemoRouterApp_1.OnChangeChild2 })),
             React.createElement(react_router_2.Route, { path: "redirect", onEnter: onEnter, onLeave: onLeave, onChange: onChange }),
-            React.createElement(react_router_2.Route, { path: "navigation", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Navigation })))), document.getElementById("example"));
+            React.createElement(react_router_2.Route, { path: "navigation", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Navigation },
+                React.createElement(react_router_2.Route, { path: "params" },
+                    React.createElement(react_router_2.Route, { path: ":someParam", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamParent },
+                        React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
+                React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
+                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState }))))), document.getElementById("example"));
 
 
 /***/ })
