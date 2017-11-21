@@ -15,6 +15,45 @@ import { Router, Route, IndexRoute, Redirect, RedirectFunction } from "react-rou
 import { RouteProps } from "react-router/lib/Route";
 import { EnterHook,LeaveHook,ChangeHook, RouterState } from "react-router/lib/Router";
 
+var objectAny = Object as any;
+var _extends = objectAny.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+
+class RouteProvider extends React.Component<any, any>{
+    static routes = []
+    static createRouteFromReactElement = function (element, parentRoute?) {
+        function createRoute(defaultProps, props) {
+            return _extends({}, defaultProps, props);
+
+        }
+        var type = element.type;
+        var route = createRoute(type.defaultProps, element.props);
+
+        if (route.children) {
+            var childRoutes = RouteProvider.createRoutesFromReactChildren(route.children, route);
+
+            if (childRoutes.length) route.childRoutes = childRoutes;
+
+            delete route.children;
+
+        }
+        RouteProvider.routes.push(route);
+    }
+    static createRoutesFromReactChildren = function createRoutesFromReactChildren(children, parentRoute) {
+        var routes = [];
+
+        React.Children.forEach(children, function (element) {
+            routes.push(RouteProvider.createRouteFromReactElement(element));
+        });
+
+        return routes;
+    }
+    render() {
+        return null;
+    }
+}
+
+
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
 //    document.getElementById("example")
@@ -48,6 +87,7 @@ class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,un
 type AnyFunction = (...args: any[]) => any;
 
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
+    alert(RouteProvider.routes.length);
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
 
@@ -65,24 +105,14 @@ var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextSt
 
 }
 var route404;
-var matchContext= {
-    transitionManager: function (history, routes) {
-        for (var i = 0; i < routes.length; i++) {
-            var route=routes[i]
-            if (routes.is404) {
-                route404 = route;
-                break;
-            }
-        }
-        return this.createTransitionManager(history, routes);
-    }
-}
-var getWrappedNavigationComponent = function getWrappedNavigationComponent() { }
+
+
+
 var RouteAny = Route as any;
 var RouterAny = Router as any;//
 ReactDOM.render(
     <Provider store={store}>
-        <RouterAny history={history} matchContext={matchContext}>
+        <RouterAny history={history} >
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute  onEnter={onEnter} onLeave={onLeave} onChange={onChange}  component={Introduction} />
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
@@ -122,7 +152,7 @@ ReactDOM.render(
 
                 </Route>
             </Route>
-            <RouteAny path="*" is404={true} component={PageNotFound}/>
+            <RouteProvider path="*" is404={true} component={PageNotFound}/>
         </RouterAny>
     </Provider>,
 

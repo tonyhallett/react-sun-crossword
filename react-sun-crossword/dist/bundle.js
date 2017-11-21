@@ -38103,6 +38103,47 @@ var react_router_1 = __webpack_require__(14);
 var history_1 = __webpack_require__(84);
 var react_router_redux_1 = __webpack_require__(44);
 var react_router_2 = __webpack_require__(14);
+var objectAny = Object;
+var _extends = objectAny.assign || function (target) { for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+    for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+        }
+    }
+} return target; };
+var RouteProvider = /** @class */ (function (_super) {
+    __extends(RouteProvider, _super);
+    function RouteProvider() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RouteProvider.prototype.render = function () {
+        return null;
+    };
+    RouteProvider.routes = [];
+    RouteProvider.createRouteFromReactElement = function (element, parentRoute) {
+        function createRoute(defaultProps, props) {
+            return _extends({}, defaultProps, props);
+        }
+        var type = element.type;
+        var route = createRoute(type.defaultProps, element.props);
+        if (route.children) {
+            var childRoutes = RouteProvider.createRoutesFromReactChildren(route.children, route);
+            if (childRoutes.length)
+                route.childRoutes = childRoutes;
+            delete route.children;
+        }
+        RouteProvider.routes.push(route);
+    };
+    RouteProvider.createRoutesFromReactChildren = function createRoutesFromReactChildren(children, parentRoute) {
+        var routes = [];
+        React.Children.forEach(children, function (element) {
+            routes.push(RouteProvider.createRouteFromReactElement(element));
+        });
+        return routes;
+    };
+    return RouteProvider;
+}(React.Component));
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
 //    document.getElementById("example")
@@ -38129,6 +38170,7 @@ var RouteAdditional = /** @class */ (function (_super) {
     return RouteAdditional;
 }(React.Component));
 var onEnter = function routeOnEnter(nextState, replace) {
+    alert(RouteProvider.routes.length);
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState }));
@@ -38143,23 +38185,10 @@ var onChange = function routeOnChange(prevState, nextState, replace) {
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState }));
 };
 var route404;
-var matchContext = {
-    transitionManager: function (history, routes) {
-        for (var i = 0; i < routes.length; i++) {
-            var route = routes[i];
-            if (routes.is404) {
-                route404 = route;
-                break;
-            }
-        }
-        return this.createTransitionManager(history, routes);
-    }
-};
-var getWrappedNavigationComponent = function getWrappedNavigationComponent() { };
 var RouteAny = react_router_2.Route;
 var RouterAny = react_router_2.Router; //
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(RouterAny, { history: history, matchContext: matchContext },
+    React.createElement(RouterAny, { history: history },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
             React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Introduction }),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathless", component: DemoRouterApp_1.Pathless },
@@ -38183,7 +38212,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                         React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
                 React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
                 React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState }))),
-        React.createElement(RouteAny, { path: "*", is404: true, component: DemoRouterApp_1.PageNotFound }))), document.getElementById("example"));
+        React.createElement(RouteProvider, { path: "*", is404: true, component: DemoRouterApp_1.PageNotFound }))), document.getElementById("example"));
 
 
 /***/ })
