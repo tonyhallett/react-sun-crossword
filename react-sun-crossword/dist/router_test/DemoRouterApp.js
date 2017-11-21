@@ -74,6 +74,14 @@ var App = (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change1" }, "On change child route 1"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change2" }, "On change child route 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
+            React.createElement(react_json_view_1.default, { src: {
+                    location: {
+                        action: "PUSH",
+                        query: {
+                            omeSearch: null
+                        }
+                    }
+                } }),
             React.createElement(ReactJsonContainer, null),
             React.createElement(Container, null, this.props.children));
     };
@@ -350,15 +358,17 @@ var NavigationComp = (function (_super) {
     }
     NavigationComp.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "params/someParamValue2/greedySplat2MatchPart" }, "Params 2"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "optionalPartNotOptional" }, "Optional 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "NotOptional" }, "Optional 2"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "noMatchingChildRoute" }, "No matching child route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue2/greedySplat2MatchPart" }, "Params 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/optionalPartNotOptional" }, "Optional 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "querySearchState", query: "someQuery", search: "someSearch", state: { someState: this.state.someState } } }, "Query Searh State"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "someSearch", state: { someState: this.state.someState } } }, "Search + State"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
-            React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state"));
+            React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state"),
+            this.props.children);
     };
     return NavigationComp;
 }(React.Component));
@@ -371,19 +381,72 @@ exports.Navigation = wrapMountDispatch(react_redux_1.connect(null, function (dis
     };
     return mappedDispatch;
 })(NavigationComp), "Navigation");
-function createNavigationComponent(renderFunction) {
-    var Wrapper = (function (_super) {
+function createNavigationComponent(Component, displayName) {
+    var wrapper = (function (_super) {
         __extends(Wrapper, _super);
         function Wrapper() {
-            return _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.displayName = displayName;
+            return _this;
         }
         Wrapper.prototype.render = function () {
-            var details = renderFunction();
-            return React.createElement("div", null, details);
+            // location: this.props.location - possibly location.query.omeSearch:null causing issue 
+            return React.createElement("div", null,
+                React.createElement(Component, __assign({}, this.props)),
+                React.createElement(react_json_view_1.default, { src: { params: this.props.params, routeParams: this.props.routeParams } }));
         };
         return Wrapper;
     }(React.Component));
+    return wrapper;
+    //return wrapMountDispatch(wrapper, displayName); 
 }
+var ParamParentComp = (function (_super) {
+    __extends(ParamParentComp, _super);
+    function ParamParentComp() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ParamParentComp.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("div", null, "ParamParent"),
+            React.createElement(Container, null, this.props.children));
+    };
+    return ParamParentComp;
+}(React.Component));
+var ParamChildComp = (function (_super) {
+    __extends(ParamChildComp, _super);
+    function ParamChildComp() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ParamChildComp.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("div", null, "ParamChild"));
+    };
+    return ParamChildComp;
+}(React.Component));
+var OptionalComp = (function (_super) {
+    __extends(OptionalComp, _super);
+    function OptionalComp() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    OptionalComp.prototype.render = function () {
+        return React.createElement("div", null, "Optional");
+    };
+    return OptionalComp;
+}(React.Component));
+var QuerySearchStateComp = (function (_super) {
+    __extends(QuerySearchStateComp, _super);
+    function QuerySearchStateComp() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    QuerySearchStateComp.prototype.render = function () {
+        return React.createElement("div", null, "Query Search State");
+    };
+    return QuerySearchStateComp;
+}(React.Component));
+exports.ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
+exports.ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
+exports.Optional = createNavigationComponent(OptionalComp, "Optional");
+exports.QuerySearchState = createNavigationComponent(QuerySearchStateComp, "QuerySearchState");
 //endregion
 //#region actions/reducers/state/selectors
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
@@ -412,6 +475,12 @@ function clone(orig, blacklistedProps) {
     return newProps;
 }
 function filterComponent(component) {
+    if (component === null) {
+        return "null";
+    }
+    if (component === undefined) {
+        return "undefined";
+    }
     var componentName = component.displayName ? component.displayName : component.name;
     return componentName;
 }

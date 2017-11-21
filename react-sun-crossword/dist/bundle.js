@@ -6374,6 +6374,14 @@ var App = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change1" }, "On change child route 1"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change2" }, "On change child route 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
+            React.createElement(react_json_view_1.default, { src: {
+                    location: {
+                        action: "PUSH",
+                        query: {
+                            omeSearch: null
+                        }
+                    }
+                } }),
             React.createElement(ReactJsonContainer, null),
             React.createElement(Container, null, this.props.children));
     };
