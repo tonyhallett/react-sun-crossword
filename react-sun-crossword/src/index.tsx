@@ -87,8 +87,18 @@ class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,un
 type AnyFunction = (...args: any[]) => any;
 
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
-    alert(RouteProvider.routes.length);
+    
     var nextStateLocationPathname = nextState.location.pathname;
+    //will probably change this - will use the redux store and have the RouteProvider connect to the store
+    if (nextStateLocationPathname == "toggle404") {
+        var route404 = RouteProvider.routes[0];
+        if (route404.path = "") {
+            route404.path = "*";
+        } else {
+            route404.path = "";
+        }
+        replace(nextState.location.state);
+    }
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
 
     store.dispatch(hookOrMountActionCreator("EnterHook", { nextState: nextState }))
@@ -114,7 +124,8 @@ ReactDOM.render(
     <Provider store={store}>
         <RouterAny history={history} >
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
-                <IndexRoute  onEnter={onEnter} onLeave={onLeave} onChange={onChange}  component={Introduction} />
+                <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
+                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="toggle404"/>
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
                     <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathlessIndex}/>
                 </Route>

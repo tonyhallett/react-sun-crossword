@@ -38170,8 +38170,18 @@ var RouteAdditional = /** @class */ (function (_super) {
     return RouteAdditional;
 }(React.Component));
 var onEnter = function routeOnEnter(nextState, replace) {
-    alert(RouteProvider.routes.length);
     var nextStateLocationPathname = nextState.location.pathname;
+    //will probably change this - will use the redux store and have the RouteProvider connect to the store
+    if (nextStateLocationPathname == "toggle404") {
+        var route404 = RouteProvider.routes[0];
+        if (route404.path = "") {
+            route404.path = "*";
+        }
+        else {
+            route404.path = "";
+        }
+        replace(nextState.location.state);
+    }
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState }));
     if (nextState.location.pathname == "/redirect") {
@@ -38191,6 +38201,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(RouterAny, { history: history },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
             React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Introduction }),
+            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "toggle404" }),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathless", component: DemoRouterApp_1.Pathless },
                 React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.PathlessIndex })),
             React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
