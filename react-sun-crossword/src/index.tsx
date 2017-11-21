@@ -89,12 +89,12 @@ type AnyFunction = (...args: any[]) => any;
 
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
     //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextState.location.search == "?pathSwitch") {
+    if (nextState.location.search == "?toggle4040") {
         var route404 = RouteProvider.routes[0];
-        if (route404.path == "pathSwitchNoMatch") {
-            route404.path = "pathSwitch";
+        if (route404.path == "*") {
+            route404.path = "";
         } else {
-            route404.path = "pathSwitchNoMatch";
+            route404.path = "*";
         }
         replace(nextState.location.state);
     }
@@ -127,7 +127,7 @@ ReactDOM.render(
         <RouterAny history={history} >
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="toggle404"/>
+                <RouteProvider onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="toggle404"/>
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
                     <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathlessIndex}/>
                 </Route>
@@ -161,7 +161,7 @@ ReactDOM.render(
                     </Route>
                     <Route path="(optionalPart)NotOptional" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Optional}/>
                     <Route path="querySearchState" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={QuerySearchState}/>
-                    <RouteProvider path="pathSwitchNoMatch" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathSwitch} />   
+                      
 
                 </Route>
                 
