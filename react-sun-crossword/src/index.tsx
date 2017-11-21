@@ -127,7 +127,7 @@ ReactDOM.render(
         <RouterAny history={history} >
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
-                <RouteProvider onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="toggle404"/>
+                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="toggle404"/>
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
                     <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathlessIndex}/>
                 </Route>
@@ -166,6 +166,7 @@ ReactDOM.render(
                 </Route>
                 
             </Route>
+            <RouteProvider path="" component={PageNotFound}/>
             
         </RouterAny>
     </Provider>,
