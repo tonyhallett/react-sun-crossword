@@ -38146,6 +38146,7 @@ var RouteProvider = /** @class */ (function (_super) {
             delete route.children;
         }
         RouteProvider.routes.push(route);
+        return route;
     };
     RouteProvider.createRoutesFromReactChildren = function createRoutesFromReactChildren(children, parentRoute) {
         var routes = [];

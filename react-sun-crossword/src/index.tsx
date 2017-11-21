@@ -38,6 +38,7 @@ class RouteProvider extends React.Component<any, any>{
 
         }
         RouteProvider.routes.push(route);
+        return route;
     }
     static createRoutesFromReactChildren = function createRoutesFromReactChildren(children, parentRoute) {
         var routes = [];
