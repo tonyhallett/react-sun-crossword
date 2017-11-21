@@ -66,7 +66,7 @@ var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextSt
 }
 var route404;
 var matchContext= {
-    createTransitionManager: function (history, routes) {
+    transitionManager: function (history, routes) {
         for (var i = 0; i < routes.length; i++) {
             var route=routes[i]
             if (routes.is404) {
@@ -123,7 +123,7 @@ ReactDOM.render(
                 </Route>
             </Route>
             <RouteAny path="*" is404={true} component={PageNotFound}/>
-        </Router>
+        </RouterAny>
     </Provider>,
 
     document.getElementById("example")

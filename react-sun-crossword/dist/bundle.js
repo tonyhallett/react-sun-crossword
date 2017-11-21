@@ -38144,7 +38144,7 @@ var onChange = function routeOnChange(prevState, nextState, replace) {
 };
 var route404;
 var matchContext = {
-    createTransitionManager: function (history, routes) {
+    transitionManager: function (history, routes) {
         for (var i = 0; i < routes.length; i++) {
             var route = routes[i];
             if (routes.is404) {
