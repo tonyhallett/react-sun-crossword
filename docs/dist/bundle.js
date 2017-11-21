@@ -38172,7 +38172,7 @@ var RouteAdditional = /** @class */ (function (_super) {
 var onEnter = function routeOnEnter(nextState, replace) {
     if (nextState.location.search == "?toggle404") {
         var route404 = RouteProvider.routes[0];
-        if (route404.path = "") {
+        if (route404.path == "") {
             route404.path = "*";
         }
         else {

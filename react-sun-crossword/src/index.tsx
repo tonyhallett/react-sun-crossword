@@ -89,7 +89,7 @@ type AnyFunction = (...args: any[]) => any;
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
     if (nextState.location.search == "?toggle404") {
         var route404 = RouteProvider.routes[0];
-        if (route404.path = "") {
+        if (route404.path == "") {
             route404.path = "*";
         } else {
             route404.path = "";
