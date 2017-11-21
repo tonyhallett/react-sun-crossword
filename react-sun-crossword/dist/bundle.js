@@ -38157,7 +38157,7 @@ var matchContext = {
 };
 var getWrappedNavigationComponent = function getWrappedNavigationComponent() { };
 var RouteAny = react_router_2.Route;
-var RouterAny = react_router_2.Router;
+var RouterAny = react_router_2.Router; //
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(RouterAny, { history: history, matchContext: matchContext },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },

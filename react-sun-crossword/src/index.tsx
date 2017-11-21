@@ -79,7 +79,7 @@ var matchContext= {
 }
 var getWrappedNavigationComponent = function getWrappedNavigationComponent() { }
 var RouteAny = Route as any;
-var RouterAny = Router as any;
+var RouterAny = Router as any;//
 ReactDOM.render(
     <Provider store={store}>
         <RouterAny history={history} matchContext={matchContext}>
