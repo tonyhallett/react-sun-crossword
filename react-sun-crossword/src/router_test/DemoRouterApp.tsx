@@ -42,16 +42,6 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change1">On change child route 1</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change2">On change child route 2</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
-            <ReactJson src={
-                {
-                    location: {
-                        action: "PUSH",
-                        query: {
-                            omeSearch:null
-                        }
-                    }
-                }
-            } />
             <ReactJsonContainer />
             <Container>
                 {this.props.children}
@@ -320,7 +310,7 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
 
             <button onClick={this.doPush}>Test push ( leave hook )</button>
@@ -345,10 +335,10 @@ function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayN
     var wrapper = class Wrapper extends React.Component<P & RouteComponentProps<any, any>, undefined>{
         displayName = displayName;
         render() {
-            // location: this.props.location - possibly location.query.omeSearch:null causing issue 
+          
             return <div>
                 <Component {...this.props}/>
-                <ReactJson src={{ params: this.props.params,routeParams:this.props.routeParams }} />
+                <ReactJson src={{ location:this.props.location, params: this.props.params,routeParams:this.props.routeParams }} />
             </div>
         }
     }
