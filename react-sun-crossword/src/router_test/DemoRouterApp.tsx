@@ -335,19 +335,10 @@ function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayN
     var wrapper = class Wrapper extends React.Component<P & RouteComponentProps<any, any>, undefined>{
         displayName = displayName;
         render() {
-            //wamt to debug actualLocation - is it already a Component ???
+            
             var actualLocation = this.props.location;//will copy properties off of this 
-            var query = actualLocation.query;
-            var location = {
-                action: "POP",
-                query: {
-                    someSearch:null
-                },
-                search: "?someSearch",
-                state: {
-                    someState:0
-                }
-            }
+            var location = clone(actualLocation, []);
+            
             return <div>
                 <Component {...this.props} />
 

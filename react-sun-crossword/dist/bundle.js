@@ -6682,19 +6682,8 @@ function createNavigationComponent(Component, displayName) {
             return _this;
         }
         Wrapper.prototype.render = function () {
-            //wamt to debug actualLocation - is it already a Component ???
             var actualLocation = this.props.location; //will copy properties off of this 
-            var query = actualLocation.query;
-            var location = {
-                action: "POP",
-                query: {
-                    someSearch: null
-                },
-                search: "?someSearch",
-                state: {
-                    someState: 0
-                }
-            };
+            var location = clone(actualLocation, []);
             return React.createElement("div", null,
                 React.createElement(Component, __assign({}, this.props)),
                 React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
