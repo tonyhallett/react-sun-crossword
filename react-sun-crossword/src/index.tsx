@@ -90,7 +90,7 @@ var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: 
     
     var nextStateLocationPathname = nextState.location.pathname;
     //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextStateLocationPathname == "toggle404") {
+    if (nextStateLocationPathname == "/toggle404") {
         var route404 = RouteProvider.routes[0];
         if (route404.path = "") {
             route404.path = "*";
