@@ -6684,6 +6684,7 @@ function createNavigationComponent(Component, displayName) {
         Wrapper.prototype.render = function () {
             var actualLocation = this.props.location; //will copy properties off of this 
             var location = clone(actualLocation, []);
+            location.query = clone(location.query, []);
             return React.createElement("div", null,
                 React.createElement(Component, __assign({}, this.props)),
                 React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));

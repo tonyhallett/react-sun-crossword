@@ -337,8 +337,8 @@ function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayN
         render() {
             
             var actualLocation = this.props.location;//will copy properties off of this 
-            var location = clone(actualLocation, []);
-            
+            var location = clone(actualLocation, []) as any;
+            location.query=clone(location.query,[])
             return <div>
                 <Component {...this.props} />
 
