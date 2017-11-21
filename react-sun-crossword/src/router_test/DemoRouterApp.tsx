@@ -310,6 +310,8 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
 
+            <Link style={linkStyle} to={{pathname:"/toggle404",state:this.props.location}}>Toggle 404</Link>
+
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
 
@@ -336,7 +338,7 @@ function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayN
         displayName = displayName;
         render() {
             
-            var actualLocation = this.props.location;//will copy properties off of this 
+            var actualLocation = this.props.location;
             var location = clone(actualLocation, []) as any;
             location.query=clone(location.query,[])
             return <div>
@@ -351,7 +353,13 @@ function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayN
     //return wrapMountDispatch(wrapper, displayName); 
     
 }
-
+export class PageNotFound extends React.Component<undefined, undefined>{
+    render() {
+        return <div>
+            Page Not Found
+        </div>
+    }
+}
 class ParamParentComp extends React.Component<undefined, undefined>{
     render() {
         return <div>

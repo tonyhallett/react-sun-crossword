@@ -6656,6 +6656,7 @@ var NavigationComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
+            React.createElement(react_router_1.Link, { style: linkStyle, to: { pathname: "/toggle404", state: this.props.location } }, "Toggle 404"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } } }, "Search + State"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
@@ -6682,7 +6683,7 @@ function createNavigationComponent(Component, displayName) {
             return _this;
         }
         Wrapper.prototype.render = function () {
-            var actualLocation = this.props.location; //will copy properties off of this 
+            var actualLocation = this.props.location;
             var location = clone(actualLocation, []);
             location.query = clone(location.query, []);
             return React.createElement("div", null,
@@ -6694,6 +6695,17 @@ function createNavigationComponent(Component, displayName) {
     return wrapper;
     //return wrapMountDispatch(wrapper, displayName); 
 }
+var PageNotFound = /** @class */ (function (_super) {
+    __extends(PageNotFound, _super);
+    function PageNotFound() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PageNotFound.prototype.render = function () {
+        return React.createElement("div", null, "Page Not Found");
+    };
+    return PageNotFound;
+}(React.Component));
+exports.PageNotFound = PageNotFound;
 var ParamParentComp = /** @class */ (function (_super) {
     __extends(ParamParentComp, _super);
     function ParamParentComp() {
@@ -38130,9 +38142,24 @@ var onLeave = function routeOnLeave(prevState) {
 var onChange = function routeOnChange(prevState, nextState, replace) {
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState }));
 };
+var route404;
+var matchContext = {
+    createTransitionManager: function (history, routes) {
+        for (var i = 0; i < routes.length; i++) {
+            var route = routes[i];
+            if (routes.is404) {
+                route404 = route;
+                break;
+            }
+        }
+        return this.createTransitionManager(history, routes);
+    }
+};
 var getWrappedNavigationComponent = function getWrappedNavigationComponent() { };
+var RouteAny = react_router_2.Route;
+var RouterAny = react_router_2.Router;
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(react_router_2.Router, { history: history },
+    React.createElement(RouterAny, { history: history, matchContext: matchContext },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
             React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Introduction }),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathless", component: DemoRouterApp_1.Pathless },
@@ -38155,7 +38182,8 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                     React.createElement(react_router_2.Route, { path: ":someParam", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamParent },
                         React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
                 React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
-                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState }))))), document.getElementById("example"));
+                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState }))),
+        React.createElement(RouteAny, { path: "*", is404: true, component: DemoRouterApp_1.PageNotFound }))), document.getElementById("example"));
 
 
 /***/ })

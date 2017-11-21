@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -64,11 +64,25 @@ var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextSt
     store.dispatch(hookOrMountActionCreator("ChangeHook", { prevState:prevState,nextState:nextState }))
 
 }
+var route404;
+var matchContext= {
+    createTransitionManager: function (history, routes) {
+        for (var i = 0; i < routes.length; i++) {
+            var route=routes[i]
+            if (routes.is404) {
+                route404 = route;
+                break;
+            }
+        }
+        return this.createTransitionManager(history, routes);
+    }
+}
 var getWrappedNavigationComponent = function getWrappedNavigationComponent() { }
-
+var RouteAny = Route as any;
+var RouterAny = Router as any;
 ReactDOM.render(
     <Provider store={store}>
-        <Router  history={history}>
+        <RouterAny history={history} matchContext={matchContext}>
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute  onEnter={onEnter} onLeave={onLeave} onChange={onChange}  component={Introduction} />
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
@@ -108,6 +122,7 @@ ReactDOM.render(
 
                 </Route>
             </Route>
+            <RouteAny path="*" is404={true} component={PageNotFound}/>
         </Router>
     </Provider>,
 
