@@ -337,6 +337,7 @@ function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayN
         render() {
             //wamt to debug actualLocation - is it already a Component ???
             var actualLocation = this.props.location;//will copy properties off of this 
+            var query = actualLocation.query;
             var location = {
                 action: "POP",
                 query: {
