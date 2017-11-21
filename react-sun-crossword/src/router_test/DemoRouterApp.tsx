@@ -310,7 +310,7 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
 
-            <Link style={linkStyle} to={{ pathname: "/toggle404", search: "?toggle404", state: this.props.location }}>Toggle 404</Link>
+            <Link style={linkStyle} to={{ pathname: "/toggle404", state: this.props.location }}>Toggle 404</Link>
             
 
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>

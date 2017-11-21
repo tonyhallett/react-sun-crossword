@@ -6656,7 +6656,7 @@ var NavigationComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, to: { pathname: "/toggle404", search: "?toggle404", state: this.props.location } }, "Toggle 404"),
+            React.createElement(react_router_1.Link, { style: linkStyle, to: { pathname: "/toggle404", state: this.props.location } }, "Toggle 404"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } } }, "Search + State"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
@@ -38183,7 +38183,7 @@ var RouteAdditional = /** @class */ (function (_super) {
 }(React.Component));
 var onEnter = function routeOnEnter(nextState, replace) {
     //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextState.location.search == "?toggle404") {
+    if (nextState.location.pathname.indexOf("toggle404") !== -1) {
         var route404 = RouteProvider.routes[0];
         if (route404.path == "*") {
             route404.path = "";

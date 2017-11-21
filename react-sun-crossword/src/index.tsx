@@ -89,7 +89,7 @@ type AnyFunction = (...args: any[]) => any;
 
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
     //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextState.location.search == "?toggle404") {
+    if (nextState.location.pathname.indexOf("toggle404")!==-1) {
         var route404 = RouteProvider.routes[0];
         if (route404.path == "*") {
             route404.path = "";
