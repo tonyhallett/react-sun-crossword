@@ -87,10 +87,7 @@ class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,un
 type AnyFunction = (...args: any[]) => any;
 
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
-    
-    var nextStateLocationPathname = nextState.location.pathname;
-    //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextStateLocationPathname == "/toggle404") {
+    if (nextState.location.search == "?toggle404") {
         var route404 = RouteProvider.routes[0];
         if (route404.path = "") {
             route404.path = "*";
@@ -99,6 +96,9 @@ var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: 
         }
         replace(nextState.location.state);
     }
+    var nextStateLocationPathname = nextState.location.pathname;
+    //will probably change this - will use the redux store and have the RouteProvider connect to the store
+    
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
 
     store.dispatch(hookOrMountActionCreator("EnterHook", { nextState: nextState }))
