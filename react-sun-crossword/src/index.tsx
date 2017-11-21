@@ -164,9 +164,9 @@ ReactDOM.render(
                       
 
                 </Route>
-                
+                <RouteProvider path="" component={PageNotFound} />
             </Route>
-            <RouteProvider path="" component={PageNotFound}/>
+            
             
         </RouterAny>
     </Provider>,
