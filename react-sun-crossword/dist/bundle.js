@@ -6656,7 +6656,8 @@ var NavigationComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, to: { pathname: "/toggle404", search: "?toggle404", state: this.props.location } }, "Toggle 404"),
+            React.createElement(react_router_1.Link, { style: linkStyle, to: { pathname: "/toggle404", search: "?pathSwitch", state: this.props.location } }, "Path switch"),
+            React.createElement(react_router_1.Link, { style: linkStyle, to: "/navigation/pathSwitch" }, "Links to dynamic route"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } } }, "Search + State"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
@@ -6706,6 +6707,17 @@ var PageNotFound = /** @class */ (function (_super) {
     return PageNotFound;
 }(React.Component));
 exports.PageNotFound = PageNotFound;
+var PathSwitch = /** @class */ (function (_super) {
+    __extends(PathSwitch, _super);
+    function PathSwitch() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PathSwitch.prototype.render = function () {
+        return React.createElement("div", null, "Route that matched had a dynamic path");
+    };
+    return PathSwitch;
+}(React.Component));
+exports.PathSwitch = PathSwitch;
 var ParamParentComp = /** @class */ (function (_super) {
     __extends(ParamParentComp, _super);
     function ParamParentComp() {
@@ -38171,13 +38183,13 @@ var RouteAdditional = /** @class */ (function (_super) {
 }(React.Component));
 var onEnter = function routeOnEnter(nextState, replace) {
     //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextState.location.search == "?toggle404") {
+    if (nextState.location.search == "?pathSwitch") {
         var route404 = RouteProvider.routes[0];
-        if (route404.path == "") {
-            route404.path = "*";
+        if (route404.path == "pathSwitchNoMatch") {
+            route404.path = "pathSwitch";
         }
         else {
-            route404.path = "";
+            route404.path = "pathSwitchNoMatch";
         }
         replace(nextState.location.state);
     }
@@ -38222,8 +38234,9 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                     React.createElement(react_router_2.Route, { path: ":someParam", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamParent },
                         React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
                 React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
-                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState })),
-            React.createElement(RouteProvider, { path: "*", is404: true, component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
+                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState }),
+                React.createElement(RouteProvider, { path: "pathSwitchNoMatch", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.PathSwitch }))))), document.getElementById("example"));
+//<RouteProvider path="*" is404={true} component={PageNotFound} /> 
 
 
 /***/ })

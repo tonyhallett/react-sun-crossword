@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, rootReducer, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, rootReducer,PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -88,12 +88,12 @@ type AnyFunction = (...args: any[]) => any;
 
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
     //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextState.location.search == "?toggle404") {
+    if (nextState.location.search == "?pathSwitch") {
         var route404 = RouteProvider.routes[0];
-        if (route404.path == "") {
-            route404.path = "*";
+        if (route404.path == "pathSwitchNoMatch") {
+            route404.path = "pathSwitch";
         } else {
-            route404.path = "";
+            route404.path = "pathSwitchNoMatch";
         }
         replace(nextState.location.state);
     }
@@ -160,10 +160,10 @@ ReactDOM.render(
                     </Route>
                     <Route path="(optionalPart)NotOptional" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Optional}/>
                     <Route path="querySearchState" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={QuerySearchState}/>
-                        
+                    <RouteProvider path="pathSwitchNoMatch" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathSwitch} />   
 
                 </Route>
-                <RouteProvider path="*" is404={true} component={PageNotFound} />
+                
             </Route>
             
         </RouterAny>
@@ -171,3 +171,5 @@ ReactDOM.render(
 
     document.getElementById("example")
 );
+
+//<RouteProvider path="*" is404={true} component={PageNotFound} />

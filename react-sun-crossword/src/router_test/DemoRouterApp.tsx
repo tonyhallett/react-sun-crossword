@@ -310,7 +310,9 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
 
-            <Link style={linkStyle} to={{pathname:"/toggle404",search:"?toggle404", state:this.props.location}}>Toggle 404</Link>
+            <Link style={linkStyle} to={{ pathname: "/toggle404", search: "?pathSwitch", state: this.props.location }}>Path switch</Link>
+
+            <Link style={linkStyle} to="/navigation/pathSwitch">Links to dynamic route</Link>
 
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
@@ -357,6 +359,13 @@ export class PageNotFound extends React.Component<undefined, undefined>{
     render() {
         return <div>
             Page Not Found
+        </div>
+    }
+}
+export class PathSwitch extends React.Component<undefined, undefined>{
+    render() {
+        return <div>
+            Route that matched had a dynamic path
         </div>
     }
 }
