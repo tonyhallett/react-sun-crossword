@@ -602,11 +602,15 @@ export class GetComponentError extends React.Component<undefined, undefined>{
         return <div>
             <div>The link below is to a route that provides the component using the getComponent method.</div>
             <div>To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component</div>
-            <Link to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: true } }}>Choose component 1</Link>
-            <Link to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: false } }}>Choose component 2</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle}  to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: true } }}>Choose component 1</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle}  to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: false } }}>Choose component 2</Link>
             <div>The Router also allow for handling of errors - such as those thrown by getComponent</div>
             <div>The link below is matched by a route that will throw from getComponent</div>
             <Link to="/getComponentError/error">Throw</Link>
+            <Container>
+                {this.props.children}
+            </Container>
+            
         </div>
     }
 }

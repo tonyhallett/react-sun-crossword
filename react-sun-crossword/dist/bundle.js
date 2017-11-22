@@ -7126,11 +7126,12 @@ var GetComponentError = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("div", null, "The link below is to a route that provides the component using the getComponent method."),
             React.createElement("div", null, "To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component"),
-            React.createElement(react_router_1.Link, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
-            React.createElement(react_router_1.Link, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: false } } }, "Choose component 2"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/getComponentError/getComponent", state: { isComponent1: false } } }, "Choose component 2"),
             React.createElement("div", null, "The Router also allow for handling of errors - such as those thrown by getComponent"),
             React.createElement("div", null, "The link below is matched by a route that will throw from getComponent"),
-            React.createElement(react_router_1.Link, { to: "/getComponentError/error" }, "Throw"));
+            React.createElement(react_router_1.Link, { to: "/getComponentError/error" }, "Throw"),
+            React.createElement(Container, null, this.props.children));
     };
     return GetComponentError;
 }(React.Component));
