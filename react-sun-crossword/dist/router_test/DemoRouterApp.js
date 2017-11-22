@@ -33,6 +33,19 @@ var react_router_2 = require("react-router");
 var react_redux_1 = require("react-redux");
 var react_json_view_1 = require("react-json-view");
 var react_router_redux_1 = require("react-router-redux");
+var Modal = require("react-modal"); //https://github.com/reactjs/react-modal/issues/497
+//#endregion
+//#region js helpers
+function clone(orig, blacklistedProps) {
+    var newProps = {};
+    Object.keys(orig).forEach(function (key) {
+        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
+            newProps[key] = orig[key];
+        }
+    });
+    return newProps;
+}
+//#endregion
 //#region v3 route components
 //#region link styling
 //should create a hoc styled link
@@ -42,6 +55,182 @@ var linkActiveStyle = {
 var linkStyle = {
     margin: "5px"
 };
+var StyledLink = (function (_super) {
+    __extends(StyledLink, _super);
+    function StyledLink() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    StyledLink.prototype.render = function () {
+        return React.createElement(react_router_1.Link, __assign({ style: linkStyle, activeStyle: linkActiveStyle }, this.props), this.props.children);
+    };
+    return StyledLink;
+}(React.Component));
+function createStyledLink(linkProps, linkText) {
+    return React.createElement(react_router_1.Link, __assign({ style: linkStyle, activeStyle: linkActiveStyle }, linkProps), linkText);
+}
+//#endregion
+//#region actions/reducers/state/selectors
+//#region toggle
+var TOGGLE_404_ACTIVE = "TOGGLE_404_ACTIVE";
+//action creator
+function toggle404Active() {
+    return {
+        type: TOGGLE_404_ACTIVE
+    };
+}
+function is404Active(state, action) {
+    if (state === void 0) { state = false; }
+    if (action.type == TOGGLE_404_ACTIVE) {
+        return !state;
+    }
+    return state;
+}
+exports.is404Active = is404Active;
+function is404ActiveSelector(state) {
+    return state.is404Active;
+}
+//#endregion
+//#region errors
+var ROUTE_ERROR = "ROUTE_ERROR";
+var CLEAR_ROUTE_ERROR = "CLEAR_ROUTE_ERROR";
+function routeError(error) {
+    var action = {
+        type: ROUTE_ERROR,
+        error: error
+    };
+    return action;
+}
+exports.routeError = routeError;
+function clearRouteError() {
+    var action = {
+        type: CLEAR_ROUTE_ERROR,
+    };
+    return action;
+}
+function routeErrorDetails(state, action) {
+    if (state === void 0) { state = ""; }
+    switch (action.type) {
+        case ROUTE_ERROR:
+            return action.error.message;
+        case CLEAR_ROUTE_ERROR:
+            return "";
+        default:
+            return state;
+    }
+}
+exports.routeErrorDetails = routeErrorDetails;
+function routeErrorSelector(state) {
+    return state.routeErrorDetails;
+}
+//#endregion
+//#region hookOrMount
+var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
+//note that this does not agree with flux standard actions
+function hookOrMountActionCreator(type, details) {
+    return {
+        type: HOOK_OR_MOUNT,
+        hookOrMountType: type,
+        details: details
+    };
+}
+exports.hookOrMountActionCreator = hookOrMountActionCreator;
+var ENTERHOOK = "EnterHook";
+var LEAVEHOOK = "LeaveHook";
+var CHANGEHOOK = "ChangeHook";
+var ONUPDATE = "OnUpdate";
+function hooksAndMountsSelector(state) {
+    return state.hooksAndMounts;
+}
+function filterComponent(component) {
+    if (component === null) {
+        return "null";
+    }
+    if (component === undefined) {
+        return "undefined";
+    }
+    var componentName = component.displayName ? component.displayName : component.name;
+    return componentName;
+}
+function filterComponents(components) {
+    var filteredComponents = {};
+    Object.keys(components).forEach(function (k) {
+        var component = components[k];
+        filteredComponents[k] = filterComponent(component);
+    });
+    return filteredComponents;
+}
+function filterRoute(route) {
+    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
+    if (route.component) {
+        filteredRoute.component = filterComponent(route.component);
+    }
+    if (route.components) {
+        filteredRoute.components = filterComponents(route.components);
+    }
+    if (route.indexRoute) {
+        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+    }
+    if (route.childRoutes) {
+        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+    }
+    return filteredRoute;
+}
+function filterIndexRoute(indexRoute) {
+    return filterRoute(indexRoute);
+}
+function filterRoutes(routes) {
+    return routes.map(function (route) {
+        return filterRoute(route);
+    });
+}
+function filterRouterState(routerState) {
+    var components;
+    var filteredState = {
+        location: routerState.location,
+        params: routerState.params,
+        routes: filterRoutes(routerState.routes)
+    };
+    if (routerState.components) {
+        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
+    }
+    else {
+        filteredState.components = routerState.components;
+    }
+    return filteredState;
+}
+function hooksAndMounts(state, action) {
+    if (state === void 0) { state = []; }
+    switch (action.type) {
+        case HOOK_OR_MOUNT:
+            var hookOrMountAction = action;
+            var details = hookOrMountAction.details;
+            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
+                details = { nextState: filterRouterState(details.nextState) };
+            }
+            else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
+                details = { prevState: filterRouterState(details.prevState) };
+            }
+            else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
+                details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
+            }
+            var newHookOrMountDetail;
+            if (details) {
+                newHookOrMountDetail = {
+                    type: hookOrMountAction.hookOrMountType,
+                    details: details
+                };
+            }
+            else {
+                newHookOrMountDetail = {
+                    type: hookOrMountAction.hookOrMountType,
+                };
+            }
+            return state.concat([newHookOrMountDetail]);
+        default:
+            return state;
+    }
+}
+exports.hooksAndMounts = hooksAndMounts;
 //#endregion
 var Container = (function (_super) {
     __extends(Container, _super);
@@ -54,12 +243,13 @@ var Container = (function (_super) {
     return Container;
 }(React.Component));
 exports.Container = Container;
-var App = (function (_super) {
-    __extends(App, _super);
-    function App() {
+var AppComp = (function (_super) {
+    __extends(AppComp, _super);
+    function AppComp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    App.prototype.render = function () {
+    AppComp.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", null,
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
             React.createElement(react_router_2.IndexLink, { style: linkStyle, activeStyle: linkActiveStyle, to: "/" }, "Introduction"),
@@ -74,20 +264,28 @@ var App = (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change1" }, "On change child route 1"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change2" }, "On change child route 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
-            React.createElement(react_json_view_1.default, { src: {
-                    location: {
-                        action: "PUSH",
-                        query: {
-                            omeSearch: null
-                        }
-                    }
-                } }),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/getComponentError" }, "GetComponent/Error"),
             React.createElement(ReactJsonContainer, null),
+            React.createElement(Modal, { isOpen: this.props.routeErrorDetails !== "", onRequestClose: function () { _this.props.clearRouteError(); } },
+                React.createElement("div", null,
+                    React.createElement("div", null, "There has been an error !!!"),
+                    React.createElement("div", null, this.props.routeErrorDetails))),
             React.createElement(Container, null, this.props.children));
     };
-    return App;
+    return AppComp;
 }(React.Component));
-exports.App = App;
+exports.AppComp = AppComp;
+exports.App = react_redux_1.connect(function (state) {
+    return {
+        routeErrorDetails: routeErrorSelector(state)
+    };
+}, (function (dispatch) {
+    return {
+        clearRouteError: function () {
+            dispatch(clearRouteError());
+        }
+    };
+}))(AppComp);
 function wrapMountDispatch(Component, displayName) {
     var wrapper = (function (_super) {
         __extends(MountWrapper, _super);
@@ -358,25 +556,46 @@ var NavigationComp = (function (_super) {
     }
     NavigationComp.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue2/greedySplat2MatchPart" }, "Params 2"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/optionalPartNotOptional" }, "Optional 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "someSearch", state: { someState: this.state.someState } } }, "Search + State"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
+            React.createElement("div", null,
+                React.createElement("div", null, "Matching"),
+                React.createElement("div", null,
+                    React.createElement("div", null, "Params"),
+                    React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
+                    React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue2/greedySplat2MatchPart" }, "Params 2")),
+                React.createElement("div", null,
+                    React.createElement("div", null, "Optional"),
+                    React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/optionalPartNotOptional" }, "Optional 1"),
+                    React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"))),
+            React.createElement("div", null,
+                React.createElement("div", null, "No match"),
+                React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
+                React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
+                React.createElement("br", null),
+                React.createElement("button", { onClick: this.props.toggle404Active }, this.props.is404Active ? "Deactivate 404" : "Activate 404")),
+            React.createElement("div", null,
+                React.createElement("div", null, "Query/Search & State"),
+                React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } } }, "Search + State"),
+                React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
+                React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state")),
+            React.createElement("br", null),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
-            React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state"),
             this.props.children);
     };
     return NavigationComp;
 }(React.Component));
 exports.NavigationComp = NavigationComp;
-exports.Navigation = wrapMountDispatch(react_redux_1.connect(null, function (dispatch) {
+exports.Navigation = wrapMountDispatch(react_redux_1.connect(function (routerAppState) {
+    var stateToProps = {
+        is404Active: is404ActiveSelector(routerAppState)
+    };
+    return stateToProps;
+}, function (dispatch) {
     var mappedDispatch = {
         navThroughDispatch: function (location) {
             dispatch(react_router_redux_1.push(location));
+        },
+        toggle404Active: function () {
+            dispatch(toggle404Active());
         }
     };
     return mappedDispatch;
@@ -390,16 +609,40 @@ function createNavigationComponent(Component, displayName) {
             return _this;
         }
         Wrapper.prototype.render = function () {
-            // location: this.props.location - possibly location.query.omeSearch:null causing issue 
+            var actualLocation = this.props.location;
+            var location = clone(actualLocation, []);
+            location.query = clone(location.query, []);
             return React.createElement("div", null,
                 React.createElement(Component, __assign({}, this.props)),
-                React.createElement(react_json_view_1.default, { src: { params: this.props.params, routeParams: this.props.routeParams } }));
+                React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
         };
         return Wrapper;
     }(React.Component));
     return wrapper;
     //return wrapMountDispatch(wrapper, displayName); 
 }
+var PageNotFound = (function (_super) {
+    __extends(PageNotFound, _super);
+    function PageNotFound() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PageNotFound.prototype.render = function () {
+        return React.createElement("div", null, "Page Not Found");
+    };
+    return PageNotFound;
+}(React.Component));
+exports.PageNotFound = PageNotFound;
+var PathSwitch = (function (_super) {
+    __extends(PathSwitch, _super);
+    function PathSwitch() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PathSwitch.prototype.render = function () {
+        return React.createElement("div", null, "Route that matched had a dynamic path");
+    };
+    return PathSwitch;
+}(React.Component));
+exports.PathSwitch = PathSwitch;
 var ParamParentComp = (function (_super) {
     __extends(ParamParentComp, _super);
     function ParamParentComp() {
@@ -443,120 +686,51 @@ var QuerySearchStateComp = (function (_super) {
     };
     return QuerySearchStateComp;
 }(React.Component));
+var GetComponentError = (function (_super) {
+    __extends(GetComponentError, _super);
+    function GetComponentError() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GetComponentError.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("div", null, "The link below is to a route that provides the component using the getComponent method."),
+            React.createElement("div", null, "To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component"),
+            React.createElement(StyledLink, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/getComponentError/getComponent", state: { isComponent1: false } } }, "Choose component 2"),
+            React.createElement("div", null, "The Router also allow for handling of errors - such as those thrown by getComponent"),
+            React.createElement("div", null, "The link below is matched by a route that will throw from getComponent"),
+            React.createElement(react_router_1.Link, { to: "/getComponentError/error" }, "Throw"),
+            React.createElement(Container, null, this.props.children));
+    };
+    return GetComponentError;
+}(React.Component));
+exports.GetComponentError = GetComponentError;
+var GetComponentComp1 = (function (_super) {
+    __extends(GetComponentComp1, _super);
+    function GetComponentComp1() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GetComponentComp1.prototype.render = function () {
+        return React.createElement("div", null, "Component 1");
+    };
+    return GetComponentComp1;
+}(React.Component));
+exports.GetComponentComp1 = GetComponentComp1;
+var GetComponentComp2 = (function (_super) {
+    __extends(GetComponentComp2, _super);
+    function GetComponentComp2() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GetComponentComp2.prototype.render = function () {
+        return React.createElement("div", null, "Component 2");
+    };
+    return GetComponentComp2;
+}(React.Component));
+exports.GetComponentComp2 = GetComponentComp2;
 exports.ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
 exports.ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
 exports.Optional = createNavigationComponent(OptionalComp, "Optional");
 exports.QuerySearchState = createNavigationComponent(QuerySearchStateComp, "QuerySearchState");
-//endregion
-//#region actions/reducers/state/selectors
-var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
-//note that this does not agree with flux standard actions
-function hookOrMountActionCreator(type, details) {
-    return {
-        type: HOOK_OR_MOUNT,
-        hookOrMountType: type,
-        details: details
-    };
-}
-exports.hookOrMountActionCreator = hookOrMountActionCreator;
-var ENTERHOOK = "EnterHook";
-var LEAVEHOOK = "LeaveHook";
-var CHANGEHOOK = "ChangeHook";
-function hooksAndMountsSelector(state) {
-    return state.rootReducer.hooksAndMounts;
-}
-function clone(orig, blacklistedProps) {
-    var newProps = {};
-    Object.keys(orig).forEach(function (key) {
-        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
-            newProps[key] = orig[key];
-        }
-    });
-    return newProps;
-}
-function filterComponent(component) {
-    if (component === null) {
-        return "null";
-    }
-    if (component === undefined) {
-        return "undefined";
-    }
-    var componentName = component.displayName ? component.displayName : component.name;
-    return componentName;
-}
-function filterComponents(components) {
-    var filteredComponents = {};
-    Object.keys(components).forEach(function (k) {
-        var component = components[k];
-        filteredComponents[k] = filterComponent(component);
-    });
-    return filteredComponents;
-}
-function filterRoute(route) {
-    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
-    if (route.component) {
-        filteredRoute.component = filterComponent(route.component);
-    }
-    if (route.components) {
-        filteredRoute.components = filterComponents(route.components);
-    }
-    if (route.indexRoute) {
-        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
-    }
-    if (route.childRoutes) {
-        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
-    }
-    return filteredRoute;
-}
-function filterIndexRoute(indexRoute) {
-    return filterRoute(indexRoute);
-}
-function filterRoutes(routes) {
-    return routes.map(function (route) {
-        return filterRoute(route);
-    });
-}
-function filterRouterState(routerState) {
-    var components;
-    var filteredState = {
-        location: routerState.location,
-        params: routerState.params,
-        routes: filterRoutes(routerState.routes)
-    };
-    if (routerState.components) {
-        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
-    }
-    else {
-        filteredState.components = routerState.components;
-    }
-    return filteredState;
-}
-function rootReducer(state, action) {
-    if (state === void 0) { state = { hooksAndMounts: [] }; }
-    switch (action.type) {
-        case HOOK_OR_MOUNT:
-            var hookOrMountAction = action;
-            var details = hookOrMountAction.details;
-            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
-                details = { nextState: filterRouterState(details.nextState) };
-            }
-            else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = { prevState: filterRouterState(details.prevState) };
-            }
-            else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
-                details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
-            }
-            return {
-                hooksAndMounts: state.hooksAndMounts.concat([{
-                        type: hookOrMountAction.hookOrMountType,
-                        details: details
-                    }])
-            };
-        default:
-            return state;
-    }
-}
-exports.rootReducer = rootReducer;
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {

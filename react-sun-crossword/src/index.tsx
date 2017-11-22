@@ -80,12 +80,18 @@ var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextSt
 //note that if want to be able to change then needs to be an object
 var additionalPropsValue = { additional: "This is additional" };
 
+Route.defaultProps = {
+    onEnter: onEnter,
+    onLeave: onLeave,
+    onChange:onChange
+}
+
 ReactDOM.render(
     <Provider store={store}>
         <RouterAny history={history} onError={(error) => {
             store.dispatch(routeError(error))
         }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
-            <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
+            <Route path="/" component={App}>
                 <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
                     <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathlessIndex}/>

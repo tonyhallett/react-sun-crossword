@@ -28,21 +28,22 @@ var react_router_1 = require("react-router");
 var history_1 = require("history");
 var react_router_redux_1 = require("react-router-redux");
 var react_router_2 = require("react-router");
+var routeProviders_1 = require("./router_test/routeProviders");
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
 //    document.getElementById("example")
 //);
-var anyWindow = window;
+//#region setup
 var history = react_router_1.useRouterHistory(history_1.createHistory)({
     basename: '/react-sun-crossword'
 });
 var middleware = react_router_redux_1.routerMiddleware(history);
 var store = redux_1.createStore(redux_1.combineReducers({
-    rootReducer: DemoRouterApp_1.rootReducer,
-    router: react_router_redux_1.routerReducer
+    hooksAndMounts: DemoRouterApp_1.hooksAndMounts,
+    router: react_router_redux_1.routerReducer,
+    is404Active: DemoRouterApp_1.is404Active,
+    routeErrorDetails: DemoRouterApp_1.routeErrorDetails
 }), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
-//note that if want to be able to change then needs to be an object
-var additionalPropsValue = { additional: "This is additional" };
 var RouteAdditional = (function (_super) {
     __extends(RouteAdditional, _super);
     function RouteAdditional() {
@@ -53,6 +54,10 @@ var RouteAdditional = (function (_super) {
     };
     return RouteAdditional;
 }(React.Component));
+var RouteAny = react_router_2.Route;
+var RouterAny = react_router_2.Router;
+//#endregion
+//#region hooks
 var onEnter = function routeOnEnter(nextState, replace) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
@@ -67,9 +72,13 @@ var onLeave = function routeOnLeave(prevState) {
 var onChange = function routeOnChange(prevState, nextState, replace) {
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState }));
 };
-var getWrappedNavigationComponent = function getWrappedNavigationComponent() { };
+//#endregion
+//note that if want to be able to change then needs to be an object
+var additionalPropsValue = { additional: "This is additional" };
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(react_router_2.Router, { history: history },
+    React.createElement(RouterAny, { history: history, onError: function (error) {
+            store.dispatch(DemoRouterApp_1.routeError(error));
+        }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
             React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Introduction }),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathless", component: DemoRouterApp_1.Pathless },
@@ -92,5 +101,17 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                     React.createElement(react_router_2.Route, { path: ":someParam", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamParent },
                         React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
                 React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
-                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState }))))), document.getElementById("example"));
+                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState })),
+            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
+                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponent", getComponent: function (nextState, cb) {
+                        //this context is the route
+                        if (nextState.location.state.isComponent1) {
+                            cb(null, DemoRouterApp_1.GetComponentComp1);
+                        }
+                        cb(null, DemoRouterApp_1.GetComponentComp2);
+                    } }),
+                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "error", getComponent: function (nextState, cb) {
+                        cb(new Error("Error thrown by getComponent"), null);
+                    } })),
+            React.createElement(routeProviders_1.ReduxRoute, { store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 //# sourceMappingURL=index.js.map
