@@ -6948,7 +6948,7 @@ var react_router_2 = __webpack_require__(14);
 var react_redux_1 = __webpack_require__(48);
 var react_json_view_1 = __webpack_require__(142);
 var react_router_redux_1 = __webpack_require__(49);
-var Modal = __webpack_require__(148);
+var Modal = __webpack_require__(148); //https://github.com/reactjs/react-modal/issues/497
 //#endregion
 //#region js helpers
 function clone(orig, blacklistedProps) {
@@ -42137,13 +42137,14 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState })),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
                 React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponent", getComponent: function (nextState, cb) {
+                        //this context is the route
                         if (nextState.location.state.isComponent1) {
                             cb(null, DemoRouterApp_1.GetComponentComp1);
                         }
                         cb(null, DemoRouterApp_1.GetComponentComp2);
                     } }),
-                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "error", getComponent: function () {
-                        throw new Error("Error thrown by getComponent");
+                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "error", getComponent: function (nextState, cb) {
+                        cb(new Error("Error thrown by getComponent"), null);
                     } })),
             React.createElement(routeProviders_1.ReduxRoute, { store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 

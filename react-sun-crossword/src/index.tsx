@@ -124,14 +124,15 @@ ReactDOM.render(
 
                 </Route>
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponentError" component={GetComponentError}>
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponent" getComponent={(nextState,cb) => {
+                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponent" getComponent={(nextState, cb) => {
+                        //this context is the route
                         if (nextState.location.state.isComponent1) {
                              cb(null,GetComponentComp1);
                         }
                         cb(null,GetComponentComp2);
                     }} />
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="error" getComponent={() => {
-                        throw new Error("Error thrown by getComponent");
+                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="error" getComponent={(nextState,cb) => {
+                        cb(new Error("Error thrown by getComponent"),null);
                     }} />
                 </Route>
                 <ReduxRoute store={store} change={(state, route) => { route.path = state.is404Active?"*":"" }} path="" component={PageNotFound}/>

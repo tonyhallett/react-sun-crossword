@@ -7,7 +7,8 @@ import ReactJson from 'react-json-view'
 import { LocationDescriptor } from "history";
 import { push }  from 'react-router-redux'
 import { Action, AnyAction } from "redux";
-import * as Modal from 'react-modal';
+import * as Modal from 'react-modal';//https://github.com/reactjs/react-modal/issues/497
+
 
 
 //#region typings
