@@ -7168,7 +7168,7 @@ var AppComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/getComponentError" }, "GetComponent/Error"),
             React.createElement(ReactJsonContainer, null),
-            React.createElement(react_modal_1.Modal, { isOpen: this.props.routeErrorDetails !== "", onRequestClose: function () { _this.props.clearRouteError(); } },
+            React.createElement(react_modal_1.default, { isOpen: this.props.routeErrorDetails !== "", onRequestClose: function () { _this.props.clearRouteError(); } },
                 React.createElement("div", null,
                     React.createElement("div", null, "There has been an error !!!"),
                     React.createElement("div", null, this.props.routeErrorDetails))),
