@@ -211,7 +211,7 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change1">On change child route 1</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change2">On change child route 2</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/getComponent">GetComponent</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/getComponentError">GetComponent/Error</Link>
             <ReactJsonContainer />
             <Container>
                 {this.props.children}

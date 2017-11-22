@@ -127,7 +127,7 @@ ReactDOM.render(
                         }
                         return GetComponentComp2;
                     }} />
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponent" getComponent={() => {
+                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="error" getComponent={() => {
                         throw new Error("Error thrown by getComponent");
                     }} />
                 </Route>
