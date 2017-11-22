@@ -61,7 +61,7 @@ function is404ActiveSelector(state: RouterAppState) {
 const ROUTE_ERROR = "ROUTE_ERROR";
 const CLEAR_ROUTE_ERROR = "CLEAR_ROUTE_ERROR";
 
-function routeError(error: Error) {
+export function routeError(error: Error) {
     var action: AnyAction = {
         type: ROUTE_ERROR,
         error:error

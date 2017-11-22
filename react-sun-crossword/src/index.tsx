@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2 } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -82,7 +82,7 @@ var additionalPropsValue = { additional: "This is additional" };
 
 ReactDOM.render(
     <Provider store={store}>
-        <RouterAny history={history} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate"))}}>
+        <RouterAny history={history} onError={(error) => { store.dispatch(routeError(error)) } } onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
