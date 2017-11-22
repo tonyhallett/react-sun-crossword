@@ -37,8 +37,8 @@ class RouteProvider extends React.Component<any, any>{
             delete route.children;
 
         }
-        if (element.routeCallback) {
-            element.routeCallback(route);
+        if (element.props.routeCallback) {
+            element.props.routeCallback(route);
         }
         RouteProvider.routes.push(route);
         return route;
