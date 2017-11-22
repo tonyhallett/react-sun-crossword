@@ -53,6 +53,7 @@ class ReduxRoute extends React.Component<any, any>{
         route.store.subscribe(() => {
             route.change(store.getState(), route);
         });
+        return route;
     }
     render() {
         return null;

@@ -38181,6 +38181,7 @@ var ReduxRoute = /** @class */ (function (_super) {
         route.store.subscribe(function () {
             route.change(store.getState(), route);
         });
+        return route;
     };
     return ReduxRoute;
 }(React.Component));
