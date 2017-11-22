@@ -42109,7 +42109,9 @@ var onChange = function routeOnChange(prevState, nextState, replace) {
 //note that if want to be able to change then needs to be an object
 var additionalPropsValue = { additional: "This is additional" };
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(RouterAny, { history: history, onError: function (error) { store.dispatch(DemoRouterApp_1.routeError(error)); }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
+    React.createElement(RouterAny, { history: history, onError: function (error) {
+            store.dispatch(DemoRouterApp_1.routeError(error));
+        }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
             React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Introduction }),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathless", component: DemoRouterApp_1.Pathless },

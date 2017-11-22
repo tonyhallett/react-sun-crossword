@@ -82,7 +82,9 @@ var additionalPropsValue = { additional: "This is additional" };
 
 ReactDOM.render(
     <Provider store={store}>
-        <RouterAny history={history} onError={(error) => { store.dispatch(routeError(error)) } } onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
+        <RouterAny history={history} onError={(error) => {
+            store.dispatch(routeError(error))
+        }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
