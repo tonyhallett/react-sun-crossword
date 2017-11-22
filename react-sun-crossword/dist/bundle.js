@@ -6333,6 +6333,15 @@ var react_router_2 = __webpack_require__(14);
 var react_redux_1 = __webpack_require__(43);
 var react_json_view_1 = __webpack_require__(122);
 var react_router_redux_1 = __webpack_require__(44);
+function clone(orig, blacklistedProps) {
+    var newProps = {};
+    Object.keys(orig).forEach(function (key) {
+        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
+            newProps[key] = orig[key];
+        }
+    });
+    return newProps;
+}
 //#region v3 route components
 //#region link styling
 //should create a hoc styled link
@@ -6345,14 +6354,18 @@ var linkStyle = {
 //#endregion
 //#region actions/reducers/state/selectors
 var TOGGLE_404_ACTIVE = "TOGGLE_404_ACTIVE";
+//action creator
 function toggle404Active() {
     return {
         type: TOGGLE_404_ACTIVE
     };
 }
-function is404Active(active) {
-    if (active === void 0) { active = false; }
-    return !active;
+function is404Active(state, action) {
+    if (state === void 0) { state = false; }
+    if (action.type == TOGGLE_404_ACTIVE) {
+        return !state;
+    }
+    return state;
 }
 exports.is404Active = is404Active;
 function is404ActiveSelector(state) {
@@ -6372,16 +6385,7 @@ var ENTERHOOK = "EnterHook";
 var LEAVEHOOK = "LeaveHook";
 var CHANGEHOOK = "ChangeHook";
 function hooksAndMountsSelector(state) {
-    return state.rootReducer.hooksAndMounts;
-}
-function clone(orig, blacklistedProps) {
-    var newProps = {};
-    Object.keys(orig).forEach(function (key) {
-        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
-            newProps[key] = orig[key];
-        }
-    });
-    return newProps;
+    return state.hooksAndMounts;
 }
 function filterComponent(component) {
     if (component === null) {
@@ -6440,8 +6444,8 @@ function filterRouterState(routerState) {
     }
     return filteredState;
 }
-function rootReducer(state, action) {
-    if (state === void 0) { state = { hooksAndMounts: [] }; }
+function hooksAndMounts(state, action) {
+    if (state === void 0) { state = []; }
     switch (action.type) {
         case HOOK_OR_MOUNT:
             var hookOrMountAction = action;
@@ -6455,17 +6459,15 @@ function rootReducer(state, action) {
             else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
                 details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
             }
-            return {
-                hooksAndMounts: state.hooksAndMounts.concat([{
-                        type: hookOrMountAction.hookOrMountType,
-                        details: details
-                    }])
-            };
+            return state.concat([{
+                    type: hookOrMountAction.hookOrMountType,
+                    details: details
+                }]);
         default:
             return state;
     }
 }
-exports.rootReducer = rootReducer;
+exports.hooksAndMounts = hooksAndMounts;
 //#endregion
 var Container = /** @class */ (function (_super) {
     __extends(Container, _super);
@@ -38214,7 +38216,7 @@ var history = react_router_1.useRouterHistory(history_1.createHistory)({
 });
 var middleware = react_router_redux_1.routerMiddleware(history);
 var store = redux_1.createStore(redux_1.combineReducers({
-    rootReducer: DemoRouterApp_1.rootReducer,
+    hooksAndMounts: DemoRouterApp_1.hooksAndMounts,
     router: react_router_redux_1.routerReducer,
     is404Active: DemoRouterApp_1.is404Active
 }), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
@@ -38252,7 +38254,6 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(RouterAny, { history: history },
         React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
             React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Introduction }),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "toggle404" }),
             React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathless", component: DemoRouterApp_1.Pathless },
                 React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.PathlessIndex })),
             React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },

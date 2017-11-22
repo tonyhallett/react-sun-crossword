@@ -6,8 +6,20 @@ import { ReactElement } from "react";
 import ReactJson from 'react-json-view'
 import { LocationDescriptor } from "history";
 import { push }  from 'react-router-redux'
+import { Action } from "redux";
 
-
+interface ObjectAny {
+    [key: string]: any
+}
+function clone(orig, blacklistedProps) {
+    var newProps = {};
+    Object.keys(orig).forEach(function (key) {
+        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
+            newProps[key] = orig[key];
+        }
+    });
+    return newProps;
+}
 //#region v3 route components
 //#region link styling
 //should create a hoc styled link
@@ -21,13 +33,18 @@ var linkStyle: React.CSSProperties = {
 //#region actions/reducers/state/selectors
 
 const TOGGLE_404_ACTIVE = "TOGGLE_404_ACTIVE";
+//action creator
 function toggle404Active() {
     return {
         type: TOGGLE_404_ACTIVE
     }
 }
-export function is404Active(active = false) {
-    return !active;
+export function is404Active(state = false, action: Action) {
+    if (action.type == TOGGLE_404_ACTIVE) {
+        return !state;
+    }
+    return state;
+   
 }
 function is404ActiveSelector(state: RouterAppState) {
     return state.is404Active
@@ -49,9 +66,7 @@ const LEAVEHOOK = "LeaveHook";
 const CHANGEHOOK = "ChangeHook"
 type hookType = typeof ENTERHOOK | typeof LEAVEHOOK | typeof CHANGEHOOK
 type hookOrMountType = hookType | "ComponentDidMount" | "ComponentWillUnmount"
-interface ObjectAny {
-    [key: string]: any
-}
+
 interface HookOrMountAction {
     type: string,
     hookOrMountType: hookOrMountType,
@@ -61,11 +76,9 @@ interface HookOrMountDetail {
     type: hookOrMountType,
     details: any
 }
-interface RootReducerState {
-    hooksAndMounts: HookOrMountDetail[]
-}
+
 interface RouterAppState {
-    rootReducer: RootReducerState
+    hooksAndMounts: HookOrMountDetail[]
     router: {
         locationBeforeTransitions: any//should be type Location ?
     }
@@ -73,18 +86,10 @@ interface RouterAppState {
 
 }
 function hooksAndMountsSelector(state: RouterAppState) {
-    return state.rootReducer.hooksAndMounts
+    return state.hooksAndMounts
 }
 
-function clone(orig, blacklistedProps) {
-    var newProps = {};
-    Object.keys(orig).forEach(function (key) {
-        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
-            newProps[key] = orig[key];
-        }
-    });
-    return newProps;
-}
+
 function filterComponent(component) {
     if (component === null) {
         return "null";
@@ -143,7 +148,7 @@ function filterRouterState(routerState: RouterState): object {
     }
     return filteredState;
 }
-export function rootReducer(state: RootReducerState = { hooksAndMounts: [] }, action): RootReducerState {
+export function hooksAndMounts(state= [] as HookOrMountDetail[], action): HookOrMountDetail[] {
     switch (action.type) {
         case HOOK_OR_MOUNT:
             var hookOrMountAction = action as HookOrMountAction;
@@ -155,12 +160,12 @@ export function rootReducer(state: RootReducerState = { hooksAndMounts: [] }, ac
             } else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
                 details = { prevState: filterRouterState(details.prevState as RouterState), nextState: filterRouterState(details.nextState as RouterState) };
             }
-            return {
-                hooksAndMounts: [...state.hooksAndMounts, {
-                    type: hookOrMountAction.hookOrMountType,
-                    details: details
-                }]
-            }
+            return  [...state, {
+                            type: hookOrMountAction.hookOrMountType,
+                            details: details
+                        }
+                    ]
+            
         default:
             return state;
     }

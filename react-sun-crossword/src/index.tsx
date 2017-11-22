@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator,is404Active, rootReducer,PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator,is404Active, hooksAndMounts,PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -89,7 +89,7 @@ const middleware = routerMiddleware(history);
 
 const store = createStore(
     combineReducers({
-        rootReducer,
+        hooksAndMounts,
         router: routerReducer,
         is404Active
     }),
@@ -138,7 +138,6 @@ ReactDOM.render(
         <RouterAny history={history} >
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="toggle404"/>
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
                     <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathlessIndex}/>
                 </Route>
