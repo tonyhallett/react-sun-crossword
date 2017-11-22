@@ -18,6 +18,154 @@ var linkStyle: React.CSSProperties = {
     margin: "5px"
 }
 //#endregion
+//#region actions/reducers/state/selectors
+
+const TOGGLE_404_ACTIVE = "TOGGLE_404_ACTIVE";
+function toggle404Active() {
+    return {
+        type: TOGGLE_404_ACTIVE
+    }
+}
+export function is404Active(active = false) {
+    return !active;
+}
+function is404ActiveSelector(state: RouterAppState) {
+    return state.is404Active
+}
+
+const HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
+
+//note that this does not agree with flux standard actions
+export function hookOrMountActionCreator(type: hookOrMountType, details: object) {
+    return {
+        type: HOOK_OR_MOUNT,
+        hookOrMountType: type,
+        details: details
+    }
+}
+
+const ENTERHOOK = "EnterHook";
+const LEAVEHOOK = "LeaveHook";
+const CHANGEHOOK = "ChangeHook"
+type hookType = typeof ENTERHOOK | typeof LEAVEHOOK | typeof CHANGEHOOK
+type hookOrMountType = hookType | "ComponentDidMount" | "ComponentWillUnmount"
+interface ObjectAny {
+    [key: string]: any
+}
+interface HookOrMountAction {
+    type: string,
+    hookOrMountType: hookOrMountType,
+    details: ObjectAny
+}
+interface HookOrMountDetail {
+    type: hookOrMountType,
+    details: any
+}
+interface RootReducerState {
+    hooksAndMounts: HookOrMountDetail[]
+}
+interface RouterAppState {
+    rootReducer: RootReducerState
+    router: {
+        locationBeforeTransitions: any//should be type Location ?
+    }
+    is404Active: boolean
+
+}
+function hooksAndMountsSelector(state: RouterAppState) {
+    return state.rootReducer.hooksAndMounts
+}
+
+function clone(orig, blacklistedProps) {
+    var newProps = {};
+    Object.keys(orig).forEach(function (key) {
+        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
+            newProps[key] = orig[key];
+        }
+    });
+    return newProps;
+}
+function filterComponent(component) {
+    if (component === null) {
+        return "null";
+    }
+    if (component === undefined) {
+        return "undefined";
+    }
+    var componentName = component.displayName ? component.displayName : component.name;
+    return componentName;
+}
+function filterComponents(components: RouteComponents) {
+    var filteredComponents = {};
+    Object.keys(components).forEach(k => {
+        var component = components[k];
+        filteredComponents[k] = filterComponent(component);
+    })
+    return filteredComponents;
+}
+function filterRoute(route: PlainRoute) {
+    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]) as any;
+    if (route.component) {
+        filteredRoute.component = filterComponent(route.component);
+    }
+    if (route.components) {
+        filteredRoute.components = filterComponents(route.components);
+    }
+    if (route.indexRoute) {
+        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+    }
+    if (route.childRoutes) {
+        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+    }
+    return filteredRoute;
+}
+function filterIndexRoute(indexRoute: PlainRoute) {
+    return filterRoute(indexRoute);
+}
+function filterRoutes(routes: PlainRoute[]) {
+    return routes.map((route) => {
+        return filterRoute(route);
+    })
+}
+function filterRouterState(routerState: RouterState): object {
+    var components: string[];
+
+    var filteredState = {
+        location: routerState.location,
+        params: routerState.params,
+
+        routes: filterRoutes(routerState.routes)
+    } as any;
+    if (routerState.components) {
+        filteredState.components = routerState.components.map(c => filterComponent(c));
+    } else {
+        filteredState.components = routerState.components;
+    }
+    return filteredState;
+}
+export function rootReducer(state: RootReducerState = { hooksAndMounts: [] }, action): RootReducerState {
+    switch (action.type) {
+        case HOOK_OR_MOUNT:
+            var hookOrMountAction = action as HookOrMountAction;
+            var details = hookOrMountAction.details;
+            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
+                details = { nextState: filterRouterState(details.nextState as RouterState) };
+            } else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
+                details = { prevState: filterRouterState(details.prevState as RouterState) };
+            } else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
+                details = { prevState: filterRouterState(details.prevState as RouterState), nextState: filterRouterState(details.nextState as RouterState) };
+            }
+            return {
+                hooksAndMounts: [...state.hooksAndMounts, {
+                    type: hookOrMountAction.hookOrMountType,
+                    details: details
+                }]
+            }
+        default:
+            return state;
+    }
+}
+//#endregion
 export class Container extends React.Component<undefined, undefined>{
     render() {
         return <div style={{ padding: "10px", borderStyle: "solid", borderColor: "green", borderWidth: "2px" }}>
@@ -279,8 +427,12 @@ export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, 
 //#region navigation
 interface NavigationDispatchProps {
     navThroughDispatch: (location: LocationDescriptor) => void
+    toggle404Active:()=>void
 }
-interface NavigationCompProps extends NavigationDispatchProps,RouteComponentProps<any,any> {
+interface NavigationStateToProps {
+    is404Active:boolean
+}
+interface NavigationCompProps extends NavigationDispatchProps, NavigationStateToProps {
 
 }
 interface NavigationCompState {
@@ -310,12 +462,14 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
 
-            <Link style={linkStyle} to={{ pathname: "/toggle404", state: this.props.location }}>Toggle 404</Link>
+            
             
 
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
-
+            <br />
+            <button onClick={this.props.toggle404Active}>{this.props.is404Active?"Deactivate 404":"Activate 404"}</button>
+            <br/>
             <button onClick={this.doPush}>Test push ( leave hook )</button>
             <button onClick={this.incrementLinkState}>Increment link state</button>
 
@@ -324,13 +478,23 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
     }
 }
 
-export const Navigation = wrapMountDispatch(connect(null, (dispatch) => {
-    var mappedDispatch: NavigationDispatchProps = {
-        navThroughDispatch: function (location: LocationDescriptor) {
-            dispatch(push(location));
+export const Navigation = wrapMountDispatch(connect(
+    (routerAppState: RouterAppState) => {
+        var stateToProps:NavigationStateToProps= {
+            is404Active: is404ActiveSelector(routerAppState)
         }
-    }
-    return mappedDispatch;
+        return stateToProps;
+    },
+    (dispatch) => {
+        var mappedDispatch: NavigationDispatchProps = {
+            navThroughDispatch: function (location: LocationDescriptor) {
+                dispatch(push(location));
+            },
+            toggle404Active: function () {
+                dispatch(toggle404Active());
+            }
+        }
+        return mappedDispatch;
 })(NavigationComp), "Navigation");
 
 
@@ -402,139 +566,7 @@ export const QuerySearchState = createNavigationComponent(QuerySearchStateComp, 
 
 //endregion
 
-//#region actions/reducers/state/selectors
-const HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
 
-//note that this does not agree with flux standard actions
-export function hookOrMountActionCreator(type:hookOrMountType,details: object) {
-    return {
-        type: HOOK_OR_MOUNT,
-        hookOrMountType: type,
-        details:details
-    }
-}
-
-const ENTERHOOK = "EnterHook";
-const LEAVEHOOK = "LeaveHook";
-const CHANGEHOOK = "ChangeHook"
-type hookType = typeof ENTERHOOK | typeof LEAVEHOOK | typeof CHANGEHOOK
-type hookOrMountType = hookType | "ComponentDidMount" | "ComponentWillUnmount"
-interface ObjectAny {
-    [key: string]: any
-}
-interface HookOrMountAction{
-    type: string,
-    hookOrMountType: hookOrMountType,
-    details:ObjectAny
-}
-interface HookOrMountDetail {
-    type: hookOrMountType,
-    details:any
-}
-interface RootReducerState {
-    hooksAndMounts: HookOrMountDetail[]
-}
-interface RouterAppState {
-    rootReducer: RootReducerState
-    router: {
-        locationBeforeTransitions:any//should be type Location ?
-    }
-    
-}
-function hooksAndMountsSelector(state: RouterAppState) {
-    return state.rootReducer.hooksAndMounts
-}
-
-function clone(orig, blacklistedProps) {
-    var newProps = {};
-    Object.keys(orig).forEach(function (key) {
-        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
-            newProps[key] = orig[key];
-        }
-    });
-    return newProps;
-}
-function filterComponent(component) {
-    if (component === null) {
-        return "null";
-    }
-    if (component === undefined) {
-        return "undefined";
-    }
-    var componentName = component.displayName ? component.displayName : component.name;
-    return componentName;
-}
-function filterComponents(components: RouteComponents) {
-    var filteredComponents = {};
-    Object.keys(components).forEach(k => {
-        var component = components[k];
-        filteredComponents[k] = filterComponent(component);
-    })
-    return filteredComponents;
-}
-function filterRoute(route:PlainRoute) {
-    var filteredRoute = clone(route, ["getComponent","getComponents","onEnter","onChange","onLeave","getChildRoutes","getIndexRoute","indexRoute","childRoutes","component","components"]) as any;
-    if (route.component) {
-        filteredRoute.component = filterComponent(route.component);
-    }
-    if (route.components) {
-        filteredRoute.components = filterComponents(route.components);
-    }
-    if (route.indexRoute) {
-        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
-    }
-    if (route.childRoutes) {
-        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
-    }
-    return filteredRoute;
-}
-function filterIndexRoute(indexRoute: PlainRoute) {
-    return filterRoute(indexRoute);
-}
-function filterRoutes(routes: PlainRoute[]) {
-    return routes.map((route) => {
-        return filterRoute(route);
-    })
-}
-function filterRouterState(routerState: RouterState): object {
-    var components: string[];
-
-    var filteredState = {
-        location: routerState.location,
-        params: routerState.params,
-
-        routes: filterRoutes(routerState.routes)
-    } as any;
-    if (routerState.components) {
-        filteredState.components =routerState.components.map(c => filterComponent(c));
-    } else {
-        filteredState.components = routerState.components;
-    }
-    return filteredState;
-}
-export function rootReducer(state: RootReducerState = { hooksAndMounts:[] }, action): RootReducerState {
-    switch (action.type) {
-        case HOOK_OR_MOUNT:
-            var hookOrMountAction = action as HookOrMountAction;
-            var details = hookOrMountAction.details;
-            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
-                details = { nextState: filterRouterState(details.nextState as RouterState) };
-            } else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = { prevState: filterRouterState(details.prevState as RouterState) };
-            } else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
-                details = { prevState: filterRouterState(details.prevState as RouterState), nextState: filterRouterState(details.nextState as RouterState)  };
-            }
-            return {
-                hooksAndMounts: [...state.hooksAndMounts, {
-                    type: hookOrMountAction.hookOrMountType,
-                    details: details
-                }]
-            }
-        default:
-            return state;
-    }
-}
-//#endregion
 //#endregion
 
 

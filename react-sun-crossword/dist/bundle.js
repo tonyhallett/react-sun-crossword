@@ -6343,6 +6343,130 @@ var linkStyle = {
     margin: "5px"
 };
 //#endregion
+//#region actions/reducers/state/selectors
+var TOGGLE_404_ACTIVE = "TOGGLE_404_ACTIVE";
+function toggle404Active() {
+    return {
+        type: TOGGLE_404_ACTIVE
+    };
+}
+function is404Active(active) {
+    if (active === void 0) { active = false; }
+    return !active;
+}
+exports.is404Active = is404Active;
+function is404ActiveSelector(state) {
+    return state.is404Active;
+}
+var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
+//note that this does not agree with flux standard actions
+function hookOrMountActionCreator(type, details) {
+    return {
+        type: HOOK_OR_MOUNT,
+        hookOrMountType: type,
+        details: details
+    };
+}
+exports.hookOrMountActionCreator = hookOrMountActionCreator;
+var ENTERHOOK = "EnterHook";
+var LEAVEHOOK = "LeaveHook";
+var CHANGEHOOK = "ChangeHook";
+function hooksAndMountsSelector(state) {
+    return state.rootReducer.hooksAndMounts;
+}
+function clone(orig, blacklistedProps) {
+    var newProps = {};
+    Object.keys(orig).forEach(function (key) {
+        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
+            newProps[key] = orig[key];
+        }
+    });
+    return newProps;
+}
+function filterComponent(component) {
+    if (component === null) {
+        return "null";
+    }
+    if (component === undefined) {
+        return "undefined";
+    }
+    var componentName = component.displayName ? component.displayName : component.name;
+    return componentName;
+}
+function filterComponents(components) {
+    var filteredComponents = {};
+    Object.keys(components).forEach(function (k) {
+        var component = components[k];
+        filteredComponents[k] = filterComponent(component);
+    });
+    return filteredComponents;
+}
+function filterRoute(route) {
+    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
+    if (route.component) {
+        filteredRoute.component = filterComponent(route.component);
+    }
+    if (route.components) {
+        filteredRoute.components = filterComponents(route.components);
+    }
+    if (route.indexRoute) {
+        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+    }
+    if (route.childRoutes) {
+        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+    }
+    return filteredRoute;
+}
+function filterIndexRoute(indexRoute) {
+    return filterRoute(indexRoute);
+}
+function filterRoutes(routes) {
+    return routes.map(function (route) {
+        return filterRoute(route);
+    });
+}
+function filterRouterState(routerState) {
+    var components;
+    var filteredState = {
+        location: routerState.location,
+        params: routerState.params,
+        routes: filterRoutes(routerState.routes)
+    };
+    if (routerState.components) {
+        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
+    }
+    else {
+        filteredState.components = routerState.components;
+    }
+    return filteredState;
+}
+function rootReducer(state, action) {
+    if (state === void 0) { state = { hooksAndMounts: [] }; }
+    switch (action.type) {
+        case HOOK_OR_MOUNT:
+            var hookOrMountAction = action;
+            var details = hookOrMountAction.details;
+            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
+                details = { nextState: filterRouterState(details.nextState) };
+            }
+            else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
+                details = { prevState: filterRouterState(details.prevState) };
+            }
+            else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
+                details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
+            }
+            return {
+                hooksAndMounts: state.hooksAndMounts.concat([{
+                        type: hookOrMountAction.hookOrMountType,
+                        details: details
+                    }])
+            };
+        default:
+            return state;
+    }
+}
+exports.rootReducer = rootReducer;
+//#endregion
 var Container = /** @class */ (function (_super) {
     __extends(Container, _super);
     function Container() {
@@ -6656,9 +6780,11 @@ var NavigationComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
-            React.createElement(react_router_1.Link, { style: linkStyle, to: { pathname: "/toggle404", state: this.props.location } }, "Toggle 404"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } } }, "Search + State"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
+            React.createElement("br", null),
+            React.createElement("button", { onClick: this.props.toggle404Active }, this.props.is404Active ? "Deactivate 404" : "Activate 404"),
+            React.createElement("br", null),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
             React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state"),
             this.props.children);
@@ -6666,10 +6792,18 @@ var NavigationComp = /** @class */ (function (_super) {
     return NavigationComp;
 }(React.Component));
 exports.NavigationComp = NavigationComp;
-exports.Navigation = wrapMountDispatch(react_redux_1.connect(null, function (dispatch) {
+exports.Navigation = wrapMountDispatch(react_redux_1.connect(function (routerAppState) {
+    var stateToProps = {
+        is404Active: is404ActiveSelector(routerAppState)
+    };
+    return stateToProps;
+}, function (dispatch) {
     var mappedDispatch = {
         navThroughDispatch: function (location) {
             dispatch(react_router_redux_1.push(location));
+        },
+        toggle404Active: function () {
+            dispatch(toggle404Active());
         }
     };
     return mappedDispatch;
@@ -6764,116 +6898,6 @@ exports.ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
 exports.ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
 exports.Optional = createNavigationComponent(OptionalComp, "Optional");
 exports.QuerySearchState = createNavigationComponent(QuerySearchStateComp, "QuerySearchState");
-//endregion
-//#region actions/reducers/state/selectors
-var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
-//note that this does not agree with flux standard actions
-function hookOrMountActionCreator(type, details) {
-    return {
-        type: HOOK_OR_MOUNT,
-        hookOrMountType: type,
-        details: details
-    };
-}
-exports.hookOrMountActionCreator = hookOrMountActionCreator;
-var ENTERHOOK = "EnterHook";
-var LEAVEHOOK = "LeaveHook";
-var CHANGEHOOK = "ChangeHook";
-function hooksAndMountsSelector(state) {
-    return state.rootReducer.hooksAndMounts;
-}
-function clone(orig, blacklistedProps) {
-    var newProps = {};
-    Object.keys(orig).forEach(function (key) {
-        if (!blacklistedProps || blacklistedProps.indexOf(key) == -1) {
-            newProps[key] = orig[key];
-        }
-    });
-    return newProps;
-}
-function filterComponent(component) {
-    if (component === null) {
-        return "null";
-    }
-    if (component === undefined) {
-        return "undefined";
-    }
-    var componentName = component.displayName ? component.displayName : component.name;
-    return componentName;
-}
-function filterComponents(components) {
-    var filteredComponents = {};
-    Object.keys(components).forEach(function (k) {
-        var component = components[k];
-        filteredComponents[k] = filterComponent(component);
-    });
-    return filteredComponents;
-}
-function filterRoute(route) {
-    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
-    if (route.component) {
-        filteredRoute.component = filterComponent(route.component);
-    }
-    if (route.components) {
-        filteredRoute.components = filterComponents(route.components);
-    }
-    if (route.indexRoute) {
-        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
-    }
-    if (route.childRoutes) {
-        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
-    }
-    return filteredRoute;
-}
-function filterIndexRoute(indexRoute) {
-    return filterRoute(indexRoute);
-}
-function filterRoutes(routes) {
-    return routes.map(function (route) {
-        return filterRoute(route);
-    });
-}
-function filterRouterState(routerState) {
-    var components;
-    var filteredState = {
-        location: routerState.location,
-        params: routerState.params,
-        routes: filterRoutes(routerState.routes)
-    };
-    if (routerState.components) {
-        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
-    }
-    else {
-        filteredState.components = routerState.components;
-    }
-    return filteredState;
-}
-function rootReducer(state, action) {
-    if (state === void 0) { state = { hooksAndMounts: [] }; }
-    switch (action.type) {
-        case HOOK_OR_MOUNT:
-            var hookOrMountAction = action;
-            var details = hookOrMountAction.details;
-            if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
-                details = { nextState: filterRouterState(details.nextState) };
-            }
-            else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = { prevState: filterRouterState(details.prevState) };
-            }
-            else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
-                details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
-            }
-            return {
-                hooksAndMounts: state.hooksAndMounts.concat([{
-                        type: hookOrMountAction.hookOrMountType,
-                        details: details
-                    }])
-            };
-        default:
-            return state;
-    }
-}
-exports.rootReducer = rootReducer;
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {
@@ -38123,6 +38147,43 @@ var _extends = objectAny.assign || function (target) { for (var i = 1; i < argum
         }
     }
 } return target; };
+function createRoutesFromReactChildren(children, parentRoute) {
+    var routes = [];
+    React.Children.forEach(children, function (element) {
+        routes.push(RouteProvider.createRouteFromReactElement(element));
+    });
+    return routes;
+}
+function getRoute(element) {
+    function createRoute(defaultProps, props) {
+        return _extends({}, defaultProps, props);
+    }
+    var type = element.type;
+    var route = createRoute(type.defaultProps, element.props);
+    if (route.children) {
+        var childRoutes = createRoutesFromReactChildren(route.children, route);
+        if (childRoutes.length)
+            route.childRoutes = childRoutes;
+        delete route.children;
+    }
+    return route;
+}
+var ReduxRoute = /** @class */ (function (_super) {
+    __extends(ReduxRoute, _super);
+    function ReduxRoute() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ReduxRoute.prototype.render = function () {
+        return null;
+    };
+    ReduxRoute.createRouteFromReactElement = function (element, parentRoute) {
+        var route = getRoute(element);
+        route.store.subscribe(function () {
+            route.change(store.getState(), route);
+        });
+    };
+    return ReduxRoute;
+}(React.Component));
 var RouteProvider = /** @class */ (function (_super) {
     __extends(RouteProvider, _super);
     function RouteProvider() {
@@ -38133,29 +38194,12 @@ var RouteProvider = /** @class */ (function (_super) {
     };
     RouteProvider.routes = [];
     RouteProvider.createRouteFromReactElement = function (element, parentRoute) {
-        function createRoute(defaultProps, props) {
-            return _extends({}, defaultProps, props);
-        }
-        var type = element.type;
-        var route = createRoute(type.defaultProps, element.props);
-        if (route.children) {
-            var childRoutes = RouteProvider.createRoutesFromReactChildren(route.children, route);
-            if (childRoutes.length)
-                route.childRoutes = childRoutes;
-            delete route.children;
-        }
+        var route = getRoute(element);
         if (route.routeCallback !== null) {
             route.routeCallback(route);
         }
         RouteProvider.routes.push(route);
         return route;
-    };
-    RouteProvider.createRoutesFromReactChildren = function createRoutesFromReactChildren(children, parentRoute) {
-        var routes = [];
-        React.Children.forEach(children, function (element) {
-            routes.push(RouteProvider.createRouteFromReactElement(element));
-        });
-        return routes;
     };
     return RouteProvider;
 }(React.Component));
@@ -38170,7 +38214,8 @@ var history = react_router_1.useRouterHistory(history_1.createHistory)({
 var middleware = react_router_redux_1.routerMiddleware(history);
 var store = redux_1.createStore(redux_1.combineReducers({
     rootReducer: DemoRouterApp_1.rootReducer,
-    router: react_router_redux_1.routerReducer
+    router: react_router_redux_1.routerReducer,
+    is404Active: DemoRouterApp_1.is404Active
 }), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
 //note that if want to be able to change then needs to be an object
 var additionalPropsValue = { additional: "This is additional" };
@@ -38186,16 +38231,6 @@ var RouteAdditional = /** @class */ (function (_super) {
 }(React.Component));
 var route404;
 var onEnter = function routeOnEnter(nextState, replace) {
-    //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextState.location.pathname.indexOf("toggle404") !== -1) {
-        if (route404.path == "*") {
-            route404.path = "";
-        }
-        else {
-            route404.path = "*";
-        }
-        replace(nextState.location.state);
-    }
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState }));
@@ -38238,8 +38273,8 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                         React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
                 React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
                 React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState })),
-            React.createElement(RouteProvider, { routeCallback: function (route) { route404 = route; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
-//<RouteProvider path="*" is404={true} component={PageNotFound} /> 
+            React.createElement(ReduxRoute, { store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
+//<RouteProvider routeCallback={(route) => { route404 = route; }} path="" component={PageNotFound} /> 
 
 
 /***/ })

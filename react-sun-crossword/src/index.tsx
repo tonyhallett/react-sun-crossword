@@ -1,11 +1,11 @@
 ﻿import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Provider } from "react-redux"
+import { Provider, connect } from "react-redux"
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, rootReducer,PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator,is404Active, rootReducer,PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -18,40 +18,57 @@ import { EnterHook,LeaveHook,ChangeHook, RouterState } from "react-router/lib/Ro
 var objectAny = Object as any;
 var _extends = objectAny.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+function createRoutesFromReactChildren(children, parentRoute) {
+    var routes = [];
 
+    React.Children.forEach(children, function (element) {
+        routes.push(RouteProvider.createRouteFromReactElement(element));
+    });
+
+    return routes;
+}
+function getRoute(element) {
+    function createRoute(defaultProps, props) {
+        return _extends({}, defaultProps, props);
+
+    }
+    var type = element.type;
+    var route = createRoute(type.defaultProps, element.props);
+
+    if (route.children) {
+        var childRoutes = createRoutesFromReactChildren(route.children, route);
+
+        if (childRoutes.length) route.childRoutes = childRoutes;
+
+        delete route.children;
+
+    }
+    return route;
+
+}
+
+class ReduxRoute extends React.Component<any, any>{
+    static createRouteFromReactElement = function (element, parentRoute?) {
+        var route = getRoute(element);
+        route.store.subscribe(() => {
+            route.change(store.getState(), route);
+        });
+    }
+    render() {
+        return null;
+    }
+}
 class RouteProvider extends React.Component<any, any>{
     static routes = []
     static createRouteFromReactElement = function (element, parentRoute?) {
-        function createRoute(defaultProps, props) {
-            return _extends({}, defaultProps, props);
-
-        }
-        var type = element.type;
-        var route = createRoute(type.defaultProps, element.props);
-
-        if (route.children) {
-            var childRoutes = RouteProvider.createRoutesFromReactChildren(route.children, route);
-
-            if (childRoutes.length) route.childRoutes = childRoutes;
-
-            delete route.children;
-
-        }
+        var route = getRoute(element);
         if (route.routeCallback!==null) {
             route.routeCallback(route);
         }
         RouteProvider.routes.push(route);
         return route;
     }
-    static createRoutesFromReactChildren = function createRoutesFromReactChildren(children, parentRoute) {
-        var routes = [];
-
-        React.Children.forEach(children, function (element) {
-            routes.push(RouteProvider.createRouteFromReactElement(element));
-        });
-
-        return routes;
-    }
+    
     render() {
         return null;
     }
@@ -72,7 +89,8 @@ const middleware = routerMiddleware(history);
 const store = createStore(
     combineReducers({
         rootReducer,
-        router: routerReducer
+        router: routerReducer,
+        is404Active
     }),
     composeWithDevTools(applyMiddleware(middleware))
     
@@ -92,19 +110,7 @@ type AnyFunction = (...args: any[]) => any;
 
 var route404;
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
-    //will probably change this - will use the redux store and have the RouteProvider connect to the store
-    if (nextState.location.pathname.indexOf("toggle404")!==-1) {
-        
-        if (route404.path == "*") {
-            route404.path = "";
-        } else {
-            route404.path = "*";
-        }
-        replace(nextState.location.state);
-    }
     var nextStateLocationPathname = nextState.location.pathname;
-    
-    
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
 
     store.dispatch(hookOrMountActionCreator("EnterHook", { nextState: nextState }))
@@ -168,7 +174,8 @@ ReactDOM.render(
                       
 
                 </Route>
-                <RouteProvider routeCallback={(route) => { route404 = route; }} path="" component={PageNotFound} />
+                <ReduxRoute store={store} change={(state, route) => { route.path = state.is404Active?"*":"" }} path="" component={PageNotFound}/>
+                
             </Route>
             
             
@@ -178,4 +185,4 @@ ReactDOM.render(
     document.getElementById("example")
 );
 
-//<RouteProvider path="*" is404={true} component={PageNotFound} />
+//<RouteProvider routeCallback={(route) => { route404 = route; }} path="" component={PageNotFound} />
