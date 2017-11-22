@@ -121,11 +121,11 @@ ReactDOM.render(
 
                 </Route>
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponentError" component={GetComponentError}>
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponent" getComponent={(nextState) => {
+                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponent" getComponent={(nextState,cb) => {
                         if (nextState.location.state.isComponent1) {
-                            return GetComponentComp1;
+                             cb(null,GetComponentComp1);
                         }
-                        return GetComponentComp2;
+                        cb(null,GetComponentComp2);
                     }} />
                     <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="error" getComponent={() => {
                         throw new Error("Error thrown by getComponent");
