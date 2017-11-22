@@ -8,9 +8,12 @@ import { LocationDescriptor } from "history";
 import { push }  from 'react-router-redux'
 import { Action } from "redux";
 
+//#region typings
 interface ObjectAny {
     [key: string]: any
 }
+//#endregion
+//#region js helpers
 function clone(orig, blacklistedProps) {
     var newProps = {};
     Object.keys(orig).forEach(function (key) {
@@ -20,6 +23,7 @@ function clone(orig, blacklistedProps) {
     });
     return newProps;
 }
+//#endregion
 //#region v3 route components
 //#region link styling
 //should create a hoc styled link
@@ -32,6 +36,7 @@ var linkStyle: React.CSSProperties = {
 //#endregion
 //#region actions/reducers/state/selectors
 
+//#region toggle
 const TOGGLE_404_ACTIVE = "TOGGLE_404_ACTIVE";
 //action creator
 function toggle404Active() {
@@ -49,11 +54,12 @@ export function is404Active(state = false, action: Action) {
 function is404ActiveSelector(state: RouterAppState) {
     return state.is404Active
 }
+//#endregion
 
 const HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
 
 //note that this does not agree with flux standard actions
-export function hookOrMountActionCreator(type: hookOrMountType, details: object) {
+export function hookOrMountActionCreator(type: hookOrMountType, details?: object) {
     return {
         type: HOOK_OR_MOUNT,
         hookOrMountType: type,
@@ -64,7 +70,8 @@ export function hookOrMountActionCreator(type: hookOrMountType, details: object)
 const ENTERHOOK = "EnterHook";
 const LEAVEHOOK = "LeaveHook";
 const CHANGEHOOK = "ChangeHook"
-type hookType = typeof ENTERHOOK | typeof LEAVEHOOK | typeof CHANGEHOOK
+const ONUPDATE = "OnUpdate";
+type hookType = typeof ENTERHOOK | typeof LEAVEHOOK | typeof CHANGEHOOK |typeof ONUPDATE
 type hookOrMountType = hookType | "ComponentDidMount" | "ComponentWillUnmount"
 
 interface HookOrMountAction {
@@ -74,17 +81,9 @@ interface HookOrMountAction {
 }
 interface HookOrMountDetail {
     type: hookOrMountType,
-    details: any
+    details?: any
 }
 
-interface RouterAppState {
-    hooksAndMounts: HookOrMountDetail[]
-    router: {
-        locationBeforeTransitions: any//should be type Location ?
-    }
-    is404Active: boolean
-
-}
 function hooksAndMountsSelector(state: RouterAppState) {
     return state.hooksAndMounts
 }
@@ -160,16 +159,33 @@ export function hooksAndMounts(state= [] as HookOrMountDetail[], action): HookOr
             } else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
                 details = { prevState: filterRouterState(details.prevState as RouterState), nextState: filterRouterState(details.nextState as RouterState) };
             }
-            return  [...state, {
-                            type: hookOrMountAction.hookOrMountType,
-                            details: details
-                        }
-                    ]
+            var newHookOrMountDetail: HookOrMountDetail;
+            if (details) {
+                newHookOrMountDetail = {
+                    type: hookOrMountAction.hookOrMountType,
+                    details: details
+                }
+            } else {
+                newHookOrMountDetail = {
+                    type: hookOrMountAction.hookOrMountType,
+                }
+            }
+            return [...state, newHookOrMountDetail ]
             
         default:
             return state;
     }
 }
+
+interface RouterAppState {
+    hooksAndMounts: HookOrMountDetail[]
+    router: {
+        locationBeforeTransitions: any//should be type Location ?
+    }
+    is404Active: boolean
+
+}
+
 //#endregion
 export class Container extends React.Component<undefined, undefined>{
     render() {

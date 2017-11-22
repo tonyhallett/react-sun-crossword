@@ -14,73 +14,16 @@ import { routerReducer, routerMiddleware, push } from 'react-router-redux'
 import { Router, Route, IndexRoute, Redirect, RedirectFunction } from "react-router";
 import { RouteProps } from "react-router/lib/Route";
 import { EnterHook,LeaveHook,ChangeHook, RouterState } from "react-router/lib/Router";
+import { ReduxRoute } from "./router_test/routeProviders";
 
-var objectAny = Object as any;
-var _extends = objectAny.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function createRoutesFromReactChildren(children, parentRoute) {
-    var routes = [];
-
-    React.Children.forEach(children, function (element) {
-        routes.push(RouteProvider.createRouteFromReactElement(element));
-    });
-
-    return routes;
-}
-function getRoute(element) {
-    function createRoute(defaultProps, props) {
-        return _extends({}, defaultProps, props);
-
-    }
-    var type = element.type;
-    var route = createRoute(type.defaultProps, element.props);
-
-    if (route.children) {
-        var childRoutes = createRoutesFromReactChildren(route.children, route);
-
-        if (childRoutes.length) route.childRoutes = childRoutes;
-
-        delete route.children;
-
-    }
-    return route;
-
-}
-
-class ReduxRoute extends React.Component<any, any>{
-    static createRouteFromReactElement = function (element, parentRoute?) {
-        var route = getRoute(element);
-        route.store.subscribe(() => {
-            route.change(store.getState(), route);
-        });
-        return route;
-    }
-    render() {
-        return null;
-    }
-}
-class RouteProvider extends React.Component<any, any>{
-    static routes = []
-    static createRouteFromReactElement = function (element, parentRoute?) {
-        var route = getRoute(element);
-        if (route.routeCallback!==null) {
-            route.routeCallback(route);
-        }
-        RouteProvider.routes.push(route);
-        return route;
-    }
-    
-    render() {
-        return null;
-    }
-}
 
 
 //ReactDOM.render(
 //    <CrosswordPuzzleApp/>,
 //    document.getElementById("example")
 //);
-var anyWindow = window as any;
+
+//#region setup
 const history = useRouterHistory(createHistory)({
     basename: '/react-sun-crossword'
 })
@@ -96,9 +39,10 @@ const store = createStore(
     composeWithDevTools(applyMiddleware(middleware))
     
 )
-//note that if want to be able to change then needs to be an object
-var additionalPropsValue = { additional: "This is additional" };
+//#endregion
 
+
+//#region typings
 interface RouteAdditionalProps {
     additionalProp: typeof additionalPropsValue
 }
@@ -107,9 +51,11 @@ class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,un
         return <Route {...this.props}/>
     }
 }
-type AnyFunction = (...args: any[]) => any;
+var RouteAny = Route as any;
+var RouterAny = Router as any;
+//#endregion
 
-var route404;
+//#region hooks
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
@@ -122,20 +68,20 @@ var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: 
 var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
     store.dispatch(hookOrMountActionCreator("LeaveHook", { prevState: prevState }))
 }
-
 var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextState: RouterState, replace: RedirectFunction) {
     store.dispatch(hookOrMountActionCreator("ChangeHook", { prevState:prevState,nextState:nextState }))
 
 }
-var route404;
+//#endregion
 
 
 
-var RouteAny = Route as any;
-var RouterAny = Router as any;
+//note that if want to be able to change then needs to be an object
+var additionalPropsValue = { additional: "This is additional" };
+
 ReactDOM.render(
     <Provider store={store}>
-        <RouterAny history={history} >
+        <RouterAny history={history} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate"))}}>
             <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="/" component={App}>
                 <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
                 <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
@@ -185,4 +131,3 @@ ReactDOM.render(
     document.getElementById("example")
 );
 
-//<RouteProvider routeCallback={(route) => { route404 = route; }} path="" component={PageNotFound} />
