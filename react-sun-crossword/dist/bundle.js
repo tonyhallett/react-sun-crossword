@@ -7106,6 +7106,46 @@ var QuerySearchStateComp = /** @class */ (function (_super) {
     };
     return QuerySearchStateComp;
 }(React.Component));
+var GetComponentError = /** @class */ (function (_super) {
+    __extends(GetComponentError, _super);
+    function GetComponentError() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GetComponentError.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("div", null, "The link below is to a route that provides the component using the getComponent method."),
+            React.createElement("div", null, "To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component"),
+            React.createElement(react_router_1.Link, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
+            React.createElement(react_router_1.Link, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: false } } }, "Choose component 2"),
+            React.createElement("div", null, "The Router also allow for handling of errors - such as those thrown by getComponent"),
+            React.createElement("div", null, "The link below is matched by a route that will throw from getComponent"),
+            React.createElement(react_router_1.Link, { to: "/getComponentError/error" }, "Throw"));
+    };
+    return GetComponentError;
+}(React.Component));
+exports.GetComponentError = GetComponentError;
+var GetComponentComp1 = /** @class */ (function (_super) {
+    __extends(GetComponentComp1, _super);
+    function GetComponentComp1() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GetComponentComp1.prototype.render = function () {
+        return React.createElement("div", null, "Component 1");
+    };
+    return GetComponentComp1;
+}(React.Component));
+exports.GetComponentComp1 = GetComponentComp1;
+var GetComponentComp2 = /** @class */ (function (_super) {
+    __extends(GetComponentComp2, _super);
+    function GetComponentComp2() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    GetComponentComp2.prototype.render = function () {
+        return React.createElement("div", null, "Component 2");
+    };
+    return GetComponentComp2;
+}(React.Component));
+exports.GetComponentComp2 = GetComponentComp2;
 exports.ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
 exports.ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
 exports.Optional = createNavigationComponent(OptionalComp, "Optional");
@@ -39990,6 +40030,16 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                         React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
                 React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
                 React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState })),
+            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
+                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponent", getComponent: function (nextState) {
+                        if (nextState.location.state.isComponent1) {
+                            return DemoRouterApp_1.GetComponentComp1;
+                        }
+                        return DemoRouterApp_1.GetComponentComp2;
+                    } }),
+                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponent", getComponent: function () {
+                        throw new Error("Error thrown by getComponent");
+                    } })),
             React.createElement(routeProviders_1.ReduxRoute, { store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 
 
