@@ -6948,7 +6948,7 @@ var react_router_2 = __webpack_require__(14);
 var react_redux_1 = __webpack_require__(48);
 var react_json_view_1 = __webpack_require__(142);
 var react_router_redux_1 = __webpack_require__(49);
-var react_modal_1 = __webpack_require__(148);
+var Modal = __webpack_require__(148);
 //#endregion
 //#region js helpers
 function clone(orig, blacklistedProps) {
@@ -7168,7 +7168,7 @@ var AppComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/getComponentError" }, "GetComponent/Error"),
             React.createElement(ReactJsonContainer, null),
-            React.createElement(react_modal_1.default, { isOpen: this.props.routeErrorDetails !== "", onRequestClose: function () { _this.props.clearRouteError(); } },
+            React.createElement(Modal, { isOpen: this.props.routeErrorDetails !== "", onRequestClose: function () { _this.props.clearRouteError(); } },
                 React.createElement("div", null,
                     React.createElement("div", null, "There has been an error !!!"),
                     React.createElement("div", null, this.props.routeErrorDetails))),
