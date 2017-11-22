@@ -6,7 +6,9 @@ import { ReactElement } from "react";
 import ReactJson from 'react-json-view'
 import { LocationDescriptor } from "history";
 import { push }  from 'react-router-redux'
-import { Action } from "redux";
+import { Action, AnyAction } from "redux";
+import { Modal } from 'react-modal';
+
 
 //#region typings
 interface ObjectAny {
@@ -55,7 +57,40 @@ function is404ActiveSelector(state: RouterAppState) {
     return state.is404Active
 }
 //#endregion
+//#region errors
+const ROUTE_ERROR = "ROUTE_ERROR";
+const CLEAR_ROUTE_ERROR = "CLEAR_ROUTE_ERROR";
 
+function routeError(error: Error) {
+    var action: AnyAction = {
+        type: ROUTE_ERROR,
+        error:error
+    }
+    return action;
+}
+function clearRouteError() {
+    var action: AnyAction = {
+        type: CLEAR_ROUTE_ERROR,
+       
+    }
+    return action;
+}
+
+export function routeErrorDetails(state: string = "", action: AnyAction) {
+    switch (action.type) {
+        case ROUTE_ERROR:
+            return action.error.message;
+        case CLEAR_ROUTE_ERROR:
+            return "";
+        default:
+            return state;
+    }
+}
+function routeErrorSelector(state: RouterAppState) {
+    return state.routeErrorDetails;
+}
+//#endregion
+//#region hookOrMount
 const HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
 
 //note that this does not agree with flux standard actions
@@ -176,13 +211,14 @@ export function hooksAndMounts(state= [] as HookOrMountDetail[], action): HookOr
             return state;
     }
 }
-
+//#endregion
 interface RouterAppState {
     hooksAndMounts: HookOrMountDetail[]
     router: {
         locationBeforeTransitions: any//should be type Location ?
     }
-    is404Active: boolean
+    is404Active: boolean,
+    routeErrorDetails:string
 
 }
 
@@ -194,7 +230,12 @@ export class Container extends React.Component<undefined, undefined>{
         </div>
     }
 }
-export class App extends React.Component<undefined, undefined> {
+//#region App
+interface AppProps {
+    routeErrorDetails: string,
+    clearRouteError:()=>void
+}
+export class AppComp extends React.Component<AppProps, undefined> {
     render() {
         return <div>
             
@@ -213,13 +254,34 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/getComponentError">GetComponent/Error</Link>
             <ReactJsonContainer />
+            <Modal isOpen={this.props.routeErrorDetails !== ""} onRequestClose={() => { this.props.clearRouteError() }}>
+                <div>
+                    <div>There has been an error !!!</div>
+                    <div>{this.props.routeErrorDetails}</div>
+                </div>
+            </Modal>
             <Container>
                 {this.props.children}
             </Container>
         </div>
     }
 }
-
+export const App = connect(
+    (state: RouterAppState) => {
+        return {
+            routeErrorDetails: routeErrorSelector(state)
+        }
+    },
+    (dispatch => {
+        return {
+            clearRouteError: function () {
+                dispatch(clearRouteError())
+            }
+        }
+    }
+    )
+)(AppComp);
+//#endregion
 //#region mount dispatch wrapper
 interface MountDispatchFunction {
     (isMount: boolean):void;
