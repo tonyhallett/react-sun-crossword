@@ -85,63 +85,65 @@ Route.defaultProps = {
     onLeave: onLeave,
     onChange:onChange
 }
-
+IndexRoute.defaultProps = {
+    onEnter: onEnter,
+    onLeave: onLeave,
+    onChange: onChange
+}
 ReactDOM.render(
     <Provider store={store}>
         <RouterAny history={history} onError={(error) => {
             store.dispatch(routeError(error))
         }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route path="/" component={App}>
-                <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Introduction} />
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="pathless" component={Pathless}>
-                    <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PathlessIndex}/>
+                <IndexRoute component={Introduction} />
+                <Route path="pathless" component={Pathless}>
+                    <IndexRoute component={PathlessIndex}/>
                 </Route>
                 <Route component={Pathless}>
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange}  path="pathlessChild" component={PathlessChild} />
+                    <Route path="pathlessChild" component={PathlessChild} />
                 </Route>
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="multiple" component={Multiple} >
+                <Route path="multiple" component={Multiple} >
                     {/* Just to demonstrate the concept 
                         in practice there would be multiple child routes - where the matching one
                         will provide the child components
                         Also not that child routes of those child routes will provide a child component to components !
                     */}
-                    <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} components={{ child1: Child1, child2: Child2 }}/>
+                    <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
                 <Redirect  from="many" to="multiple" />
-                <RouteAdditional onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="leaveHook" component={LeaveHookComponent}></Route>
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="propsFromParent" component={PropsFromParentParent}>
-                    <IndexRoute onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={PropsFromParentChild} />
+                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
+                <Route path="leaveHook" component={LeaveHookComponent}></Route>
+                <Route path="propsFromParent" component={PropsFromParentParent}>
+                    <IndexRoute component={PropsFromParentChild} />
                 </Route>
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="onChange" component={OnChangeComponent}>
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="change1" component={OnChangeChild1} />
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="change2" component={OnChangeChild2} />
+                <Route path="onChange" component={OnChangeComponent}>
+                    <Route path="change1" component={OnChangeChild1} />
+                    <Route  path="change2" component={OnChangeChild2} />
                 </Route>
-                <Route path="redirect" onEnter={onEnter} onLeave={onLeave} onChange={onChange} />
-                <Route path="navigation" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Navigation}>
+                <Route path="redirect"/>
+                <Route path="navigation">
                     <Route path="params">
-                        <Route path=":someParam" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={ParamParent}>
-                            <Route path="*MatchPart" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={ParamChild} />
+                        <Route path=":someParam" component={ParamParent}>
+                            <Route path="*MatchPart" component={ParamChild} />
                         </Route>
                     </Route>
-                    <Route path="(optionalPart)NotOptional" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={Optional}/>
-                    <Route path="querySearchState" onEnter={onEnter} onLeave={onLeave} onChange={onChange} component={QuerySearchState}/>
-                      
-
+                    <Route path="(optionalPart)NotOptional" component={Optional}/>
+                    <Route path="querySearchState" component={QuerySearchState}/>
                 </Route>
-                <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponentError" component={GetComponentError}>
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="getComponent" getComponent={(nextState, cb) => {
+                <Route path="getComponentError" component={GetComponentError}>
+                    <Route path="getComponent" getComponent={(nextState, cb) => {
                         //this context is the route
                         if (nextState.location.state.isComponent1) {
                              cb(null,GetComponentComp1);
                         }
                         cb(null,GetComponentComp2);
                     }} />
-                    <Route onEnter={onEnter} onLeave={onLeave} onChange={onChange} path="error" getComponent={(nextState,cb) => {
+                    <Route path="error" getComponent={(nextState,cb) => {
                         cb(new Error("Error thrown by getComponent"),null);
                     }} />
                 </Route>
-                <ReduxRoute store={store} change={(state, route) => { route.path = state.is404Active?"*":"" }} path="" component={PageNotFound}/>
+                <ReduxRoute onEnter={onEnter} onChange={onChange} onLeave={onLeave} store={store} change={(state, route) => { route.path = state.is404Active ? "*" : "" }} path="" component={PageNotFound} />
                 
             </Route>
             
