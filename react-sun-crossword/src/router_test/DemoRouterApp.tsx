@@ -211,6 +211,7 @@ export class App extends React.Component<undefined, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change1">On change child route 1</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change2">On change child route 2</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/getComponent">GetComponent</Link>
             <ReactJsonContainer />
             <Container>
                 {this.props.children}
@@ -474,26 +475,42 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
     }
     render() {
         return <div>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/params/someParamValue1/greedySplat1MatchPart">Params 1</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/params/someParamValue2/greedySplat2MatchPart">Params 2</Link>
+            <div>
+                <div>Matching</div>
+                <div>
+                    <div>Params</div>
+                    <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/params/someParamValue1/greedySplat1MatchPart">Params 1</Link>
+                    <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/params/someParamValue2/greedySplat2MatchPart">Params 2</Link>
+                </div>
+                <div>
+                    <div>Optional</div>
+                    <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/optionalPartNotOptional">Optional 1</Link>
+                    <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/NotOptional">Optional 2</Link>
+                </div>
+            </div>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/optionalPartNotOptional">Optional 1</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/NotOptional">Optional 2</Link>
+            
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
+            <div>
+                <div>No match</div>
+                <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
+                <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
+                <br />
+                <button onClick={this.props.toggle404Active}>{this.props.is404Active ? "Deactivate 404" : "Activate 404"}</button>
+            </div>
 
             
             
+            <div>
+                <div>Query/Search & State</div>
+                <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
+                <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
+                <button onClick={this.incrementLinkState}>Increment link state</button>
+            </div>
 
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
-            <br />
-            <button onClick={this.props.toggle404Active}>{this.props.is404Active?"Deactivate 404":"Activate 404"}</button>
             <br/>
             <button onClick={this.doPush}>Test push ( leave hook )</button>
-            <button onClick={this.incrementLinkState}>Increment link state</button>
-
+            
             {this.props.children}
         </div>
     }
