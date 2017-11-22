@@ -37,6 +37,9 @@ class RouteProvider extends React.Component<any, any>{
             delete route.children;
 
         }
+        if (element.routeCallback) {
+            element.routeCallback(route);
+        }
         RouteProvider.routes.push(route);
         return route;
     }
@@ -87,10 +90,11 @@ class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,un
 }
 type AnyFunction = (...args: any[]) => any;
 
+var route404;
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
     //will probably change this - will use the redux store and have the RouteProvider connect to the store
     if (nextState.location.pathname.indexOf("toggle404")!==-1) {
-        var route404 = RouteProvider.routes[0];
+        
         if (route404.path == "*") {
             route404.path = "";
         } else {
@@ -121,7 +125,7 @@ var route404;
 
 
 var RouteAny = Route as any;
-var RouterAny = Router as any;//
+var RouterAny = Router as any;
 ReactDOM.render(
     <Provider store={store}>
         <RouterAny history={history} >
@@ -164,7 +168,7 @@ ReactDOM.render(
                       
 
                 </Route>
-                <RouteProvider path="" component={PageNotFound} />
+                <RouteProvider routeCallback={(route) => { route404 = route; }} path="" component={PageNotFound} />
             </Route>
             
             
