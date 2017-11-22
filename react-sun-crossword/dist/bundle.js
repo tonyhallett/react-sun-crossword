@@ -38144,8 +38144,8 @@ var RouteProvider = /** @class */ (function (_super) {
                 route.childRoutes = childRoutes;
             delete route.children;
         }
-        if (element.props.routeCallback) {
-            element.props.routeCallback(route);
+        if (route.routeCallback !== null) {
+            route.routeCallback(route);
         }
         RouteProvider.routes.push(route);
         return route;
