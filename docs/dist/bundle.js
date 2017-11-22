@@ -6970,6 +6970,19 @@ var linkActiveStyle = {
 var linkStyle = {
     margin: "5px"
 };
+var StyledLink = /** @class */ (function (_super) {
+    __extends(StyledLink, _super);
+    function StyledLink() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    StyledLink.prototype.render = function () {
+        return React.createElement(react_router_1.Link, __assign({ style: linkStyle, activeStyle: linkActiveStyle }, this.props), this.props.children);
+    };
+    return StyledLink;
+}(React.Component));
+function createStyledLink(linkProps, linkText) {
+    return React.createElement(react_router_1.Link, __assign({ style: linkStyle, activeStyle: linkActiveStyle }, linkProps), linkText);
+}
 //#endregion
 //#region actions/reducers/state/selectors
 //#region toggle
@@ -7597,7 +7610,7 @@ var GetComponentError = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("div", null, "The link below is to a route that provides the component using the getComponent method."),
             React.createElement("div", null, "To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
+            React.createElement(StyledLink, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/getComponentError/getComponent", state: { isComponent1: false } } }, "Choose component 2"),
             React.createElement("div", null, "The Router also allow for handling of errors - such as those thrown by getComponent"),
             React.createElement("div", null, "The link below is matched by a route that will throw from getComponent"),

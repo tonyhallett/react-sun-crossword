@@ -36,6 +36,14 @@ var linkActiveStyle: React.CSSProperties = {
 var linkStyle: React.CSSProperties = {
     margin: "5px"
 }
+class StyledLink extends React.Component<LinkProps, undefined>{
+    render() {
+        return <Link style={linkStyle} activeStyle={linkActiveStyle} {...this.props}>{this.props.children}</Link>
+    }
+}
+function createStyledLink(linkProps: LinkProps, linkText: string) {
+    return <Link style={linkStyle} activeStyle={linkActiveStyle} {...linkProps}>{linkText}</Link>
+}
 //#endregion
 //#region actions/reducers/state/selectors
 
@@ -665,7 +673,8 @@ export class GetComponentError extends React.Component<undefined, undefined>{
         return <div>
             <div>The link below is to a route that provides the component using the getComponent method.</div>
             <div>To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component</div>
-            <Link style={linkStyle} activeStyle={linkActiveStyle}  to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: true } }}>Choose component 1</Link>
+            
+            <StyledLink to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: true } }}>Choose component 1</StyledLink>
             <Link style={linkStyle} activeStyle={linkActiveStyle}  to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: false } }}>Choose component 2</Link>
             <div>The Router also allow for handling of errors - such as those thrown by getComponent</div>
             <div>The link below is matched by a route that will throw from getComponent</div>
