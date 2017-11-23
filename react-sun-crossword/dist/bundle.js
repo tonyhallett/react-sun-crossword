@@ -7121,13 +7121,13 @@ function hooksAndMounts(state, action) {
             var hookOrMountAction = action;
             var details = hookOrMountAction.details;
             if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
-                details = { nextState: filterRouterState(details.nextState) };
+                details = { routeId: details.routeId, nextState: filterRouterState(details.nextState) };
             }
             else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = { prevState: filterRouterState(details.prevState) };
+                details = { routeId: details.routeId, prevState: filterRouterState(details.prevState) };
             }
             else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
-                details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
+                details = { routeId: details.routeId, prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
             }
             var newHookOrMountDetail;
             if (details) {
