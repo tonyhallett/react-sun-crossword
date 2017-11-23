@@ -9,7 +9,7 @@ import { push }  from 'react-router-redux'
 import { Action, AnyAction } from "redux";
 import * as Modal from 'react-modal';//https://github.com/reactjs/react-modal/issues/497
 
-
+ReactJson.displayName = "ReactJsonView";
 
 //#region typings
 interface ObjectAny {

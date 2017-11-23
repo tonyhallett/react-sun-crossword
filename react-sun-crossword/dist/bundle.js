@@ -6949,6 +6949,7 @@ var react_redux_1 = __webpack_require__(48);
 var react_json_view_1 = __webpack_require__(142);
 var react_router_redux_1 = __webpack_require__(49);
 var Modal = __webpack_require__(148); //https://github.com/reactjs/react-modal/issues/497
+react_json_view_1.default.displayName = "ReactJsonView";
 //#endregion
 //#endregion
 //#region js helpers
