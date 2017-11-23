@@ -7208,7 +7208,9 @@ function wrapMountDispatch(Component, displayName) {
     var wrapper = /** @class */ (function (_super) {
         __extends(MountWrapper, _super);
         function MountWrapper() {
-            return _super !== null && _super.apply(this, arguments) || this;
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.displayName = "MountWrapper(" + displayName + ")";
+            return _this;
         }
         MountWrapper.prototype.componentDidMount = function () {
             this.props.mountUnmount(true);

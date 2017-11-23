@@ -313,6 +313,7 @@ interface WrapperProps {
 function wrapMountDispatch<P>(Component: React.ComponentClass<P>, displayName: string) {
     Component.displayName = displayName;
     var wrapper = class MountWrapper extends React.Component<P & WrapperProps, any>{
+        displayName="MountWrapper(" + displayName +")"
         componentDidMount() {
             this.props.mountUnmount(true);
         }
@@ -325,6 +326,7 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>, displayName: s
             return <Component {...passThroughProps} />
         }
     }
+    
     var connected= connect(null, (dispatch => {
         var wrapperProps: WrapperProps= {
             mountUnmount: (isMount: boolean) => {
