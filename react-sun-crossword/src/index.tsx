@@ -101,16 +101,16 @@ var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: 
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
 
-    store.dispatch(hookOrMountActionCreator("EnterHook", { nextState: nextState }))
+    store.dispatch(hookOrMountActionCreator("EnterHook", { nextState: nextState,routeId:this.routeId }))
     if (nextState.location.pathname == "/redirect") {
         replace("/multiple");
     }
 }
 var onLeave: LeaveHook = function routeOnLeave(prevState: RouterState) {
-    store.dispatch(hookOrMountActionCreator("LeaveHook", { prevState: prevState }))
+    store.dispatch(hookOrMountActionCreator("LeaveHook", { prevState: prevState, routeId: this.routeId  }))
 }
 var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextState: RouterState, replace: RedirectFunction) {
-    store.dispatch(hookOrMountActionCreator("ChangeHook", { prevState:prevState,nextState:nextState }))
+    store.dispatch(hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState, routeId: this.routeId  }))
 
 }
 //#endregion
@@ -163,8 +163,8 @@ ReactDOM.render(
                     <Route routeId="OnChangeChild1" path="change1" component={OnChangeChild1} />
                     <Route routeId="OnChangeChild2"  path="change2" component={OnChangeChild2} />
                 </Route>
-                <Route routeId="HookRedirect" path="redirect"/>
-                <Route routeId="Navigation" path="navigation">
+                <Route routeId="HookRedirect" path="redirect" />
+                <Route routeId="Navigation" component={Navigation} path="navigation">
                     <Route routeId="NavigationParams" path="params">
                         <Route routeId="NavigationParam" path=":someParam" component={ParamParent}>
                             <Route routeId="NavigationSplat" path="*MatchPart" component={ParamChild} />

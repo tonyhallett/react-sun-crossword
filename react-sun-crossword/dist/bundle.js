@@ -42082,16 +42082,16 @@ var RouterAny = react_router_2.Router;
 var onEnter = function routeOnEnter(nextState, replace) {
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState }));
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState, routeId: this.routeId }));
     if (nextState.location.pathname == "/redirect") {
         replace("/multiple");
     }
 };
 var onLeave = function routeOnLeave(prevState) {
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("LeaveHook", { prevState: prevState }));
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("LeaveHook", { prevState: prevState, routeId: this.routeId }));
 };
 var onChange = function routeOnChange(prevState, nextState, replace) {
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState }));
+    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState, routeId: this.routeId }));
 };
 //#endregion
 //note that if want to be able to change then needs to be an object
@@ -42129,7 +42129,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(react_router_2.Route, { routeId: "OnChangeChild1", path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
                 React.createElement(react_router_2.Route, { routeId: "OnChangeChild2", path: "change2", component: DemoRouterApp_1.OnChangeChild2 })),
             React.createElement(react_router_2.Route, { routeId: "HookRedirect", path: "redirect" }),
-            React.createElement(react_router_2.Route, { routeId: "Navigation", path: "navigation" },
+            React.createElement(react_router_2.Route, { routeId: "Navigation", component: DemoRouterApp_1.Navigation, path: "navigation" },
                 React.createElement(react_router_2.Route, { routeId: "NavigationParams", path: "params" },
                     React.createElement(react_router_2.Route, { routeId: "NavigationParam", path: ":someParam", component: DemoRouterApp_1.ParamParent },
                         React.createElement(react_router_2.Route, { routeId: "NavigationSplat", path: "*MatchPart", component: DemoRouterApp_1.ParamChild }))),
