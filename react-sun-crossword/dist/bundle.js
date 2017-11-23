@@ -42045,24 +42045,6 @@ function symbolObservablePonyfill(root) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(2);
 var ReactDOM = __webpack_require__(47);
@@ -42090,16 +42072,6 @@ var store = redux_1.createStore(redux_1.combineReducers({
     is404Active: DemoRouterApp_1.is404Active,
     routeErrorDetails: DemoRouterApp_1.routeErrorDetails
 }), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
-var RouteAdditional = /** @class */ (function (_super) {
-    __extends(RouteAdditional, _super);
-    function RouteAdditional() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    RouteAdditional.prototype.render = function () {
-        return React.createElement(react_router_2.Route, __assign({}, this.props));
-    };
-    return RouteAdditional;
-}(React.Component));
 var RouteAny = react_router_2.Route;
 var RouterAny = react_router_2.Router;
 //#endregion
@@ -42121,6 +42093,7 @@ var onChange = function routeOnChange(prevState, nextState, replace) {
 //#endregion
 //note that if want to be able to change then needs to be an object
 var additionalPropsValue = { additional: "This is additional" };
+//#region defaultProps for Route/IndexRoute for hooks
 react_router_2.Route.defaultProps = {
     onEnter: onEnter,
     onLeave: onLeave,
@@ -42131,6 +42104,7 @@ react_router_2.IndexRoute.defaultProps = {
     onLeave: onLeave,
     onChange: onChange
 };
+//#endregion
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(RouterAny, { history: history, onError: function (error) {
             store.dispatch(DemoRouterApp_1.routeError(error));
@@ -42144,7 +42118,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { path: "multiple", component: DemoRouterApp_1.Multiple },
                 React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
             React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
-            React.createElement(RouteAdditional, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
+            React.createElement(react_router_2.Route, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
             React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
             React.createElement(react_router_2.Route, { path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
                 React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PropsFromParentChild })),

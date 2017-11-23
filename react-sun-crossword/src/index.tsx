@@ -44,13 +44,42 @@ const store = createStore(
 
 
 //#region typings
-interface RouteAdditionalProps {
-    additionalProp: typeof additionalPropsValue
-}
-class RouteAdditional extends React.Component<RouteAdditionalProps&RouteProps,undefined>{
-    render() {
-        return <Route {...this.props}/>
+declare module "react-router/lib/Route"{
+    interface RouteProps {
+        [extraProps: string]: any;
     }
+    /*note that would need to do the same with Router if want to pass 
+    additional props to the render method
+
+        var propTypes = {
+        history: _propTypes.object,
+        children: _InternalPropTypes.routes,
+        
+        onError: _propTypes.func,
+        onUpdate: _propTypes.func,
+
+        // PRIVATE: For client-side rehydration of server match.
+        matchContext: _propTypes.object
+
+    }
+        return render(_extends({}, props, {
+      router: this.router, ^^^^^^^ used by the RouterContext
+        var router = _extends({}, history, {
+          setRouteLeaveHook: transitionManager.listenBeforeLeavingRoute,
+          isActive: transitionManager.isActive
+        });
+      location: location, ^^^^^^^^^^^
+      routes: routes, ************* could have got them from here !!! ^^^^^^^
+      params: params, ^^^^^^
+      components: components, ^^^^^^^^
+      createElement: createElement ^^^^^^
+    }));
+    which defaults to
+    render: function render(props) {
+        return _react2.default.createElement(_RouterContext2.default, props);
+      }
+    //*****Looks like if you provide createElement it is not used unless you also provide render !
+    */
 }
 var RouteAny = Route as any;
 var RouterAny = Router as any;
@@ -80,6 +109,7 @@ var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextSt
 //note that if want to be able to change then needs to be an object
 var additionalPropsValue = { additional: "This is additional" };
 
+//#region defaultProps for Route/IndexRoute for hooks
 Route.defaultProps = {
     onEnter: onEnter,
     onLeave: onLeave,
@@ -90,6 +120,7 @@ IndexRoute.defaultProps = {
     onLeave: onLeave,
     onChange: onChange
 }
+//#endregion
 ReactDOM.render(
     <Provider store={store}>
         <RouterAny history={history} onError={(error) => {
@@ -112,7 +143,7 @@ ReactDOM.render(
                     <IndexRoute components={{ child1: Child1, child2: Child2 }}/>
                 </Route>
                 <Redirect  from="many" to="multiple" />
-                <RouteAdditional path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
+                <Route path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
                 <Route path="leaveHook" component={LeaveHookComponent}></Route>
                 <Route path="propsFromParent" component={PropsFromParentParent}>
                     <IndexRoute component={PropsFromParentChild} />
