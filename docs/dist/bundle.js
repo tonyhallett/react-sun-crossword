@@ -7057,7 +7057,7 @@ var ONUPDATE = "OnUpdate";
 function hooksAndMountsSelector(state) {
     return state.hooksAndMounts;
 }
-function filterComponent(component) {
+function mapComponentName(component) {
     if (component === null) {
         return "null";
     }
@@ -7067,52 +7067,52 @@ function filterComponent(component) {
     var componentName = component.displayName ? component.displayName : component.name;
     return componentName;
 }
-function filterComponents(components) {
+function mapComponents(components) {
     var filteredComponents = {};
     Object.keys(components).forEach(function (k) {
         var component = components[k];
-        filteredComponents[k] = filterComponent(component);
+        filteredComponents[k] = mapComponentName(component);
     });
     return filteredComponents;
 }
-function filterRoute(route) {
-    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
+function mapRoute(route) {
+    //could have used object destructuring and ...rest
+    var mappedRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
     if (route.component) {
-        filteredRoute.component = filterComponent(route.component);
+        mappedRoute.component = mapComponentName(route.component);
     }
     if (route.components) {
-        filteredRoute.components = filterComponents(route.components);
+        mappedRoute.components = mapComponents(route.components);
     }
     if (route.indexRoute) {
-        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+        mappedRoute.indexRoute = mapIndexRoute(route.indexRoute);
     }
     if (route.childRoutes) {
-        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+        mappedRoute.childRoutes = mapRoutes(route.childRoutes);
     }
-    return filteredRoute;
+    return mappedRoute;
 }
-function filterIndexRoute(indexRoute) {
-    return filterRoute(indexRoute);
+function mapIndexRoute(indexRoute) {
+    return mapRoute(indexRoute);
 }
-function filterRoutes(routes) {
+function mapRoutes(routes) {
     return routes.map(function (route) {
-        return filterRoute(route);
+        return mapRoute(route);
     });
 }
-function filterRouterState(routerState) {
-    var components;
-    var filteredState = {
-        location: routerState.location,
+function mapRouterState(routerState) {
+    var mappedState = {
+        location: cloneLocation(routerState.location),
         params: routerState.params,
-        routes: filterRoutes(routerState.routes)
+        routes: mapRoutes(routerState.routes)
     };
     if (routerState.components) {
-        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
+        mappedState.components = routerState.components.map(function (c) { return mapComponentName(c); });
     }
     else {
-        filteredState.components = routerState.components;
+        mappedState.components = routerState.components;
     }
-    return filteredState;
+    return mappedState;
 }
 function hooksAndMounts(state, action) {
     if (state === void 0) { state = []; }
@@ -7121,13 +7121,13 @@ function hooksAndMounts(state, action) {
             var hookOrMountAction = action;
             var details = hookOrMountAction.details;
             if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
-                details = { routeId: details.routeId, nextState: filterRouterState(details.nextState) };
+                details = { routeId: details.routeId, nextState: mapRouterState(details.nextState) };
             }
             else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = { routeId: details.routeId, prevState: filterRouterState(details.prevState) };
+                details = { routeId: details.routeId, prevState: mapRouterState(details.prevState) };
             }
             else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
-                details = { routeId: details.routeId, prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
+                details = { routeId: details.routeId, prevState: mapRouterState(details.prevState), nextState: mapRouterState(details.nextState) };
             }
             var newHookOrMountDetail;
             if (details) {
@@ -7476,6 +7476,7 @@ var NavigationComp = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("div", null,
                 React.createElement("div", null, "Matching"),
+                React.createElement("br", null),
                 React.createElement("div", null,
                     React.createElement("div", null, "Params"),
                     React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
@@ -7484,20 +7485,34 @@ var NavigationComp = /** @class */ (function (_super) {
                     React.createElement("div", null, "Optional"),
                     React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/optionalPartNotOptional" }, "Optional 1"),
                     React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"))),
+            React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
             React.createElement("div", null,
                 React.createElement("div", null, "No match"),
+                React.createElement("br", null),
+                React.createElement("br", null),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
                 React.createElement("br", null),
                 React.createElement("button", { onClick: this.props.toggle404Active }, this.props.is404Active ? "Deactivate 404" : "Activate 404")),
+            React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
             React.createElement("div", null,
                 React.createElement("div", null, "Query/Search & State"),
+                React.createElement("br", null),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } } }, "Search + State"),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
                 React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state")),
             React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
-            this.props.children);
+            React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
+            React.createElement(Container, null, this.props.children));
     };
     return NavigationComp;
 }(React.Component));
@@ -7518,6 +7533,11 @@ exports.Navigation = wrapMountDispatch(react_redux_1.connect(function (routerApp
     };
     return mappedDispatch;
 })(NavigationComp), "Navigation");
+function cloneLocation(location) {
+    var clonedLocation = clone(cloneLocation, []);
+    clonedLocation.query = clone(location.query, []);
+    return clonedLocation;
+}
 function createNavigationComponent(Component, displayName) {
     var wrapper = /** @class */ (function (_super) {
         __extends(Wrapper, _super);
@@ -7527,9 +7547,7 @@ function createNavigationComponent(Component, displayName) {
             return _this;
         }
         Wrapper.prototype.render = function () {
-            var actualLocation = this.props.location;
-            var location = clone(actualLocation, []);
-            location.query = clone(location.query, []);
+            var location = cloneLocation(this.props.location);
             return React.createElement("div", null,
                 React.createElement(Component, __assign({}, this.props)),
                 React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));

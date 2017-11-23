@@ -141,7 +141,7 @@ function hooksAndMountsSelector(state: RouterAppState) {
 }
 
 
-function filterComponent(component) {
+function mapComponentName(component) {
     if (component === null) {
         return "null";
     }
@@ -151,53 +151,53 @@ function filterComponent(component) {
     var componentName = component.displayName ? component.displayName : component.name;
     return componentName;
 }
-function filterComponents(components: RouteComponents) {
+function mapComponents(components: RouteComponents) {
     var filteredComponents = {};
     Object.keys(components).forEach(k => {
         var component = components[k];
-        filteredComponents[k] = filterComponent(component);
+        filteredComponents[k] = mapComponentName(component);
     })
     return filteredComponents;
 }
-function filterRoute(route: PlainRoute) {
-    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]) as any;
+function mapRoute(route: PlainRoute) {
+    //could have used object destructuring and ...rest
+    var mappedRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]) as any;
     if (route.component) {
-        filteredRoute.component = filterComponent(route.component);
+        mappedRoute.component = mapComponentName(route.component);
     }
     if (route.components) {
-        filteredRoute.components = filterComponents(route.components);
+        mappedRoute.components = mapComponents(route.components);
     }
     if (route.indexRoute) {
-        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+        mappedRoute.indexRoute = mapIndexRoute(route.indexRoute);
     }
     if (route.childRoutes) {
-        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+        mappedRoute.childRoutes = mapRoutes(route.childRoutes);
     }
-    return filteredRoute;
+    return mappedRoute;
 }
-function filterIndexRoute(indexRoute: PlainRoute) {
-    return filterRoute(indexRoute);
+function mapIndexRoute(indexRoute: PlainRoute) {
+    return mapRoute(indexRoute);
 }
-function filterRoutes(routes: PlainRoute[]) {
+function mapRoutes(routes: PlainRoute[]) {
     return routes.map((route) => {
-        return filterRoute(route);
+        return mapRoute(route);
     })
 }
-function filterRouterState(routerState: RouterState): object {
-    var components: string[];
-
-    var filteredState = {
-        location: routerState.location,
+function mapRouterState(routerState: RouterState): object {
+    
+    var mappedState = {
+        location: cloneLocation(routerState.location),
         params: routerState.params,
 
-        routes: filterRoutes(routerState.routes)
+        routes: mapRoutes(routerState.routes)
     } as any;
     if (routerState.components) {
-        filteredState.components = routerState.components.map(c => filterComponent(c));
+        mappedState.components = routerState.components.map(c => mapComponentName(c));
     } else {
-        filteredState.components = routerState.components;
+        mappedState.components = routerState.components;
     }
-    return filteredState;
+    return mappedState;
 }
 export function hooksAndMounts(state= [] as HookOrMountDetail[], action): HookOrMountDetail[] {
     switch (action.type) {
@@ -205,11 +205,11 @@ export function hooksAndMounts(state= [] as HookOrMountDetail[], action): HookOr
             var hookOrMountAction = action as HookOrMountAction;
             var details = hookOrMountAction.details;
             if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
-                details = { routeId:details.routeId,nextState: filterRouterState(details.nextState as RouterState) };
+                details = { routeId:details.routeId,nextState: mapRouterState(details.nextState as RouterState) };
             } else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = { routeId: details.routeId,prevState: filterRouterState(details.prevState as RouterState) };
+                details = { routeId: details.routeId,prevState: mapRouterState(details.prevState as RouterState) };
             } else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
-                details = { routeId: details.routeId,prevState: filterRouterState(details.prevState as RouterState), nextState: filterRouterState(details.nextState as RouterState) };
+                details = { routeId: details.routeId,prevState: mapRouterState(details.prevState as RouterState), nextState: mapRouterState(details.nextState as RouterState) };
             }
             var newHookOrMountDetail: HookOrMountDetail;
             if (details) {
@@ -554,6 +554,7 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
         return <div>
             <div>
                 <div>Matching</div>
+                <br />
                 <div>
                     <div>Params</div>
                     <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/params/someParamValue1/greedySplat1MatchPart">Params 1</Link>
@@ -565,30 +566,41 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
                     <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/NotOptional">Optional 2</Link>
                 </div>
             </div>
-
-            
-
+            <br />
+            <div>--------------------------</div>
+            <br />
             <div>
                 <div>No match</div>
+                <br />
+                <br/>
                 <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation/noMatchingChildRoute">No matching child route</Link>
                 <Link style={linkStyle} activeStyle={linkActiveStyle} to="/noMatchingRoute">No matching route</Link>
                 <br />
                 <button onClick={this.props.toggle404Active}>{this.props.is404Active ? "Deactivate 404" : "Activate 404"}</button>
             </div>
-
-            
-            
+            <br />
+            <div>--------------------------</div>
+            <br />
             <div>
                 <div>Query/Search & State</div>
+                <br />
                 <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname:"/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } }} >Search + State</Link>
                 <Link style={linkStyle} activeStyle={linkActiveStyle} to={{ pathname: "/navigation/querySearchState", query: {someQuery1: "someQuery1Value",someQuery2:"someQuery2Value"},  state: { someState: this.state.someState } }} >Query + State</Link>
                 <button onClick={this.incrementLinkState}>Increment link state</button>
             </div>
 
-            <br/>
+            <br />
+            <div>--------------------------</div>
+            <br />
+
             <button onClick={this.doPush}>Test push ( leave hook )</button>
-            
-            {this.props.children}
+            <br />
+            <div>--------------------------</div>
+            <br />
+
+            <Container>
+                {this.props.children}
+            </Container>
         </div>
     }
 }
@@ -612,15 +624,18 @@ export const Navigation = wrapMountDispatch(connect(
         return mappedDispatch;
 })(NavigationComp), "Navigation");
 
-
+function cloneLocation(location) {
+    
+    var clonedLocation = clone(cloneLocation, []) as any;
+    clonedLocation.query = clone(location.query, [])
+    return clonedLocation;
+}
 function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayName:string) {
     var wrapper = class Wrapper extends React.Component<P & RouteComponentProps<any, any>, undefined>{
         displayName = displayName;
         render() {
+            var location = cloneLocation(this.props.location);
             
-            var actualLocation = this.props.location;
-            var location = clone(actualLocation, []) as any;
-            location.query=clone(location.query,[])
             return <div>
                 <Component {...this.props} />
 
