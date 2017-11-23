@@ -7534,7 +7534,7 @@ exports.Navigation = wrapMountDispatch(react_redux_1.connect(function (routerApp
     return mappedDispatch;
 })(NavigationComp), "Navigation");
 function cloneLocation(location) {
-    var clonedLocation = clone(cloneLocation, []);
+    var clonedLocation = clone(location, []);
     clonedLocation.query = clone(location.query, []);
     return clonedLocation;
 }

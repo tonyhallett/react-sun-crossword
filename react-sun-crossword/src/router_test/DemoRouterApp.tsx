@@ -626,7 +626,7 @@ export const Navigation = wrapMountDispatch(connect(
 
 function cloneLocation(location) {
     
-    var clonedLocation = clone(cloneLocation, []) as any;
+    var clonedLocation = clone(location, []) as any;
     clonedLocation.query = clone(location.query, [])
     return clonedLocation;
 }
