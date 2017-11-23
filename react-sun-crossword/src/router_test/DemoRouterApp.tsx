@@ -15,6 +15,14 @@ import * as Modal from 'react-modal';//https://github.com/reactjs/react-modal/is
 interface ObjectAny {
     [key: string]: any
 }
+//#region typing for ReactJson
+
+interface ReactJsonProps {
+    src: any
+}
+type ReactJson = React.ComponentClass<ReactJsonProps>
+
+//#endregion
 //#endregion
 //#region js helpers
 function clone(orig, blacklistedProps) {
@@ -232,6 +240,7 @@ interface RouterAppState {
 }
 
 //#endregion
+//#region layout components
 export class Container extends React.Component<undefined, undefined>{
     render() {
         return <div style={{ padding: "10px", borderStyle: "solid", borderColor: "green", borderWidth: "2px" }}>
@@ -239,12 +248,14 @@ export class Container extends React.Component<undefined, undefined>{
         </div>
     }
 }
+//#endregion
 //#region App
 interface AppProps {
     routeErrorDetails: string,
     clearRouteError:()=>void
 }
 export class AppComp extends React.Component<AppProps, undefined> {
+    static displayName="App"
     render() {
         return <div>
             
@@ -275,6 +286,7 @@ export class AppComp extends React.Component<AppProps, undefined> {
         </div>
     }
 }
+
 export const App = connect(
     (state: RouterAppState) => {
         return {
@@ -290,6 +302,7 @@ export const App = connect(
     }
     )
 )(AppComp);
+
 //#endregion
 //#region mount dispatch wrapper
 interface MountDispatchFunction {
@@ -326,25 +339,18 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:str
     return connected;
 }
 //#endregion
-interface ReactJsonSrcProps {
+//#region connected ReactJson
+interface ReactJsonMapStateProps {
     src?: any
 }
-interface OwnProps { }
-//#region typing for ReactJson
-interface ReactJsonProps {
-    src:any
-}
-type ReactJson = React.ComponentClass<ReactJsonProps>
-
-//#endregion
-const ReactJsonContainer = connect((state: RouterAppState, ownProps: OwnProps) => {
+const ReactJsonContainer = connect((state: RouterAppState) => {
     return {
         src: {
             hookAndMounts: hooksAndMountsSelector(state)
         }
-    } as ReactJsonSrcProps
+    } as ReactJsonMapStateProps
 })(ReactJson);
-
+//#endregion
 //#region Introduction
 export class IntroductionComp extends React.Component<undefined, undefined> {
     render() {

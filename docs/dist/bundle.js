@@ -6950,6 +6950,7 @@ var react_json_view_1 = __webpack_require__(142);
 var react_router_redux_1 = __webpack_require__(49);
 var Modal = __webpack_require__(148); //https://github.com/reactjs/react-modal/issues/497
 //#endregion
+//#endregion
 //#region js helpers
 function clone(orig, blacklistedProps) {
     var newProps = {};
@@ -7147,6 +7148,7 @@ function hooksAndMounts(state, action) {
 }
 exports.hooksAndMounts = hooksAndMounts;
 //#endregion
+//#region layout components
 var Container = /** @class */ (function (_super) {
     __extends(Container, _super);
     function Container() {
@@ -7187,6 +7189,7 @@ var AppComp = /** @class */ (function (_super) {
                     React.createElement("div", null, this.props.routeErrorDetails))),
             React.createElement(Container, null, this.props.children));
     };
+    AppComp.displayName = "App";
     return AppComp;
 }(React.Component));
 exports.AppComp = AppComp;
@@ -7231,14 +7234,14 @@ function wrapMountDispatch(Component, displayName) {
     connected.displayName = displayName;
     return connected;
 }
-//#endregion
-var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {
+var ReactJsonContainer = react_redux_1.connect(function (state) {
     return {
         src: {
             hookAndMounts: hooksAndMountsSelector(state)
         }
     };
 })(react_json_view_1.default);
+//#endregion
 //#region Introduction
 var IntroductionComp = /** @class */ (function (_super) {
     __extends(IntroductionComp, _super);
@@ -42109,41 +42112,41 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(RouterAny, { history: history, onError: function (error) {
             store.dispatch(DemoRouterApp_1.routeError(error));
         }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
-        React.createElement(react_router_2.Route, { path: "/", component: DemoRouterApp_1.App },
-            React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.Introduction }),
-            React.createElement(react_router_2.Route, { path: "pathless", component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PathlessIndex })),
-            React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.Route, { path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
-            React.createElement(react_router_2.Route, { path: "multiple", component: DemoRouterApp_1.Multiple },
-                React.createElement(react_router_2.IndexRoute, { components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
-            React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
-            React.createElement(react_router_2.Route, { path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
-            React.createElement(react_router_2.Route, { path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
-            React.createElement(react_router_2.Route, { path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
-                React.createElement(react_router_2.IndexRoute, { component: DemoRouterApp_1.PropsFromParentChild })),
-            React.createElement(react_router_2.Route, { path: "onChange", component: DemoRouterApp_1.OnChangeComponent },
-                React.createElement(react_router_2.Route, { path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
-                React.createElement(react_router_2.Route, { path: "change2", component: DemoRouterApp_1.OnChangeChild2 })),
-            React.createElement(react_router_2.Route, { path: "redirect" }),
-            React.createElement(react_router_2.Route, { path: "navigation" },
-                React.createElement(react_router_2.Route, { path: "params" },
-                    React.createElement(react_router_2.Route, { path: ":someParam", component: DemoRouterApp_1.ParamParent },
-                        React.createElement(react_router_2.Route, { path: "*MatchPart", component: DemoRouterApp_1.ParamChild }))),
-                React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", component: DemoRouterApp_1.Optional }),
-                React.createElement(react_router_2.Route, { path: "querySearchState", component: DemoRouterApp_1.QuerySearchState })),
-            React.createElement(react_router_2.Route, { path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
-                React.createElement(react_router_2.Route, { path: "getComponent", getComponent: function (nextState, cb) {
+        React.createElement(react_router_2.Route, { routeId: "App", path: "/", component: DemoRouterApp_1.App },
+            React.createElement(react_router_2.IndexRoute, { routeId: "App Index", component: DemoRouterApp_1.Introduction }),
+            React.createElement(react_router_2.Route, { routeId: "Pathless Parent", path: "pathless", component: DemoRouterApp_1.Pathless },
+                React.createElement(react_router_2.IndexRoute, { routeId: "Pathless Index", component: DemoRouterApp_1.PathlessIndex })),
+            React.createElement(react_router_2.Route, { routeId: "Pathless pathless!", component: DemoRouterApp_1.Pathless },
+                React.createElement(react_router_2.Route, { routeId: "Pathless", path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
+            React.createElement(react_router_2.Route, { routeId: "Multiple", path: "multiple", component: DemoRouterApp_1.Multiple },
+                React.createElement(react_router_2.IndexRoute, { routeId: "Multiple Index", components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
+            React.createElement(react_router_2.Redirect, { routeId: "Redirect Component", from: "many", to: "multiple" }),
+            React.createElement(react_router_2.Route, { routeId: "AdditionalProps", path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
+            React.createElement(react_router_2.Route, { routeId: "LeaveHook", path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
+            React.createElement(react_router_2.Route, { routeId: "PropsFromParent", path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
+                React.createElement(react_router_2.IndexRoute, { routeId: "PropsFromParent Index", component: DemoRouterApp_1.PropsFromParentChild })),
+            React.createElement(react_router_2.Route, { routeId: "OnChange", path: "onChange", component: DemoRouterApp_1.OnChangeComponent },
+                React.createElement(react_router_2.Route, { routeId: "OnChangeChild1", path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
+                React.createElement(react_router_2.Route, { routeId: "OnChangeChild2", path: "change2", component: DemoRouterApp_1.OnChangeChild2 })),
+            React.createElement(react_router_2.Route, { routeId: "HookRedirect", path: "redirect" }),
+            React.createElement(react_router_2.Route, { routeId: "Navigation", path: "navigation" },
+                React.createElement(react_router_2.Route, { routeId: "NavigationParams", path: "params" },
+                    React.createElement(react_router_2.Route, { routeId: "NavigationParam", path: ":someParam", component: DemoRouterApp_1.ParamParent },
+                        React.createElement(react_router_2.Route, { routeId: "NavigationSplat", path: "*MatchPart", component: DemoRouterApp_1.ParamChild }))),
+                React.createElement(react_router_2.Route, { routeId: "Optional", path: "(optionalPart)NotOptional", component: DemoRouterApp_1.Optional }),
+                React.createElement(react_router_2.Route, { routeId: "QuerySearchState", path: "querySearchState", component: DemoRouterApp_1.QuerySearchState })),
+            React.createElement(react_router_2.Route, { routeId: "GetComponentError", path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
+                React.createElement(react_router_2.Route, { routeId: "GetComponent", path: "getComponent", getComponent: function (nextState, cb) {
                         //this context is the route
                         if (nextState.location.state.isComponent1) {
                             cb(null, DemoRouterApp_1.GetComponentComp1);
                         }
                         cb(null, DemoRouterApp_1.GetComponentComp2);
                     } }),
-                React.createElement(react_router_2.Route, { path: "error", getComponent: function (nextState, cb) {
+                React.createElement(react_router_2.Route, { routeId: "Error", path: "error", getComponent: function (nextState, cb) {
                         cb(new Error("Error thrown by getComponent"), null);
                     } })),
-            React.createElement(routeProviders_1.ReduxRoute, { onEnter: onEnter, onChange: onChange, onLeave: onLeave, store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
+            React.createElement(routeProviders_1.ReduxRoute, { routeId: "ReduxRoute404", onEnter: onEnter, onChange: onChange, onLeave: onLeave, store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 
 
 /***/ })
