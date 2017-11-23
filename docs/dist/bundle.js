@@ -7205,26 +7205,26 @@ exports.App = react_redux_1.connect(function (state) {
 }))(AppComp);
 function wrapMountDispatch(Component, displayName) {
     Component.displayName = displayName;
-    var wrapper = /** @class */ (function (_super) {
-        __extends(MountWrapper, _super);
-        function MountWrapper() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.displayName = "MountWrapper(" + displayName + ")";
-            return _this;
-        }
-        MountWrapper.prototype.componentDidMount = function () {
-            this.props.mountUnmount(true);
-        };
-        MountWrapper.prototype.componentWillUnmount = function () {
-            this.props.mountUnmount(false);
-        };
-        MountWrapper.prototype.render = function () {
-            //cast necessary for spread operator - https://github.com/Microsoft/TypeScript/issues/10727
-            var _a = this.props, mountUnmount = _a.mountUnmount, passThroughProps = __rest(_a, ["mountUnmount"]);
-            return React.createElement(Component, __assign({}, passThroughProps));
-        };
-        return MountWrapper;
-    }(React.Component));
+    var wrapper = (_a = /** @class */ (function (_super) {
+            __extends(MountWrapper, _super);
+            function MountWrapper() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            MountWrapper.prototype.componentDidMount = function () {
+                this.props.mountUnmount(true);
+            };
+            MountWrapper.prototype.componentWillUnmount = function () {
+                this.props.mountUnmount(false);
+            };
+            MountWrapper.prototype.render = function () {
+                //cast necessary for spread operator - https://github.com/Microsoft/TypeScript/issues/10727
+                var _a = this.props, mountUnmount = _a.mountUnmount, passThroughProps = __rest(_a, ["mountUnmount"]);
+                return React.createElement(Component, __assign({}, passThroughProps));
+            };
+            return MountWrapper;
+        }(React.Component)),
+        _a.displayName = "MountWrapper(" + displayName + ")",
+        _a);
     var connected = react_redux_1.connect(null, (function (dispatch) {
         var wrapperProps = {
             mountUnmount: function (isMount) {
@@ -7234,6 +7234,7 @@ function wrapMountDispatch(Component, displayName) {
         return wrapperProps;
     }))(wrapper);
     return connected;
+    var _a;
 }
 var ReactJsonContainer = react_redux_1.connect(function (state) {
     return {
