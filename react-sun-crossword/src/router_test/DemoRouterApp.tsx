@@ -269,8 +269,6 @@ export class AppComp extends React.Component<AppProps, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/additionalProps">Additional props</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/leaveHook">Leave hook</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/propsFromParent">Props from parent</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change1">On change child route 1</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/onChange/change2">On change child route 2</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/getComponentError">GetComponent/Error</Link>
             <ReactJsonContainer />
@@ -312,8 +310,8 @@ interface WrapperProps {
     mountUnmount: MountDispatchFunction
 }
 
-function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:string){
-
+function wrapMountDispatch<P>(Component: React.ComponentClass<P>, displayName: string) {
+    Component.displayName = displayName;
     var wrapper = class MountWrapper extends React.Component<P & WrapperProps, any>{
         componentDidMount() {
             this.props.mountUnmount(true);
@@ -335,7 +333,6 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>,displayName:str
         }
         return wrapperProps;
     }))(wrapper);
-    connected.displayName = displayName;
     return connected;
 }
 //#endregion
@@ -372,19 +369,19 @@ export class PathlessComp extends React.Component<undefined, undefined> {
     }
 }
 
-export const Pathless = wrapMountDispatch(PathlessComp, "Pathless");
+export const Pathless = wrapMountDispatch(PathlessComp,"Pathless");
 export class PathlessIndexComp extends React.Component<undefined, undefined> {
     render() {
         return "This is the index route component";
     }
 }
-export const PathlessIndex = wrapMountDispatch(PathlessIndexComp, "PathlessIndex");
+export const PathlessIndex = wrapMountDispatch(PathlessIndexComp,"PathlessIndex");
 export class PathlessChildComp extends React.Component<undefined, undefined> {
     render() {
         return "This component has been rendered without its route being a subpath";
     }
 }
-export const PathlessChild = wrapMountDispatch(PathlessChildComp, "PathlessChild");
+export const PathlessChild = wrapMountDispatch(PathlessChildComp,"PathlessChild");
 //#endregion
 //#region multiple
 export class MultipleComp extends React.Component<RouteComponentProps<undefined,undefined>, undefined> {
@@ -401,19 +398,19 @@ export class MultipleComp extends React.Component<RouteComponentProps<undefined,
         </div>
     }
 }
-export const Multiple = wrapMountDispatch(MultipleComp, "Multiple");
+export const Multiple = wrapMountDispatch(MultipleComp,"Multiple");
 export class Child1Comp extends React.Component<undefined, undefined> {
     render() {
         return "Child1 from Route components property";
     }
 }
-export const Child1 = wrapMountDispatch(Child1Comp, "MultipleChild1");
+export const Child1 = wrapMountDispatch(Child1Comp,"MultipleChild1");
 export class Child2Comp extends React.Component<undefined, undefined> {
     render() {
         return "Child2 from Route components property";
     }
 }
-export const Child2 = wrapMountDispatch(Child2Comp, "MultipleChild2");
+export const Child2 = wrapMountDispatch(Child2Comp,"MultipleChild2");
 //#endregion
 //#region additional props
 export class AdditionalPropsComp extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
@@ -422,7 +419,7 @@ export class AdditionalPropsComp extends React.Component<RouteComponentProps<und
         return <div>{"Received additional prop from route " + additionalProp}</div>
     }
 }
-export const AdditionalProps = wrapMountDispatch(AdditionalPropsComp, "AdditionalProps");
+export const AdditionalProps = wrapMountDispatch(AdditionalPropsComp,"AdditionalProps");
 //#endregion
 //#region leave hook
 interface LeaveHookState {
@@ -458,33 +455,9 @@ export class LeaveHookComponentComp extends React.Component<RouteComponentProps<
             </div>
     }
 }
-export const LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp, "LeaveHook");
+export const LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp,"LeaveHook");
 //#endregion
 
-//#region change component
-export class OnChangeComp extends React.Component<undefined, undefined> {
-    render() {
-        return <div>By switching between the child routes, the onChange hook should be fired
-        <Container>
-            {this.props.children}
-        </Container>
-        </div>
-    }
-}
-export const OnChangeComponent = wrapMountDispatch(OnChangeComp, "OnChange");
-export class OnChangeChild1Comp extends React.Component<undefined, undefined> {
-    render() {
-        return "On change child 1";
-    }
-}
-export const OnChangeChild1 = wrapMountDispatch(OnChangeChild1Comp, "OnChangeChild1");
-export class OnChangeChild2Comp extends React.Component<undefined, undefined> {
-    render() {
-        return "On change child 2";
-    }
-}
-export const OnChangeChild2 = wrapMountDispatch(OnChangeChild2Comp, "OnChangeChild2");
-//#endregion
 //#region props from parent
 interface PropsFromParentParentState {
     someState:string
@@ -506,7 +479,7 @@ export class PropsFromParentParentComp extends React.Component<undefined, PropsF
         </div>
     }
 }
-export const PropsFromParentParent = wrapMountDispatch(PropsFromParentParentComp, "PropsFromParentParent");
+export const PropsFromParentParent = wrapMountDispatch(PropsFromParentParentComp,"PropsFromParentParent");
 export class PropsFromParentChildComp extends React.Component<PropsFromParentParentState & RouteComponentProps<undefined, undefined>, undefined>{
     render() {
         return <div>
@@ -521,7 +494,7 @@ export class PropsFromParentChildComp extends React.Component<PropsFromParentPar
 
 
 
-export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
+export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp,"PropsFromParentChild");
 //#endregion
 //#region navigation
 interface NavigationDispatchProps {
@@ -622,7 +595,7 @@ export const Navigation = wrapMountDispatch(connect(
             }
         }
         return mappedDispatch;
-})(NavigationComp), "Navigation");
+})(NavigationComp),"Navigation");
 
 function cloneLocation(location) {
     

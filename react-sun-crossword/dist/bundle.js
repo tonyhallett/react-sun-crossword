@@ -7178,8 +7178,6 @@ var AppComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/additionalProps" }, "Additional props"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/leaveHook" }, "Leave hook"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/propsFromParent" }, "Props from parent"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change1" }, "On change child route 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change2" }, "On change child route 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/getComponentError" }, "GetComponent/Error"),
             React.createElement(ReactJsonContainer, null),
@@ -7205,6 +7203,7 @@ exports.App = react_redux_1.connect(function (state) {
     };
 }))(AppComp);
 function wrapMountDispatch(Component, displayName) {
+    Component.displayName = displayName;
     var wrapper = /** @class */ (function (_super) {
         __extends(MountWrapper, _super);
         function MountWrapper() {
@@ -7231,7 +7230,6 @@ function wrapMountDispatch(Component, displayName) {
         };
         return wrapperProps;
     }))(wrapper);
-    connected.displayName = displayName;
     return connected;
 }
 var ReactJsonContainer = react_redux_1.connect(function (state) {
@@ -7383,46 +7381,6 @@ var LeaveHookComponentComp = /** @class */ (function (_super) {
 }(React.Component));
 exports.LeaveHookComponentComp = LeaveHookComponentComp;
 exports.LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp, "LeaveHook");
-//#endregion
-//#region change component
-var OnChangeComp = /** @class */ (function (_super) {
-    __extends(OnChangeComp, _super);
-    function OnChangeComp() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    OnChangeComp.prototype.render = function () {
-        return React.createElement("div", null,
-            "By switching between the child routes, the onChange hook should be fired",
-            React.createElement(Container, null, this.props.children));
-    };
-    return OnChangeComp;
-}(React.Component));
-exports.OnChangeComp = OnChangeComp;
-exports.OnChangeComponent = wrapMountDispatch(OnChangeComp, "OnChange");
-var OnChangeChild1Comp = /** @class */ (function (_super) {
-    __extends(OnChangeChild1Comp, _super);
-    function OnChangeChild1Comp() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    OnChangeChild1Comp.prototype.render = function () {
-        return "On change child 1";
-    };
-    return OnChangeChild1Comp;
-}(React.Component));
-exports.OnChangeChild1Comp = OnChangeChild1Comp;
-exports.OnChangeChild1 = wrapMountDispatch(OnChangeChild1Comp, "OnChangeChild1");
-var OnChangeChild2Comp = /** @class */ (function (_super) {
-    __extends(OnChangeChild2Comp, _super);
-    function OnChangeChild2Comp() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    OnChangeChild2Comp.prototype.render = function () {
-        return "On change child 2";
-    };
-    return OnChangeChild2Comp;
-}(React.Component));
-exports.OnChangeChild2Comp = OnChangeChild2Comp;
-exports.OnChangeChild2 = wrapMountDispatch(OnChangeChild2Comp, "OnChangeChild2");
 var PropsFromParentParentComp = /** @class */ (function (_super) {
     __extends(PropsFromParentParentComp, _super);
     function PropsFromParentParentComp(props) {
@@ -42143,9 +42101,6 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(react_router_2.Route, { routeId: "LeaveHook", path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
             React.createElement(react_router_2.Route, { routeId: "PropsFromParent", path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
                 React.createElement(react_router_2.IndexRoute, { routeId: "PropsFromParent Index", component: DemoRouterApp_1.PropsFromParentChild })),
-            React.createElement(react_router_2.Route, { routeId: "OnChange", path: "onChange", component: DemoRouterApp_1.OnChangeComponent },
-                React.createElement(react_router_2.Route, { routeId: "OnChangeChild1", path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
-                React.createElement(react_router_2.Route, { routeId: "OnChangeChild2", path: "change2", component: DemoRouterApp_1.OnChangeChild2 })),
             React.createElement(react_router_2.Route, { routeId: "HookRedirect", path: "redirect" }),
             React.createElement(react_router_2.Route, { routeId: "Navigation", component: DemoRouterApp_1.Navigation, path: "navigation" },
                 React.createElement(react_router_2.Route, { routeId: "NavigationParams", path: "params" },

@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, OnChangeComponent, OnChangeChild1, OnChangeChild2, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -158,10 +158,6 @@ ReactDOM.render(
                 <Route routeId="LeaveHook" path="leaveHook" component={LeaveHookComponent}></Route>
                 <Route routeId="PropsFromParent" path="propsFromParent" component={PropsFromParentParent}>
                     <IndexRoute routeId="PropsFromParent Index" component={PropsFromParentChild} />
-                </Route>
-                <Route routeId="OnChange" path="onChange" component={OnChangeComponent}>
-                    <Route routeId="OnChangeChild1" path="change1" component={OnChangeChild1} />
-                    <Route routeId="OnChangeChild2"  path="change2" component={OnChangeChild2} />
                 </Route>
                 <Route routeId="HookRedirect" path="redirect" />
                 <Route routeId="Navigation" component={Navigation} path="navigation">
