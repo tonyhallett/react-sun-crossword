@@ -6989,7 +6989,8 @@ var RelativeLinks = /** @class */ (function (_super) {
     }
     RelativeLinks.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(react_router_1.Link, { to: "somewhere" }, "Relative"),
+            React.createElement(react_router_1.Link, { to: "somewhere" }, "somewhere"),
+            React.createElement(react_router_1.Link, { to: "/somewhere" }, "/somewhere"),
             React.createElement(Container, null, this.props.children));
     };
     return RelativeLinks;

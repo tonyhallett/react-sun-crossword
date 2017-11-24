@@ -53,7 +53,8 @@ class StyledLink extends React.Component<LinkProps, undefined>{
 export class RelativeLinks extends React.Component<LinkProps, undefined>{
     render() {
         return <div>
-            <Link to="somewhere">Relative</Link>
+            <Link to="somewhere">somewhere</Link>
+            <Link to="/somewhere">/somewhere</Link>
             <Container>
                 {this.props.children}
             </Container>
