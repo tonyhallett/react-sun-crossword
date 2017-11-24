@@ -3494,13 +3494,15 @@ function withRelativeLink(Component) {
                         route = route.parentRoute;
                         parts.push(route.path);
                     }
+                    var first = true;
                     for (var i = parts.length - 1; i !== 0; i--) {
                         var part = parts[i];
                         if (part) {
                             routePath += part;
-                            if (i !== 0) {
+                            if (!first) {
                                 routePath += "/";
                             }
+                            first = false;
                         }
                     }
                     return routePath;
