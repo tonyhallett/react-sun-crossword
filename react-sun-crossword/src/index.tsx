@@ -11,11 +11,11 @@ import { useRouterHistory } from 'react-router'
 
 import { createHistory } from 'history'
 import { routerReducer, routerMiddleware, push } from 'react-router-redux'
-import { Router, Route, IndexRoute, Redirect, RedirectFunction } from "react-router";
+import { Router, IndexRoute, Redirect, RedirectFunction } from "react-router";
 import { RouteProps } from "react-router/lib/Route";
 import { IndexRouteProps } from "react-router/lib/IndexRoute";
 import { EnterHook,LeaveHook,ChangeHook, RouterState } from "react-router/lib/Router";
-import { ReduxRoute } from "./router_test/routeProviders";
+import { ReduxRoute,RouteWithParent } from "./router_test/routeProviders";
 
 
 
@@ -55,44 +55,45 @@ declare module "react-router/lib/IndexRoute" {
         [extraProps: string]: any;
     }
 }
-declare module "react-router/lib/Route"{
-    interface RouteProps {
-        [extraProps: string]: any;
-    }
-    /*note that would need to do the same with Router if want to pass 
-    additional props to the render method
+//declare module "react-router/lib/Route"{
+//    interface RouteProps {
+//        [extraProps: string]: any;
+//    }
+//    /*note that would need to do the same with Router if want to pass 
+//    additional props to the render method
 
-        var propTypes = {
-        history: _propTypes.object,
-        children: _InternalPropTypes.routes,
+//        var propTypes = {
+//        history: _propTypes.object,
+//        children: _InternalPropTypes.routes,
         
-        onError: _propTypes.func,
-        onUpdate: _propTypes.func,
+//        onError: _propTypes.func,
+//        onUpdate: _propTypes.func,
 
-        // PRIVATE: For client-side rehydration of server match.
-        matchContext: _propTypes.object
+//        // PRIVATE: For client-side rehydration of server match.
+//        matchContext: _propTypes.object
 
-    }
-        return render(_extends({}, props, {
-      router: this.router, ^^^^^^^ used by the RouterContext
-        var router = _extends({}, history, {
-          setRouteLeaveHook: transitionManager.listenBeforeLeavingRoute,
-          isActive: transitionManager.isActive
-        });
-      location: location, ^^^^^^^^^^^
-      routes: routes, ************* could have got them from here !!! ^^^^^^^
-      params: params, ^^^^^^
-      components: components, ^^^^^^^^
-      createElement: createElement ^^^^^^
-    }));
-    which defaults to
-    render: function render(props) {
-        return _react2.default.createElement(_RouterContext2.default, props);
-      }
-    //*****Looks like if you provide createElement it is not used unless you also provide render !
-    */
-}
-var RouteAny = Route as any;
+//    }
+//        return render(_extends({}, props, {
+//      router: this.router, ^^^^^^^ used by the RouterContext
+//        var router = _extends({}, history, {
+//          setRouteLeaveHook: transitionManager.listenBeforeLeavingRoute,
+//          isActive: transitionManager.isActive
+//        });
+//      location: location, ^^^^^^^^^^^
+//      routes: routes, ************* could have got them from here !!! ^^^^^^^
+//      params: params, ^^^^^^
+//      components: components, ^^^^^^^^
+//      createElement: createElement ^^^^^^
+//    }));
+//    which defaults to
+//    render: function render(props) {
+//        return _react2.default.createElement(_RouterContext2.default, props);
+//      }
+//    //*****Looks like if you provide createElement it is not used unless you also provide render !
+//    */
+//}
+
+const Route = RouteWithParent;
 var RouterAny = Router as any;
 //#endregion
 
