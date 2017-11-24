@@ -7192,7 +7192,7 @@ var AppComp = /** @class */ (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/getComponentError" }, "GetComponent/Error"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/relativeLinks" }, "Relative links"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/relativeLinks/child" }, "Relative Links Child"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/relativeLinks/relativeLinksChild" }, "Relative Links Child"),
             React.createElement(ReactJsonContainer, null),
             React.createElement(Modal, { isOpen: this.props.routeErrorDetails !== "", onRequestClose: function () { _this.props.clearRouteError(); } },
                 React.createElement("div", null,
@@ -42136,7 +42136,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                         cb(new Error("Error thrown by getComponent"), null);
                     } })),
             React.createElement(react_router_2.Route, { routeId: "relativeLinks", path: "relativeLinks", component: DemoRouterApp_1.RelativeLinks },
-                React.createElement(react_router_2.Route, { routeId: "relativeLinkChild", path: "relativeLinks", component: DemoRouterApp_1.RelativeLinks })),
+                React.createElement(react_router_2.Route, { routeId: "relativeLinksChild", path: "relativeLinks", component: DemoRouterApp_1.RelativeLinks })),
             React.createElement(routeProviders_1.ReduxRoute, { routeId: "ReduxRoute404", onEnter: onEnter, onChange: onChange, onLeave: onLeave, store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 
 

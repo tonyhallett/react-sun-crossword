@@ -281,7 +281,7 @@ export class AppComp extends React.Component<AppProps, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/getComponentError">GetComponent/Error</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/relativeLinks">Relative links</Link>
-            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/relativeLinks/child">Relative Links Child</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/relativeLinks/relativeLinksChild">Relative Links Child</Link>
 
 
             <ReactJsonContainer />
