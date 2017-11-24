@@ -94,9 +94,11 @@ function createRoutesFromReactChildren(children, parentRoute) {
         var route;
         if (componentClass.createRouteFromReactElement) {
             route = componentClass.createRouteFromReactElement(element, parentRoute);
-
         } else {
             route = getRouteWithParent(element);
+        }
+        if (!route) {
+            var lookHere = "!";
         }
         routes.push(route);
     });
