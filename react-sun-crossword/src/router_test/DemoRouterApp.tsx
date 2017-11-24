@@ -49,9 +49,18 @@ class StyledLink extends React.Component<LinkProps, undefined>{
         return <Link style={linkStyle} activeStyle={linkActiveStyle} {...this.props}>{this.props.children}</Link>
     }
 }
-function createStyledLink(linkProps: LinkProps, linkText: string) {
-    return <Link style={linkStyle} activeStyle={linkActiveStyle} {...linkProps}>{linkText}</Link>
+
+export class RelativeLinks extends React.Component<LinkProps, undefined>{
+    render() {
+        return <div>
+            <Link to="somewhere">Relative</Link>
+            <Container>
+                {this.props.children}
+            </Container>
+            </div>
+    }
 }
+
 //#endregion
 //#region actions/reducers/state/selectors
 
@@ -271,6 +280,10 @@ export class AppComp extends React.Component<AppProps, undefined> {
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/propsFromParent">Props from parent</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/navigation">Nav/Matching</Link>
             <Link style={linkStyle} activeStyle={linkActiveStyle} to="/getComponentError">GetComponent/Error</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/relativeLinks">Relative links</Link>
+            <Link style={linkStyle} activeStyle={linkActiveStyle} to="/relativeLinks/child">Relative Links Child</Link>
+
+
             <ReactJsonContainer />
             <Modal isOpen={this.props.routeErrorDetails !== ""} onRequestClose={() => { this.props.clearRouteError() }}>
                 <div>
