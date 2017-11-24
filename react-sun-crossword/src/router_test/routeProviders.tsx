@@ -96,7 +96,7 @@ function createRoutesFromReactChildren(children, parentRoute) {
             route = componentClass.createRouteFromReactElement(element, parentRoute);
 
         } else {
-            getRouteWithParent(element)
+            route = getRouteWithParent(element);
         }
         routes.push(route);
     });
