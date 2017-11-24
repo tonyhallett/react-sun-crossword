@@ -9,36 +9,6 @@ import { RouteProps } from "react-router/lib/Route";
 var objectAny = Object as any;
 var _extends = objectAny.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function createRoutesFromReactChildren(children, parentRoute) {
-    var routes = [];
-
-    React.Children.forEach(children, function (element) {
-        routes.push(getRouteWithParent(element));
-    });
-
-    return routes;
-}
-function getRouteWithParent(element) {
-    function createRoute(defaultProps, props) {
-        return _extends({}, defaultProps, props);
-
-    }
-    var type = element.type;
-    var route = createRoute(type.defaultProps, element.props);
-
-    if (route.children) {
-        var childRoutes = createRoutesFromReactChildren(route.children, route);
-        for (var i = 0; i < childRoutes.length; i++) {
-            childRoutes[i].parentRoute = route;
-        }
-        if (childRoutes.length) route.childRoutes = childRoutes;
-
-        delete route.children;
-
-    }
-    return route;
-
-}
 
 interface RelativeLinkProviderContext {
     getRoutePath:()=>string
@@ -115,6 +85,39 @@ declare module "react-router/lib/Route" {
 interface RouteCallback {
     (route:RouteProps):RouteProps
 }
+
+function createRoutesFromReactChildren(children, parentRoute) {
+    var routes = [];
+
+    React.Children.forEach(children, function (element) {
+        routes.push(getRouteWithParent(element));
+    });
+
+    return routes;
+}
+function getRouteWithParent(element) {
+    function createRoute(defaultProps, props) {
+        return _extends({}, defaultProps, props);
+
+    }
+    var type = element.type;
+    var route = createRoute(type.defaultProps, element.props);
+
+    if (route.children) {
+        var childRoutes = createRoutesFromReactChildren(route.children, route);
+        for (var i = 0; i < childRoutes.length; i++) {
+            childRoutes[i].parentRoute = route;
+        }
+        if (childRoutes.length) route.childRoutes = childRoutes;
+
+        delete route.children;
+
+    }
+    return route;
+
+}
+
+
 //display name ? why is args not typed
 function composeRoute(...any: RouteCallback[]): React.ComponentClass<RouteProps>{
     var args = arguments;

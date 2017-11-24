@@ -3481,30 +3481,6 @@ var _extends = objectAny.assign || function (target) { for (var i = 1; i < argum
         }
     }
 } return target; };
-function createRoutesFromReactChildren(children, parentRoute) {
-    var routes = [];
-    React.Children.forEach(children, function (element) {
-        routes.push(getRouteWithParent(element));
-    });
-    return routes;
-}
-function getRouteWithParent(element) {
-    function createRoute(defaultProps, props) {
-        return _extends({}, defaultProps, props);
-    }
-    var type = element.type;
-    var route = createRoute(type.defaultProps, element.props);
-    if (route.children) {
-        var childRoutes = createRoutesFromReactChildren(route.children, route);
-        for (var i = 0; i < childRoutes.length; i++) {
-            childRoutes[i].parentRoute = route;
-        }
-        if (childRoutes.length)
-            route.childRoutes = childRoutes;
-        delete route.children;
-    }
-    return route;
-}
 function withRelativeLink(Component) {
     return _a = /** @class */ (function (_super) {
             __extends(RelativeLinkContextProvider, _super);
@@ -3572,6 +3548,30 @@ var RelativeLink = /** @class */ (function (_super) {
     return RelativeLink;
 }(React.Component));
 exports.RelativeLink = RelativeLink;
+function createRoutesFromReactChildren(children, parentRoute) {
+    var routes = [];
+    React.Children.forEach(children, function (element) {
+        routes.push(getRouteWithParent(element));
+    });
+    return routes;
+}
+function getRouteWithParent(element) {
+    function createRoute(defaultProps, props) {
+        return _extends({}, defaultProps, props);
+    }
+    var type = element.type;
+    var route = createRoute(type.defaultProps, element.props);
+    if (route.children) {
+        var childRoutes = createRoutesFromReactChildren(route.children, route);
+        for (var i = 0; i < childRoutes.length; i++) {
+            childRoutes[i].parentRoute = route;
+        }
+        if (childRoutes.length)
+            route.childRoutes = childRoutes;
+        delete route.children;
+    }
+    return route;
+}
 //display name ? why is args not typed
 function composeRoute() {
     var any = [];
@@ -7308,7 +7308,7 @@ function mapComponents(components) {
 }
 function mapRoute(route) {
     //could have used object destructuring and ...rest
-    var mappedRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
+    var mappedRoute = clone(route, ["parentRoute", "getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
     if (route.component) {
         mappedRoute.component = mapComponentName(route.component);
     }

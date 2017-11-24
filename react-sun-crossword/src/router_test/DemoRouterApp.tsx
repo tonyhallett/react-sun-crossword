@@ -176,7 +176,7 @@ function mapComponents(components: RouteComponents) {
 }
 function mapRoute(route: PlainRoute) {
     //could have used object destructuring and ...rest
-    var mappedRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]) as any;
+    var mappedRoute = clone(route, ["parentRoute","getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]) as any;
     if (route.component) {
         mappedRoute.component = mapComponentName(route.component);
     }
