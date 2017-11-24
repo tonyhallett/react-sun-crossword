@@ -3511,8 +3511,23 @@ function withRelativeLink(Component) {
             function RelativeLinkContextProvider() {
                 var _this = _super !== null && _super.apply(this, arguments) || this;
                 _this.getRoutePath = function () {
-                    //use this this.props.route
-                    return "TBD";
+                    var routePath = "";
+                    var parts = [_this.props.route.path];
+                    var route = _this.props.route;
+                    while (route.parent) {
+                        route = route.parent;
+                        parts.push(route.path);
+                    }
+                    for (var i = parts.length - 1; i !== 0; i--) {
+                        var part = parts[i];
+                        if (part) {
+                            routePath += part;
+                            if (i !== 0) {
+                                routePath += "/";
+                            }
+                        }
+                    }
+                    return routePath;
                 };
                 return _this;
             }

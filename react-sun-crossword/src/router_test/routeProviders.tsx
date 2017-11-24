@@ -51,8 +51,23 @@ export function withRelativeLink<P>(Component: React.ComponentClass<P>):any {
         }
 
         getRoutePath = () => {
-            //use this this.props.route
-            return "TBD";
+            var routePath = "";
+            var parts = [this.props.route.path];
+            var route = this.props.route;
+            while (route.parent) {
+                route = route.parent;
+                parts.push(route.path);
+            }
+            for (var i = parts.length - 1; i!==0; i--){
+                var part = parts[i];
+                if (part) {
+                    routePath += part;
+                    if (i !== 0) {
+                        routePath+="/"
+                    }
+                }
+            }
+            return routePath;
         }
         getChildContext(): RelativeLinkProviderContext {
             return { getRoutePath: this.getRoutePath }
