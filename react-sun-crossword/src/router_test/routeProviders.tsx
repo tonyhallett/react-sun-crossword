@@ -25,8 +25,8 @@ export function withRelativeLink<P>(Component: React.ComponentClass<P>):any {
             var routePath = "";
             var parts = [this.props.route.path];
             var route = this.props.route;
-            while (route.parent) {
-                route = route.parent;
+            while (route.parentRoute) {
+                route = route.parentRoute;
                 parts.push(route.path);
             }
             for (var i = parts.length - 1; i!==0; i--){
@@ -89,8 +89,16 @@ interface RouteCallback {
 function createRoutesFromReactChildren(children, parentRoute) {
     var routes = [];
 
-    React.Children.forEach(children, function (element) {
-        routes.push(getRouteWithParent(element));
+    React.Children.forEach(children, function (element: React.ReactElement<any>) {
+        var componentClass = element.type as any;
+        var route;
+        if (componentClass.createRouteFromReactElement) {
+            route = componentClass.createRouteFromReactElement(element, parentRoute);
+
+        } else {
+            getRouteWithParent(element)
+        }
+        routes.push(route);
     });
 
     return routes;
@@ -130,21 +138,21 @@ function composeRoute(...any: RouteCallback[]): React.ComponentClass<RouteProps>
     return class Route extends React.Component<RouteProps,undefined> {
         //this will be called for each root route by RouteUtils, or any in the subtree looking no deeper than that
         static createRouteFromReactElement = function (element, parentRoute) {
-            function addChildRoutes(route, routes) {
-                var childRoutes = route.childRoutes ? route.childRoutes : [];
-                childRoutes.forEach(r => {
-                    routes.push(r);
-                    addChildRoutes(r,routes);
-                });
-            }
-            var routes = []
+            //function addChildRoutes(route, routes) {
+            //    var childRoutes = route.childRoutes ? route.childRoutes : [];
+            //    childRoutes.forEach(r => {
+            //        routes.push(r);
+            //        addChildRoutes(r,routes);
+            //    });
+            //}
+            //var routes = []
 
             var route = getRouteWithParent(element);
-            routes.push(route)
-            addChildRoutes(route, routes);
+            //routes.push(route)
+            //addChildRoutes(route, routes);
 
-            routes.forEach(r => routeCallback(r));
-            
+            //routes.forEach(r => routeCallback(r));
+            routeCallback(route);
             return route;
         }
         render() {
