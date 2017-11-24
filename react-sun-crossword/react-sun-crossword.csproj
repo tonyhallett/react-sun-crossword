@@ -135,7 +135,7 @@
     <TypeScriptCompile Include="src\helpers\stores.ts" />
     <TypeScriptCompile Include="src\helpers\stringHelpers.ts" />
     <TypeScriptCompile Include="src\router_test\DemoRouterApp.tsx" />
-    <TypeScriptCompile Include="src\router_test\routeProviders.ts" />
+    <TypeScriptCompile Include="src\router_test\routeProviders.tsx" />
     <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleInputTests.tsx" />
     <TypeScriptCompile Include="src\components\commonStyling.ts" />
     <TypeScriptCompile Include="src\components\crosswordPuzzle.tsx" />

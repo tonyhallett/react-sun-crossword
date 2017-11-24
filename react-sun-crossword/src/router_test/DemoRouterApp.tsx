@@ -8,6 +8,7 @@ import { LocationDescriptor } from "history";
 import { push }  from 'react-router-redux'
 import { Action, AnyAction } from "redux";
 import * as Modal from 'react-modal';//https://github.com/reactjs/react-modal/issues/497
+import { withRelativeLink, RelativeLink } from "./routeProviders";
 
 ReactJson.displayName = "ReactJsonView";
 
@@ -50,18 +51,22 @@ class StyledLink extends React.Component<LinkProps, undefined>{
     }
 }
 
-export class RelativeLinks extends React.Component<LinkProps, undefined>{
+ class RelativeLinksComp extends React.Component<LinkProps, undefined>{
     render() {
         return <div>
-            <Link to="somewhere">somewhere</Link>
-            <Link to="/somewhere">/somewhere</Link>
+            <RelativeLink relativePath="relative" activeStyle={Link} style={linkStyle}>Relative</RelativeLink>
             <Container>
                 {this.props.children}
             </Container>
             </div>
     }
 }
-
+export const RelativeLinks = withRelativeLink(RelativeLinksComp);
+export class RelativeLinkMatched extends React.Component<undefined, undefined>{
+    render() {
+        return <div>Relative link worked !</div>
+    }
+}
 //#endregion
 //#region actions/reducers/state/selectors
 
