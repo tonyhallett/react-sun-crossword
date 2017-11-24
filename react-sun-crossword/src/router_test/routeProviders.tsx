@@ -30,8 +30,8 @@ export function withRelativeLink<P>(Component: React.ComponentClass<P>):any {
                 parts.push(route.path);
             }
             var first: boolean=true;
-            for (var i = parts.length - 1; i!==0; i--){
-                var part = parts[i];
+            for (var i = parts.length; i!==0; i--){
+                var part = parts[i-1];
                 if (part) {
                     routePath += part;
                     if (!first) {
