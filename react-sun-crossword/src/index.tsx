@@ -182,7 +182,7 @@ ReactDOM.render(
                     }} />
                 </Route>
                 <Route routeId="relativeLinks" path="relativeLinks" component={RelativeLinks}>
-                    <Route routeId="relativeLinksChild" path="relativeLinks" component={RelativeLinks}/>
+                    <Route routeId="relativeLinksChild" path="relativeLinksChild" component={RelativeLinks}/>
                 </Route>
                 <ReduxRoute routeId="ReduxRoute404" onEnter={onEnter} onChange={onChange} onLeave={onLeave} store={store} change={(state, route) => { route.path = state.is404Active ? "*" : "" }} path="" component={PageNotFound} />
                 

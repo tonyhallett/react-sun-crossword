@@ -42137,7 +42137,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                         cb(new Error("Error thrown by getComponent"), null);
                     } })),
             React.createElement(react_router_2.Route, { routeId: "relativeLinks", path: "relativeLinks", component: DemoRouterApp_1.RelativeLinks },
-                React.createElement(react_router_2.Route, { routeId: "relativeLinksChild", path: "relativeLinks", component: DemoRouterApp_1.RelativeLinks })),
+                React.createElement(react_router_2.Route, { routeId: "relativeLinksChild", path: "relativeLinksChild", component: DemoRouterApp_1.RelativeLinks })),
             React.createElement(routeProviders_1.ReduxRoute, { routeId: "ReduxRoute404", onEnter: onEnter, onChange: onChange, onLeave: onLeave, store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 
 
