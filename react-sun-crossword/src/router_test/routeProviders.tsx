@@ -97,10 +97,10 @@ function createRoutesFromReactChildren(children, parentRoute) {
         } else {
             route = getRouteWithParent(element);
         }
-        if (!route) {
-            var lookHere = "!";
+        if (route) {
+            routes.push(route);
         }
-        routes.push(route);
+        
     });
 
     return routes;
