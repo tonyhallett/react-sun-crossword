@@ -3586,7 +3586,6 @@ function getRouteWithParent(element) {
     }
     return route;
 }
-//display name ? why is args not typed
 function composeRoute() {
     var any = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -3610,18 +3609,7 @@ function composeRoute() {
         }(React.Component)),
         //this will be called for each root route by RouteUtils, or any in the subtree looking no deeper than that
         _a.createRouteFromReactElement = function (element, parentRoute) {
-            //function addChildRoutes(route, routes) {
-            //    var childRoutes = route.childRoutes ? route.childRoutes : [];
-            //    childRoutes.forEach(r => {
-            //        routes.push(r);
-            //        addChildRoutes(r,routes);
-            //    });
-            //}
-            //var routes = []
             var route = getRouteWithParent(element);
-            //routes.push(route)
-            //addChildRoutes(route, routes);
-            //routes.forEach(r => routeCallback(r));
             routeCallback(route);
             return route;
         },
@@ -3635,18 +3623,6 @@ exports.ReduxRoute = composeRoute(function (route) {
     });
     return route;
 });
-//export class ReduxRoute extends React.Component<any, any>{
-//    static createRouteFromReactElement = function (element, parentRoute?) {
-//        var route = getRouteWithParent(element);
-//        route.store.subscribe(() => {
-//            route.change(route.store.getState(), route);
-//        });
-//        return route;
-//    }
-//    render() {
-//        return null;
-//    }
-//}
 //can get Routes by overriding the Router render method
 var RouteProvider = /** @class */ (function (_super) {
     __extends(RouteProvider, _super);
@@ -7225,19 +7201,19 @@ var StyledLink = /** @class */ (function (_super) {
     };
     return StyledLink;
 }(React.Component));
-var RelativeLinksComp = /** @class */ (function (_super) {
-    __extends(RelativeLinksComp, _super);
-    function RelativeLinksComp() {
+var RelativeLinks = /** @class */ (function (_super) {
+    __extends(RelativeLinks, _super);
+    function RelativeLinks() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    RelativeLinksComp.prototype.render = function () {
+    RelativeLinks.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement(routeProviders_1.RelativeLink, { relativePath: "relative", activeStyle: linkActiveStyle, style: linkStyle }, "Relative"),
             React.createElement(Container, null, this.props.children));
     };
-    return RelativeLinksComp;
+    return RelativeLinks;
 }(React.Component));
-exports.RelativeLinks = routeProviders_1.withRelativeLink(RelativeLinksComp);
+exports.WithRelativeLinks = routeProviders_1.withRelativeLink(RelativeLinks);
 var RelativeLinkMatched = /** @class */ (function (_super) {
     __extends(RelativeLinkMatched, _super);
     function RelativeLinkMatched() {
@@ -42566,9 +42542,9 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(Route, { routeId: "Error", path: "error", getComponent: function (nextState, cb) {
                         cb(new Error("Error thrown by getComponent"), null);
                     } })),
-            React.createElement(Route, { routeId: "relativeLinks", path: "relativeLinks", component: DemoRouterApp_1.RelativeLinks },
+            React.createElement(Route, { routeId: "relativeLinks", path: "relativeLinks", component: DemoRouterApp_1.WithRelativeLinks },
                 React.createElement(Route, { routeId: "relativeLinksRelative", path: "relative", component: DemoRouterApp_1.RelativeLinkMatched }),
-                React.createElement(Route, { routeId: "relativeLinksChild", path: "relativeLinksChild", component: DemoRouterApp_1.RelativeLinks },
+                React.createElement(Route, { routeId: "relativeLinksChild", path: "relativeLinksChild", component: DemoRouterApp_1.WithRelativeLinks },
                     React.createElement(Route, { routeId: "relativeLinksChildRelative", path: "relative", component: DemoRouterApp_1.RelativeLinkMatched }))),
             React.createElement(routeProviders_1.ReduxRoute, { routeId: "ReduxRoute404", onEnter: onEnter, onChange: onChange, onLeave: onLeave, store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 

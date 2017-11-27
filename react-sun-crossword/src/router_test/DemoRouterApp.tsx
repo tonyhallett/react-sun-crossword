@@ -52,7 +52,7 @@ class StyledLink extends React.Component<LinkProps, undefined>{
     }
 }
 
- class RelativeLinksComp extends React.Component<LinkProps, undefined>{
+class RelativeLinks extends React.Component<LinkProps, undefined>{
     render() {
         return <div>
             <RelativeLink relativePath="relative" activeStyle={linkActiveStyle} style={linkStyle}>Relative</RelativeLink>
@@ -62,7 +62,7 @@ class StyledLink extends React.Component<LinkProps, undefined>{
             </div>
     }
 }
-export const RelativeLinks = withRelativeLink(RelativeLinksComp);
+export const WithRelativeLinks = withRelativeLink(RelativeLinks);
 export class RelativeLinkMatched extends React.Component<undefined, undefined>{
     render() {
         return <div>Relative link worked !</div>

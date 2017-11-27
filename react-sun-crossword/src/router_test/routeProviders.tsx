@@ -131,7 +131,6 @@ function getRouteWithParent(element) {
 }
 
 
-//display name ? why is args not typed
 function composeRoute(...any: RouteCallback[]): React.ComponentClass<RouteProps>{
     var args = arguments;
     var routeCallback = function (route) {
@@ -143,20 +142,7 @@ function composeRoute(...any: RouteCallback[]): React.ComponentClass<RouteProps>
     return class Route extends React.Component<RouteProps,undefined> {
         //this will be called for each root route by RouteUtils, or any in the subtree looking no deeper than that
         static createRouteFromReactElement = function (element, parentRoute) {
-            //function addChildRoutes(route, routes) {
-            //    var childRoutes = route.childRoutes ? route.childRoutes : [];
-            //    childRoutes.forEach(r => {
-            //        routes.push(r);
-            //        addChildRoutes(r,routes);
-            //    });
-            //}
-            //var routes = []
-
             var route = getRouteWithParent(element);
-            //routes.push(route)
-            //addChildRoutes(route, routes);
-
-            //routes.forEach(r => routeCallback(r));
             routeCallback(route);
             return route;
         }
@@ -173,18 +159,6 @@ export const ReduxRoute = composeRoute(route => {
     });
     return route;
 })
-//export class ReduxRoute extends React.Component<any, any>{
-//    static createRouteFromReactElement = function (element, parentRoute?) {
-//        var route = getRouteWithParent(element);
-//        route.store.subscribe(() => {
-//            route.change(route.store.getState(), route);
-//        });
-//        return route;
-//    }
-//    render() {
-//        return null;
-//    }
-//}
 
 //can get Routes by overriding the Router render method
 

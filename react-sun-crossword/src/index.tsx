@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, RelativeLinks, RelativeLinkMatched } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinks, RelativeLinkMatched } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -182,9 +182,9 @@ ReactDOM.render(
                         cb(new Error("Error thrown by getComponent"),null);
                     }} />
                 </Route>
-                <Route routeId="relativeLinks" path="relativeLinks" component={RelativeLinks}>
+                <Route routeId="relativeLinks" path="relativeLinks" component={WithRelativeLinks}>
                     <Route routeId="relativeLinksRelative" path="relative" component={RelativeLinkMatched} />
-                    <Route routeId="relativeLinksChild" path="relativeLinksChild" component={RelativeLinks}>
+                    <Route routeId="relativeLinksChild" path="relativeLinksChild" component={WithRelativeLinks}>
                         <Route routeId="relativeLinksChildRelative" path="relative" component={RelativeLinkMatched}/>
                     </Route>
                 </Route>
