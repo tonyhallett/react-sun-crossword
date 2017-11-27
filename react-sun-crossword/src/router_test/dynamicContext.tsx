@@ -1,7 +1,10 @@
 ﻿import * as React from "react";
 import * as PropTypes from 'prop-types';
 
-class AddContextToThis extends React.Component<undefined, undefined>{
+interface AddContextToThisProps {
+    someProp: string
+}
+class AddContextToThis extends React.Component<AddContextToThisProps, undefined>{
     static childContextTypes = {
         original: PropTypes.bool
     }
@@ -12,27 +15,35 @@ class AddContextToThis extends React.Component<undefined, undefined>{
         return this.props.children;
     }
 }
+
 class UsesDynamicContext extends React.Component<undefined, undefined> {
     static contextTypes = {
-        dynamic:PropTypes.string
+        dynamic:PropTypes.func
     }
     render() {
-        return <div>{this.context.dynamic}</div>
+        
+        return <div>{this.context.dynamic()}</div>
     }
 }
 export class DynamicContextProvider extends React.Component<undefined, undefined>{
     constructor(props) {
         super(props);
+        function _getDynamicValue(someProp: string) {
+            return "Got: " + someProp;
+        }
         (AddContextToThis.childContextTypes as any).dynamic = PropTypes.string;
         var originalGetChildContext = AddContextToThis.prototype.getChildContext;
         AddContextToThis.prototype.getChildContext = function () {
             var childContext = originalGetChildContext();
-            (childContext as any).dynamic = "This is dynamic";
+            (childContext as any).dynamic = function () {
+                return _getDynamicValue(this.props.someProp);
+            };
             return childContext;
         }
     }
+    
     render() {
-        return <AddContextToThis>
+        return <AddContextToThis someProp="Some value">
             <UsesDynamicContext/>
         </AddContextToThis>
     }

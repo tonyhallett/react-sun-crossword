@@ -138,6 +138,7 @@
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\router_test\DemoRouterApp.tsx" />
     <TypeScriptCompile Include="src\router_test\dynamicContext.tsx" />
+    <Content Include="src\router_test\relativeRouteContext.js" />
     <TypeScriptCompile Include="src\router_test\routeProviders.tsx" />
     <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleInputTests.tsx" />
     <TypeScriptCompile Include="src\components\commonStyling.ts" />

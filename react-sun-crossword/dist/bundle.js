@@ -1341,10 +1341,10 @@ var UsesDynamicContext = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     UsesDynamicContext.prototype.render = function () {
-        return React.createElement("div", null, this.context.dynamic);
+        return React.createElement("div", null, this.context.dynamic());
     };
     UsesDynamicContext.contextTypes = {
-        dynamic: PropTypes.string
+        dynamic: PropTypes.func
     };
     return UsesDynamicContext;
 }(React.Component));
@@ -1352,17 +1352,22 @@ var DynamicContextProvider = /** @class */ (function (_super) {
     __extends(DynamicContextProvider, _super);
     function DynamicContextProvider(props) {
         var _this = _super.call(this, props) || this;
+        function _getDynamicValue(someProp) {
+            return "Got: " + someProp;
+        }
         AddContextToThis.childContextTypes.dynamic = PropTypes.string;
         var originalGetChildContext = AddContextToThis.prototype.getChildContext;
         AddContextToThis.prototype.getChildContext = function () {
             var childContext = originalGetChildContext();
-            childContext.dynamic = "This is dynamic";
+            childContext.dynamic = function () {
+                return _getDynamicValue(this.props.someProp);
+            };
             return childContext;
         };
         return _this;
     }
     DynamicContextProvider.prototype.render = function () {
-        return React.createElement(AddContextToThis, null,
+        return React.createElement(AddContextToThis, { someProp: "Some value" },
             React.createElement(UsesDynamicContext, null));
     };
     return DynamicContextProvider;
