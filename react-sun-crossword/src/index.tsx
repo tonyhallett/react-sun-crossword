@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinksChild,  WithRelativeLinksParent, MountDispatchRelativeLinkParentMatched, MountDispatchRelativeLinkChildMatched } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, ConnectedApp, Introduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinksChild,  WithRelativeLinksParent, MountDispatchRelativeLinkParentMatched, MountDispatchRelativeLinkChildMatched } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -16,6 +16,7 @@ import { RouteProps } from "react-router/lib/Route";
 import { IndexRouteProps } from "react-router/lib/IndexRoute";
 import { EnterHook,LeaveHook,ChangeHook, RouterState } from "react-router/lib/Router";
 import { ReduxRoute,RouteWithParent } from "./router_test/routeProviders";
+import { getWrappedComponentClassName, getWrapperComponentName } from "./helpers/reactHelpers";
 
 
 
@@ -116,7 +117,42 @@ var onChange: ChangeHook = function routeOnChange(prevState: RouterState, nextSt
 }
 //#endregion
 
+//#region wrapMountDispatch
+interface MountDispatchFunction {
+    (isMount: boolean): void;
+}
+interface WrapperProps {
+    mountUnmount: MountDispatchFunction
+}
+function wrapMountDispatch<P>(Component: React.ComponentClass<P>) {
 
+    var wrapper = class MountWrapper extends React.Component<P & WrapperProps, any>{
+        static displayName = getWrapperComponentName("MountWrapper", Component);
+        componentDidMount() {
+            this.props.mountUnmount(true);
+        }
+        componentWillUnmount() {
+            this.props.mountUnmount(false);
+        }
+        render() {
+            //cast necessary for spread operator - https://github.com/Microsoft/TypeScript/issues/10727
+            const { mountUnmount, ...passThroughProps } = (this as any).props;
+            return <Component {...passThroughProps} />
+        }
+    }
+    var componentName = getWrappedComponentClassName(Component);
+    var connected = connect(null, (dispatch => {
+        var wrapperProps: WrapperProps = {
+            mountUnmount: (isMount: boolean) => {
+                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: componentName }));
+            }
+        }
+        return wrapperProps;
+    }))(wrapper);
+    return connected;
+}
+
+//#endregion
 
 //note that if want to be able to change then needs to be an object
 var additionalPropsValue = { additional: "This is additional" };
@@ -134,8 +170,12 @@ IndexRoute.defaultProps = {
 }
 //#endregion
 
-function createElement() {
-    var debugHere = "";
+//need to type
+function createElement(component,props) {
+    if (component.name === "Introduction") {
+        component = wrapMountDispatch(component);
+    }
+    return React.createElement(component, props);
 }
 
 ReactDOM.render(
@@ -144,7 +184,7 @@ ReactDOM.render(
             store.dispatch(routeError(error))
         }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route routeId="App" path="/" component={ConnectedApp}>
-                <IndexRoute routeId="App Index" component={MountDispatchIntroduction} />
+                <IndexRoute routeId="App Index" component={Introduction} />
                 <Route routeId="Pathless Parent" path="pathless" component={MountDispatchPathless}>
                     <IndexRoute routeId="Pathless Index" component={MountDispatchPathlessIndex}/>
                 </Route>

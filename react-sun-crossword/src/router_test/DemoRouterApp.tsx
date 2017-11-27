@@ -389,13 +389,13 @@ const ReactJsonContainer = connect((state: RouterAppState) => {
 })(ReactJson);
 //#endregion
 //#region Introduction
-class Introduction extends React.Component<undefined, undefined> {
+export class Introduction extends React.Component<undefined, undefined> {
     render() {
         return "This is the introduction - the index route";
     }
 }
 
-export const MountDispatchIntroduction = wrapMountDispatch(Introduction);
+//export const MountDispatchIntroduction = wrapMountDispatch(Introduction);
 //#endregion
 //#region Pathless
 class Pathless extends React.Component<undefined, undefined> {
