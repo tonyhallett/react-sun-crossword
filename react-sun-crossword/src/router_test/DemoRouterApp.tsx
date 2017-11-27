@@ -624,9 +624,10 @@ function cloneLocation(location) {
     clonedLocation.query = clone(location.query, [])
     return clonedLocation;
 }
-function createNavigationComponent<P>(Component:React.ComponentClass<P>,displayName:string) {
-    var wrapper = class Wrapper extends React.Component<P & RouteComponentProps<any, any>, undefined>{
-        displayName = displayName;
+function createNavigationComponent<P>(Component: React.ComponentClass<P>, displayName: string) {
+    
+    var wrapper = class ReactJsonRoutePropsWrapper extends React.Component<P & RouteComponentProps<any, any>, undefined>{
+        static displayName = "ReactJsonRoutePropsWrapper(" + displayName + ")";
         render() {
             var location = cloneLocation(this.props.location);
             

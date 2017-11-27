@@ -7747,22 +7747,23 @@ function cloneLocation(location) {
     return clonedLocation;
 }
 function createNavigationComponent(Component, displayName) {
-    var wrapper = /** @class */ (function (_super) {
-        __extends(Wrapper, _super);
-        function Wrapper() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.displayName = displayName;
-            return _this;
-        }
-        Wrapper.prototype.render = function () {
-            var location = cloneLocation(this.props.location);
-            return React.createElement("div", null,
-                React.createElement(Component, __assign({}, this.props)),
-                React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
-        };
-        return Wrapper;
-    }(React.Component));
+    var wrapper = (_a = /** @class */ (function (_super) {
+            __extends(ReactJsonRoutePropsWrapper, _super);
+            function ReactJsonRoutePropsWrapper() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            ReactJsonRoutePropsWrapper.prototype.render = function () {
+                var location = cloneLocation(this.props.location);
+                return React.createElement("div", null,
+                    React.createElement(Component, __assign({}, this.props)),
+                    React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
+            };
+            return ReactJsonRoutePropsWrapper;
+        }(React.Component)),
+        _a.displayName = "ReactJsonRoutePropsWrapper(" + displayName + ")",
+        _a);
     return wrapper;
+    var _a;
     //return wrapMountDispatch(wrapper, displayName); 
 }
 var PageNotFound = /** @class */ (function (_super) {
