@@ -54,7 +54,7 @@ class StyledLink extends React.Component<LinkProps, undefined>{
  class RelativeLinksComp extends React.Component<LinkProps, undefined>{
     render() {
         return <div>
-            <RelativeLink relativePath="relative" activeStyle={Link} style={linkStyle}>Relative</RelativeLink>
+            <RelativeLink relativePath="relative" activeStyle={linkActiveStyle} style={linkStyle}>Relative</RelativeLink>
             <Container>
                 {this.props.children}
             </Container>

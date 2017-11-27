@@ -3517,7 +3517,7 @@ function withRelativeLink(Component) {
             };
             return RelativeLinkContextProvider;
         }(React.Component)),
-        _a.displayName = "RelativeLinkContextProvider(" + Component.displayName + ")",
+        _a.displayName = "RelativeLinkContextProvider(" + Component.displayName || Component.name || "Component" + ")",
         _a.childContextTypes = {
             getRoutePath: PropTypes.func
         },
@@ -7211,7 +7211,7 @@ var RelativeLinksComp = /** @class */ (function (_super) {
     }
     RelativeLinksComp.prototype.render = function () {
         return React.createElement("div", null,
-            React.createElement(routeProviders_1.RelativeLink, { relativePath: "relative", activeStyle: react_router_1.Link, style: linkStyle }, "Relative"),
+            React.createElement(routeProviders_1.RelativeLink, { relativePath: "relative", activeStyle: linkActiveStyle, style: linkStyle }, "Relative"),
             React.createElement(Container, null, this.props.children));
     };
     return RelativeLinksComp;
