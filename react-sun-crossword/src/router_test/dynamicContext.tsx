@@ -8,6 +8,9 @@ class AddContextToThis extends React.Component<undefined, undefined>{
     getChildContext() {
         return { original:true}
     }
+    render() {
+        return this.props.children;
+    }
 }
 class UsesDynamicContext extends React.Component<undefined, undefined> {
     render() {

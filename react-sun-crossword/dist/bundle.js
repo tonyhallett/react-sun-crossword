@@ -1327,6 +1327,9 @@ var AddContextToThis = /** @class */ (function (_super) {
     AddContextToThis.prototype.getChildContext = function () {
         return { original: true };
     };
+    AddContextToThis.prototype.render = function () {
+        return this.props.children;
+    };
     AddContextToThis.childContextTypes = {
         original: PropTypes.bool
     };
