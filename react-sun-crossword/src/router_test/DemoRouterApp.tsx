@@ -391,7 +391,7 @@ const ReactJsonContainer = connect((state: RouterAppState) => {
 //#region Introduction
 export class Introduction extends React.Component<undefined, undefined> {
     render() {
-        return "This is the introduction - the index route";
+        return <div>This is the introduction - the index route</div>
     }
 }
 

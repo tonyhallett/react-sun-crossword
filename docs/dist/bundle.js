@@ -7514,7 +7514,7 @@ var Introduction = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     Introduction.prototype.render = function () {
-        return "This is the introduction - the index route";
+        return React.createElement("div", null, "This is the introduction - the index route");
     };
     return Introduction;
 }(React.Component));
