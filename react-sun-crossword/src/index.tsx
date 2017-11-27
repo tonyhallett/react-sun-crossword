@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, App, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, Child1, Child2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, Navigation, ParamParent, ParamChild, Optional, QuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, RelativeLinks, RelativeLinkMatched } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, RelativeLinks, RelativeLinkMatched } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -138,30 +138,30 @@ ReactDOM.render(
         <RouterAny history={history} onError={(error) => {
             store.dispatch(routeError(error))
         }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
-            <Route routeId="App" path="/" component={App}>
-                <IndexRoute routeId="App Index" component={Introduction} />
-                <Route routeId="Pathless Parent" path="pathless" component={Pathless}>
-                    <IndexRoute routeId="Pathless Index" component={PathlessIndex}/>
+            <Route routeId="App" path="/" component={ConnectedApp}>
+                <IndexRoute routeId="App Index" component={MountDispatchIntroduction} />
+                <Route routeId="Pathless Parent" path="pathless" component={MountDispatchPathless}>
+                    <IndexRoute routeId="Pathless Index" component={MountDispatchPathlessIndex}/>
                 </Route>
-                <Route routeId="Pathless pathless!" component={Pathless}>
-                    <Route routeId="Pathless" path="pathlessChild" component={PathlessChild} />
+                <Route routeId="Pathless pathless!" component={MountDispatchPathless}>
+                    <Route routeId="Pathless" path="pathlessChild" component={MountDispatchPathlessChild} />
                 </Route>
-                <Route routeId="Multiple" path="multiple" component={Multiple} >
+                <Route routeId="Multiple" path="multiple" component={MountDispatchMultiple} >
                     {/* Just to demonstrate the concept 
                         in practice there would be multiple child routes - where the matching one
                         will provide the child components
                         Also not that child routes of those child routes will provide a child component to components !
                     */}
-                    <IndexRoute routeId="Multiple Index" components={{ child1: Child1, child2: Child2 }}/>
+                    <IndexRoute routeId="Multiple Index" components={{ child1: MountDispatchMultipleChild1, child2: MountDispatchMultipleChild2 }}/>
                 </Route>
                 <Redirect routeId="Redirect Component"  from="many" to="multiple" />
-                <Route routeId="AdditionalProps" path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
-                <Route routeId="LeaveHook" path="leaveHook" component={LeaveHookComponent}></Route>
-                <Route routeId="PropsFromParent" path="propsFromParent" component={PropsFromParentParent}>
-                    <IndexRoute routeId="PropsFromParent Index" component={PropsFromParentChild} />
+                <Route routeId="AdditionalProps" path="additionalProps" component={MountDispatchAdditionalProps} additionalProp={additionalPropsValue} />
+                <Route routeId="LeaveHook" path="leaveHook" component={MountDispatchLeaveHook}></Route>
+                <Route routeId="PropsFromParent" path="propsFromParent" component={MountDispatchPropsFromParentParent}>
+                    <IndexRoute routeId="PropsFromParent Index" component={MountDispatchPropsFromParentChild} />
                 </Route>
                 <Route routeId="HookRedirect" path="redirect" />
-                <Route routeId="Navigation" component={Navigation} path="navigation">
+                <Route routeId="Navigation" component={MountDispatchNavigation} path="navigation">
                     <Route routeId="NavigationParams" path="params">
                         <Route routeId="NavigationParam" path=":someParam" component={ParamParent}>
                             <Route routeId="NavigationSplat" path="*MatchPart" component={ParamChild} />

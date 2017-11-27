@@ -9,6 +9,7 @@ import { push }  from 'react-router-redux'
 import { Action, AnyAction } from "redux";
 import * as Modal from 'react-modal';//https://github.com/reactjs/react-modal/issues/497
 import { withRelativeLink, RelativeLink } from "./routeProviders";
+import { getWrapperComponentName, getWrappedComponentClassName } from "../helpers/reactHelpers";
 
 ReactJson.displayName = "ReactJsonView";
 
@@ -269,8 +270,7 @@ interface AppProps {
     routeErrorDetails: string,
     clearRouteError:()=>void
 }
-export class AppComp extends React.Component<AppProps, undefined> {
-    static displayName="App"
+class App extends React.Component<AppProps, undefined> {
     render() {
         return <div>
             
@@ -304,7 +304,7 @@ export class AppComp extends React.Component<AppProps, undefined> {
     }
 }
 
-export const App = connect(
+export const ConnectedApp = connect(
     (state: RouterAppState) => {
         return {
             routeErrorDetails: routeErrorSelector(state)
@@ -318,7 +318,7 @@ export const App = connect(
         }
     }
     )
-)(AppComp);
+)(App);
 
 //#endregion
 //#region mount dispatch wrapper
@@ -329,10 +329,10 @@ interface WrapperProps {
     mountUnmount: MountDispatchFunction
 }
 
-function wrapMountDispatch<P>(Component: React.ComponentClass<P>, displayName: string) {
-    Component.displayName = displayName;
+function wrapMountDispatch<P>(Component: React.ComponentClass<P>) {
+    
     var wrapper = class MountWrapper extends React.Component<P & WrapperProps, any>{
-        static displayName = "MountWrapper(" + displayName + ")";
+        static displayName = getWrapperComponentName("MountWrapper", Component);
         componentDidMount() {
             this.props.mountUnmount(true);
         }
@@ -345,11 +345,11 @@ function wrapMountDispatch<P>(Component: React.ComponentClass<P>, displayName: s
             return <Component {...passThroughProps} />
         }
     }
-    
+    var componentName = getWrappedComponentClassName(Component);
     var connected= connect(null, (dispatch => {
         var wrapperProps: WrapperProps= {
             mountUnmount: (isMount: boolean) => {
-                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: displayName }));
+                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: componentName }));
             }
         }
         return wrapperProps;
@@ -370,16 +370,16 @@ const ReactJsonContainer = connect((state: RouterAppState) => {
 })(ReactJson);
 //#endregion
 //#region Introduction
-export class IntroductionComp extends React.Component<undefined, undefined> {
+class Introduction extends React.Component<undefined, undefined> {
     render() {
         return "This is the introduction - the index route";
     }
 }
 
-export const Introduction = wrapMountDispatch(IntroductionComp,"Introduction");
+export const MountDispatchIntroduction = wrapMountDispatch(Introduction);
 //#endregion
 //#region Pathless
-export class PathlessComp extends React.Component<undefined, undefined> {
+class Pathless extends React.Component<undefined, undefined> {
     render() {
         return <div>
             <div>This component can have a child whose path is not a subpath</div>
@@ -390,22 +390,22 @@ export class PathlessComp extends React.Component<undefined, undefined> {
     }
 }
 
-export const Pathless = wrapMountDispatch(PathlessComp,"Pathless");
-export class PathlessIndexComp extends React.Component<undefined, undefined> {
+export const MountDispatchPathless = wrapMountDispatch(Pathless);
+class PathlessIndex extends React.Component<undefined, undefined> {
     render() {
         return "This is the index route component";
     }
 }
-export const PathlessIndex = wrapMountDispatch(PathlessIndexComp,"PathlessIndex");
-export class PathlessChildComp extends React.Component<undefined, undefined> {
+export const MountDispatchPathlessIndex = wrapMountDispatch(PathlessIndex);
+class PathlessChild extends React.Component<undefined, undefined> {
     render() {
         return "This component has been rendered without its route being a subpath";
     }
 }
-export const PathlessChild = wrapMountDispatch(PathlessChildComp,"PathlessChild");
+export const MountDispatchPathlessChild = wrapMountDispatch(PathlessChild);
 //#endregion
 //#region multiple
-export class MultipleComp extends React.Component<RouteComponentProps<undefined,undefined>, undefined> {
+class Multiple extends React.Component<RouteComponentProps<undefined,undefined>, undefined> {
     render() {
         
         return <div>
@@ -419,34 +419,34 @@ export class MultipleComp extends React.Component<RouteComponentProps<undefined,
         </div>
     }
 }
-export const Multiple = wrapMountDispatch(MultipleComp,"Multiple");
-export class Child1Comp extends React.Component<undefined, undefined> {
+export const MountDispatchMultiple = wrapMountDispatch(Multiple);
+class MultipleChild1 extends React.Component<undefined, undefined> {
     render() {
         return "Child1 from Route components property";
     }
 }
-export const Child1 = wrapMountDispatch(Child1Comp,"MultipleChild1");
-export class Child2Comp extends React.Component<undefined, undefined> {
+export const MountDispatchMultipleChild1 = wrapMountDispatch(MultipleChild1);
+class MultipleChild2 extends React.Component<undefined, undefined> {
     render() {
         return "Child2 from Route components property";
     }
 }
-export const Child2 = wrapMountDispatch(Child2Comp,"MultipleChild2");
+export const MountDispatchMultipleChild2 = wrapMountDispatch(MultipleChild2);
 //#endregion
 //#region additional props
-export class AdditionalPropsComp extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
+class AdditionalProps extends React.Component<RouteComponentProps<undefined, undefined>, undefined> {
     render() {
         var additionalProp = (this.props.route as any).additionalProp.additional;
         return <div>{"Received additional prop from route " + additionalProp}</div>
     }
 }
-export const AdditionalProps = wrapMountDispatch(AdditionalPropsComp,"AdditionalProps");
+export const MountDispatchAdditionalProps = wrapMountDispatch(AdditionalProps);
 //#endregion
 //#region leave hook
 interface LeaveHookState {
     canLeave:boolean
 }
-export class LeaveHookComponentComp extends React.Component<RouteComponentProps<undefined, undefined>, LeaveHookState> {
+class LeaveHook extends React.Component<RouteComponentProps<undefined, undefined>, LeaveHookState> {
     constructor(props) {
         super(props);
         this.state = { canLeave:false }
@@ -476,14 +476,14 @@ export class LeaveHookComponentComp extends React.Component<RouteComponentProps<
             </div>
     }
 }
-export const LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp,"LeaveHook");
+export const MountDispatchLeaveHook = wrapMountDispatch(LeaveHook);
 //#endregion
 
 //#region props from parent
 interface PropsFromParentParentState {
     someState:string
 }
-export class PropsFromParentParentComp extends React.Component<undefined, PropsFromParentParentState>{
+class PropsFromParentParent extends React.Component<undefined, PropsFromParentParentState>{
     constructor(props) {
         super(props);
         this.state = { someState:"Initial from parent" }
@@ -500,8 +500,8 @@ export class PropsFromParentParentComp extends React.Component<undefined, PropsF
         </div>
     }
 }
-export const PropsFromParentParent = wrapMountDispatch(PropsFromParentParentComp,"PropsFromParentParent");
-export class PropsFromParentChildComp extends React.Component<PropsFromParentParentState & RouteComponentProps<undefined, undefined>, undefined>{
+export const MountDispatchPropsFromParentParent = wrapMountDispatch(PropsFromParentParent);
+class PropsFromParentChild extends React.Component<PropsFromParentParentState & RouteComponentProps<undefined, undefined>, undefined>{
     render() {
         return <div>
             <div>{"this prop has come from parent:" + this.props.someState}</div>
@@ -515,7 +515,7 @@ export class PropsFromParentChildComp extends React.Component<PropsFromParentPar
 
 
 
-export const PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp,"PropsFromParentChild");
+export const MountDispatchPropsFromParentChild = wrapMountDispatch(PropsFromParentChild);
 //#endregion
 //#region navigation
 interface NavigationDispatchProps {
@@ -531,7 +531,7 @@ interface NavigationCompProps extends NavigationDispatchProps, NavigationStateTo
 interface NavigationCompState {
     someState:number
 }
-export class NavigationComp extends React.Component<NavigationCompProps, NavigationCompState>{
+class Navigation extends React.Component<NavigationCompProps, NavigationCompState>{
     constructor(props) {
         super(props);
         this.state = { someState:0 }
@@ -599,7 +599,7 @@ export class NavigationComp extends React.Component<NavigationCompProps, Navigat
     }
 }
 
-export const Navigation = wrapMountDispatch(connect(
+export const MountDispatchNavigation = wrapMountDispatch(connect(
     (routerAppState: RouterAppState) => {
         var stateToProps:NavigationStateToProps= {
             is404Active: is404ActiveSelector(routerAppState)
@@ -616,7 +616,7 @@ export const Navigation = wrapMountDispatch(connect(
             }
         }
         return mappedDispatch;
-})(NavigationComp),"Navigation");
+})(Navigation));
 
 function cloneLocation(location) {
     
@@ -624,15 +624,15 @@ function cloneLocation(location) {
     clonedLocation.query = clone(location.query, [])
     return clonedLocation;
 }
-function createNavigationComponent<P>(Component: React.ComponentClass<P>, displayName: string) {
-    
+function createNavigationComponent<P>(Component: React.ComponentClass<P>) {
+    var MountDispatchComponent = wrapMountDispatch(Component);
     var wrapper = class ReactJsonRoutePropsWrapper extends React.Component<P & RouteComponentProps<any, any>, undefined>{
-        static displayName = "ReactJsonRoutePropsWrapper(" + displayName + ")";
+        static displayName = getWrapperComponentName("ReactJsonRoutePropsWrapper", MountDispatchComponent);
         render() {
             var location = cloneLocation(this.props.location);
             
             return <div>
-                <Component {...this.props} />
+                <MountDispatchComponent {...this.props} />
 
                 <ReactJson src={{ location:location, params: this.props.params,routeParams:this.props.routeParams }} />
             </div>
@@ -640,8 +640,6 @@ function createNavigationComponent<P>(Component: React.ComponentClass<P>, displa
     }
     
     return wrapper;
-    //return wrapMountDispatch(wrapper, displayName); 
-    
 }
 export class PageNotFound extends React.Component<undefined, undefined>{
     render() {
@@ -657,7 +655,7 @@ export class PathSwitch extends React.Component<undefined, undefined>{
         </div>
     }
 }
-class ParamParentComp extends React.Component<undefined, undefined>{
+class ParamParent extends React.Component<undefined, undefined>{
     render() {
         return <div>
             <div>ParamParent</div>
@@ -667,19 +665,19 @@ class ParamParentComp extends React.Component<undefined, undefined>{
             </div>
     }
 }
-class ParamChildComp extends React.Component<undefined, undefined>{
+class ParamChild extends React.Component<undefined, undefined>{
     render() {
         return <div>
             <div>ParamChild</div>
         </div>
     }
 }
-class OptionalComp extends React.Component<undefined, undefined>{
+class Optional extends React.Component<undefined, undefined>{
     render() {
         return <div>Optional</div>
     }
 }
-class QuerySearchStateComp extends React.Component<undefined, undefined>{
+class QuerySearchState extends React.Component<undefined, undefined>{
     render() {
         return <div>Query Search State</div>
     }
@@ -713,10 +711,10 @@ export class GetComponentComp2 extends React.Component<undefined, undefined>{
     }
 }
 
-export const ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
-export const ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
-export const Optional = createNavigationComponent(OptionalComp, "Optional");
-export const QuerySearchState = createNavigationComponent(QuerySearchStateComp, "QuerySearchState");
+export const ReactJsonRoutePropsParamParent = createNavigationComponent(ParamParent);
+export const ReactJsonRoutePropsParamChild = createNavigationComponent(ParamChild);
+export const ReactJsonRoutePropsOptional = createNavigationComponent(Optional);
+export const ReactJsonRoutePropsQuerySearchState = createNavigationComponent(QuerySearchState);
 
 //endregion
 

@@ -5,6 +5,7 @@ import * as PropTypes from 'prop-types';
 import { HTMLProps, CSSProperties } from "React";
 import { LocationDescriptor, LocationDescriptorObject } from "history";
 import { RouteProps } from "react-router/lib/Route";
+import { getWrapperComponentName } from "../helpers/reactHelpers";
 
 var objectAny = Object as any;
 var _extends = objectAny.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -16,7 +17,7 @@ interface RelativeLinkProviderContext {
 export function withRelativeLink<P>(Component: React.ComponentClass<P>):any {
     var componentName = Component.displayName || (Component as any).name || "Component";
     return class RelativeLinkContextProvider extends React.Component<RouteComponentProps<any, any> & P, undefined>{
-        static displayName = "RelativeLinkContextProvider(" + componentName + ")";
+        static displayName = getWrapperComponentName("RelativeLinkContextProvider", Component);
         static childContextTypes = {
             getRoutePath: PropTypes.func
         }

@@ -131,6 +131,7 @@
     <TypeScriptCompile Include="src\helpers\firebaseApp.ts" />
     <TypeScriptCompile Include="src\helpers\javascriptPolyfills.ts" />
     <TypeScriptCompile Include="src\helpers\numberStrings.ts" />
+    <TypeScriptCompile Include="src\helpers\reactHelpers.ts" />
     <TypeScriptCompile Include="src\helpers\recogniseMe.ts" />
     <TypeScriptCompile Include="src\helpers\stores.ts" />
     <TypeScriptCompile Include="src\helpers\stringHelpers.ts" />
