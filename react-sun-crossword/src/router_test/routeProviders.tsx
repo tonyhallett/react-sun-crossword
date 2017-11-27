@@ -14,9 +14,9 @@ interface RelativeLinkProviderContext {
     getRoutePath:()=>string
 }
 export function withRelativeLink<P>(Component: React.ComponentClass<P>):any {
-    
+    var componentName = Component.displayName || (Component as any).name || "Component";
     return class RelativeLinkContextProvider extends React.Component<RouteComponentProps<any, any> & P, undefined>{
-        static displayName = "RelativeLinkContextProvider(" + Component.displayName || (Component as any).name || "Component" + ")";
+        static displayName = "RelativeLinkContextProvider(" + componentName + ")";
         static childContextTypes = {
             getRoutePath: PropTypes.func
         }

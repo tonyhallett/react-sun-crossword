@@ -3482,6 +3482,7 @@ var _extends = objectAny.assign || function (target) { for (var i = 1; i < argum
     }
 } return target; };
 function withRelativeLink(Component) {
+    var componentName = Component.displayName || Component.name || "Component";
     return _a = /** @class */ (function (_super) {
             __extends(RelativeLinkContextProvider, _super);
             function RelativeLinkContextProvider() {
@@ -3517,7 +3518,7 @@ function withRelativeLink(Component) {
             };
             return RelativeLinkContextProvider;
         }(React.Component)),
-        _a.displayName = "RelativeLinkContextProvider(" + Component.displayName || Component.name || "Component" + ")",
+        _a.displayName = "RelativeLinkContextProvider(" + componentName + ")",
         _a.childContextTypes = {
             getRoutePath: PropTypes.func
         },
