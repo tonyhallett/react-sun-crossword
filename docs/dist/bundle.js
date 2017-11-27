@@ -1360,8 +1360,8 @@ var DynamicContextProvider = /** @class */ (function (_super) {
         AddContextToThis.prototype.getChildContext = function () {
             var childContext = originalGetChildContext();
             childContext.dynamic = function () {
-                return _getDynamicValue(AddContextToThis.prototype.props.someProp);
-            };
+                return _getDynamicValue(this.props.someProp);
+            }.bind(this);
             return childContext;
         };
         return _this;
