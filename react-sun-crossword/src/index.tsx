@@ -5,13 +5,13 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, ConnectedApp, Introduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinksChild,  WithRelativeLinksParent, MountDispatchRelativeLinkParentMatched, MountDispatchRelativeLinkChildMatched } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, ConnectedApp, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, MultipleChild1, MultipleChild2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, ConnectedNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinksChild, WithRelativeLinksParent, RelativeLinkParentMatched, RelativeLinkChildMatched } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
 import { createHistory } from 'history'
 import { routerReducer, routerMiddleware, push } from 'react-router-redux'
-import { Router, IndexRoute, Redirect, RedirectFunction } from "react-router";
+import { Router, IndexRoute, Redirect, RedirectFunction, RouteComponentProps } from "react-router";
 import { RouteProps } from "react-router/lib/Route";
 import { IndexRouteProps } from "react-router/lib/IndexRoute";
 import { EnterHook,LeaveHook,ChangeHook, RouterState } from "react-router/lib/Router";
@@ -170,11 +170,9 @@ IndexRoute.defaultProps = {
 }
 //#endregion
 
-//need to type
-function createElement(component,props) {
-    if (component.name === "Introduction") {
-        component = wrapMountDispatch(component);
-    }
+//if was to override render and not use the RouteContext then this would not even be called 
+function createElement(component,props:RouteComponentProps<any,any>) {
+    component = wrapMountDispatch(component);
     return React.createElement(component, props);
 }
 
@@ -185,28 +183,28 @@ ReactDOM.render(
         }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route routeId="App" path="/" component={ConnectedApp}>
                 <IndexRoute routeId="App Index" component={Introduction} />
-                <Route routeId="Pathless Parent" path="pathless" component={MountDispatchPathless}>
-                    <IndexRoute routeId="Pathless Index" component={MountDispatchPathlessIndex}/>
+                <Route routeId="Pathless Parent" path="pathless" component={Pathless}>
+                    <IndexRoute routeId="Pathless Index" component={PathlessIndex}/>
                 </Route>
-                <Route routeId="Pathless pathless!" component={MountDispatchPathless}>
-                    <Route routeId="Pathless" path="pathlessChild" component={MountDispatchPathlessChild} />
+                <Route routeId="Pathless pathless!" component={Pathless}>
+                    <Route routeId="Pathless" path="pathlessChild" component={PathlessChild} />
                 </Route>
-                <Route routeId="Multiple" path="multiple" component={MountDispatchMultiple} >
+                <Route routeId="Multiple" path="multiple" component={Multiple} >
                     {/* Just to demonstrate the concept 
                         in practice there would be multiple child routes - where the matching one
                         will provide the child components
                         Also not that child routes of those child routes will provide a child component to components !
                     */}
-                    <IndexRoute routeId="Multiple Index" components={{ child1: MountDispatchMultipleChild1, child2: MountDispatchMultipleChild2 }}/>
+                    <IndexRoute routeId="Multiple Index" components={{ child1: MultipleChild1, child2: MultipleChild2 }}/>
                 </Route>
                 <Redirect routeId="Redirect Component"  from="many" to="multiple" />
-                <Route routeId="AdditionalProps" path="additionalProps" component={MountDispatchAdditionalProps} additionalProp={additionalPropsValue} />
-                <Route routeId="LeaveHook" path="leaveHook" component={MountDispatchLeaveHook}></Route>
-                <Route routeId="PropsFromParent" path="propsFromParent" component={MountDispatchPropsFromParentParent}>
-                    <IndexRoute routeId="PropsFromParent Index" component={MountDispatchPropsFromParentChild} />
+                <Route routeId="AdditionalProps" path="additionalProps" component={AdditionalProps} additionalProp={additionalPropsValue} />
+                <Route routeId="LeaveHook" path="leaveHook" component={LeaveHookComponent}></Route>
+                <Route routeId="PropsFromParent" path="propsFromParent" component={PropsFromParentParent}>
+                    <IndexRoute routeId="PropsFromParent Index" component={PropsFromParentChild} />
                 </Route>
                 <Route routeId="HookRedirect" path="redirect" />
-                <Route routeId="Navigation" component={MountDispatchNavigation} path="navigation">
+                <Route routeId="Navigation" component={ConnectedNavigation} path="navigation">
                     <Route routeId="NavigationParams" path="params">
                         <Route routeId="NavigationParam" path=":someParam" component={ReactJsonRoutePropsParamParent}>
                             <Route routeId="NavigationSplat" path="*MatchPart" component={ReactJsonRoutePropsParamChild} />
@@ -228,9 +226,9 @@ ReactDOM.render(
                     }} />
                 </Route>
                 <Route routeId="relativeLinks" path="relativeLinks" component={WithRelativeLinksParent}>
-                    <Route routeId="relativeLinksRelative" path="relative" component={MountDispatchRelativeLinkParentMatched} />
+                    <Route routeId="relativeLinksRelative" path="relative" component={RelativeLinkParentMatched} />
                     <Route routeId="relativeLinksChild" path="relativeLinksChild" component={WithRelativeLinksChild}>
-                        <Route routeId="relativeLinksChildRelative" path="relative" component={MountDispatchRelativeLinkChildMatched}/>
+                        <Route routeId="relativeLinksChildRelative" path="relative" component={RelativeLinkChildMatched}/>
                     </Route>
                 </Route>
                 <ReduxRoute routeId="ReduxRoute404" onEnter={onEnter} onChange={onChange} onLeave={onLeave} store={store} change={(state, route) => { route.path = state.is404Active ? "*" : "" }} path="" component={PageNotFound} />

@@ -7225,8 +7225,10 @@ var RelativeLinksChild = /** @class */ (function (_super) {
     };
     return RelativeLinksChild;
 }(React.Component));
-exports.WithRelativeLinksParent = routeProviders_1.withRelativeLink(wrapMountDispatch(RelativeLinksParent));
-exports.WithRelativeLinksChild = routeProviders_1.withRelativeLink(wrapMountDispatch(RelativeLinksParent));
+//export const WithRelativeLinksParent = withRelativeLink(wrapMountDispatch(RelativeLinksParent));
+//export const WithRelativeLinksChild = withRelativeLink(wrapMountDispatch(RelativeLinksChild));
+exports.WithRelativeLinksParent = routeProviders_1.withRelativeLink(RelativeLinksParent);
+exports.WithRelativeLinksChild = routeProviders_1.withRelativeLink(RelativeLinksChild);
 var RelativeLinkParentMatched = /** @class */ (function (_super) {
     __extends(RelativeLinkParentMatched, _super);
     function RelativeLinkParentMatched() {
@@ -7237,6 +7239,7 @@ var RelativeLinkParentMatched = /** @class */ (function (_super) {
     };
     return RelativeLinkParentMatched;
 }(React.Component));
+exports.RelativeLinkParentMatched = RelativeLinkParentMatched;
 var RelativeLinkChildMatched = /** @class */ (function (_super) {
     __extends(RelativeLinkChildMatched, _super);
     function RelativeLinkChildMatched() {
@@ -7247,8 +7250,9 @@ var RelativeLinkChildMatched = /** @class */ (function (_super) {
     };
     return RelativeLinkChildMatched;
 }(React.Component));
-exports.MountDispatchRelativeLinkParentMatched = wrapMountDispatch(RelativeLinkParentMatched);
-exports.MountDispatchRelativeLinkChildMatched = wrapMountDispatch(RelativeLinkChildMatched);
+exports.RelativeLinkChildMatched = RelativeLinkChildMatched;
+//export const MountDispatchRelativeLinkParentMatched = wrapMountDispatch(RelativeLinkParentMatched);
+//export const MountDispatchRelativeLinkChildMatched = wrapMountDispatch(RelativeLinkChildMatched);
 //#endregion
 //#region actions/reducers/state/selectors
 //#region toggle
@@ -7534,7 +7538,8 @@ var Pathless = /** @class */ (function (_super) {
     };
     return Pathless;
 }(React.Component));
-exports.MountDispatchPathless = wrapMountDispatch(Pathless);
+exports.Pathless = Pathless;
+//export const MountDispatchPathless = wrapMountDispatch(Pathless);
 var PathlessIndex = /** @class */ (function (_super) {
     __extends(PathlessIndex, _super);
     function PathlessIndex() {
@@ -7545,7 +7550,8 @@ var PathlessIndex = /** @class */ (function (_super) {
     };
     return PathlessIndex;
 }(React.Component));
-exports.MountDispatchPathlessIndex = wrapMountDispatch(PathlessIndex);
+exports.PathlessIndex = PathlessIndex;
+//export const MountDispatchPathlessIndex = wrapMountDispatch(PathlessIndex);
 var PathlessChild = /** @class */ (function (_super) {
     __extends(PathlessChild, _super);
     function PathlessChild() {
@@ -7556,7 +7562,8 @@ var PathlessChild = /** @class */ (function (_super) {
     };
     return PathlessChild;
 }(React.Component));
-exports.MountDispatchPathlessChild = wrapMountDispatch(PathlessChild);
+exports.PathlessChild = PathlessChild;
+//export const MountDispatchPathlessChild = wrapMountDispatch(PathlessChild);
 //#endregion
 //#region multiple
 var Multiple = /** @class */ (function (_super) {
@@ -7572,7 +7579,8 @@ var Multiple = /** @class */ (function (_super) {
     };
     return Multiple;
 }(React.Component));
-exports.MountDispatchMultiple = wrapMountDispatch(Multiple);
+exports.Multiple = Multiple;
+//export const MountDispatchMultiple = wrapMountDispatch(Multiple);
 var MultipleChild1 = /** @class */ (function (_super) {
     __extends(MultipleChild1, _super);
     function MultipleChild1() {
@@ -7583,7 +7591,8 @@ var MultipleChild1 = /** @class */ (function (_super) {
     };
     return MultipleChild1;
 }(React.Component));
-exports.MountDispatchMultipleChild1 = wrapMountDispatch(MultipleChild1);
+exports.MultipleChild1 = MultipleChild1;
+//export const MountDispatchMultipleChild1 = wrapMountDispatch(MultipleChild1);
 var MultipleChild2 = /** @class */ (function (_super) {
     __extends(MultipleChild2, _super);
     function MultipleChild2() {
@@ -7594,7 +7603,8 @@ var MultipleChild2 = /** @class */ (function (_super) {
     };
     return MultipleChild2;
 }(React.Component));
-exports.MountDispatchMultipleChild2 = wrapMountDispatch(MultipleChild2);
+exports.MultipleChild2 = MultipleChild2;
+//export const MountDispatchMultipleChild2 = wrapMountDispatch(MultipleChild2);
 //#endregion
 //#region additional props
 var AdditionalProps = /** @class */ (function (_super) {
@@ -7608,10 +7618,10 @@ var AdditionalProps = /** @class */ (function (_super) {
     };
     return AdditionalProps;
 }(React.Component));
-exports.MountDispatchAdditionalProps = wrapMountDispatch(AdditionalProps);
-var LeaveHook = /** @class */ (function (_super) {
-    __extends(LeaveHook, _super);
-    function LeaveHook(props) {
+exports.AdditionalProps = AdditionalProps;
+var LeaveHookComponent = /** @class */ (function (_super) {
+    __extends(LeaveHookComponent, _super);
+    function LeaveHookComponent(props) {
         var _this = _super.call(this, props) || this;
         _this.toggleCanLeave = function () {
             _this.setState(function (prevState, props) {
@@ -7621,10 +7631,10 @@ var LeaveHook = /** @class */ (function (_super) {
         _this.state = { canLeave: false };
         return _this;
     }
-    LeaveHook.prototype.componentDidMount = function () {
+    LeaveHookComponent.prototype.componentDidMount = function () {
         this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this));
     };
-    LeaveHook.prototype.routerWillLeave = function (nextLocation) {
+    LeaveHookComponent.prototype.routerWillLeave = function (nextLocation) {
         // return false to prevent a transition w/o prompting the user,
         // or return a string to allow the user to decide:
         // return `null` or nothing to let other hooks to be executed
@@ -7633,13 +7643,13 @@ var LeaveHook = /** @class */ (function (_super) {
         if (!this.state.canLeave)
             return "Please don't leave. Ok to leave, cancel to stay";
     };
-    LeaveHook.prototype.render = function () {
+    LeaveHookComponent.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleCanLeave }, this.state.canLeave ? "Can leave" : "Can't leave"));
     };
-    return LeaveHook;
+    return LeaveHookComponent;
 }(React.Component));
-exports.MountDispatchLeaveHook = wrapMountDispatch(LeaveHook);
+exports.LeaveHookComponent = LeaveHookComponent;
 var PropsFromParentParent = /** @class */ (function (_super) {
     __extends(PropsFromParentParent, _super);
     function PropsFromParentParent(props) {
@@ -7658,7 +7668,8 @@ var PropsFromParentParent = /** @class */ (function (_super) {
     };
     return PropsFromParentParent;
 }(React.Component));
-exports.MountDispatchPropsFromParentParent = wrapMountDispatch(PropsFromParentParent);
+exports.PropsFromParentParent = PropsFromParentParent;
+//export const MountDispatchPropsFromParentParent = wrapMountDispatch(PropsFromParentParent);
 var PropsFromParentChild = /** @class */ (function (_super) {
     __extends(PropsFromParentChild, _super);
     function PropsFromParentChild() {
@@ -7671,7 +7682,7 @@ var PropsFromParentChild = /** @class */ (function (_super) {
     };
     return PropsFromParentChild;
 }(React.Component));
-exports.MountDispatchPropsFromParentChild = wrapMountDispatch(PropsFromParentChild);
+exports.PropsFromParentChild = PropsFromParentChild;
 var Navigation = /** @class */ (function (_super) {
     __extends(Navigation, _super);
     function Navigation(props) {
@@ -7731,7 +7742,25 @@ var Navigation = /** @class */ (function (_super) {
     };
     return Navigation;
 }(React.Component));
-exports.MountDispatchNavigation = wrapMountDispatch(react_redux_1.connect(function (routerAppState) {
+//export const MountDispatchNavigation = wrapMountDispatch(connect(
+//    (routerAppState: RouterAppState) => {
+//        var stateToProps:NavigationStateToProps= {
+//            is404Active: is404ActiveSelector(routerAppState)
+//        }
+//        return stateToProps;
+//    },
+//    (dispatch) => {
+//        var mappedDispatch: NavigationDispatchProps = {
+//            navThroughDispatch: function (location: LocationDescriptor) {
+//                dispatch(push(location));
+//            },
+//            toggle404Active: function () {
+//                dispatch(toggle404Active());
+//            }
+//        }
+//        return mappedDispatch;
+//})(Navigation));
+exports.ConnectedNavigation = react_redux_1.connect(function (routerAppState) {
     var stateToProps = {
         is404Active: is404ActiveSelector(routerAppState)
     };
@@ -7746,14 +7775,14 @@ exports.MountDispatchNavigation = wrapMountDispatch(react_redux_1.connect(functi
         }
     };
     return mappedDispatch;
-})(Navigation));
+})(Navigation);
 function cloneLocation(location) {
     var clonedLocation = clone(location, []);
     clonedLocation.query = clone(location.query, []);
     return clonedLocation;
 }
 function createNavigationComponent(Component) {
-    var MountDispatchComponent = wrapMountDispatch(Component);
+    //var MountDispatchComponent = wrapMountDispatch(Component);
     var wrapper = (_a = /** @class */ (function (_super) {
             __extends(ReactJsonRoutePropsWrapper, _super);
             function ReactJsonRoutePropsWrapper() {
@@ -7761,13 +7790,15 @@ function createNavigationComponent(Component) {
             }
             ReactJsonRoutePropsWrapper.prototype.render = function () {
                 var location = cloneLocation(this.props.location);
+                //<MountDispatchComponent {...this.props} />
                 return React.createElement("div", null,
-                    React.createElement(MountDispatchComponent, __assign({}, this.props)),
+                    React.createElement(Component, __assign({}, this.props)),
                     React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
             };
             return ReactJsonRoutePropsWrapper;
         }(React.Component)),
-        _a.displayName = reactHelpers_1.getWrapperComponentName("ReactJsonRoutePropsWrapper", MountDispatchComponent),
+        //static displayName = getWrapperComponentName("ReactJsonRoutePropsWrapper", MountDispatchComponent);
+        _a.displayName = reactHelpers_1.getWrapperComponentName("ReactJsonRoutePropsWrapper", Component),
         _a);
     return wrapper;
     var _a;
@@ -42581,11 +42612,9 @@ react_router_2.IndexRoute.defaultProps = {
     onChange: onChange
 };
 //#endregion
-//need to type
+//if was to override render and not use the RouteContext then this would not even be called 
 function createElement(component, props) {
-    if (component.name === "Introduction") {
-        component = wrapMountDispatch(component);
-    }
+    component = wrapMountDispatch(component);
     return React.createElement(component, props);
 }
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
@@ -42594,19 +42623,19 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
         }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
         React.createElement(Route, { routeId: "App", path: "/", component: DemoRouterApp_1.ConnectedApp },
             React.createElement(react_router_2.IndexRoute, { routeId: "App Index", component: DemoRouterApp_1.Introduction }),
-            React.createElement(Route, { routeId: "Pathless Parent", path: "pathless", component: DemoRouterApp_1.MountDispatchPathless },
-                React.createElement(react_router_2.IndexRoute, { routeId: "Pathless Index", component: DemoRouterApp_1.MountDispatchPathlessIndex })),
-            React.createElement(Route, { routeId: "Pathless pathless!", component: DemoRouterApp_1.MountDispatchPathless },
-                React.createElement(Route, { routeId: "Pathless", path: "pathlessChild", component: DemoRouterApp_1.MountDispatchPathlessChild })),
-            React.createElement(Route, { routeId: "Multiple", path: "multiple", component: DemoRouterApp_1.MountDispatchMultiple },
-                React.createElement(react_router_2.IndexRoute, { routeId: "Multiple Index", components: { child1: DemoRouterApp_1.MountDispatchMultipleChild1, child2: DemoRouterApp_1.MountDispatchMultipleChild2 } })),
+            React.createElement(Route, { routeId: "Pathless Parent", path: "pathless", component: DemoRouterApp_1.Pathless },
+                React.createElement(react_router_2.IndexRoute, { routeId: "Pathless Index", component: DemoRouterApp_1.PathlessIndex })),
+            React.createElement(Route, { routeId: "Pathless pathless!", component: DemoRouterApp_1.Pathless },
+                React.createElement(Route, { routeId: "Pathless", path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
+            React.createElement(Route, { routeId: "Multiple", path: "multiple", component: DemoRouterApp_1.Multiple },
+                React.createElement(react_router_2.IndexRoute, { routeId: "Multiple Index", components: { child1: DemoRouterApp_1.MultipleChild1, child2: DemoRouterApp_1.MultipleChild2 } })),
             React.createElement(react_router_2.Redirect, { routeId: "Redirect Component", from: "many", to: "multiple" }),
-            React.createElement(Route, { routeId: "AdditionalProps", path: "additionalProps", component: DemoRouterApp_1.MountDispatchAdditionalProps, additionalProp: additionalPropsValue }),
-            React.createElement(Route, { routeId: "LeaveHook", path: "leaveHook", component: DemoRouterApp_1.MountDispatchLeaveHook }),
-            React.createElement(Route, { routeId: "PropsFromParent", path: "propsFromParent", component: DemoRouterApp_1.MountDispatchPropsFromParentParent },
-                React.createElement(react_router_2.IndexRoute, { routeId: "PropsFromParent Index", component: DemoRouterApp_1.MountDispatchPropsFromParentChild })),
+            React.createElement(Route, { routeId: "AdditionalProps", path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
+            React.createElement(Route, { routeId: "LeaveHook", path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
+            React.createElement(Route, { routeId: "PropsFromParent", path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
+                React.createElement(react_router_2.IndexRoute, { routeId: "PropsFromParent Index", component: DemoRouterApp_1.PropsFromParentChild })),
             React.createElement(Route, { routeId: "HookRedirect", path: "redirect" }),
-            React.createElement(Route, { routeId: "Navigation", component: DemoRouterApp_1.MountDispatchNavigation, path: "navigation" },
+            React.createElement(Route, { routeId: "Navigation", component: DemoRouterApp_1.ConnectedNavigation, path: "navigation" },
                 React.createElement(Route, { routeId: "NavigationParams", path: "params" },
                     React.createElement(Route, { routeId: "NavigationParam", path: ":someParam", component: DemoRouterApp_1.ReactJsonRoutePropsParamParent },
                         React.createElement(Route, { routeId: "NavigationSplat", path: "*MatchPart", component: DemoRouterApp_1.ReactJsonRoutePropsParamChild }))),
@@ -42624,9 +42653,9 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                         cb(new Error("Error thrown by getComponent"), null);
                     } })),
             React.createElement(Route, { routeId: "relativeLinks", path: "relativeLinks", component: DemoRouterApp_1.WithRelativeLinksParent },
-                React.createElement(Route, { routeId: "relativeLinksRelative", path: "relative", component: DemoRouterApp_1.MountDispatchRelativeLinkParentMatched }),
+                React.createElement(Route, { routeId: "relativeLinksRelative", path: "relative", component: DemoRouterApp_1.RelativeLinkParentMatched }),
                 React.createElement(Route, { routeId: "relativeLinksChild", path: "relativeLinksChild", component: DemoRouterApp_1.WithRelativeLinksChild },
-                    React.createElement(Route, { routeId: "relativeLinksChildRelative", path: "relative", component: DemoRouterApp_1.MountDispatchRelativeLinkChildMatched }))),
+                    React.createElement(Route, { routeId: "relativeLinksChildRelative", path: "relative", component: DemoRouterApp_1.RelativeLinkChildMatched }))),
             React.createElement(routeProviders_1.ReduxRoute, { routeId: "ReduxRoute404", onEnter: onEnter, onChange: onChange, onLeave: onLeave, store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 
 
