@@ -163,12 +163,12 @@ ReactDOM.render(
                 <Route routeId="HookRedirect" path="redirect" />
                 <Route routeId="Navigation" component={MountDispatchNavigation} path="navigation">
                     <Route routeId="NavigationParams" path="params">
-                        <Route routeId="NavigationParam" path=":someParam" component={ParamParent}>
-                            <Route routeId="NavigationSplat" path="*MatchPart" component={ParamChild} />
+                        <Route routeId="NavigationParam" path=":someParam" component={ReactJsonRoutePropsParamParent}>
+                            <Route routeId="NavigationSplat" path="*MatchPart" component={ReactJsonRoutePropsParamChild} />
                         </Route>
                     </Route>
-                    <Route routeId="Optional" path="(optionalPart)NotOptional" component={Optional}/>
-                    <Route routeId="QuerySearchState" path="querySearchState" component={QuerySearchState}/>
+                    <Route routeId="Optional" path="(optionalPart)NotOptional" component={ReactJsonRoutePropsOptional}/>
+                    <Route routeId="QuerySearchState" path="querySearchState" component={ReactJsonRoutePropsQuerySearchState}/>
                 </Route>
                 <Route routeId="GetComponentError" path="getComponentError" component={GetComponentError}>
                     <Route routeId="GetComponent" path="getComponent" getComponent={(nextState, cb) => {

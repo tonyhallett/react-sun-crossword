@@ -7752,7 +7752,8 @@ function cloneLocation(location) {
     clonedLocation.query = clone(location.query, []);
     return clonedLocation;
 }
-function createNavigationComponent(Component, displayName) {
+function createNavigationComponent(Component) {
+    var MountDispatchComponent = wrapMountDispatch(Component);
     var wrapper = (_a = /** @class */ (function (_super) {
             __extends(ReactJsonRoutePropsWrapper, _super);
             function ReactJsonRoutePropsWrapper() {
@@ -7761,16 +7762,15 @@ function createNavigationComponent(Component, displayName) {
             ReactJsonRoutePropsWrapper.prototype.render = function () {
                 var location = cloneLocation(this.props.location);
                 return React.createElement("div", null,
-                    React.createElement(Component, __assign({}, this.props)),
+                    React.createElement(MountDispatchComponent, __assign({}, this.props)),
                     React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
             };
             return ReactJsonRoutePropsWrapper;
         }(React.Component)),
-        _a.displayName = "ReactJsonRoutePropsWrapper(" + displayName + ")",
+        _a.displayName = reactHelpers_1.getWrapperComponentName("ReactJsonRoutePropsWrapper", MountDispatchComponent),
         _a);
     return wrapper;
     var _a;
-    //return wrapMountDispatch(wrapper, displayName); 
 }
 var PageNotFound = /** @class */ (function (_super) {
     __extends(PageNotFound, _super);
@@ -7794,48 +7794,48 @@ var PathSwitch = /** @class */ (function (_super) {
     return PathSwitch;
 }(React.Component));
 exports.PathSwitch = PathSwitch;
-var ParamParentComp = /** @class */ (function (_super) {
-    __extends(ParamParentComp, _super);
-    function ParamParentComp() {
+var ParamParent = /** @class */ (function (_super) {
+    __extends(ParamParent, _super);
+    function ParamParent() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    ParamParentComp.prototype.render = function () {
+    ParamParent.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "ParamParent"),
             React.createElement(Container, null, this.props.children));
     };
-    return ParamParentComp;
+    return ParamParent;
 }(React.Component));
-var ParamChildComp = /** @class */ (function (_super) {
-    __extends(ParamChildComp, _super);
-    function ParamChildComp() {
+var ParamChild = /** @class */ (function (_super) {
+    __extends(ParamChild, _super);
+    function ParamChild() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    ParamChildComp.prototype.render = function () {
+    ParamChild.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "ParamChild"));
     };
-    return ParamChildComp;
+    return ParamChild;
 }(React.Component));
-var OptionalComp = /** @class */ (function (_super) {
-    __extends(OptionalComp, _super);
-    function OptionalComp() {
+var Optional = /** @class */ (function (_super) {
+    __extends(Optional, _super);
+    function Optional() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    OptionalComp.prototype.render = function () {
+    Optional.prototype.render = function () {
         return React.createElement("div", null, "Optional");
     };
-    return OptionalComp;
+    return Optional;
 }(React.Component));
-var QuerySearchStateComp = /** @class */ (function (_super) {
-    __extends(QuerySearchStateComp, _super);
-    function QuerySearchStateComp() {
+var QuerySearchState = /** @class */ (function (_super) {
+    __extends(QuerySearchState, _super);
+    function QuerySearchState() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    QuerySearchStateComp.prototype.render = function () {
+    QuerySearchState.prototype.render = function () {
         return React.createElement("div", null, "Query Search State");
     };
-    return QuerySearchStateComp;
+    return QuerySearchState;
 }(React.Component));
 var GetComponentError = /** @class */ (function (_super) {
     __extends(GetComponentError, _super);
@@ -7878,10 +7878,10 @@ var GetComponentComp2 = /** @class */ (function (_super) {
     return GetComponentComp2;
 }(React.Component));
 exports.GetComponentComp2 = GetComponentComp2;
-exports.ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
-exports.ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
-exports.Optional = createNavigationComponent(OptionalComp, "Optional");
-exports.QuerySearchState = createNavigationComponent(QuerySearchStateComp, "QuerySearchState");
+exports.ReactJsonRoutePropsParamParent = createNavigationComponent(ParamParent);
+exports.ReactJsonRoutePropsParamChild = createNavigationComponent(ParamChild);
+exports.ReactJsonRoutePropsOptional = createNavigationComponent(Optional);
+exports.ReactJsonRoutePropsQuerySearchState = createNavigationComponent(QuerySearchState);
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {
@@ -42551,10 +42551,10 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
             React.createElement(Route, { routeId: "HookRedirect", path: "redirect" }),
             React.createElement(Route, { routeId: "Navigation", component: DemoRouterApp_1.MountDispatchNavigation, path: "navigation" },
                 React.createElement(Route, { routeId: "NavigationParams", path: "params" },
-                    React.createElement(Route, { routeId: "NavigationParam", path: ":someParam", component: DemoRouterApp_1.ParamParent },
-                        React.createElement(Route, { routeId: "NavigationSplat", path: "*MatchPart", component: DemoRouterApp_1.ParamChild }))),
-                React.createElement(Route, { routeId: "Optional", path: "(optionalPart)NotOptional", component: DemoRouterApp_1.Optional }),
-                React.createElement(Route, { routeId: "QuerySearchState", path: "querySearchState", component: DemoRouterApp_1.QuerySearchState })),
+                    React.createElement(Route, { routeId: "NavigationParam", path: ":someParam", component: DemoRouterApp_1.ReactJsonRoutePropsParamParent },
+                        React.createElement(Route, { routeId: "NavigationSplat", path: "*MatchPart", component: DemoRouterApp_1.ReactJsonRoutePropsParamChild }))),
+                React.createElement(Route, { routeId: "Optional", path: "(optionalPart)NotOptional", component: DemoRouterApp_1.ReactJsonRoutePropsOptional }),
+                React.createElement(Route, { routeId: "QuerySearchState", path: "querySearchState", component: DemoRouterApp_1.ReactJsonRoutePropsQuerySearchState })),
             React.createElement(Route, { routeId: "GetComponentError", path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
                 React.createElement(Route, { routeId: "GetComponent", path: "getComponent", getComponent: function (nextState, cb) {
                         //this context is the route
