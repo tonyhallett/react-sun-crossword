@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinksChild,  WithRelativeLinksParent, MountDispatchRelativeLinkParentMatched, MountDispatchRelativeLinkChildMatched } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinksChild,  WithRelativeLinksParent, MountDispatchRelativeLinkParentMatched, MountDispatchRelativeLinkChildMatched } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -133,9 +133,14 @@ IndexRoute.defaultProps = {
     onChange: onChange
 }
 //#endregion
+
+function createElement() {
+    var debugHere = "";
+}
+
 ReactDOM.render(
     <Provider store={store}>
-        <RouterAny history={history} onError={(error) => {
+        <RouterAny createElement={createElement} history={history} onError={(error) => {
             store.dispatch(routeError(error))
         }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route routeId="App" path="/" component={ConnectedApp}>

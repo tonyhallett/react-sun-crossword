@@ -7424,7 +7424,6 @@ var Container = /** @class */ (function (_super) {
     };
     return Container;
 }(React.Component));
-exports.Container = Container;
 var App = /** @class */ (function (_super) {
     __extends(App, _super);
     function App() {
@@ -7783,17 +7782,6 @@ var PageNotFound = /** @class */ (function (_super) {
     return PageNotFound;
 }(React.Component));
 exports.PageNotFound = PageNotFound;
-var PathSwitch = /** @class */ (function (_super) {
-    __extends(PathSwitch, _super);
-    function PathSwitch() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    PathSwitch.prototype.render = function () {
-        return React.createElement("div", null, "Route that matched had a dynamic path");
-    };
-    return PathSwitch;
-}(React.Component));
-exports.PathSwitch = PathSwitch;
 var ParamParent = /** @class */ (function (_super) {
     __extends(ParamParent, _super);
     function ParamParent() {
@@ -42531,8 +42519,11 @@ react_router_2.IndexRoute.defaultProps = {
     onChange: onChange
 };
 //#endregion
+function createElement() {
+    var debugHere = "";
+}
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(RouterAny, { history: history, onError: function (error) {
+    React.createElement(RouterAny, { createElement: createElement, history: history, onError: function (error) {
             store.dispatch(DemoRouterApp_1.routeError(error));
         }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
         React.createElement(Route, { routeId: "App", path: "/", component: DemoRouterApp_1.ConnectedApp },

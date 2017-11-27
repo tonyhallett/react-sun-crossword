@@ -276,7 +276,7 @@ interface RouterAppState {
 
 //#endregion
 //#region layout components
-export class Container extends React.Component<undefined, undefined>{
+class Container extends React.Component<undefined, undefined>{
     render() {
         return <div style={{ padding: "10px", borderStyle: "solid", borderColor: "green", borderWidth: "2px" }}>
             {this.props.children}
@@ -667,13 +667,7 @@ export class PageNotFound extends React.Component<undefined, undefined>{
         </div>
     }
 }
-export class PathSwitch extends React.Component<undefined, undefined>{
-    render() {
-        return <div>
-            Route that matched had a dynamic path
-        </div>
-    }
-}
+
 class ParamParent extends React.Component<undefined, undefined>{
     render() {
         return <div>
