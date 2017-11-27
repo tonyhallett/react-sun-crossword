@@ -1343,6 +1343,9 @@ var UsesDynamicContext = /** @class */ (function (_super) {
     UsesDynamicContext.prototype.render = function () {
         return React.createElement("div", null, this.context.dynamic);
     };
+    UsesDynamicContext.contextTypes = {
+        dynamic: PropTypes.string
+    };
     return UsesDynamicContext;
 }(React.Component));
 var DynamicContextProvider = /** @class */ (function (_super) {

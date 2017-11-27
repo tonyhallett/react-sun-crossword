@@ -13,6 +13,9 @@ class AddContextToThis extends React.Component<undefined, undefined>{
     }
 }
 class UsesDynamicContext extends React.Component<undefined, undefined> {
+    static contextTypes = {
+        dynamic:PropTypes.string
+    }
     render() {
         return <div>{this.context.dynamic}</div>
     }
