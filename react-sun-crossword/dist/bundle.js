@@ -42618,7 +42618,7 @@ function createElement(component, props) {
     for (var i = 0; i < lookups.length; i++) {
         var lookup = lookups[i];
         if (lookup.component === component) {
-            component = lookup.wrappedComponent;
+            mountDispatched = lookup.wrappedComponent;
             found = true;
             break;
         }
