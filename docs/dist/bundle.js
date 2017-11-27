@@ -42611,11 +42611,23 @@ react_router_2.IndexRoute.defaultProps = {
     onLeave: onLeave,
     onChange: onChange
 };
-//#endregion
-//if was to override render and not use the RouteContext then this would not even be called 
+var lookups = [];
 function createElement(component, props) {
-    component = wrapMountDispatch(component);
-    return React.createElement(component, props);
+    var found = false;
+    var mountDispatched;
+    for (var i = 0; i < lookups.length; i++) {
+        var lookup = lookups[i];
+        if (lookup.component === component) {
+            component = lookup.wrappedComponent;
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        mountDispatched = wrapMountDispatch(component);
+        lookups.push({ component: component, wrappedComponent: mountDispatched });
+    }
+    return React.createElement(mountDispatched, props);
 }
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(RouterAny, { createElement: createElement, history: history, onError: function (error) {

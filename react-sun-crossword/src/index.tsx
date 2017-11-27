@@ -171,9 +171,28 @@ IndexRoute.defaultProps = {
 //#endregion
 
 //if was to override render and not use the RouteContext then this would not even be called 
-function createElement(component,props:RouteComponentProps<any,any>) {
-    component = wrapMountDispatch(component);
-    return React.createElement(component, props);
+interface WrappedComponent {
+    component: any,
+    wrappedComponent:any
+}
+var lookups: WrappedComponent[]=[]
+function createElement(component, props: RouteComponentProps<any, any>) {
+    var found = false;
+    var mountDispatched;
+    for (var i = 0; i < lookups.length;i++){
+        var lookup = lookups[i];
+        if (lookup.component === component) {
+            component = lookup.wrappedComponent;
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        mountDispatched = wrapMountDispatch(component);
+        lookups.push({ component:component,wrappedComponent:mountDispatched })
+    }
+    
+    return React.createElement(mountDispatched, props);
 }
 
 ReactDOM.render(
