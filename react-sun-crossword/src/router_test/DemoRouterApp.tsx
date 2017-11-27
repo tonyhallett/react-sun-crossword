@@ -62,7 +62,7 @@ class RelativeLinksParent extends React.Component<LinkProps, undefined>{
             </div>
     }
 }
-export class RelativeLinksChild extends React.Component<LinkProps, undefined>{
+class RelativeLinksChild extends React.Component<LinkProps, undefined>{
     render() {
         return <div>
             <RelativeLink relativePath="relative" activeStyle={linkActiveStyle} style={linkStyle}>Relative</RelativeLink>
@@ -73,6 +73,7 @@ export class RelativeLinksChild extends React.Component<LinkProps, undefined>{
     }
 }
 export const WithRelativeLinksParent = withRelativeLink(wrapMountDispatch(RelativeLinksParent));
+export const WithRelativeLinksChild = withRelativeLink(wrapMountDispatch(RelativeLinksParent));
 
 class RelativeLinkParentMatched extends React.Component<undefined, undefined>{
     render() {
