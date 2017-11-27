@@ -52,7 +52,7 @@ class StyledLink extends React.Component<LinkProps, undefined>{
     }
 }
 
-class RelativeLinks extends React.Component<LinkProps, undefined>{
+class RelativeLinksParent extends React.Component<LinkProps, undefined>{
     render() {
         return <div>
             <RelativeLink relativePath="relative" activeStyle={linkActiveStyle} style={linkStyle}>Relative</RelativeLink>
@@ -62,12 +62,30 @@ class RelativeLinks extends React.Component<LinkProps, undefined>{
             </div>
     }
 }
-export const WithRelativeLinks = withRelativeLink(RelativeLinks);
-export class RelativeLinkMatched extends React.Component<undefined, undefined>{
+export class RelativeLinksChild extends React.Component<LinkProps, undefined>{
     render() {
-        return <div>Relative link worked !</div>
+        return <div>
+            <RelativeLink relativePath="relative" activeStyle={linkActiveStyle} style={linkStyle}>Relative</RelativeLink>
+            <Container>
+                {this.props.children}
+            </Container>
+        </div>
     }
 }
+export const WithRelativeLinksParent = withRelativeLink(wrapMountDispatch(RelativeLinksParent));
+
+class RelativeLinkParentMatched extends React.Component<undefined, undefined>{
+    render() {
+        return <div>Relative link matched from parent</div>
+    }
+}
+class RelativeLinkChildMatched extends React.Component<undefined, undefined>{
+    render() {
+        return <div>Relative link matched from child</div>
+    }
+}
+export const MountDispatchRelativeLinkParentMatched = wrapMountDispatch(RelativeLinkParentMatched);
+export const MountDispatchRelativeLinkChildMatched = wrapMountDispatch(RelativeLinkChildMatched);
 //#endregion
 //#region actions/reducers/state/selectors
 

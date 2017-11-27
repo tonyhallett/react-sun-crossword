@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, WithRelativeLinks, RelativeLinkMatched } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, PathSwitch, ConnectedApp, MountDispatchIntroduction, MountDispatchPathless, MountDispatchPathlessChild, MountDispatchPathlessIndex, MountDispatchMultiple, MountDispatchMultipleChild1, MountDispatchMultipleChild2, MountDispatchLeaveHook, MountDispatchAdditionalProps, MountDispatchPropsFromParentParent, MountDispatchPropsFromParentChild, MountDispatchNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, RelativeLinksChild, WithRelativeLinksParent, MountDispatchRelativeLinkParentMatched, MountDispatchRelativeLinkChildMatched } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -182,10 +182,10 @@ ReactDOM.render(
                         cb(new Error("Error thrown by getComponent"),null);
                     }} />
                 </Route>
-                <Route routeId="relativeLinks" path="relativeLinks" component={WithRelativeLinks}>
-                    <Route routeId="relativeLinksRelative" path="relative" component={RelativeLinkMatched} />
-                    <Route routeId="relativeLinksChild" path="relativeLinksChild" component={WithRelativeLinks}>
-                        <Route routeId="relativeLinksChildRelative" path="relative" component={RelativeLinkMatched}/>
+                <Route routeId="relativeLinks" path="relativeLinks" component={WithRelativeLinksParent}>
+                    <Route routeId="relativeLinksRelative" path="relative" component={MountDispatchRelativeLinkParentMatched} />
+                    <Route routeId="relativeLinksChild" path="relativeLinksChild" component={RelativeLinksChild}>
+                        <Route routeId="relativeLinksChildRelative" path="relative" component={MountDispatchRelativeLinkChildMatched}/>
                     </Route>
                 </Route>
                 <ReduxRoute routeId="ReduxRoute404" onEnter={onEnter} onChange={onChange} onLeave={onLeave} store={store} change={(state, route) => { route.path = state.is404Active ? "*" : "" }} path="" component={PageNotFound} />

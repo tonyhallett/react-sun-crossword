@@ -7201,30 +7201,54 @@ var StyledLink = /** @class */ (function (_super) {
     };
     return StyledLink;
 }(React.Component));
-var RelativeLinks = /** @class */ (function (_super) {
-    __extends(RelativeLinks, _super);
-    function RelativeLinks() {
+var RelativeLinksParent = /** @class */ (function (_super) {
+    __extends(RelativeLinksParent, _super);
+    function RelativeLinksParent() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    RelativeLinks.prototype.render = function () {
+    RelativeLinksParent.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement(routeProviders_1.RelativeLink, { relativePath: "relative", activeStyle: linkActiveStyle, style: linkStyle }, "Relative"),
             React.createElement(Container, null, this.props.children));
     };
-    return RelativeLinks;
+    return RelativeLinksParent;
 }(React.Component));
-exports.WithRelativeLinks = routeProviders_1.withRelativeLink(RelativeLinks);
-var RelativeLinkMatched = /** @class */ (function (_super) {
-    __extends(RelativeLinkMatched, _super);
-    function RelativeLinkMatched() {
+var RelativeLinksChild = /** @class */ (function (_super) {
+    __extends(RelativeLinksChild, _super);
+    function RelativeLinksChild() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    RelativeLinkMatched.prototype.render = function () {
-        return React.createElement("div", null, "Relative link worked !");
+    RelativeLinksChild.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement(routeProviders_1.RelativeLink, { relativePath: "relative", activeStyle: linkActiveStyle, style: linkStyle }, "Relative"),
+            React.createElement(Container, null, this.props.children));
     };
-    return RelativeLinkMatched;
+    return RelativeLinksChild;
 }(React.Component));
-exports.RelativeLinkMatched = RelativeLinkMatched;
+exports.RelativeLinksChild = RelativeLinksChild;
+exports.WithRelativeLinksParent = routeProviders_1.withRelativeLink(wrapMountDispatch(RelativeLinksParent));
+var RelativeLinkParentMatched = /** @class */ (function (_super) {
+    __extends(RelativeLinkParentMatched, _super);
+    function RelativeLinkParentMatched() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RelativeLinkParentMatched.prototype.render = function () {
+        return React.createElement("div", null, "Relative link matched from parent");
+    };
+    return RelativeLinkParentMatched;
+}(React.Component));
+var RelativeLinkChildMatched = /** @class */ (function (_super) {
+    __extends(RelativeLinkChildMatched, _super);
+    function RelativeLinkChildMatched() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RelativeLinkChildMatched.prototype.render = function () {
+        return React.createElement("div", null, "Relative link matched from child");
+    };
+    return RelativeLinkChildMatched;
+}(React.Component));
+exports.MountDispatchRelativeLinkParentMatched = wrapMountDispatch(RelativeLinkParentMatched);
+exports.MountDispatchRelativeLinkChildMatched = wrapMountDispatch(RelativeLinkChildMatched);
 //#endregion
 //#region actions/reducers/state/selectors
 //#region toggle
@@ -42542,10 +42566,10 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 React.createElement(Route, { routeId: "Error", path: "error", getComponent: function (nextState, cb) {
                         cb(new Error("Error thrown by getComponent"), null);
                     } })),
-            React.createElement(Route, { routeId: "relativeLinks", path: "relativeLinks", component: DemoRouterApp_1.WithRelativeLinks },
-                React.createElement(Route, { routeId: "relativeLinksRelative", path: "relative", component: DemoRouterApp_1.RelativeLinkMatched }),
-                React.createElement(Route, { routeId: "relativeLinksChild", path: "relativeLinksChild", component: DemoRouterApp_1.WithRelativeLinks },
-                    React.createElement(Route, { routeId: "relativeLinksChildRelative", path: "relative", component: DemoRouterApp_1.RelativeLinkMatched }))),
+            React.createElement(Route, { routeId: "relativeLinks", path: "relativeLinks", component: DemoRouterApp_1.WithRelativeLinksParent },
+                React.createElement(Route, { routeId: "relativeLinksRelative", path: "relative", component: DemoRouterApp_1.MountDispatchRelativeLinkParentMatched }),
+                React.createElement(Route, { routeId: "relativeLinksChild", path: "relativeLinksChild", component: DemoRouterApp_1.RelativeLinksChild },
+                    React.createElement(Route, { routeId: "relativeLinksChildRelative", path: "relative", component: DemoRouterApp_1.MountDispatchRelativeLinkChildMatched }))),
             React.createElement(routeProviders_1.ReduxRoute, { routeId: "ReduxRoute404", onEnter: onEnter, onChange: onChange, onLeave: onLeave, store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
 
 
