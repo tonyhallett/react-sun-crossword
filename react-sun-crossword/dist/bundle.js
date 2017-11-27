@@ -1355,7 +1355,7 @@ var DynamicContextProvider = /** @class */ (function (_super) {
         function _getDynamicValue(someProp) {
             return "Got: " + someProp;
         }
-        AddContextToThis.childContextTypes.dynamic = PropTypes.string;
+        AddContextToThis.childContextTypes.dynamic = PropTypes.func;
         var originalGetChildContext = AddContextToThis.prototype.getChildContext;
         AddContextToThis.prototype.getChildContext = function () {
             var childContext = originalGetChildContext();

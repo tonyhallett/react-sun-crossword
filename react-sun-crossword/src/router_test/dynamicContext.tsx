@@ -31,7 +31,7 @@ export class DynamicContextProvider extends React.Component<undefined, undefined
         function _getDynamicValue(someProp: string) {
             return "Got: " + someProp;
         }
-        (AddContextToThis.childContextTypes as any).dynamic = PropTypes.string;
+        (AddContextToThis.childContextTypes as any).dynamic = PropTypes.func;
         var originalGetChildContext = AddContextToThis.prototype.getChildContext;
         AddContextToThis.prototype.getChildContext = function () {
             var childContext = originalGetChildContext();
