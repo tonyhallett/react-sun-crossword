@@ -21723,7 +21723,7 @@ function reducer(state, action) {
             var row = action.row;
             var column = action.column;
             var currentPlayer = state.currentPlayer;
-            var nextPlayer = currentPlayer === Player.X ? Player.O : Player.X;
+            var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
             var newBoard = state.board.map(function (rowSquares, index) {
                 if (index === row) {
                     return rowSquares.map(function (sq, colIndex) {
@@ -21750,7 +21750,17 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     }
     TicTacToeSquare.prototype.render = function () {
         var _this = this;
-        return React.createElement("td", { style: { width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid" }, onClick: function () { _this.props.takeGo(); } }, this.props.squareGo === SquareGo.None ? "" : this.props.squareGo);
+        var squareGoString = "";
+        switch (this.props.squareGo) {
+            case SquareGo.O:
+                squareGoString = "O";
+                break;
+            case SquareGo.X:
+                squareGoString = "X";
+                break;
+        }
+        return React.createElement("td", { style: { width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+            }, onClick: function () { _this.props.takeGo(); } }, squareGoString);
     };
     return TicTacToeSquare;
 }(React.Component));

@@ -43,7 +43,7 @@ function reducer(state: TicTacToeState = {
             var row = action.row;
             var column = action.column;
             var currentPlayer = state.currentPlayer;
-            var nextPlayer = currentPlayer === Player.X ? Player.O : Player.X;
+            var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
             var newBoard=state.board.map((rowSquares, index) => {
                 if (index === row) {
                     return rowSquares.map((sq, colIndex) => {
@@ -80,8 +80,18 @@ interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSqua
 
 class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
     render() {
-        return <td style={{ width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid" }} onClick={() => { this.props.takeGo() }}>
-            {this.props.squareGo === SquareGo.None ? "" : this.props.squareGo}
+        var squareGoString = "";
+        switch (this.props.squareGo) {
+            case SquareGo.O:
+                squareGoString = "O";
+                break;
+            case SquareGo.X:
+                squareGoString = "X";
+                break;
+        }
+        return <td style={{ width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid",fontSize:"80px"
+        }} onClick={() => { this.props.takeGo() }}>
+            {squareGoString}
             </td>
     }
 }
