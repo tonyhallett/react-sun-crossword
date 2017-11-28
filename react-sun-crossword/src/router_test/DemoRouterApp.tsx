@@ -112,9 +112,21 @@ function is404ActiveSelector(state: RouterAppState) {
 }
 //#endregion
 //#region errors
+const TOGGLE_HANDLE_ROUTE_ERROR = "TOGGLE_HANDLE_ROUTE_ERROR";
 const ROUTE_ERROR = "ROUTE_ERROR";
 const CLEAR_ROUTE_ERROR = "CLEAR_ROUTE_ERROR";
-
+function toggleHandleRouteError() {
+    var action: AnyAction = {
+        type: TOGGLE_HANDLE_ROUTE_ERROR,
+    }
+    return action;
+}
+export function handleRouteError(state: boolean=true, action: AnyAction) {
+    if (action.type === TOGGLE_HANDLE_ROUTE_ERROR) {
+        return !state;
+    }
+    return state;
+}
 export function routeError(error: Error) {
     var action: AnyAction = {
         type: ROUTE_ERROR,
@@ -142,6 +154,9 @@ export function routeErrorDetails(state: string = "", action: AnyAction) {
 }
 function routeErrorSelector(state: RouterAppState) {
     return state.routeErrorDetails;
+}
+export function handleRouteErrorSelector(state: RouterAppState) {
+    return state.handleRouteError;
 }
 //#endregion
 //#region hookOrMount
@@ -266,13 +281,14 @@ export function hooksAndMounts(state= [] as HookOrMountDetail[], action): HookOr
     }
 }
 //#endregion
-interface RouterAppState {
+export interface RouterAppState {
     hooksAndMounts: HookOrMountDetail[]
     router: {
         locationBeforeTransitions: any//should be type Location ?
     }
     is404Active: boolean,
-    routeErrorDetails:string
+    routeErrorDetails: string,
+    handleRouteError:boolean
 
 }
 
@@ -716,7 +732,11 @@ class QuerySearchState extends React.Component<undefined, undefined>{
         return <div>Query Search State</div>
     }
 }
-export class GetComponentError extends React.Component<undefined, undefined>{
+interface GetComponentErrorProps {
+    toggleHandleRouterError: () => void,
+    handleRouterError:boolean
+}
+class GetComponentError extends React.Component<GetComponentErrorProps, undefined>{
     render() {
         return <div>
             <div>The link below is to a route that provides the component using the getComponent method.</div>
@@ -724,9 +744,12 @@ export class GetComponentError extends React.Component<undefined, undefined>{
             
             <StyledLink to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: true } }}>Choose component 1</StyledLink>
             <Link style={linkStyle} activeStyle={linkActiveStyle}  to={{ pathname: "/getComponentError/getComponent", state: { isComponent1: false } }}>Choose component 2</Link>
+            <br/>
             <div>The Router also allow for handling of errors - such as those thrown by getComponent</div>
             <div>The link below is matched by a route that will throw from getComponent</div>
             <Link to="/getComponentError/error">Throw</Link>
+            <div>Use the button below to toggle adding a handler</div>
+            <button onClick={() => { this.props.toggleHandleRouterError() }}>{this.props.handleRouterError?"Remove handler":"Add handler"}</button>
             <Container>
                 {this.props.children}
             </Container>
@@ -734,6 +757,17 @@ export class GetComponentError extends React.Component<undefined, undefined>{
         </div>
     }
 }
+export const ConnectedGetComponentError = connect((state: RouterAppState) => {
+    return {
+        handleRouterError: handleRouteErrorSelector(state)
+    }
+}, (dispatch) => {
+    return {
+        toggleHandleRouterError: function () {
+            dispatch(toggleHandleRouteError());
+        }
+    }
+})(GetComponentError);
 export class GetComponentComp1 extends React.Component<undefined, undefined>{
     render() {
         return <div>Component 1</div>

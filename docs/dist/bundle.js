@@ -7278,8 +7278,23 @@ function is404ActiveSelector(state) {
 }
 //#endregion
 //#region errors
+var TOGGLE_HANDLE_ROUTE_ERROR = "TOGGLE_HANDLE_ROUTE_ERROR";
 var ROUTE_ERROR = "ROUTE_ERROR";
 var CLEAR_ROUTE_ERROR = "CLEAR_ROUTE_ERROR";
+function toggleHandleRouteError() {
+    var action = {
+        type: TOGGLE_HANDLE_ROUTE_ERROR,
+    };
+    return action;
+}
+function handleRouteError(state, action) {
+    if (state === void 0) { state = true; }
+    if (action.type === TOGGLE_HANDLE_ROUTE_ERROR) {
+        return !state;
+    }
+    return state;
+}
+exports.handleRouteError = handleRouteError;
 function routeError(error) {
     var action = {
         type: ROUTE_ERROR,
@@ -7309,6 +7324,10 @@ exports.routeErrorDetails = routeErrorDetails;
 function routeErrorSelector(state) {
     return state.routeErrorDetails;
 }
+function handleRouteErrorSelector(state) {
+    return state.handleRouteError;
+}
+exports.handleRouteErrorSelector = handleRouteErrorSelector;
 //#endregion
 //#region hookOrMount
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
@@ -7865,19 +7884,33 @@ var GetComponentError = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     GetComponentError.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", null,
             React.createElement("div", null, "The link below is to a route that provides the component using the getComponent method."),
             React.createElement("div", null, "To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component"),
             React.createElement(StyledLink, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/getComponentError/getComponent", state: { isComponent1: false } } }, "Choose component 2"),
+            React.createElement("br", null),
             React.createElement("div", null, "The Router also allow for handling of errors - such as those thrown by getComponent"),
             React.createElement("div", null, "The link below is matched by a route that will throw from getComponent"),
             React.createElement(react_router_1.Link, { to: "/getComponentError/error" }, "Throw"),
+            React.createElement("div", null, "Use the button below to toggle adding a handler"),
+            React.createElement("button", { onClick: function () { _this.props.toggleHandleRouterError(); } }, this.props.handleRouterError ? "Remove handler" : "Add handler"),
             React.createElement(Container, null, this.props.children));
     };
     return GetComponentError;
 }(React.Component));
-exports.GetComponentError = GetComponentError;
+exports.ConnectedGetComponentError = react_redux_1.connect(function (state) {
+    return {
+        handleRouterError: handleRouteErrorSelector(state)
+    };
+}, function (dispatch) {
+    return {
+        toggleHandleRouterError: function () {
+            dispatch(toggleHandleRouteError());
+        }
+    };
+})(GetComponentError);
 var GetComponentComp1 = /** @class */ (function (_super) {
     __extends(GetComponentComp1, _super);
     function GetComponentComp1() {
@@ -43090,7 +43123,8 @@ var store = redux_1.createStore(redux_1.combineReducers({
     hooksAndMounts: DemoRouterApp_1.hooksAndMounts,
     router: react_router_redux_1.routerReducer,
     is404Active: DemoRouterApp_1.is404Active,
-    routeErrorDetails: DemoRouterApp_1.routeErrorDetails
+    routeErrorDetails: DemoRouterApp_1.routeErrorDetails,
+    handleRouteError: DemoRouterApp_1.handleRouteError
 }), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
 //declare module "react-router/lib/Route"{
 //    interface RouteProps {
@@ -43129,7 +43163,6 @@ var Route = routeProviders_1.RouteWithParent;
 //#endregion
 //#region hooks
 var onEnter = function routeOnEnter(nextState, replace) {
-    console.log(router);
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState, routeId: this.routeId }));
@@ -43190,6 +43223,18 @@ react_router_2.IndexRoute.defaultProps = {
     onLeave: onLeave,
     onChange: onChange
 };
+//#endregion
+function routeErrorHandler(error) {
+    store.dispatch(DemoRouterApp_1.routeError(error));
+    return;
+}
+var ConnectedRouter = react_redux_1.connect(function (state) {
+    var shouldHandleRouterError = DemoRouterApp_1.handleRouteErrorSelector(state);
+    var handler = shouldHandleRouterError ? routeErrorHandler : null;
+    return {
+        onError: handler
+    };
+})(react_router_2.Router); //typing workaround
 var mountDispatchLookups = [];
 function getMountDispatchComponent(component) {
     var found = false;
@@ -43216,9 +43261,7 @@ function renderRelative(props) {
 }
 var router;
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(react_router_2.Router, { ref: function (r) { router = r; }, render: renderRelative, createElement: createElement, history: history, onError: function (error) {
-            store.dispatch(DemoRouterApp_1.routeError(error));
-        }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
+    React.createElement(ConnectedRouter, { ref: function (r) { router = r; }, render: renderRelative, createElement: createElement, history: history, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
         React.createElement(Route, { routeId: "App", path: "/", component: DemoRouterApp_1.ConnectedApp },
             React.createElement(react_router_2.IndexRoute, { routeId: "App Index", component: DemoRouterApp_1.Introduction }),
             React.createElement(Route, { routeId: "Pathless Parent", path: "pathless", component: DemoRouterApp_1.Pathless },
@@ -43239,7 +43282,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                         React.createElement(Route, { routeId: "NavigationSplat", path: "*MatchPart", component: DemoRouterApp_1.ReactJsonRoutePropsParamChild }))),
                 React.createElement(Route, { routeId: "Optional", path: "(optionalPart)NotOptional", component: DemoRouterApp_1.ReactJsonRoutePropsOptional }),
                 React.createElement(Route, { routeId: "QuerySearchState", path: "querySearchState", component: DemoRouterApp_1.ReactJsonRoutePropsQuerySearchState })),
-            React.createElement(Route, { routeId: "GetComponentError", path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
+            React.createElement(Route, { routeId: "GetComponentError", path: "getComponentError", component: DemoRouterApp_1.ConnectedGetComponentError },
                 React.createElement(Route, { routeId: "GetComponent", path: "getComponent", getComponent: function (nextState, cb) {
                         //this context is the route
                         if (nextState.location.state.isComponent1) {

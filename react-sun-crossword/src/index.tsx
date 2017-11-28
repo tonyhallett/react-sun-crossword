@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { CrosswordPuzzleApp } from "./components/crosswordPuzzleApp";
-import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, ConnectedApp, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, MultipleChild1, MultipleChild2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, ConnectedNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, GetComponentError, GetComponentComp1, GetComponentComp2, routeError, RelativeLinksChild, RelativeLinksParent, RelativeLinkParentMatched, RelativeLinkChildMatched } from "./router_test/DemoRouterApp"
+import { hookOrMountActionCreator, is404Active, hooksAndMounts, routeErrorDetails, ConnectedApp, Introduction, Pathless, PathlessChild, PathlessIndex, Multiple, MultipleChild1, MultipleChild2, LeaveHookComponent, AdditionalProps, PropsFromParentParent, PropsFromParentChild, ConnectedNavigation, ReactJsonRoutePropsParamParent, ReactJsonRoutePropsParamChild, ReactJsonRoutePropsOptional, ReactJsonRoutePropsQuerySearchState, PageNotFound, ConnectedGetComponentError, GetComponentComp1, GetComponentComp2, routeError, RelativeLinksChild, RelativeLinksParent, RelativeLinkParentMatched, RelativeLinkChildMatched, handleRouteError, RouterAppState, handleRouteErrorSelector } from "./router_test/DemoRouterApp"
 
 import { useRouterHistory } from 'react-router'
 
@@ -38,7 +38,8 @@ const store = createStore(
         hooksAndMounts,
         router: routerReducer,
         is404Active,
-        routeErrorDetails
+        routeErrorDetails,
+        handleRouteError
     }),
     composeWithDevTools(applyMiddleware(middleware))
     
@@ -100,7 +101,6 @@ const Route = RouteWithParent;
 
 //#region hooks
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
-    console.log(router);
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
 
@@ -170,6 +170,17 @@ IndexRoute.defaultProps = {
     onChange: onChange
 }
 //#endregion
+function routeErrorHandler(error){
+    store.dispatch(routeError(error))
+    return;
+}
+var ConnectedRouter = connect((state: RouterAppState) => {
+    var shouldHandleRouterError = handleRouteErrorSelector(state);
+    var handler: (error: any) => any = shouldHandleRouterError ? routeErrorHandler : null
+    return {
+        onError: handler
+    }
+})(Router as any) as any;//typing workaround
 
 //if was to override render and not use the RouteContext then this would not even be called 
 interface MountDispatchLookup {
@@ -203,9 +214,7 @@ function renderRelative(props) {
 var router;
 ReactDOM.render(
     <Provider store={store}>
-        <Router ref={(r) => { router = r;}}  render={renderRelative} createElement={createElement} history={history} onError={(error) => {
-            store.dispatch(routeError(error))
-        }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
+        <ConnectedRouter ref={(r) => { router = r;}}  render={renderRelative} createElement={createElement} history={history} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route routeId="App" path="/" component={ConnectedApp}>
                 <IndexRoute routeId="App Index" component={Introduction} />
                 <Route routeId="Pathless Parent" path="pathless" component={Pathless}>
@@ -238,7 +247,7 @@ ReactDOM.render(
                     <Route routeId="Optional" path="(optionalPart)NotOptional" component={ReactJsonRoutePropsOptional}/>
                     <Route routeId="QuerySearchState" path="querySearchState" component={ReactJsonRoutePropsQuerySearchState}/>
                 </Route>
-                <Route routeId="GetComponentError" path="getComponentError" component={GetComponentError}>
+                <Route routeId="GetComponentError" path="getComponentError" component={ConnectedGetComponentError}>
                     <Route routeId="GetComponent" path="getComponent" getComponent={(nextState, cb) => {
                         //this context is the route
                         if (nextState.location.state.isComponent1) {
@@ -261,7 +270,7 @@ ReactDOM.render(
             </Route>
             
             
-        </Router>
+        </ConnectedRouter>
     </Provider>,
 
     document.getElementById("example")
