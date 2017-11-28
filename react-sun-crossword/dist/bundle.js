@@ -8175,7 +8175,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var invariant_1 = __webpack_require__(1);
+//import invariant from 'invariant'
+var invariant = __webpack_require__(1);
 var React = __webpack_require__(2);
 //import createReactClass  from 'create-react-class'
 var createReactClass = __webpack_require__(6);
@@ -8310,7 +8311,7 @@ var RelativeRouterContext = createReactClass({
                 return _this.createElementWithDynamicContext(components, props);
             }, element);
         }
-        invariant_1.default(element === null || element === false || React.isValidElement(element), 'The root route must render a single element');
+        invariant(element === null || element === false || React.isValidElement(element), 'The root route must render a single element');
         return element;
     }
 });

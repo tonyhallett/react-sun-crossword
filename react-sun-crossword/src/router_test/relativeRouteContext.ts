@@ -1,4 +1,5 @@
-﻿import invariant from 'invariant'
+﻿//import invariant from 'invariant'
+var invariant=require('invariant')
 import * as React from 'react'
 //import createReactClass  from 'create-react-class'
 var createReactClass = require('create-react-class');
