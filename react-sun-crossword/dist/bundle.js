@@ -8245,7 +8245,7 @@ var RelativeRouterContext = createReactClass({
     },
     _getRoutePath: function (route) {
         var routePath = "";
-        var first = false;
+        var first = true;
         for (var i = this.matchedRoutes.length; i !== 0; i--) {
             var matchedRoute = this.matchedRoutes[i - 1];
             var path = matchedRoute.path;
@@ -8262,6 +8262,7 @@ var RelativeRouterContext = createReactClass({
                 break;
             }
         }
+        return routePath;
     },
     createElement: function (component, props) {
         return component == null ? null : this.props.createElement(component, props);
