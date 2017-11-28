@@ -96,7 +96,6 @@ declare module "react-router/lib/IndexRoute" {
 //}
 
 const Route = RouteWithParent;
-var RouterAny = Router as any;
 //#endregion
 
 //#region hooks
@@ -201,10 +200,10 @@ function createElement(component, props: RouteComponentProps<any, any>) {
 function renderRelative(props) {
     return <RelativeRouterContext {...props}/>
 }
-
-var router=ReactDOM.render(
+var router;
+ReactDOM.render(
     <Provider store={store}>
-        <RouterAny render={renderRelative} createElement={createElement} history={history} onError={(error) => {
+        <Router ref={(r) => { router = r;}}  render={renderRelative} createElement={createElement} history={history} onError={(error) => {
             store.dispatch(routeError(error))
         }} onUpdate={() => { store.dispatch(hookOrMountActionCreator("OnUpdate")) }}>
             <Route routeId="App" path="/" component={ConnectedApp}>
@@ -262,7 +261,7 @@ var router=ReactDOM.render(
             </Route>
             
             
-        </RouterAny>
+        </Router>
     </Provider>,
 
     document.getElementById("example")

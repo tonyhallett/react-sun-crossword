@@ -43126,7 +43126,6 @@ var store = redux_1.createStore(redux_1.combineReducers({
 //    */
 //}
 var Route = routeProviders_1.RouteWithParent;
-var RouterAny = react_router_2.Router;
 //#endregion
 //#region hooks
 var onEnter = function routeOnEnter(nextState, replace) {
@@ -43215,8 +43214,9 @@ function createElement(component, props) {
 function renderRelative(props) {
     return React.createElement(relativeRouteContext_1.default, __assign({}, props));
 }
-var router = ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(RouterAny, { render: renderRelative, createElement: createElement, history: history, onError: function (error) {
+var router;
+ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
+    React.createElement(react_router_2.Router, { ref: function (r) { router = r; }, render: renderRelative, createElement: createElement, history: history, onError: function (error) {
             store.dispatch(DemoRouterApp_1.routeError(error));
         }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
         React.createElement(Route, { routeId: "App", path: "/", component: DemoRouterApp_1.ConnectedApp },
