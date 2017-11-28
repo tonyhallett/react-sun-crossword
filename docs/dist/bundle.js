@@ -8223,7 +8223,7 @@ var RelativeRouterContext = createReactClass({
                 var getChildContext = matchedDynamicComponent.prototype.getChildContext;
                 matchedDynamicComponent.prototype.getChildContext = function () {
                     var _that = this;
-                    var context = getChildContext().bind(this);
+                    var context = getChildContext.bind(this)();
                     context.getRoutePath = function () {
                         return _this._getRoutePath(_that.props);
                     };
