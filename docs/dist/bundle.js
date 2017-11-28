@@ -8177,12 +8177,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var invariant_1 = __webpack_require__(1);
 var React = __webpack_require__(2);
-var create_react_class_1 = __webpack_require__(6);
+var createReactClass = __webpack_require__(6);
 var prop_types_1 = __webpack_require__(4);
 var getRouteParams_1 = __webpack_require__(203);
 var ContextUtils_1 = __webpack_require__(201);
 var RouteUtils_1 = __webpack_require__(209);
-var RelativeRouterContext = create_react_class_1.default({
+var RelativeRouterContext = createReactClass({
     displayName: 'RelativeRouterContext',
     mixins: [ContextUtils_1.ContextProvider('router')],
     getDefaultProps: function () {
