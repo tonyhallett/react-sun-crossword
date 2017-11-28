@@ -6,7 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 
 
-enum SquareGo { None, X, O }
+enum SquareGo { X, O, None }
 enum Player {X,O}
 interface TicTacToeState {
     board: SquareGo[][],
@@ -79,6 +79,12 @@ interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSqua
 }
 
 class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
+    squareClicked = () => {
+        if (this.props.squareGo === SquareGo.None) {
+            this.props.takeGo();
+        }
+        
+    }
     render() {
         var squareGoString = "";
         switch (this.props.squareGo) {
@@ -89,8 +95,9 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
                 squareGoString = "X";
                 break;
         }
-        return <td style={{ width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid",fontSize:"80px"
-        }} onClick={() => { this.props.takeGo() }}>
+        return <td style={{
+            textAlign:"center",width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+        }} onClick={this.squareClicked}>
             {squareGoString}
             </td>
     }

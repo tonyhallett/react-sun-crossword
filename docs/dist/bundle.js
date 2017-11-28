@@ -21683,9 +21683,9 @@ var react_redux_1 = __webpack_require__(35);
 var redux_1 = __webpack_require__(10);
 var SquareGo;
 (function (SquareGo) {
-    SquareGo[SquareGo["None"] = 0] = "None";
-    SquareGo[SquareGo["X"] = 1] = "X";
-    SquareGo[SquareGo["O"] = 2] = "O";
+    SquareGo[SquareGo["X"] = 0] = "X";
+    SquareGo[SquareGo["O"] = 1] = "O";
+    SquareGo[SquareGo["None"] = 2] = "None";
 })(SquareGo || (SquareGo = {}));
 var Player;
 (function (Player) {
@@ -21746,10 +21746,15 @@ function reducer(state, action) {
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.squareClicked = function () {
+            if (_this.props.squareGo === SquareGo.None) {
+                _this.props.takeGo();
+            }
+        };
+        return _this;
     }
     TicTacToeSquare.prototype.render = function () {
-        var _this = this;
         var squareGoString = "";
         switch (this.props.squareGo) {
             case SquareGo.O:
@@ -21759,8 +21764,9 @@ var TicTacToeSquare = /** @class */ (function (_super) {
                 squareGoString = "X";
                 break;
         }
-        return React.createElement("td", { style: { width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
-            }, onClick: function () { _this.props.takeGo(); } }, squareGoString);
+        return React.createElement("td", { style: {
+                textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+            }, onClick: this.squareClicked }, squareGoString);
     };
     return TicTacToeSquare;
 }(React.Component));
