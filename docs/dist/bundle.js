@@ -43214,7 +43214,7 @@ function createElement(component, props) {
 function renderRelative(props) {
     return React.createElement(relativeRouteContext_1.default, __assign({}, props));
 }
-ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
+var router = ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(RouterAny, { render: renderRelative, createElement: createElement, history: history, onError: function (error) {
             store.dispatch(DemoRouterApp_1.routeError(error));
         }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },

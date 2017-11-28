@@ -200,7 +200,8 @@ function createElement(component, props: RouteComponentProps<any, any>) {
 function renderRelative(props) {
     return <RelativeRouterContext {...props}/>
 }
-ReactDOM.render(
+
+var router=ReactDOM.render(
     <Provider store={store}>
         <RouterAny render={renderRelative} createElement={createElement} history={history} onError={(error) => {
             store.dispatch(routeError(error))
