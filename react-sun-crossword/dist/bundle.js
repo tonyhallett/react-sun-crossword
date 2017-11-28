@@ -21750,7 +21750,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     }
     TicTacToeSquare.prototype.render = function () {
         var _this = this;
-        return React.createElement("td", { onClick: function () { _this.props.squareGo; } }, this.props.squareGo === SquareGo.None ? "" : this.props.squareGo);
+        return React.createElement("td", { style: { width: 100, height: 100 }, onClick: function () { _this.props.squareGo; } }, this.props.squareGo === SquareGo.None ? "" : this.props.squareGo);
     };
     return TicTacToeSquare;
 }(React.Component));

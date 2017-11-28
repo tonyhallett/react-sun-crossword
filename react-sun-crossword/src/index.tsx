@@ -80,7 +80,7 @@ interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSqua
 
 class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
     render() {
-        return <td onClick={() => { this.props.squareGo }}>
+        return <td style={{ width:100,height:100}} onClick={() => { this.props.squareGo }}>
             {this.props.squareGo === SquareGo.None ? "" : this.props.squareGo}
             </td>
     }
