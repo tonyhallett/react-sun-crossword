@@ -80,7 +80,7 @@ interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSqua
 
 class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
     render() {
-        return <td style={{ width:100,height:100}} onClick={() => { this.props.squareGo }}>
+        return <td style={{ width:100,height:100,border:1,borderColor:"black"}} onClick={() => { this.props.squareGo }}>
             {this.props.squareGo === SquareGo.None ? "" : this.props.squareGo}
             </td>
     }
@@ -103,7 +103,7 @@ interface TicTacToeBoardProps {
 }
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
-        return <table>
+        return <table style={{ borderCollapse:"collapse",border:1,borderColor:"black" }}>
             <tbody>
             {   this.props.board.map((rowSquares, rowIndex) => {
                 return <tr key={rowIndex}>

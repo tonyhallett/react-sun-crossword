@@ -21750,7 +21750,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     }
     TicTacToeSquare.prototype.render = function () {
         var _this = this;
-        return React.createElement("td", { style: { width: 100, height: 100 }, onClick: function () { _this.props.squareGo; } }, this.props.squareGo === SquareGo.None ? "" : this.props.squareGo);
+        return React.createElement("td", { style: { width: 100, height: 100, border: 1, borderColor: "black" }, onClick: function () { _this.props.squareGo; } }, this.props.squareGo === SquareGo.None ? "" : this.props.squareGo);
     };
     return TicTacToeSquare;
 }(React.Component));
@@ -21772,7 +21772,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
-        return React.createElement("table", null,
+        return React.createElement("table", { style: { borderCollapse: "collapse", border: 1, borderColor: "black" } },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
