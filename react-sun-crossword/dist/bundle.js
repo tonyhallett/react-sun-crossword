@@ -8227,6 +8227,7 @@ var RelativeRouterContext = createReactClass({
                     context.getRoutePath = function () {
                         return _this._getRoutePath(_that.props);
                     };
+                    return context;
                 };
             }
             else {
