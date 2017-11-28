@@ -24,7 +24,7 @@ const RelativeRouterContext = createReactClass({
         }
     },
     dynamicComponents:[],
-    creatElementWithDynamicContext:function(component,props){
+    createElementWithDynamicContext:function(component,props){
         var _this=this;
         var matchedDynamicComponent;
         for (var i = 0; i < this.dynamicComponents.length;i++){
