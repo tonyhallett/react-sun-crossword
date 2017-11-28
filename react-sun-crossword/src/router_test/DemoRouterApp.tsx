@@ -121,7 +121,7 @@ function toggleHandleRouteError() {
     }
     return action;
 }
-export function handleRouteError(state: boolean=true, action: AnyAction) {
+export function handleRouteError(state: boolean=false, action: AnyAction) {
     if (action.type === TOGGLE_HANDLE_ROUTE_ERROR) {
         return !state;
     }

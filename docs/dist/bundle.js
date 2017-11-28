@@ -7288,7 +7288,7 @@ function toggleHandleRouteError() {
     return action;
 }
 function handleRouteError(state, action) {
-    if (state === void 0) { state = true; }
+    if (state === void 0) { state = false; }
     if (action.type === TOGGLE_HANDLE_ROUTE_ERROR) {
         return !state;
     }
