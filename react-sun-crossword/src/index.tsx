@@ -101,6 +101,7 @@ var RouterAny = Router as any;
 
 //#region hooks
 var onEnter: EnterHook = function routeOnEnter(nextState: RouterState, replace: RedirectFunction) {
+    var testRouter = router;
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;  
 

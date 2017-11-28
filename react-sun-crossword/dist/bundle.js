@@ -43130,6 +43130,7 @@ var RouterAny = react_router_2.Router;
 //#endregion
 //#region hooks
 var onEnter = function routeOnEnter(nextState, replace) {
+    var testRouter = router;
     var nextStateLocationPathname = nextState.location.pathname;
     additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
     store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState, routeId: this.routeId }));
