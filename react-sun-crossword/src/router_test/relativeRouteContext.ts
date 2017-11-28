@@ -1,6 +1,6 @@
 ﻿import invariant from 'invariant'
 import * as React from 'react'
-import * as createReactClass from 'create-react-class'
+import { createReactClass } from 'create-react-class'
 import { array, func, object } from 'prop-types'
 
 import getRouteParams from './getRouteParams'
