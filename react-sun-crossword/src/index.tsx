@@ -104,17 +104,19 @@ interface TicTacToeBoardProps {
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
         return <table>
+            <tbody>
             {   this.props.board.map((rowSquares, rowIndex) => {
-                return <tr>
+                return <tr key={rowIndex}>
                     {
                         rowSquares.map((square, colIndex) => {
-                            return <ConnectedTicTacToeSquare rowIndex={rowIndex} colIndex={colIndex}/>
+                            return <ConnectedTicTacToeSquare key={colIndex} rowIndex={rowIndex} colIndex={colIndex}/>
 
                         })
                     }
                     </tr>
                 })
             }
+                </tbody>
             </table>
     }
 }
