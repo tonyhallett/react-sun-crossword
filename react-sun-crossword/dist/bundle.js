@@ -8225,7 +8225,7 @@ var RelativeRouterContext = createReactClass({
                     var _that = this;
                     var context = getChildContext.bind(this)();
                     context.getRoutePath = function () {
-                        return _this._getRoutePath(_that.props);
+                        return _this._getRoutePath(_that.props.route);
                     };
                     return context;
                 };
@@ -8235,7 +8235,7 @@ var RelativeRouterContext = createReactClass({
                     var _that = this;
                     return {
                         getRoutePath: function () {
-                            return _this._getRoutePath(_that.props);
+                            return _this._getRoutePath(_that.props.route);
                         }
                     };
                 };
