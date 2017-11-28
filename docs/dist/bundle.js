@@ -8247,7 +8247,7 @@ var RelativeRouterContext = createReactClass({
         var routePath = "";
         var first = false;
         for (var i = this.matchedRoutes.length; i !== 0; i--) {
-            var matchedRoute = this.matchedRoutes[i];
+            var matchedRoute = this.matchedRoutes[i - 1];
             var path = matchedRoute.path;
             if (path) {
                 routePath += path;
