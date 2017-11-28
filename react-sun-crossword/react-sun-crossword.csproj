@@ -94,6 +94,7 @@
     <Content Include="src\router_test\ContextUtils.js" />
     <Content Include="src\router_test\getRouteParams.js" />
     <Content Include="src\router_test\PatternUtils.js" />
+    <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\router_test\RouteUtils.ts" />
     <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
@@ -143,6 +144,7 @@
     <TypeScriptCompile Include="src\router_test\dynamicContext.tsx" />
     <TypeScriptCompile Include="src\router_test\relativeRouteContext.ts" />
     <TypeScriptCompile Include="src\router_test\routeProviders.tsx" />
+    <TypeScriptCompile Include="src\tic_tac_toe\tictactoe.tsx" />
     <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleInputTests.tsx" />
     <TypeScriptCompile Include="src\components\commonStyling.ts" />
     <TypeScriptCompile Include="src\components\crosswordPuzzle.tsx" />
@@ -175,7 +177,7 @@
     <TypeScriptCompile Include="src\components\crossword.tsx" />
     <TypeScriptCompile Include="src\components\square.tsx" />
     <TypeScriptCompile Include="src\helpers\SunCrosswordModelProvider.ts" />
-    <TypeScriptCompile Include="src\index.tsx" />
+    <TypeScriptCompile Include="src\index2.tsx" />
     <TypeScriptCompile Include="src\models\index.ts" />
     <TypeScriptCompile Include="__not_run_tests\crosswordTests.tsx" />
   </ItemGroup>
