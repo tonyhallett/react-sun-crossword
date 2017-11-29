@@ -7,10 +7,14 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 
 enum SquareGo { X, O, None }
-enum Player {X,O}
+enum Player { X, O }
+//probably is a way to type a colour css property
 interface TicTacToeState {
     board: SquareGo[][],
-    currentPlayer:Player
+    currentPlayer: Player,
+    winner: SquareGo,
+    xColour: string
+    oColour:string
 }
 const Take_Go = "TAKE_GO"
 function takeGo(row, column) {
@@ -33,9 +37,111 @@ function getDefaultBoard(): SquareGo[][] {
     return rows;
 }
 var firstPlayer = Player.X;
+function checkWinner(board: SquareGo[][]):SquareGo {
+    var winner = checkRowsWinner(board);
+    if (winner === SquareGo.None) {
+        winner = checkColumnsWinner(board);
+        if (winner === SquareGo.None) {
+            winner = checkDiagonalWinner(board);
+        }
+    }
+    return winner;
+}
+function checkRowsWinner(board: SquareGo[][]): SquareGo {
+    var checkSquareGo;
+    var winner = true;
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            var squareGo = board[j][i];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (j === 0) {
+                checkSquareGo = squareGo;
+            } else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+            
+        }
+        if (winner) {
+            break;
+        }
+    }
+    return checkSquareGo;
+}
+function checkColumnsWinner(board: SquareGo[][]): SquareGo {
+    var checkSquareGo;
+    var winner = true;
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            var squareGo = board[i][j];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (j === 0) {
+                checkSquareGo = squareGo;
+            } else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+
+        }
+        if (winner) {
+            break;
+        }
+    }
+    return checkSquareGo;
+}
+function checkDiagonalWinner(board: SquareGo[][]): SquareGo {
+    var checkSquareGo;
+    var winner = true;
+    for (var i = 0; i < board.length; i++) {
+        var squareGo = board[i][i];
+        if (squareGo == SquareGo.None) {
+            winner = false;
+            break;
+        }
+        if (i === 0) {
+            checkSquareGo = squareGo;
+        } else {
+            if (checkSquareGo !== squareGo) {
+                winner = false;
+                break;
+            }
+        }
+    }
+    if (!winner) {
+        for (var i = 0; i < board.length; i++) {
+            var squareGo = board[i][board.length-i];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (i === 0) {
+                checkSquareGo = squareGo;
+            } else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+        }
+    }
+    return checkSquareGo;
+}
 function reducer(state: TicTacToeState = {
     currentPlayer: firstPlayer,
-    board: getDefaultBoard()
+    board: getDefaultBoard(),
+    winner: SquareGo.None,
+    oColour: "red",
+    xColour:"green"
 
 }, action: AnyAction) {
     switch (action.type) {
@@ -48,7 +154,11 @@ function reducer(state: TicTacToeState = {
                 if (index === row) {
                     return rowSquares.map((sq, colIndex) => {
                         if (colIndex === column) {
-                            return currentPlayer;
+                            var squareGo = SquareGo.O;
+                            if (currentPlayer === Player.X) {
+                                squareGo = SquareGo.X;
+                            }
+                            return squareGo;
                         }
                         return sq;
                     })
@@ -57,7 +167,8 @@ function reducer(state: TicTacToeState = {
             });
             return {
                 board: newBoard,
-                currentPlayer: nextPlayer
+                currentPlayer: nextPlayer,
+                winner:checkWinner(newBoard)
             }
         default:
             return state;
@@ -69,7 +180,9 @@ interface TicTacToeSquareRowColProps {
     colIndex: number
 }
 interface TicTacToeSquareConnectStateProps {
-    squareGo: SquareGo
+    squareGoColour: string,
+    squareText: string,
+    canGo:boolean
 }
 interface TicTacToeSquareDispatchProps {
     takeGo: () => void
@@ -80,31 +193,42 @@ interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSqua
 
 class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
     squareClicked = () => {
-        if (this.props.squareGo === SquareGo.None) {
+        if (this.props.canGo) {
             this.props.takeGo();
         }
         
     }
     render() {
-        var squareGoString = "";
-        switch (this.props.squareGo) {
-            case SquareGo.O:
-                squareGoString = "O";
-                break;
-            case SquareGo.X:
-                squareGoString = "X";
-                break;
-        }
+        
         return <td style={{
             textAlign:"center",width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
         }} onClick={this.squareClicked}>
-            {squareGoString}
+            {this.props.squareText}
             </td>
     }
 }
 const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
+    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
+    var squareGoColour = "white";
+    var squareText = "";
+    var canGo = false;
+    switch (squareGo) {
+        case SquareGo.O:
+            squareGoColour = state.oColour;
+            squareText = "O";
+            break;
+        case SquareGo.X:
+            squareText = "X"
+            squareGoColour = state.xColour;
+            break;
+        case SquareGo.None:
+            canGo = true;
+            break;
+
+    }
     var connectState = {
-        squareGo: state.board[ownProps.rowIndex][ownProps.colIndex]
+        squareGo: squareGo,
+        squareText:squareText
     }
     return connectState;
 }, (dispatch, ownProps: TicTacToeSquareRowColProps) => {
@@ -113,7 +237,7 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
             dispatch(takeGo(ownProps.rowIndex, ownProps.colIndex))
         }
         }
-    })(TicTacToeSquare);
+    })(TicTacToeSquare as any);
 
 interface TicTacToeBoardProps {
     board: SquareGo[][]
@@ -143,6 +267,45 @@ const ConnectedTicTacToeBoard:any = connect((state: TicTacToeState) => {
     }
 })(TicTacToeBoard);
 
+interface PlayerViewProps {
+    player: Player,
+    isWinner: boolean,
+    playerColour: string,
+    currentColour: string,
+    playerText:string
+}
+class PlayerView extends React.Component<PlayerViewProps, undefined>{
+    render() {
+        
+        return <div style={{ borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour }}>
+            <div>{this.props.playerText}</div>
+            {this.props.isWinner&&<div>Winner !</div>}
+            </div>
+    }
+}
+var connectedPlayerView = connect((state: TicTacToeState, ownProps: PlayerViewProps) => {
+    var playerColour = state.oColour;
+    if (ownProps.player === Player.X) {
+        playerColour = state.xColour;
+    }
+    var isWinner = false;
+    switch (state.winner) {
+        case SquareGo.O:
+            isWinner = ownProps.player === Player.O;
+            break;
+        case SquareGo.X:
+            isWinner = ownProps.player === Player.X;
+            break;
+    }
+    var isCurrent = state.currentPlayer === ownProps.player;
+    var playerId = ownProps.player === Player.X ? "X" : "O";
+    return {
+        playerColour: playerColour,
+        isWinner: isWinner,
+        currentColour: isCurrent ? "green" : "black",
+        playerText: "Player " + playerId
+    }
+})
 //const store = createStore(
 //    combineReducers({
 //        hooksAndMounts,

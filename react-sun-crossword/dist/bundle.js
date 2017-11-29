@@ -21713,10 +21713,114 @@ function getDefaultBoard() {
     return rows;
 }
 var firstPlayer = Player.X;
+function checkWinner(board) {
+    var winner = checkRowsWinner(board);
+    if (winner === SquareGo.None) {
+        winner = checkColumnsWinner(board);
+        if (winner === SquareGo.None) {
+            winner = checkDiagonalWinner(board);
+        }
+    }
+    return winner;
+}
+function checkRowsWinner(board) {
+    var checkSquareGo;
+    var winner = true;
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            var squareGo = board[j][i];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (j === 0) {
+                checkSquareGo = squareGo;
+            }
+            else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+        }
+        if (winner) {
+            break;
+        }
+    }
+    return checkSquareGo;
+}
+function checkColumnsWinner(board) {
+    var checkSquareGo;
+    var winner = true;
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            var squareGo = board[i][j];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (j === 0) {
+                checkSquareGo = squareGo;
+            }
+            else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+        }
+        if (winner) {
+            break;
+        }
+    }
+    return checkSquareGo;
+}
+function checkDiagonalWinner(board) {
+    var checkSquareGo;
+    var winner = true;
+    for (var i = 0; i < board.length; i++) {
+        var squareGo = board[i][i];
+        if (squareGo == SquareGo.None) {
+            winner = false;
+            break;
+        }
+        if (i === 0) {
+            checkSquareGo = squareGo;
+        }
+        else {
+            if (checkSquareGo !== squareGo) {
+                winner = false;
+                break;
+            }
+        }
+    }
+    if (!winner) {
+        for (var i = 0; i < board.length; i++) {
+            var squareGo = board[i][board.length - i];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (i === 0) {
+                checkSquareGo = squareGo;
+            }
+            else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+        }
+    }
+    return checkSquareGo;
+}
 function reducer(state, action) {
     if (state === void 0) { state = {
         currentPlayer: firstPlayer,
-        board: getDefaultBoard()
+        board: getDefaultBoard(),
+        winner: SquareGo.None,
+        oColour: "red",
+        xColour: "green"
     }; }
     switch (action.type) {
         case Take_Go:
@@ -21728,7 +21832,11 @@ function reducer(state, action) {
                 if (index === row) {
                     return rowSquares.map(function (sq, colIndex) {
                         if (colIndex === column) {
-                            return currentPlayer;
+                            var squareGo = SquareGo.O;
+                            if (currentPlayer === Player.X) {
+                                squareGo = SquareGo.X;
+                            }
+                            return squareGo;
                         }
                         return sq;
                     });
@@ -21737,7 +21845,8 @@ function reducer(state, action) {
             });
             return {
                 board: newBoard,
-                currentPlayer: nextPlayer
+                currentPlayer: nextPlayer,
+                winner: checkWinner(newBoard)
             };
         default:
             return state;
@@ -21748,31 +21857,40 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     function TicTacToeSquare() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.squareClicked = function () {
-            if (_this.props.squareGo === SquareGo.None) {
+            if (_this.props.canGo) {
                 _this.props.takeGo();
             }
         };
         return _this;
     }
     TicTacToeSquare.prototype.render = function () {
-        var squareGoString = "";
-        switch (this.props.squareGo) {
-            case SquareGo.O:
-                squareGoString = "O";
-                break;
-            case SquareGo.X:
-                squareGoString = "X";
-                break;
-        }
         return React.createElement("td", { style: {
                 textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
-            }, onClick: this.squareClicked }, squareGoString);
+            }, onClick: this.squareClicked }, this.props.squareText);
     };
     return TicTacToeSquare;
 }(React.Component));
 var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
+    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
+    var squareGoColour = "white";
+    var squareText = "";
+    var canGo = false;
+    switch (squareGo) {
+        case SquareGo.O:
+            squareGoColour = state.oColour;
+            squareText = "O";
+            break;
+        case SquareGo.X:
+            squareText = "X";
+            squareGoColour = state.xColour;
+            break;
+        case SquareGo.None:
+            canGo = true;
+            break;
+    }
     var connectState = {
-        squareGo: state.board[ownProps.rowIndex][ownProps.colIndex]
+        squareGo: squareGo,
+        squareText: squareText
     };
     return connectState;
 }, function (dispatch, ownProps) {
@@ -21803,6 +21921,41 @@ var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
         board: state.board
     };
 })(TicTacToeBoard);
+var PlayerView = /** @class */ (function (_super) {
+    __extends(PlayerView, _super);
+    function PlayerView() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    PlayerView.prototype.render = function () {
+        return React.createElement("div", { style: { borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour } },
+            React.createElement("div", null, this.props.playerText),
+            this.props.isWinner && React.createElement("div", null, "Winner !"));
+    };
+    return PlayerView;
+}(React.Component));
+var connectedPlayerView = react_redux_1.connect(function (state, ownProps) {
+    var playerColour = state.oColour;
+    if (ownProps.player === Player.X) {
+        playerColour = state.xColour;
+    }
+    var isWinner = false;
+    switch (state.winner) {
+        case SquareGo.O:
+            isWinner = ownProps.player === Player.O;
+            break;
+        case SquareGo.X:
+            isWinner = ownProps.player === Player.X;
+            break;
+    }
+    var isCurrent = state.currentPlayer === ownProps.player;
+    var playerId = ownProps.player === Player.X ? "X" : "O";
+    return {
+        playerColour: playerColour,
+        isWinner: isWinner,
+        currentColour: isCurrent ? "green" : "black",
+        playerText: "Player " + playerId
+    };
+});
 //const store = createStore(
 //    combineReducers({
 //        hooksAndMounts,
