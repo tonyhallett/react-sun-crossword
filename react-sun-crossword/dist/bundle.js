@@ -21884,6 +21884,7 @@ function reducer(state, action) {
                 case SquareGo.None:
                     if (checkDraw(newBoard)) {
                         gameState = GameState.Draw;
+                        playCount++;
                         drawCount++;
                     }
                     break;

@@ -209,6 +209,7 @@ function reducer(state: TicTacToeState = {
                 case SquareGo.None:
                     if (checkDraw(newBoard)) {
                         gameState = GameState.Draw;
+                        playCount++;
                         drawCount++;
                     }
                     break;
