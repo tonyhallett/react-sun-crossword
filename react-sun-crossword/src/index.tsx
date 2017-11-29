@@ -228,7 +228,8 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
     }
     var connectState = {
         squareGo: squareGo,
-        squareText:squareText
+        squareText: squareText,
+        canGo: canGo
     }
     return connectState;
 }, (dispatch, ownProps: TicTacToeSquareRowColProps) => {
@@ -280,7 +281,7 @@ interface PlayerViewStateProps {
 class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
     render() {
         
-        return <div style={{ borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour }}>
+        return <div style={{ width:300,padding:10,borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour }}>
             <div>{this.props.playerText}</div>
             {this.props.isWinner&&<div>Winner !</div>}
             </div>
