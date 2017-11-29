@@ -4,7 +4,7 @@ import { Provider, connect } from "react-redux"
 import { createStore, combineReducers, applyMiddleware, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import * as Modal from 'react-modal';
-
+import * as $ from "jquery"
 
 enum SquareGo { X, O, None }
 enum Player { X, O }
@@ -149,6 +149,7 @@ function checkDiagonalWinner(board: SquareGo[][]): SquareGo {
         }
     }
     if (!winner) {
+        winner = true;
         for (var i = 0; i < board.length; i++) {
             var squareGo = board[i][board.length-1-i];
             if (squareGo == SquareGo.None) {
@@ -500,13 +501,19 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     getModalStyle = () => {
         var table = document.querySelector("#" + ticTacToeBoardId);
         if (table) {
+            var $table = $(table);
+            var height = $table.height();
+            var width = $table.width();
+            var offset = $table.offset();
+            //given that have the height and width how do you then determine right and bottom
+            //do drawing
             var rect = table.getBoundingClientRect();
             var styles = {
                 overlay: {
-                    top: rect.top,
-                    left: rect.left,
-                    right: document.body.clientWidth - rect.right,
-                    bottom: rect.bottom
+                    top: offset.top,
+                    left: offset.left,
+                    right: document.body.clientWidth - (offset.left + width),
+                    bottom: document.body.clientHeight - (offset.top + height)
                 }
             }
             return styles;
