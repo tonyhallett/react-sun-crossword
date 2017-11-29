@@ -24161,13 +24161,14 @@ var TicTacToeApp = /** @class */ (function (_super) {
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
         };
         _this.getModalStyle = function () {
-            if (_this.modalNode) {
-                var rect = _this.modalNode.getBoundingClientRect();
+            var table = document.querySelector("table");
+            if (table) {
+                var rect = table.getBoundingClientRect();
                 var styles = {
                     overlay: {
                         top: rect.top,
                         left: rect.left,
-                        right: rect.right,
+                        right: document.body.clientWidth - rect.right,
                         bottom: rect.bottom
                     }
                 };
@@ -24178,14 +24179,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        var _this = this;
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
-            React.createElement("div", { ref: function (node) {
-                    _this.modalNode = node;
-                } },
-                React.createElement(ConnectedTicTacToeBoard, null)),
+            React.createElement(ConnectedTicTacToeBoard, null),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
             React.createElement(Modal, { style: this.getModalStyle(), isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", null, this.getWinDrawMessage())));
