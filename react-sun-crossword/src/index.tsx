@@ -496,23 +496,28 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
     modalNode: HTMLDivElement
+    getModalStyles() {
+        var rect = this.modalNode.getBoundingClientRect();
+        var styles = {
+            overlay: {
+                top: rect.top,
+                left: rect.left,
+                right: rect.right,
+                bottom:rect.bottom
+            }
+        }
+    }
     render() {
         
         return <div>
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
-            <div ref={(node) => this.modalNode=node}></div>
-            <ConnectedTicTacToeBoard />
+            <div ref={(node) => this.modalNode=node}>
+                <ConnectedTicTacToeBoard />
+            </div>
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <Modal parentSelector={()=>this.modalNode} styles={
-                {
-                    content: {
-
-                    }
-                }
-
-            } isOpen = { this.modalShouldOpen() } onRequestClose={this.props.finishedConfirmed}>
+            <Modal styles={this.getModalStyles()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 <div>
                     {this.getWinDrawMessage()}
                 </div>
