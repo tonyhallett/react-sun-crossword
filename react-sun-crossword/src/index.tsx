@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import { Provider, connect } from "react-redux"
 import { createStore, combineReducers, applyMiddleware, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
-
+import * as Modal from 'react-modal';
 
 
 enum SquareGo { X, O, None }
@@ -468,16 +468,57 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>
 //    composeWithDevTools(applyMiddleware(middleware))
 
 //)
+
+interface TicTacToeAppProps {
+    gameState: GameState,
+    playAgain:()=>void
+}
+class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
+    render() {
+        
+        return <div>
+            <div style={{ marginTop: 10, marginBottom: 10 }}>
+                <ConnectedScoreboard />
+            </div>
+            <ConnectedTicTacToeBoard />
+            <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
+            <Modal isOpen={this.props.gameState !== GameState.Playing}>
+                <div>
+                    {this.getWinDrawMessage()}
+                </div>
+            </Modal>
+
+        </div>
+    }
+    getWinDrawMessage() {
+        var message = "Game drawn";
+        switch (this.props.gameState) {
+            case GameState.X:
+                message = "Player X Won !";
+                break;
+            case GameState.O:
+                message = "Player O Won !";
+                break;
+        }
+        return message;
+    }
+}
+const ConnectedTicTacToeApp = connect((state: TicTacToeState) => {
+    return {
+        gameState:state.gameState
+    }
+}, (dispatch) => {
+    return {
+        playAgain: function () {
+            dispatch(playAgain())
+        }
+    }
+})(TicTacToeApp);
+
 const store = createStore(reducer);
 ReactDOM.render(
     <Provider store={store}>
-        <div>
-            <div style={{ marginTop: 10, marginBottom: 10 }}>
-                <ConnectedScoreboard/>
-            </div>
-            <ConnectedTicTacToeBoard />
-            <button style={{padding:10}} onClick={() => store.dispatch(playAgain())}>Play again</button>
-        </div>
+        
     </Provider>,
 
     document.getElementById("example")
