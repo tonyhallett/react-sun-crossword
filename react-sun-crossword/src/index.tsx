@@ -72,10 +72,11 @@ function checkWinner(board: SquareGo[][]):SquareGo {
 }
 function checkRowsWinner(board: SquareGo[][]): SquareGo {
     var checkSquareGo;
-    var winner = true;
+    var winner;
     for (var i = 0; i < board.length; i++) {
+        winner = true;
         for (var j = 0; j < board.length; j++) {
-            var squareGo = board[j][i];
+            var squareGo = board[i][j];
             if (squareGo == SquareGo.None) {
                 winner = false;
                 break;
@@ -101,10 +102,11 @@ function checkRowsWinner(board: SquareGo[][]): SquareGo {
 }
 function checkColumnsWinner(board: SquareGo[][]): SquareGo {
     var checkSquareGo;
-    var winner = true;
+    var winner;
     for (var i = 0; i < board.length; i++) {
+        winner = true;
         for (var j = 0; j < board.length; j++) {
-            var squareGo = board[i][j];
+            var squareGo = board[j][i];
             if (squareGo == SquareGo.None) {
                 winner = false;
                 break;
@@ -148,7 +150,7 @@ function checkDiagonalWinner(board: SquareGo[][]): SquareGo {
     }
     if (!winner) {
         for (var i = 0; i < board.length; i++) {
-            var squareGo = board[i][board.length-i];
+            var squareGo = board[i][board.length-1-i];
             if (squareGo == SquareGo.None) {
                 winner = false;
                 break;
@@ -434,8 +436,10 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
                     <th >Drawn</th>
                 </tr>
             </thead>
-            <ScoreboardPlayer playerColour={this.props.xColour} playerId="X" playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
-            <ScoreboardPlayer playerColour={this.props.oColour} playerId="O" playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount}/>
+            <tbody>
+                <ScoreboardPlayer playerColour={this.props.xColour} playerId="X" playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
+                <ScoreboardPlayer playerColour={this.props.oColour} playerId="O" playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount}/>
+            </tbody>
             </table>
     }
 }

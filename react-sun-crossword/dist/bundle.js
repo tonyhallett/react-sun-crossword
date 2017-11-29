@@ -23793,10 +23793,11 @@ function checkWinner(board) {
 }
 function checkRowsWinner(board) {
     var checkSquareGo;
-    var winner = true;
+    var winner;
     for (var i = 0; i < board.length; i++) {
+        winner = true;
         for (var j = 0; j < board.length; j++) {
-            var squareGo = board[j][i];
+            var squareGo = board[i][j];
             if (squareGo == SquareGo.None) {
                 winner = false;
                 break;
@@ -23822,10 +23823,11 @@ function checkRowsWinner(board) {
 }
 function checkColumnsWinner(board) {
     var checkSquareGo;
-    var winner = true;
+    var winner;
     for (var i = 0; i < board.length; i++) {
+        winner = true;
         for (var j = 0; j < board.length; j++) {
-            var squareGo = board[i][j];
+            var squareGo = board[j][i];
             if (squareGo == SquareGo.None) {
                 winner = false;
                 break;
@@ -23870,7 +23872,7 @@ function checkDiagonalWinner(board) {
     }
     if (!winner) {
         for (var i = 0; i < board.length; i++) {
-            var squareGo = board[i][board.length - i];
+            var squareGo = board[i][board.length - 1 - i];
             if (squareGo == SquareGo.None) {
                 winner = false;
                 break;
@@ -24119,8 +24121,9 @@ var Scoreboard = /** @class */ (function (_super) {
                     React.createElement("th", { style: addPaddingToStyle({ width: 66 }) }, "Won"),
                     React.createElement("th", { style: addPaddingToStyle({ width: 66 }) }, "Lost"),
                     React.createElement("th", null, "Drawn"))),
-            React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
-            React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount }));
+            React.createElement("tbody", null,
+                React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
+                React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
     };
     return Scoreboard;
 }(React.Component));
