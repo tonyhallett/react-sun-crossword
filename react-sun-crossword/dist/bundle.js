@@ -24156,24 +24156,27 @@ var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.modalShouldOpen = function () {
+            var gameState = _this.props.gameState;
+            return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
+        };
         _this.getModalStyles = function () {
-            var rect = _this.modalNode.getBoundingClientRect();
-            var styles = {
-                overlay: {
-                    top: rect.top,
-                    left: rect.left,
-                    right: rect.right,
-                    bottom: rect.bottom
-                }
-            };
-            return styles;
+            if (_this.modalNode) {
+                var rect = _this.modalNode.getBoundingClientRect();
+                var styles = {
+                    overlay: {
+                        top: rect.top,
+                        left: rect.left,
+                        right: rect.right,
+                        bottom: rect.bottom
+                    }
+                };
+                return styles;
+            }
+            return {};
         };
         return _this;
     }
-    TicTacToeApp.prototype.modalShouldOpen = function () {
-        var gameState = this.props.gameState;
-        return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
-    };
     TicTacToeApp.prototype.render = function () {
         var _this = this;
         return React.createElement("div", null,

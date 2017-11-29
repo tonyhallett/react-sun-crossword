@@ -491,22 +491,26 @@ interface TicTacToeAppProps {
 }
 
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
-    modalShouldOpen() {
+    modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
     modalNode: HTMLDivElement
-    getModalStyles=()=> {
-        var rect = this.modalNode.getBoundingClientRect();
-        var styles = {
-            overlay: {
-                top: rect.top,
-                left: rect.left,
-                right: rect.right,
-                bottom:rect.bottom
+    getModalStyles = () => {
+        if (this.modalNode) {
+            var rect = this.modalNode.getBoundingClientRect();
+            var styles = {
+                overlay: {
+                    top: rect.top,
+                    left: rect.left,
+                    right: rect.right,
+                    bottom: rect.bottom
+                }
             }
+            return styles;
         }
-        return styles;
+        return {};
+        
     }
     render() {
         
