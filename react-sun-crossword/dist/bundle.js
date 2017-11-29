@@ -21933,7 +21933,7 @@ var PlayerView = /** @class */ (function (_super) {
     };
     return PlayerView;
 }(React.Component));
-var connectedPlayerView = react_redux_1.connect(function (state, ownProps) {
+var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
     var playerColour = state.oColour;
     if (ownProps.player === Player.X) {
         playerColour = state.xColour;
@@ -21955,7 +21955,7 @@ var connectedPlayerView = react_redux_1.connect(function (state, ownProps) {
         currentColour: isCurrent ? "green" : "black",
         playerText: "Player " + playerId
     };
-});
+})(PlayerView);
 //const store = createStore(
 //    combineReducers({
 //        hooksAndMounts,
@@ -21968,7 +21968,10 @@ var connectedPlayerView = react_redux_1.connect(function (state, ownProps) {
 //)
 var store = redux_1.createStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(ConnectedTicTacToeBoard, null)), document.getElementById("example"));
+    React.createElement("div", null,
+        React.createElement(ConnectedPlayerView, { player: Player.X }),
+        React.createElement(ConnectedPlayerView, { player: Player.O }),
+        React.createElement(ConnectedTicTacToeBoard, null))), document.getElementById("example"));
 
 
 /***/ })

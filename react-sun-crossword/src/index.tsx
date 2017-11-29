@@ -267,14 +267,17 @@ const ConnectedTicTacToeBoard:any = connect((state: TicTacToeState) => {
     }
 })(TicTacToeBoard);
 
-interface PlayerViewProps {
+interface PlayerViewOwnProps {
     player: Player,
+    
+}
+interface PlayerViewStateProps {
     isWinner: boolean,
     playerColour: string,
     currentColour: string,
-    playerText:string
+    playerText: string
 }
-class PlayerView extends React.Component<PlayerViewProps, undefined>{
+class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
     render() {
         
         return <div style={{ borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour }}>
@@ -283,7 +286,7 @@ class PlayerView extends React.Component<PlayerViewProps, undefined>{
             </div>
     }
 }
-var connectedPlayerView = connect((state: TicTacToeState, ownProps: PlayerViewProps) => {
+var ConnectedPlayerView:any = connect((state: TicTacToeState, ownProps: PlayerViewOwnProps) => {
     var playerColour = state.oColour;
     if (ownProps.player === Player.X) {
         playerColour = state.xColour;
@@ -305,7 +308,7 @@ var connectedPlayerView = connect((state: TicTacToeState, ownProps: PlayerViewPr
         currentColour: isCurrent ? "green" : "black",
         playerText: "Player " + playerId
     }
-})
+})(PlayerView);
 //const store = createStore(
 //    combineReducers({
 //        hooksAndMounts,
@@ -320,7 +323,11 @@ var connectedPlayerView = connect((state: TicTacToeState, ownProps: PlayerViewPr
 const store = createStore(reducer);
 ReactDOM.render(
     <Provider store={store}>
-        <ConnectedTicTacToeBoard/>
+        <div>
+            <ConnectedPlayerView player={Player.X} />
+            <ConnectedPlayerView player={Player.O} />
+            <ConnectedTicTacToeBoard />
+        </div>
     </Provider>,
 
     document.getElementById("example")
