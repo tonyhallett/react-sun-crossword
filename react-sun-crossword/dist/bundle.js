@@ -24042,13 +24042,14 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
         }
     };
 })(TicTacToeSquare);
+var ticTacToeBoardId = "ticTacToeBoard";
 var TicTacToeBoard = /** @class */ (function (_super) {
     __extends(TicTacToeBoard, _super);
     function TicTacToeBoard() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
-        return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
@@ -24161,7 +24162,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
         };
         _this.getModalStyle = function () {
-            var table = document.querySelector("table");
+            var table = document.querySelector("#" + ticTacToeBoardId);
             if (table) {
                 var rect = table.getBoundingClientRect();
                 var styles = {

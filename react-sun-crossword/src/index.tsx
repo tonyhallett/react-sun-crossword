@@ -341,9 +341,10 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
 interface TicTacToeBoardProps {
     board: SquareGo[][]
 }
+const ticTacToeBoardId ="ticTacToeBoard"
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
-        return <table style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
+        return <table id={ticTacToeBoardId} style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
             <tbody>
             {   this.props.board.map((rowSquares, rowIndex) => {
                 return <tr key={rowIndex}>
@@ -497,7 +498,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
     board: TicTacToeBoard
     getModalStyle = () => {
-        var table = document.querySelector("table");
+        var table = document.querySelector("#" + ticTacToeBoardId);
         if (table) {
             var rect = table.getBoundingClientRect();
             var styles = {
