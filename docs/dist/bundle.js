@@ -22021,6 +22021,11 @@ var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
         playerText: "Player " + playerId
     };
 })(PlayerView);
+function addPaddingToStyle(style) {
+    style.paddingTop = 5;
+    style.paddingBottom = 5;
+    return style;
+}
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
@@ -22031,13 +22036,13 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return React.createElement("table", { style: { width: 300, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+        return React.createElement("table", { style: { width: 309, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
             React.createElement("thead", null,
                 React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-                    React.createElement("th", { style: { width: 100 } }, "Player"),
-                    React.createElement("th", { style: { textAlign: "center", width: 66 } }, "Won"),
-                    React.createElement("th", { style: { textAlign: "center", width: 66 } }, "Lost"),
-                    React.createElement("th", { style: { textAlign: "center", width: 66 } }, "Drawn"))),
+                    React.createElement("th", { style: addPaddingToStyle({ width: 100 }) }, "Player"),
+                    React.createElement("th", { style: addPaddingToStyle({ width: 66 }) }, "Won"),
+                    React.createElement("th", { style: addPaddingToStyle({ width: 66 }) }, "Lost"),
+                    React.createElement("th", null, "Drawn"))),
             React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
             React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount }));
     };
@@ -22061,10 +22066,14 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     }
     ScoreboardPlayer.prototype.render = function () {
         return React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-            React.createElement("td", { style: { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour } }, this.props.playerId),
-            React.createElement("td", null, this.props.won),
-            React.createElement("td", null, this.props.lost),
-            React.createElement("td", null, this.props.drawn));
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement("td", null,
+                " style=",
+                addPaddingToStyle({ textAlign: "center" }),
+                ">",
+                this.props.won),
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.lost),
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.drawn));
     };
     return ScoreboardPlayer;
 }(React.Component));

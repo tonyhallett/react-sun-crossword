@@ -384,19 +384,24 @@ interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
     currentPlayer:Player
 }
 interface ScoreboardProps { }
+function addPaddingToStyle(style) {
+    style.paddingTop = 5;
+    style.paddingBottom = 5;
+    return style;
+}
 class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
     render() {
         var totalWins = this.props.playCount - this.props.drawCount;
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return <table style={{width:300, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
+        return <table style={{width:309, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
-                    <th style={{ width: 100 }}>Player</th>
-                    <th style={{ textAlign:"center", width: 66 }}>Won</th>
-                    <th style={{ textAlign: "center",width: 66 }}>Lost</th>
-                    <th style={{ textAlign: "center",width: 66 }}>Drawn</th>
+                    <th style={addPaddingToStyle({ width: 100 })}>Player</th>
+                    <th style={addPaddingToStyle({ width: 66 })}>Won</th>
+                    <th style={addPaddingToStyle({ width: 66 })}>Lost</th>
+                    <th >Drawn</th>
                 </tr>
             </thead>
             <ScoreboardPlayer playerColour={this.props.xColour} playerId="X" playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
@@ -426,10 +431,10 @@ interface ScoreboardPlayerProps {
 class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>{
     render() {
         return <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
-            <td style={{ fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
-            <td>{this.props.won}</td>
-            <td>{this.props.lost}</td>
-            <td>{this.props.drawn}</td>
+            <td style={addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour })}>{this.props.playerId}</td>
+            <td> style={addPaddingToStyle({ textAlign: "center" })}>{this.props.won}</td>
+            <td style={addPaddingToStyle( {textAlign: "center" })}>{this.props.lost}</td>
+            <td style={addPaddingToStyle({ textAlign: "center" })}>{this.props.drawn}</td >
             </tr>
     }
 }
