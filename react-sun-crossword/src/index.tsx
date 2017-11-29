@@ -5,6 +5,7 @@ import { createStore, combineReducers, applyMiddleware, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import * as Modal from 'react-modal';
 import * as $ from "jquery"
+import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem} from "./helpers/storage"
 
 enum SquareGo { X, O, None }
 enum Player { X, O }
