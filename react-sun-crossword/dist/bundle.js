@@ -21902,7 +21902,7 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
         canGo = false;
     }
     var connectState = {
-        squareGo: squareGo,
+        squareGoColour: squareGoColour,
         squareText: squareText,
         canGo: canGo
     };
@@ -21941,7 +21941,7 @@ var PlayerView = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     PlayerView.prototype.render = function () {
-        return React.createElement("div", { style: { margin: 5, width: 280, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, borderStyle: this.props.currentBorderStyle, color: this.props.playerColour } },
+        return React.createElement("div", { style: { margin: 5, width: 290, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour } },
             React.createElement("div", null, this.props.playerText),
             this.props.isWinner && React.createElement("div", null, "Winner !"));
     };
@@ -21967,7 +21967,7 @@ var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
         playerColour: playerColour,
         isWinner: isWinner,
         currentColour: isCurrent ? "green" : "black",
-        currentBorderStyle: isCurrent ? "dotted" : "solid",
+        currentFontWeight: isCurrent ? "bolder" : "normal",
         playerText: "Player " + playerId
     };
 })(PlayerView);

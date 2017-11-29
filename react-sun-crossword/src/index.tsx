@@ -240,7 +240,7 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
         canGo = false;
     }
     var connectState = {
-        squareGo: squareGo,
+        squareGoColour: squareGoColour,
         squareText: squareText,
         canGo: canGo
     }
@@ -290,17 +290,18 @@ interface PlayerViewStateProps {
     playerColour: string,
     currentColour: string,
     playerText: string,
-    currentBorderStyle:string
+    currentFontWeight: fontWeightBolderOrNormal
 }
 class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
     render() {
 
-        return <div style={{ margin:5,width: 280, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, borderStyle: this.props.currentBorderStyle, color: this.props.playerColour }}>
+        return <div style={{ margin: 5, width: 290, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour }}>
             <div>{this.props.playerText}</div>
             {this.props.isWinner&&<div>Winner !</div>}
             </div>
     }
 }
+type fontWeightBolderOrNormal = "bolder" | "normal";
 var ConnectedPlayerView:any = connect((state: TicTacToeState, ownProps: PlayerViewOwnProps) => {
     var playerColour = state.oColour;
     if (ownProps.player === Player.X) {
@@ -321,7 +322,7 @@ var ConnectedPlayerView:any = connect((state: TicTacToeState, ownProps: PlayerVi
         playerColour: playerColour,
         isWinner: isWinner,
         currentColour: isCurrent ? "green" : "black",
-        currentBorderStyle:isCurrent? "dotted":"solid",
+        currentFontWeight:isCurrent? "bolder":"normal",
         playerText: "Player " + playerId
     }
 })(PlayerView);
