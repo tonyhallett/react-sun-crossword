@@ -512,8 +512,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 overlay: {
                     top: offset.top,
                     left: offset.left,
-                    right: document.body.clientWidth - (offset.left + width),
-                    bottom: document.body.clientHeight - (offset.top + height)
+                    right: $(window).width() - (offset.left + width),
+                    bottom: $(window).height() - (offset.top + height)
                 }
             }
             return styles;
