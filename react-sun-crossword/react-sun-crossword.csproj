@@ -94,6 +94,7 @@
     <Content Include="src\router_test\ContextUtils.js" />
     <Content Include="src\router_test\getRouteParams.js" />
     <Content Include="src\router_test\PatternUtils.js" />
+    <TypeScriptCompile Include="src\helpers\storage.ts" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\router_test\RouteUtils.ts" />
     <Content Include="tsconfig.json" />

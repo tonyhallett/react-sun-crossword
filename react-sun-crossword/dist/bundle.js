@@ -34491,7 +34491,26 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
         }
     };
 })(TicTacToeApp);
-var store = redux_1.createStore(reducer);
+//can be wrapped in a function with default for the store key
+var storeKey = "store";
+var store;
+var storageAvailable = isStorageAvailable("localStorage");
+var previousState;
+if (storageAvailable) {
+    previousState = parseGetStorageItem(storeKey);
+}
+if (previousState) {
+    store = redux_1.createStore(reducer, previousState);
+}
+else {
+    store = redux_1.createStore(reducer);
+}
+if (storageAvailable) {
+    store.subscribe(function () {
+        var state = store.getState();
+        stringifySetStorageItem(storeKey, state);
+    });
+}
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(ConnectedTicTacToeApp, null)), document.getElementById("example"));
 

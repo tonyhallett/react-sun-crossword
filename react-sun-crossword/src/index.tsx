@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Provider, connect } from "react-redux"
+import { Provider, connect, Store } from "react-redux"
 import { createStore, combineReducers, applyMiddleware, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import * as Modal from 'react-modal';
@@ -573,9 +573,31 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
             dispatch(finishedConfirmed());
         }
     }
-})(TicTacToeApp);
+    })(TicTacToeApp);
 
-const store = createStore(reducer);
+//can be wrapped in a function with default for the store key
+var storeKey = "store";
+var store: Store<TicTacToeState>;
+var storageAvailable = isStorageAvailable("localStorage");
+var previousState: TicTacToeState;
+if (storageAvailable) {
+    previousState = parseGetStorageItem(storeKey);
+}
+if (previousState) {
+    store = createStore(reducer, previousState);
+}
+else {
+    store = createStore(reducer);
+}
+
+
+if (storageAvailable) {
+    store.subscribe(() => {
+        var state = store.getState();
+        stringifySetStorageItem(storeKey, state);
+    });
+}
+
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedTicTacToeApp/>
