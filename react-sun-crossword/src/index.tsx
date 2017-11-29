@@ -506,6 +506,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 bottom:rect.bottom
             }
         }
+        return styles;
     }
     render() {
         

@@ -24171,6 +24171,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 bottom: rect.bottom
             }
         };
+        return styles;
     };
     TicTacToeApp.prototype.render = function () {
         var _this = this;
@@ -24180,9 +24181,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement("div", { ref: function (node) { return _this.modalNode = node; } },
                 React.createElement(ConnectedTicTacToeBoard, null)),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
-            React.createElement(Modal, { styles: {
-                    content: {}
-                }, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+            React.createElement(Modal, { styles: this.getModalStyles(), isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", null, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
