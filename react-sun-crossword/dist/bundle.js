@@ -22031,12 +22031,13 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return React.createElement("table", null,
+        return React.createElement("table", { style: { width: 300, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
             React.createElement("thead", null,
-                React.createElement("th", null, "Player"),
-                React.createElement("th", null, "Won"),
-                React.createElement("th", null, "Lost"),
-                React.createElement("th", null, "Drawn")),
+                React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+                    React.createElement("th", { style: { width: 100 } }, "Player"),
+                    React.createElement("th", { style: { textAlign: "center", width: 66 } }, "Won"),
+                    React.createElement("th", { style: { textAlign: "center", width: 66 } }, "Lost"),
+                    React.createElement("th", { style: { textAlign: "center", width: 66 } }, "Drawn"))),
             React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
             React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount }));
     };
@@ -22059,8 +22060,8 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     ScoreboardPlayer.prototype.render = function () {
-        return React.createElement("tr", null,
-            React.createElement("td", { style: { fontWeight: this.props.playerBoldStyle } }, this.props.playerId),
+        return React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+            React.createElement("td", { style: { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour } }, this.props.playerId),
             React.createElement("td", null, this.props.won),
             React.createElement("td", null, this.props.lost),
             React.createElement("td", null, this.props.drawn));

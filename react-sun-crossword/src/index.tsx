@@ -390,12 +390,14 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return <table>
+        return <table style={{width:300, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
             <thead>
-                <th>Player</th>
-                <th>Won</th>
-                <th>Lost</th>
-                <th>Drawn</th>
+                <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
+                    <th style={{ width: 100 }}>Player</th>
+                    <th style={{ textAlign:"center", width: 66 }}>Won</th>
+                    <th style={{ textAlign: "center",width: 66 }}>Lost</th>
+                    <th style={{ textAlign: "center",width: 66 }}>Drawn</th>
+                </tr>
             </thead>
             <ScoreboardPlayer playerColour={this.props.xColour} playerId="X" playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
             <ScoreboardPlayer playerColour={this.props.oColour} playerId="O" playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount}/>
@@ -423,8 +425,8 @@ interface ScoreboardPlayerProps {
 }
 class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>{
     render() {
-        return <tr>
-            <td style={{ fontWeight: this.props.playerBoldStyle }}>{this.props.playerId}</td>
+        return <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
+            <td style={{ fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
             <td>{this.props.won}</td>
             <td>{this.props.lost}</td>
             <td>{this.props.drawn}</td>
