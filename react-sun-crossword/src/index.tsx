@@ -505,15 +505,19 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             var height = $table.height();
             var width = $table.width();
             var offset = $table.offset();
-            //given that have the height and width how do you then determine right and bottom
-            //do drawing
+
             var rect = table.getBoundingClientRect();
+            /*
+            works until resize
+            right: $(window).width() - (offset.left + width),
+                    bottom: $(window).height() - (offset.top + height)
+            */
             var styles = {
                 overlay: {
                     top: offset.top,
                     left: offset.left,
-                    right: $(window).width() - (offset.left + width),
-                    bottom: $(window).height() - (offset.top + height)
+                    right:"auto",
+                    bottom: "auto"
                 }
             }
             return styles;
