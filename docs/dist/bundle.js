@@ -21747,6 +21747,9 @@ function checkRowsWinner(board) {
             break;
         }
     }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
+    }
     return checkSquareGo;
 }
 function checkColumnsWinner(board) {
@@ -21772,6 +21775,9 @@ function checkColumnsWinner(board) {
         if (winner) {
             break;
         }
+    }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
     }
     return checkSquareGo;
 }
@@ -21811,6 +21817,9 @@ function checkDiagonalWinner(board) {
                 }
             }
         }
+    }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
     }
     return checkSquareGo;
 }
@@ -21865,6 +21874,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     }
     TicTacToeSquare.prototype.render = function () {
         return React.createElement("td", { style: {
+                color: this.props.squareGoColour,
                 textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
             }, onClick: this.squareClicked }, this.props.squareText);
     };
@@ -21887,6 +21897,9 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
         case SquareGo.None:
             canGo = true;
             break;
+    }
+    if (state.winner) {
+        canGo = false;
     }
     var connectState = {
         squareGo: squareGo,
@@ -21928,7 +21941,7 @@ var PlayerView = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     PlayerView.prototype.render = function () {
-        return React.createElement("div", { style: { width: 300, padding: 10, borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour } },
+        return React.createElement("div", { style: { width: 280, padding: 10, borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour } },
             React.createElement("div", null, this.props.playerText),
             this.props.isWinner && React.createElement("div", null, "Winner !"));
     };
@@ -21970,8 +21983,9 @@ var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
 var store = redux_1.createStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement("div", null,
-        React.createElement(ConnectedPlayerView, { player: Player.X }),
-        React.createElement(ConnectedPlayerView, { player: Player.O }),
+        React.createElement("div", { style: { margin: 10 } },
+            React.createElement(ConnectedPlayerView, { player: Player.X }),
+            React.createElement(ConnectedPlayerView, { player: Player.O })),
         React.createElement(ConnectedTicTacToeBoard, null))), document.getElementById("example"));
 
 

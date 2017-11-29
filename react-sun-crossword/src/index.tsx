@@ -71,6 +71,9 @@ function checkRowsWinner(board: SquareGo[][]): SquareGo {
             break;
         }
     }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
+    }
     return checkSquareGo;
 }
 function checkColumnsWinner(board: SquareGo[][]): SquareGo {
@@ -96,6 +99,9 @@ function checkColumnsWinner(board: SquareGo[][]): SquareGo {
         if (winner) {
             break;
         }
+    }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
     }
     return checkSquareGo;
 }
@@ -133,6 +139,9 @@ function checkDiagonalWinner(board: SquareGo[][]): SquareGo {
                 }
             }
         }
+    }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
     }
     return checkSquareGo;
 }
@@ -199,8 +208,9 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
         
     }
     render() {
-        
+
         return <td style={{
+            color: this.props.squareGoColour,
             textAlign:"center",width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
         }} onClick={this.squareClicked}>
             {this.props.squareText}
@@ -225,6 +235,9 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
             canGo = true;
             break;
 
+    }
+    if (state.winner) {
+        canGo = false;
     }
     var connectState = {
         squareGo: squareGo,
@@ -281,7 +294,7 @@ interface PlayerViewStateProps {
 class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
     render() {
         
-        return <div style={{ width:300,padding:10,borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour }}>
+        return <div style={{ width:280,padding:10,borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour }}>
             <div>{this.props.playerText}</div>
             {this.props.isWinner&&<div>Winner !</div>}
             </div>
@@ -325,8 +338,10 @@ const store = createStore(reducer);
 ReactDOM.render(
     <Provider store={store}>
         <div>
-            <ConnectedPlayerView player={Player.X} />
-            <ConnectedPlayerView player={Player.O} />
+            <div style={{margin:10}}>
+                <ConnectedPlayerView player={Player.X} />
+                <ConnectedPlayerView player={Player.O} />
+            </div>
             <ConnectedTicTacToeBoard />
         </div>
     </Provider>,
