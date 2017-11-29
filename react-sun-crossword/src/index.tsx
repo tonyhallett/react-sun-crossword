@@ -496,7 +496,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
     modalNode: HTMLDivElement
-    getModalStyles = () => {
+    getModalStyle = () => {
         if (this.modalNode) {
             var rect = this.modalNode.getBoundingClientRect();
             var styles = {
@@ -525,7 +525,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 <ConnectedTicTacToeBoard />
             </div>
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <Modal styles={this.getModalStyles()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <Modal style={this.getModalStyle()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 <div>
                     {this.getWinDrawMessage()}
                 </div>
