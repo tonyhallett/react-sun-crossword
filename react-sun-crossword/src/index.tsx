@@ -26,7 +26,13 @@ interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     gameState: GameState,
     
 }
+const Play_Again = "PLAY_AGAIN";
 const Take_Go = "TAKE_GO"
+function playAgain() {
+    return {
+        type: Play_Again
+    }
+}
 function takeGo(row, column) {
     return {
         type: Take_Go,
@@ -180,6 +186,18 @@ function reducer(state: TicTacToeState = {
 
 }, action: AnyAction) {
     switch (action.type) {
+        case Play_Again:
+            var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
+            return {
+                board: getDefaultBoard(),
+                currentPlayer: nextPlayer,
+                oColour: state.oColour,
+                xColour: state.xColour,
+                gameState: GameState.Playing,
+                drawCount: state.drawCount,
+                playCount: state.playCount,
+                playerXWinCount: state.playerXWinCount
+            }
         case Take_Go:
             var row = action.row;
             var column = action.column;
@@ -458,6 +476,7 @@ ReactDOM.render(
                 <ConnectedScoreboard/>
             </div>
             <ConnectedTicTacToeBoard />
+            <button style={{padding:10}} onClick={() => store.dispatch(playAgain())}>Play again</button>
         </div>
     </Provider>,
 

@@ -21699,7 +21699,13 @@ var GameState;
     GameState[GameState["Playing"] = 2] = "Playing";
     GameState[GameState["Draw"] = 3] = "Draw";
 })(GameState || (GameState = {}));
+var Play_Again = "PLAY_AGAIN";
 var Take_Go = "TAKE_GO";
+function playAgain() {
+    return {
+        type: Play_Again
+    };
+}
 function takeGo(row, column) {
     return {
         type: Take_Go,
@@ -21855,6 +21861,18 @@ function reducer(state, action) {
         playerXWinCount: 0
     }; }
     switch (action.type) {
+        case Play_Again:
+            var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
+            return {
+                board: getDefaultBoard(),
+                currentPlayer: nextPlayer,
+                oColour: state.oColour,
+                xColour: state.xColour,
+                gameState: GameState.Playing,
+                drawCount: state.drawCount,
+                playCount: state.playCount,
+                playerXWinCount: state.playerXWinCount
+            };
         case Take_Go:
             var row = action.row;
             var column = action.column;
@@ -22089,7 +22107,8 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement("div", null,
         React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
             React.createElement(ConnectedScoreboard, null)),
-        React.createElement(ConnectedTicTacToeBoard, null))), document.getElementById("example"));
+        React.createElement(ConnectedTicTacToeBoard, null),
+        React.createElement("button", { style: { padding: 10 }, onClick: function () { return store.dispatch(playAgain()); } }, "Play again"))), document.getElementById("example"));
 
 
 /***/ })
