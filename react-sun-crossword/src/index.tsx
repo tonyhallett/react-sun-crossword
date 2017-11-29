@@ -511,6 +511,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             works until resize
             right: $(window).width() - (offset.left + width),
                     bottom: $(window).height() - (offset.top + height)
+
+            width and height does the trick
             */
             var styles = {
                 overlay: {
@@ -538,7 +540,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
             <Modal style={this.getModalStyle()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                <div>
+                <div style={{margin:"0 auto",width:"80%"}}>
                     {this.getWinDrawMessage()}
                 </div>
             </Modal>

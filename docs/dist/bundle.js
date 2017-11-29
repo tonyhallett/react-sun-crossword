@@ -34435,6 +34435,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 works until resize
                 right: $(window).width() - (offset.left + width),
                         bottom: $(window).height() - (offset.top + height)
+    
+                width and height does the trick
                 */
                 var styles = {
                     overlay: {
@@ -34459,7 +34461,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(ConnectedTicTacToeBoard, null),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
             React.createElement(Modal, { style: this.getModalStyle(), isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                React.createElement("div", null, this.getWinDrawMessage())));
+                React.createElement("div", { style: { margin: "0 auto", width: "80%" } }, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "Game drawn";
