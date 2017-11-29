@@ -21692,6 +21692,13 @@ var Player;
     Player[Player["X"] = 0] = "X";
     Player[Player["O"] = 1] = "O";
 })(Player || (Player = {}));
+var GameState;
+(function (GameState) {
+    GameState[GameState["X"] = 0] = "X";
+    GameState[GameState["O"] = 1] = "O";
+    GameState[GameState["Playing"] = 2] = "Playing";
+    GameState[GameState["Draw"] = 3] = "Draw";
+})(GameState || (GameState = {}));
 var Take_Go = "TAKE_GO";
 function takeGo(row, column) {
     return {
@@ -21823,13 +21830,29 @@ function checkDiagonalWinner(board) {
     }
     return checkSquareGo;
 }
+function checkDraw(board) {
+    var isDraw = true;
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            var square = board[i][j];
+            if (square === SquareGo.None) {
+                isDraw = false;
+                break;
+            }
+        }
+    }
+    return isDraw;
+}
 function reducer(state, action) {
     if (state === void 0) { state = {
         currentPlayer: firstPlayer,
         board: getDefaultBoard(),
-        winner: SquareGo.None,
         oColour: "red",
-        xColour: "blue"
+        xColour: "blue",
+        gameState: GameState.Playing,
+        playCount: 0,
+        drawCount: 0,
+        playerXWinCount: 0
     }; }
     switch (action.type) {
         case Take_Go:
@@ -21852,12 +21875,37 @@ function reducer(state, action) {
                 }
                 return rowSquares;
             });
+            var winner = checkWinner(newBoard);
+            var gameState = GameState.Playing;
+            var drawCount = state.drawCount;
+            var playCount = state.playCount;
+            var playerXWinCount = state.playerXWinCount;
+            switch (winner) {
+                case SquareGo.None:
+                    if (checkDraw(newBoard)) {
+                        gameState = GameState.Draw;
+                        drawCount++;
+                    }
+                    break;
+                case SquareGo.X:
+                    gameState = GameState.X;
+                    playCount++;
+                    playerXWinCount++;
+                    break;
+                case SquareGo.O:
+                    gameState = GameState.O;
+                    playCount++;
+                    break;
+            }
             return {
                 board: newBoard,
                 currentPlayer: nextPlayer,
-                winner: checkWinner(newBoard),
                 oColour: state.oColour,
-                xColour: state.xColour
+                xColour: state.xColour,
+                gameState: gameState,
+                drawCount: drawCount,
+                playCount: playCount,
+                playerXWinCount: playerXWinCount
             };
         default:
             return state;
@@ -21900,7 +21948,7 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
             canGo = true;
             break;
     }
-    if (state.winner === SquareGo.X || state.winner === SquareGo.O) {
+    if (state.gameState !== GameState.Playing) {
         canGo = false;
     }
     var connectState = {
@@ -21943,7 +21991,7 @@ var PlayerView = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     PlayerView.prototype.render = function () {
-        return React.createElement("div", { style: { margin: 5, width: 290, padding: 10, borderWidth: "3px", borderStyle: "solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour } },
+        return React.createElement("div", { style: { width: 274, padding: 10, borderWidth: "3px", borderStyle: "solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour } },
             React.createElement("div", null, this.props.playerText),
             this.props.isWinner && React.createElement("div", null, "Winner !"));
     };
@@ -21955,11 +22003,11 @@ var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
         playerColour = state.xColour;
     }
     var isWinner = false;
-    switch (state.winner) {
-        case SquareGo.O:
+    switch (state.gameState) {
+        case GameState.O:
             isWinner = ownProps.player === Player.O;
             break;
-        case SquareGo.X:
+        case GameState.X:
             isWinner = ownProps.player === Player.X;
             break;
     }
@@ -21973,6 +22021,52 @@ var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
         playerText: "Player " + playerId
     };
 })(PlayerView);
+var Scoreboard = /** @class */ (function (_super) {
+    __extends(Scoreboard, _super);
+    function Scoreboard() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Scoreboard.prototype.render = function () {
+        var totalWins = this.props.playCount - this.props.drawCount;
+        var playerXLossCount = totalWins - this.props.playerXWinCount;
+        var playerOWinCount = playerXLossCount;
+        var playerOLossCount = this.props.playerXWinCount;
+        return React.createElement("table", null,
+            React.createElement("thead", null,
+                React.createElement("th", null, "Player"),
+                React.createElement("th", null, "Won"),
+                React.createElement("th", null, "Lost"),
+                React.createElement("th", null, "Drawn")),
+            React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
+            React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount }));
+    };
+    return Scoreboard;
+}(React.Component));
+var ConnectedScoreboard = react_redux_1.connect(function (state) {
+    var scoreboardState = {
+        currentPlayer: state.currentPlayer,
+        drawCount: state.drawCount,
+        playCount: state.playCount,
+        playerXWinCount: state.playerXWinCount,
+        oColour: state.oColour,
+        xColour: state.xColour
+    };
+    return scoreboardState;
+})(Scoreboard);
+var ScoreboardPlayer = /** @class */ (function (_super) {
+    __extends(ScoreboardPlayer, _super);
+    function ScoreboardPlayer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ScoreboardPlayer.prototype.render = function () {
+        return React.createElement("tr", null,
+            React.createElement("td", { style: { fontWeight: this.props.playerBoldStyle } }, this.props.playerId),
+            React.createElement("td", null, this.props.won),
+            React.createElement("td", null, this.props.lost),
+            React.createElement("td", null, this.props.drawn));
+    };
+    return ScoreboardPlayer;
+}(React.Component));
 //const store = createStore(
 //    combineReducers({
 //        hooksAndMounts,
@@ -21987,8 +22081,7 @@ var store = redux_1.createStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement("div", null,
         React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
-            React.createElement(ConnectedPlayerView, { player: Player.X }),
-            React.createElement(ConnectedPlayerView, { player: Player.O })),
+            React.createElement(ConnectedScoreboard, null)),
         React.createElement(ConnectedTicTacToeBoard, null))), document.getElementById("example"));
 
 

@@ -8,13 +8,23 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 enum SquareGo { X, O, None }
 enum Player { X, O }
+enum GameState {X,O,Playing,Draw}
 //probably is a way to type a colour css property
-interface TicTacToeState {
+interface ScoreboardCountState {
+    playCount: number,
+    drawCount: number,
+    playerXWinCount: number
+}
+interface PlayerColourState {
+    xColour: string
+    oColour: string
+}
+interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     board: SquareGo[][],
     currentPlayer: Player,
-    winner: SquareGo,
-    xColour: string
-    oColour:string
+    
+    gameState: GameState,
+    
 }
 const Take_Go = "TAKE_GO"
 function takeGo(row, column) {
@@ -145,12 +155,28 @@ function checkDiagonalWinner(board: SquareGo[][]): SquareGo {
     }
     return checkSquareGo;
 }
+function checkDraw(board: SquareGo[][]) {
+    var isDraw = true;
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            var square = board[i][j];
+            if (square === SquareGo.None) {
+                isDraw = false;
+                break;
+            }
+        }
+    }
+    return isDraw;
+}
 function reducer(state: TicTacToeState = {
     currentPlayer: firstPlayer,
     board: getDefaultBoard(),
-    winner: SquareGo.None,
     oColour: "red",
-    xColour:"blue"
+    xColour: "blue",
+    gameState: GameState.Playing,
+    playCount:0,
+    drawCount: 0,
+    playerXWinCount:0
 
 }, action: AnyAction) {
     switch (action.type) {
@@ -174,12 +200,37 @@ function reducer(state: TicTacToeState = {
                 }
                 return rowSquares;
             });
+            var winner = checkWinner(newBoard);
+            var gameState = GameState.Playing;
+            var drawCount = state.drawCount;
+            var playCount = state.playCount;
+            var playerXWinCount = state.playerXWinCount;
+            switch (winner) {
+                case SquareGo.None:
+                    if (checkDraw(newBoard)) {
+                        gameState = GameState.Draw;
+                        drawCount++;
+                    }
+                    break;
+                case SquareGo.X:
+                    gameState = GameState.X;
+                    playCount++;
+                    playerXWinCount++;
+                    break;
+                case SquareGo.O:
+                    gameState = GameState.O;
+                    playCount++;
+                    break;
+            }
             return {
                 board: newBoard,
                 currentPlayer: nextPlayer,
-                winner: checkWinner(newBoard),
                 oColour: state.oColour,
-                xColour: state.xColour
+                xColour: state.xColour,
+                gameState: gameState,
+                drawCount: drawCount,
+                playCount: playCount,
+                playerXWinCount: playerXWinCount
             }
         default:
             return state;
@@ -238,7 +289,7 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
             break;
 
     }
-    if (state.winner === SquareGo.X || state.winner === SquareGo.O) {
+    if (state.gameState !== GameState.Playing) {
         canGo = false;
     }
     var connectState = {
@@ -297,7 +348,7 @@ interface PlayerViewStateProps {
 class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
     render() {
 
-        return <div style={{ margin: 5, width: 290, padding: 10, borderWidth: "3px",borderStyle:"solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour }}>
+        return <div style={{  width: 274, padding: 10, borderWidth: "3px",borderStyle:"solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour }}>
             <div>{this.props.playerText}</div>
             {this.props.isWinner&&<div>Winner !</div>}
             </div>
@@ -310,11 +361,11 @@ var ConnectedPlayerView:any = connect((state: TicTacToeState, ownProps: PlayerVi
         playerColour = state.xColour;
     }
     var isWinner = false;
-    switch (state.winner) {
-        case SquareGo.O:
+    switch (state.gameState) {
+        case GameState.O:
             isWinner = ownProps.player === Player.O;
             break;
-        case SquareGo.X:
+        case GameState.X:
             isWinner = ownProps.player === Player.X;
             break;
     }
@@ -328,6 +379,58 @@ var ConnectedPlayerView:any = connect((state: TicTacToeState, ownProps: PlayerVi
         playerText: "Player " + playerId
     }
 })(PlayerView);
+
+interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
+    currentPlayer:Player
+}
+interface ScoreboardProps { }
+class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
+    render() {
+        var totalWins = this.props.playCount - this.props.drawCount;
+        var playerXLossCount = totalWins - this.props.playerXWinCount;
+        var playerOWinCount = playerXLossCount;
+        var playerOLossCount = this.props.playerXWinCount;
+        return <table>
+            <thead>
+                <th>Player</th>
+                <th>Won</th>
+                <th>Lost</th>
+                <th>Drawn</th>
+            </thead>
+            <ScoreboardPlayer playerColour={this.props.xColour} playerId="X" playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
+            <ScoreboardPlayer playerColour={this.props.oColour} playerId="O" playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount}/>
+            </table>
+    }
+}
+const ConnectedScoreboard:any = connect((state: TicTacToeState) => {
+    var scoreboardState: ScoreboardStateProps = {
+        currentPlayer: state.currentPlayer,
+        drawCount: state.drawCount,
+        playCount: state.playCount,
+        playerXWinCount: state.playerXWinCount,
+        oColour: state.oColour,
+        xColour:state.xColour
+    } 
+    return scoreboardState;
+})(Scoreboard);
+interface ScoreboardPlayerProps {
+    playerId: string,
+    playerBoldStyle: fontWeightBolderOrNormal,
+    playerColour: string,
+    won: number,
+    lost: number,
+    drawn:number
+}
+class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>{
+    render() {
+        return <tr>
+            <td style={{ fontWeight: this.props.playerBoldStyle }}>{this.props.playerId}</td>
+            <td>{this.props.won}</td>
+            <td>{this.props.lost}</td>
+            <td>{this.props.drawn}</td>
+            </tr>
+    }
+}
 //const store = createStore(
 //    combineReducers({
 //        hooksAndMounts,
@@ -343,9 +446,8 @@ const store = createStore(reducer);
 ReactDOM.render(
     <Provider store={store}>
         <div>
-            <div style={{marginTop:10,marginBottom:10}}>
-                <ConnectedPlayerView player={Player.X} />
-                <ConnectedPlayerView player={Player.O} />
+            <div style={{ marginTop: 10, marginBottom: 10 }}>
+                <ConnectedScoreboard/>
             </div>
             <ConnectedTicTacToeBoard />
         </div>
