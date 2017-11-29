@@ -540,7 +540,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
             <Modal style={this.getModalStyle()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                <div style={{margin:"0 auto",width:"80%"}}>
+                <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
             </Modal>
