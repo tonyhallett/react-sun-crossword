@@ -177,7 +177,9 @@ function reducer(state: TicTacToeState = {
             return {
                 board: newBoard,
                 currentPlayer: nextPlayer,
-                winner:checkWinner(newBoard)
+                winner: checkWinner(newBoard),
+                oColour: state.oColour,
+                xColour: state.xColour
             }
         default:
             return state;
@@ -295,7 +297,7 @@ interface PlayerViewStateProps {
 class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
     render() {
 
-        return <div style={{ margin: 5, width: 290, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour }}>
+        return <div style={{ margin: 5, width: 290, padding: 10, borderWidth: "3px",borderStyle:"solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour }}>
             <div>{this.props.playerText}</div>
             {this.props.isWinner&&<div>Winner !</div>}
             </div>

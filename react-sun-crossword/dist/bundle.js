@@ -21855,7 +21855,9 @@ function reducer(state, action) {
             return {
                 board: newBoard,
                 currentPlayer: nextPlayer,
-                winner: checkWinner(newBoard)
+                winner: checkWinner(newBoard),
+                oColour: state.oColour,
+                xColour: state.xColour
             };
         default:
             return state;
@@ -21941,7 +21943,7 @@ var PlayerView = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     PlayerView.prototype.render = function () {
-        return React.createElement("div", { style: { margin: 5, width: 290, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour } },
+        return React.createElement("div", { style: { margin: 5, width: 290, padding: 10, borderWidth: "3px", borderStyle: "solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour } },
             React.createElement("div", null, this.props.playerText),
             this.props.isWinner && React.createElement("div", null, "Winner !"));
     };
