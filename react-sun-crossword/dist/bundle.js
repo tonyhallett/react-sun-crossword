@@ -24172,7 +24172,8 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     };
 })(TicTacToeApp);
 var store = redux_1.createStore(reducer);
-ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store }), document.getElementById("example"));
+ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
+    React.createElement(ConnectedTicTacToeApp, null)), document.getElementById("example"));
 
 
 /***/ })

@@ -503,7 +503,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return message;
     }
 }
-const ConnectedTicTacToeApp = connect((state: TicTacToeState) => {
+const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
         gameState:state.gameState
     }
@@ -518,7 +518,7 @@ const ConnectedTicTacToeApp = connect((state: TicTacToeState) => {
 const store = createStore(reducer);
 ReactDOM.render(
     <Provider store={store}>
-        
+        <ConnectedTicTacToeApp/>
     </Provider>,
 
     document.getElementById("example")
