@@ -24155,30 +24155,33 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.getModalStyles = function () {
+            var rect = _this.modalNode.getBoundingClientRect();
+            var styles = {
+                overlay: {
+                    top: rect.top,
+                    left: rect.left,
+                    right: rect.right,
+                    bottom: rect.bottom
+                }
+            };
+            return styles;
+        };
+        return _this;
     }
     TicTacToeApp.prototype.modalShouldOpen = function () {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
-    };
-    TicTacToeApp.prototype.getModalStyles = function () {
-        var rect = this.modalNode.getBoundingClientRect();
-        var styles = {
-            overlay: {
-                top: rect.top,
-                left: rect.left,
-                right: rect.right,
-                bottom: rect.bottom
-            }
-        };
-        return styles;
     };
     TicTacToeApp.prototype.render = function () {
         var _this = this;
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
-            React.createElement("div", { ref: function (node) { return _this.modalNode = node; } },
+            React.createElement("div", { ref: function (node) {
+                    _this.modalNode = node;
+                } },
                 React.createElement(ConnectedTicTacToeBoard, null)),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
             React.createElement(Modal, { styles: this.getModalStyles(), isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },

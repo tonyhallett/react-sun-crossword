@@ -496,7 +496,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
     modalNode: HTMLDivElement
-    getModalStyles() {
+    getModalStyles=()=> {
         var rect = this.modalNode.getBoundingClientRect();
         var styles = {
             overlay: {
@@ -514,7 +514,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
-            <div ref={(node) => this.modalNode=node}>
+            <div ref={(node) => {
+                 this.modalNode = node;
+                }
+            }>
                 <ConnectedTicTacToeBoard />
             </div>
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
