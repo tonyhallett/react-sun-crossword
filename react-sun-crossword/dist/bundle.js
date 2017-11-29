@@ -13019,7 +13019,8 @@ function stringifySetStorageItem(itemKey, value, storageType) {
 exports.stringifySetStorageItem = stringifySetStorageItem;
 function parseGetStorageItem(itemKey, storageType) {
     if (storageType === void 0) { storageType = "localStorage"; }
-    var setting = window[storageType].getItem(itemKey);
+    var storage = window[storageType];
+    var setting = storage.getItem(itemKey);
     if (setting != null) {
         return JSON.parse(setting);
     }

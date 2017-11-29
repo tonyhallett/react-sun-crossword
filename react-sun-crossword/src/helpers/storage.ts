@@ -26,7 +26,8 @@ export function isStorageAvailable(type: storageType) {
     window[storageType].setItem(itemKey, JSON.stringify(value));
 }
 export function parseGetStorageItem(itemKey: string, storageType: storageType = "localStorage") {
-    var setting = window[storageType].getItem(itemKey);
+    var storage = window[storageType];
+    var setting =storage.getItem(itemKey);
     if (setting != null) {
         return JSON.parse(setting);
     }
