@@ -13012,12 +13012,14 @@ function isStorageAvailable(type) {
     }
 }
 exports.isStorageAvailable = isStorageAvailable;
-function stringifySetStorageItem(itemKey, value) {
-    window["localStorage"].setItem(itemKey, JSON.stringify(value));
+function stringifySetStorageItem(itemKey, value, storageType) {
+    if (storageType === void 0) { storageType = "localStorage"; }
+    window[storageType].setItem(itemKey, JSON.stringify(value));
 }
 exports.stringifySetStorageItem = stringifySetStorageItem;
-function parseGetStorageItem(itemKey) {
-    var setting = this.storage.getItem(itemKey);
+function parseGetStorageItem(itemKey, storageType) {
+    if (storageType === void 0) { storageType = "localStorage"; }
+    var setting = window[storageType].storage.getItem(itemKey);
     if (setting != null) {
         return JSON.parse(setting);
     }

@@ -1,4 +1,5 @@
-﻿export function isStorageAvailable(type:"localStorage"|"sessionStorage") {
+﻿type storageType =  "localStorage" | "sessionStorage"
+export function isStorageAvailable(type: storageType) {
     try {
         var storage = window[type],
             x = '__storage_test__';
@@ -21,11 +22,11 @@
             storage.length !== 0;
     }
 }
-export function stringifySetStorageItem(itemKey: string, value: any) {
-    window["localStorage"].setItem(itemKey, JSON.stringify(value));
+    export function stringifySetStorageItem(itemKey: string, value: any, storageType: storageType = "localStorage") {
+    window[storageType].setItem(itemKey, JSON.stringify(value));
 }
-export function parseGetStorageItem(itemKey: string) {
-    var setting = this.storage.getItem(itemKey);
+export function parseGetStorageItem(itemKey: string, storageType: storageType = "localStorage") {
+    var setting = window[storageType].storage.getItem(itemKey);
     if (setting != null) {
         return JSON.parse(setting);
     }
