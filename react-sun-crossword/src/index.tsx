@@ -432,7 +432,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>
     render() {
         return <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
             <td style={addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour })}>{this.props.playerId}</td>
-            <td> style={addPaddingToStyle({ textAlign: "center" })}>{this.props.won}</td>
+            <td style={addPaddingToStyle({ textAlign: "center" })}>{this.props.won}</td>
             <td style={addPaddingToStyle( {textAlign: "center" })}>{this.props.lost}</td>
             <td style={addPaddingToStyle({ textAlign: "center" })}>{this.props.drawn}</td >
             </tr>

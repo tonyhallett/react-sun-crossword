@@ -22067,11 +22067,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     ScoreboardPlayer.prototype.render = function () {
         return React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
             React.createElement("td", { style: addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
-            React.createElement("td", null,
-                " style=",
-                addPaddingToStyle({ textAlign: "center" }),
-                ">",
-                this.props.won),
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.won),
             React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.lost),
             React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.drawn));
     };
