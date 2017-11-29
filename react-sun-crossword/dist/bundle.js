@@ -23715,6 +23715,14 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(13);
@@ -23738,9 +23746,16 @@ var GameState;
     GameState[GameState["O"] = 1] = "O";
     GameState[GameState["Playing"] = 2] = "Playing";
     GameState[GameState["Draw"] = 3] = "Draw";
+    GameState[GameState["FinishedConfirmed"] = 4] = "FinishedConfirmed";
 })(GameState || (GameState = {}));
+var Finished_Confirmed = "FINISHED_CONFIRMED";
 var Play_Again = "PLAY_AGAIN";
 var Take_Go = "TAKE_GO";
+function finishedConfirmed() {
+    return {
+        type: Finished_Confirmed
+    };
+}
 function playAgain() {
     return {
         type: Play_Again
@@ -23901,6 +23916,8 @@ function reducer(state, action) {
         playerXWinCount: 0
     }; }
     switch (action.type) {
+        case Finished_Confirmed:
+            return __assign({}, state, { gameState: GameState.FinishedConfirmed });
         case Play_Again:
             var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
             return {
@@ -24137,13 +24154,21 @@ var TicTacToeApp = /** @class */ (function (_super) {
     function TicTacToeApp() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    TicTacToeApp.prototype.modalShouldOpen = function () {
+        var gameState = this.props.gameState;
+        return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
+    };
     TicTacToeApp.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
+            React.createElement("div", { ref: function (node) { return _this.modalNode = node; } }),
             React.createElement(ConnectedTicTacToeBoard, null),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
-            React.createElement(Modal, { isOpen: this.props.gameState !== GameState.Playing },
+            React.createElement(Modal, { parentSelector: function () { return _this.modalNode; }, styles: {
+                    content: {}
+                }, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", null, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
@@ -24168,6 +24193,9 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         playAgain: function () {
             dispatch(playAgain());
+        },
+        finishedConfirmed: function () {
+            dispatch(finishedConfirmed());
         }
     };
 })(TicTacToeApp);

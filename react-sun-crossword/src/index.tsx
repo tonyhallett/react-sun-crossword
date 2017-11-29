@@ -8,7 +8,7 @@ import * as Modal from 'react-modal';
 
 enum SquareGo { X, O, None }
 enum Player { X, O }
-enum GameState {X,O,Playing,Draw}
+enum GameState {X,O,Playing,Draw,FinishedConfirmed}
 //probably is a way to type a colour css property
 interface ScoreboardCountState {
     playCount: number,
@@ -19,6 +19,7 @@ interface PlayerColourState {
     xColour: string
     oColour: string
 }
+
 interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     board: SquareGo[][],
     currentPlayer: Player,
@@ -26,8 +27,14 @@ interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     gameState: GameState,
     
 }
+const Finished_Confirmed="FINISHED_CONFIRMED"
 const Play_Again = "PLAY_AGAIN";
 const Take_Go = "TAKE_GO"
+function finishedConfirmed() {
+    return {
+        type: Finished_Confirmed
+    }
+}
 function playAgain() {
     return {
         type: Play_Again
@@ -182,10 +189,14 @@ function reducer(state: TicTacToeState = {
     gameState: GameState.Playing,
     playCount:0,
     drawCount: 0,
-    playerXWinCount:0
-
+    playerXWinCount: 0
 }, action: AnyAction) {
     switch (action.type) {
+        case Finished_Confirmed:
+            return {
+                ...state,
+                gameState: GameState.FinishedConfirmed
+            }
         case Play_Again:
             var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
             return {
@@ -471,18 +482,33 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>
 
 interface TicTacToeAppProps {
     gameState: GameState,
-    playAgain:()=>void
+    playAgain: () => void,
+    finishedConfirmed: () => void,
 }
+
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
+    modalShouldOpen() {
+        var gameState = this.props.gameState;
+        return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
+    }
+    modalNode: HTMLDivElement
     render() {
         
         return <div>
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
+            <div ref={(node) => this.modalNode=node}></div>
             <ConnectedTicTacToeBoard />
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <Modal isOpen={this.props.gameState !== GameState.Playing}>
+            <Modal parentSelector={()=>this.modalNode} styles={
+                {
+                    content: {
+
+                    }
+                }
+
+            } isOpen = { this.modalShouldOpen() } onRequestClose={this.props.finishedConfirmed}>
                 <div>
                     {this.getWinDrawMessage()}
                 </div>
@@ -511,6 +537,9 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
         playAgain: function () {
             dispatch(playAgain())
+        },
+        finishedConfirmed: function () {
+            dispatch(finishedConfirmed());
         }
     }
 })(TicTacToeApp);
