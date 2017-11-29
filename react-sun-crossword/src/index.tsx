@@ -150,7 +150,7 @@ function reducer(state: TicTacToeState = {
     board: getDefaultBoard(),
     winner: SquareGo.None,
     oColour: "red",
-    xColour:"green"
+    xColour:"blue"
 
 }, action: AnyAction) {
     switch (action.type) {
@@ -236,7 +236,7 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
             break;
 
     }
-    if (state.winner) {
+    if (state.winner === SquareGo.X || state.winner === SquareGo.O) {
         canGo = false;
     }
     var connectState = {
@@ -289,12 +289,13 @@ interface PlayerViewStateProps {
     isWinner: boolean,
     playerColour: string,
     currentColour: string,
-    playerText: string
+    playerText: string,
+    currentBorderStyle:string
 }
 class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
     render() {
-        
-        return <div style={{ width:280,padding:10,borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour }}>
+
+        return <div style={{ margin:5,width: 280, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, borderStyle: this.props.currentBorderStyle, color: this.props.playerColour }}>
             <div>{this.props.playerText}</div>
             {this.props.isWinner&&<div>Winner !</div>}
             </div>
@@ -320,6 +321,7 @@ var ConnectedPlayerView:any = connect((state: TicTacToeState, ownProps: PlayerVi
         playerColour: playerColour,
         isWinner: isWinner,
         currentColour: isCurrent ? "green" : "black",
+        currentBorderStyle:isCurrent? "dotted":"solid",
         playerText: "Player " + playerId
     }
 })(PlayerView);
@@ -338,7 +340,7 @@ const store = createStore(reducer);
 ReactDOM.render(
     <Provider store={store}>
         <div>
-            <div style={{margin:10}}>
+            <div style={{marginTop:10,marginBottom:10}}>
                 <ConnectedPlayerView player={Player.X} />
                 <ConnectedPlayerView player={Player.O} />
             </div>

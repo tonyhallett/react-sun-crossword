@@ -21829,7 +21829,7 @@ function reducer(state, action) {
         board: getDefaultBoard(),
         winner: SquareGo.None,
         oColour: "red",
-        xColour: "green"
+        xColour: "blue"
     }; }
     switch (action.type) {
         case Take_Go:
@@ -21898,7 +21898,7 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
             canGo = true;
             break;
     }
-    if (state.winner) {
+    if (state.winner === SquareGo.X || state.winner === SquareGo.O) {
         canGo = false;
     }
     var connectState = {
@@ -21941,7 +21941,7 @@ var PlayerView = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     PlayerView.prototype.render = function () {
-        return React.createElement("div", { style: { width: 280, padding: 10, borderWidth: "1px", borderColor: this.props.currentColour, borderStyle: "solid", color: this.props.playerColour } },
+        return React.createElement("div", { style: { margin: 5, width: 280, padding: 10, borderWidth: "3px", borderColor: this.props.currentColour, borderStyle: this.props.currentBorderStyle, color: this.props.playerColour } },
             React.createElement("div", null, this.props.playerText),
             this.props.isWinner && React.createElement("div", null, "Winner !"));
     };
@@ -21967,6 +21967,7 @@ var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
         playerColour: playerColour,
         isWinner: isWinner,
         currentColour: isCurrent ? "green" : "black",
+        currentBorderStyle: isCurrent ? "dotted" : "solid",
         playerText: "Player " + playerId
     };
 })(PlayerView);
@@ -21983,7 +21984,7 @@ var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
 var store = redux_1.createStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement("div", null,
-        React.createElement("div", { style: { margin: 10 } },
+        React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
             React.createElement(ConnectedPlayerView, { player: Player.X }),
             React.createElement(ConnectedPlayerView, { player: Player.O })),
         React.createElement(ConnectedTicTacToeBoard, null))), document.getElementById("example"));
