@@ -517,7 +517,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     top: offset.top,
                     left: offset.left,
                     right:"auto",
-                    bottom: "auto"
+                    bottom: "auto",
+                    width: width,
+                    height:height
                 }
             }
             return styles;

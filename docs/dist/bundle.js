@@ -34441,7 +34441,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         top: offset.top,
                         left: offset.left,
                         right: "auto",
-                        bottom: "auto"
+                        bottom: "auto",
+                        width: width,
+                        height: height
                     }
                 };
                 return styles;
