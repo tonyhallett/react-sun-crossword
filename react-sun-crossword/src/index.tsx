@@ -581,28 +581,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
 
     render() {
-        /*
-        
-
-        <div style={{ backgroundColor: "orange", overflow: "auto" }}>
-                <div id="testOverlay" style={{ marginLeft: 40, marginRight: 30, marginTop: 20, marginBottom: 10, paddingLeft: 40, paddingRight: 30, paddingTop: 20, paddingBottom: 10, borderLeftWidth: 40, borderRightWidth: 30, borderTopWidth: 20, borderBottomWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
-                    <div  style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
-                </div>
-            </div>
-
-        <button onClick={() => { this.setState({ showModal: true }) }}>Show modal</button>
-            <select value={this.state.modalDimension} onChange={this.selectChanged}>
-                <option value={ElementDimensionsChoice.Content}>Content</option>
-                <option value={ElementDimensionsChoice.Padding}>Padding</option>
-                <option value={ElementDimensionsChoice.PaddingAndBorder}>PaddingAndBorder</option>
-                <option value={ElementDimensionsChoice.PaddingBorderMargin}>PaddingBorderMargin</option>
-            </select>
-            <ModalReady getStyle={this.getModalStyle} isOpen={this.state.showModal} onRequestClose={() => { this.setState({showModal:false})}}>
-                <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
-                    {this.getWinDrawMessage()}
-                </div>
-            </ModalReady>
-        */
+       
         return <div style={{width:350,margin:"0 auto"}}>
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
@@ -680,6 +659,21 @@ class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
         return <Modal style={this.props.getStyle()} {...this.props} />
     }
 }
+class VerticallyCenteredContainer extends React.Component<undefined, undefined>{
+    render() {
+        return <div style={{
+            display: "table",
+            position: "absolute",
+            height: "100%",
+            width:" 100%"}}>
+            <div style={{
+                display: "table-cell",
+                verticalAlign: "middle"}}>
+                {this.props.children}
+            </div>
+        </div>
+    }
+}
 
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
@@ -700,7 +694,9 @@ var store = createLocalStorageStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>
-        <ConnectedTicTacToeApp/>
+        <VerticallyCenteredContainer>
+            <ConnectedTicTacToeApp />
+        </VerticallyCenteredContainer>
     </Provider>,
 
     document.getElementById("example")

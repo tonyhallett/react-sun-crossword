@@ -34587,28 +34587,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        /*
-        
-
-        <div style={{ backgroundColor: "orange", overflow: "auto" }}>
-                <div id="testOverlay" style={{ marginLeft: 40, marginRight: 30, marginTop: 20, marginBottom: 10, paddingLeft: 40, paddingRight: 30, paddingTop: 20, paddingBottom: 10, borderLeftWidth: 40, borderRightWidth: 30, borderTopWidth: 20, borderBottomWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
-                    <div  style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
-                </div>
-            </div>
-
-        <button onClick={() => { this.setState({ showModal: true }) }}>Show modal</button>
-            <select value={this.state.modalDimension} onChange={this.selectChanged}>
-                <option value={ElementDimensionsChoice.Content}>Content</option>
-                <option value={ElementDimensionsChoice.Padding}>Padding</option>
-                <option value={ElementDimensionsChoice.PaddingAndBorder}>PaddingAndBorder</option>
-                <option value={ElementDimensionsChoice.PaddingBorderMargin}>PaddingBorderMargin</option>
-            </select>
-            <ModalReady getStyle={this.getModalStyle} isOpen={this.state.showModal} onRequestClose={() => { this.setState({showModal:false})}}>
-                <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
-                    {this.getWinDrawMessage()}
-                </div>
-            </ModalReady>
-        */
         return React.createElement("div", { style: { width: 350, margin: "0 auto" } },
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
@@ -34650,6 +34628,25 @@ var ModalReady = /** @class */ (function (_super) {
     };
     return ModalReady;
 }(React.Component));
+var VerticallyCenteredContainer = /** @class */ (function (_super) {
+    __extends(VerticallyCenteredContainer, _super);
+    function VerticallyCenteredContainer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    VerticallyCenteredContainer.prototype.render = function () {
+        return React.createElement("div", { style: {
+                display: "table",
+                position: "absolute",
+                height: "100%",
+                width: " 100%"
+            } },
+            React.createElement("div", { style: {
+                    display: "table-cell",
+                    verticalAlign: "middle"
+                } }, this.props.children));
+    };
+    return VerticallyCenteredContainer;
+}(React.Component));
 var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         gameState: state.gameState
@@ -34666,7 +34663,8 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
 })(TicTacToeApp);
 var store = storage_1.createLocalStorageStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(ConnectedTicTacToeApp, null)), document.getElementById("example"));
+    React.createElement(VerticallyCenteredContainer, null,
+        React.createElement(ConnectedTicTacToeApp, null))), document.getElementById("example"));
 
 
 /***/ })
