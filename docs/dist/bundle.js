@@ -34503,21 +34503,17 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        var _this = this;
+        /*
+        <ConnectedTicTacToeBoard ref={(tttb) => {
+                this.modalIsReady = tttb ? true : false;
+            }} />
+        */
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
-            React.createElement(ConnectedTicTacToeBoard, { ref: function (tttb) {
-                    _this.modalIsReady = tttb ? true : false;
-                } }),
+            React.createElement(ConnectedTicTacToeBoard, null),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
-            React.createElement(ModalReady, { ref: function (m) {
-                    if (m) {
-                        if (_this.modalIsReady) {
-                            m.isReady();
-                        } //should I be resetting it as well
-                    }
-                }, getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+            React.createElement(ModalReady, { ref: function (m) { return m ? m.isReady() : void 0; }, getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
@@ -34542,7 +34538,9 @@ var ModalReady = /** @class */ (function (_super) {
         return _this;
     }
     ModalReady.prototype.isReady = function () {
-        this.setState({ ready: true });
+        if (!this.state.ready) {
+            this.setState({ ready: true });
+        }
     };
     ModalReady.prototype.render = function () {
         if (!this.state.ready) {

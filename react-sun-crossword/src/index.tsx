@@ -498,7 +498,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
-    modalIsReady:boolean
+    //modalIsReady:boolean
     modalReady: ModalReady
     getModalStyle = () => {
         var table = document.querySelector("#" + ticTacToeBoardId);
@@ -532,25 +532,20 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         
     }
     render() {
-        
+        /*
+        <ConnectedTicTacToeBoard ref={(tttb) => {
+                this.modalIsReady = tttb ? true : false;
+            }} />
+        */
         return <div>
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
 
-            <ConnectedTicTacToeBoard ref={(tttb) => {
-                this.modalIsReady = tttb ? true : false;
-            }} />
+            <ConnectedTicTacToeBoard/>
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <ModalReady ref={(m) => {
-                if (m) {
-                    if (this.modalIsReady) {
-                        m.isReady();
-                    }//should I be resetting it as well
-                }
-            }
-            } getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalReady ref={(m)=>m?m.isReady():void 0} getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
@@ -585,7 +580,10 @@ class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
         this.state = { ready:false }
     }
     isReady() {
-        this.setState({ready:true})
+        if (!this.state.ready) {
+            this.setState({ ready: true })
+        }
+        
     }
     render() {
         if (!this.state.ready) {
