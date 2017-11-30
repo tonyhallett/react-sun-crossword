@@ -34613,7 +34613,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
             React.createElement(ConnectedTicTacToeBoard, null),
-            React.createElement("button", { style: { margin: "10 auto", width: "80%", padding: 10 }, onClick: this.props.playAgain }, "Play again"),
+            React.createElement("button", { style: { marginTop: 10, width: "100%", padding: 10 }, onClick: this.props.playAgain }, "Play again"),
             React.createElement(ModalReady, { getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())));
     };
