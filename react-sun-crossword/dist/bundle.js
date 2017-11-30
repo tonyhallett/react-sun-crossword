@@ -34562,7 +34562,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
-            React.createElement("div", { style: { backgroundColor: "orange" } },
+            React.createElement("div", { style: { backgroundColor: "orange", overflow: "auto" } },
                 React.createElement("div", { style: { margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" } },
                     React.createElement("div", { style: { width: 300, height: 300, backgroundColor: "blue" } }))),
             React.createElement(ConnectedTicTacToeBoard, null),

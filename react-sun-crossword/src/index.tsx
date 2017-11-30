@@ -558,7 +558,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
-            <div style={{ backgroundColor: "orange" }}>
+            <div style={{ backgroundColor: "orange",overflow:"auto" }}>
                 <div style={{ margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
                     <div style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
                 </div>
