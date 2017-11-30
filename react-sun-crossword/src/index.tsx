@@ -712,7 +712,7 @@ var store = createLocalStorageStore(reducer);
 const overrideAgentBodyMarginCss="body {margin:0}"
 ReactDOM.render(
     <Provider store={store}>
-        <InjectCss css="overrideAgentBodyMarginCss">
+        <InjectCss css={overrideAgentBodyMarginCss}>
         <VerticallyCenteredContainer>
             <ConnectedTicTacToeApp />
         </VerticallyCenteredContainer>

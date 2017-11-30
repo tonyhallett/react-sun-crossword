@@ -34681,7 +34681,7 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
 var store = storage_1.createLocalStorageStore(reducer);
 var overrideAgentBodyMarginCss = "body {margin:0}";
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(InjectCss, { css: "overrideAgentBodyMarginCss" },
+    React.createElement(InjectCss, { css: overrideAgentBodyMarginCss },
         React.createElement(VerticallyCenteredContainer, null,
             React.createElement(ConnectedTicTacToeApp, null)))), document.getElementById("example"));
 
