@@ -582,18 +582,20 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
     render() {
        
-        return <div style={{width:350,margin:"0 auto"}}>
-            <div style={{ marginTop: 10, marginBottom: 10 }}>
-                <ConnectedScoreboard />
-            </div>
-            <ConnectedTicTacToeBoard />
-            <button style={{marginTop:10,width: "100%"}} onClick={this.props.playAgain}>Play again</button>
-
-            <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                    {this.getWinDrawMessage()}
+        return <div style={{ width: 350, margin: "0 auto" }}>
+            <div style={{display:"inline-block"}}>
+                <div style={{ marginTop: 10, marginBottom: 10 }}>
+                    <ConnectedScoreboard />
                 </div>
-            </ModalReady>
+                <ConnectedTicTacToeBoard />
+                <button style={{marginTop:10,width: "100%"}} onClick={this.props.playAgain}>Play again</button>
+
+                <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                    <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                        {this.getWinDrawMessage()}
+                    </div>
+                </ModalReady>
+            </div>
         </div>
     }
     getWinDrawMessage() {
