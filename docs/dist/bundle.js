@@ -34527,6 +34527,27 @@ function getElementHeight(element, dimensionsChoice) {
             return $el.height();
     }
 }
+function getOverlay(element, dimensionsChoice) {
+    var $element = $(element);
+    var offset = $element.offset(); //border-box
+    var left = offset.left;
+    var top = offset.top;
+    var width;
+    var height;
+    var paddingLeft = $element.css('padding-left');
+    var paddingRight = $element.css('padding-right');
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.Content:
+            break;
+        case ElementDimensionsChoice.Padding:
+            break;
+        case ElementDimensionsChoice.PaddingAndBorder:
+            break;
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            break;
+    }
+    return {};
+}
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp(props) {
@@ -34536,25 +34557,27 @@ var TicTacToeApp = /** @class */ (function (_super) {
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
         };
         _this.getModalStyle = function () {
-            var table = document.querySelector("#" + ticTacToeBoardId);
-            if (table) {
-                var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder);
-                var width = getElementWidth(table, ElementDimensionsChoice.PaddingAndBorder);
-                var offset = $(table).offset(); //does this point include the padding,margin ?
-                var rect = table.getBoundingClientRect();
-                var styles = {
-                    overlay: {
-                        top: rect.top,
-                        left: rect.left,
-                        right: "auto",
-                        bottom: "auto",
-                        width: width,
-                        height: height
-                    }
-                };
-                return styles;
-            }
-            return {};
+            var testOverlay = document.querySelector("#testOverlay");
+            return getOverlay(testOverlay, _this.state.modalDimension);
+            //var table = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
+            //if (table) {
+            //    var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder)
+            //    var width = getElementWidth(table, ElementDimensionsChoice.PaddingAndBorder)
+            //    var offset = $(table).offset();//does this point include the padding,margin ?
+            //    var rect = table.getBoundingClientRect();
+            //    var styles = {
+            //        overlay: {
+            //            top: rect.top,
+            //            left: rect.left,
+            //            right:"auto",
+            //            bottom: "auto",
+            //            width: width,
+            //            height:height
+            //        }
+            //    }
+            //    return styles;
+            //}
+            //return {};
         };
         _this.selectChanged = function (event) {
             _this.setState({ modalDimension: event.target.value });
@@ -34579,7 +34602,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         */
         return React.createElement("div", null,
             React.createElement("div", { style: { backgroundColor: "orange", overflow: "auto" } },
-                React.createElement("div", { style: { margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" } },
+                React.createElement("div", { id: "testOverlay", style: { margin: 10, paddingLeft: 10, paddingRight: 20, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" } },
                     React.createElement("div", { style: { width: 300, height: 300, backgroundColor: "blue" } }))),
             React.createElement("button", { onClick: function () { _this.setState({ showModal: true }); } }, "Show modal"),
             React.createElement("select", { value: this.state.modalDimension, onChange: this.selectChanged },

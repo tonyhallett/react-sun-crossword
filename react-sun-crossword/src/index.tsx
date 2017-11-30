@@ -522,7 +522,33 @@ function getElementHeight(element: HTMLElement, dimensionsChoice: ElementDimensi
 
     }
 }
+function getOverlay(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
+    var $element = $(element);
+    var offset = $element.offset();//border-box
+    var left = offset.left;
+    var top = offset.top;
+    var width
+    var height
+    var paddingLeft = $element.css('padding-left')
+    var paddingRight = $element.css('padding-right')
 
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.Content:
+
+            break;
+        case ElementDimensionsChoice.Padding:
+
+            break;
+        case ElementDimensionsChoice.PaddingAndBorder:
+
+            break;
+        case ElementDimensionsChoice.PaddingBorderMargin:
+
+            break;
+
+    }
+    return {};
+}
 //temp
 interface TicTacToAppState {
     showModal: boolean,
@@ -539,28 +565,30 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToAppState>{
     }
     modalReady: ModalReady
     getModalStyle = () => {
-        var table = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
-        if (table) {
+        var testOverlay = document.querySelector("#testOverlay") as HTMLElement;
+        return getOverlay(testOverlay, this.state.modalDimension);
+        //var table = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
+        //if (table) {
 
-            var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder)
-            var width = getElementWidth(table, ElementDimensionsChoice.PaddingAndBorder)
-            var offset = $(table).offset();//does this point include the padding,margin ?
+        //    var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder)
+        //    var width = getElementWidth(table, ElementDimensionsChoice.PaddingAndBorder)
+        //    var offset = $(table).offset();//does this point include the padding,margin ?
 
-            var rect = table.getBoundingClientRect();
+        //    var rect = table.getBoundingClientRect();
            
-            var styles = {
-                overlay: {
-                    top: rect.top,
-                    left: rect.left,
-                    right:"auto",
-                    bottom: "auto",
-                    width: width,
-                    height:height
-                }
-            }
-            return styles;
-        }
-        return {};
+        //    var styles = {
+        //        overlay: {
+        //            top: rect.top,
+        //            left: rect.left,
+        //            right:"auto",
+        //            bottom: "auto",
+        //            width: width,
+        //            height:height
+        //        }
+        //    }
+        //    return styles;
+        //}
+        //return {};
         
     }
     selectChanged = (event) => {
@@ -583,8 +611,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToAppState>{
         return <div>
             
             <div style={{ backgroundColor: "orange",overflow:"auto" }}>
-                <div style={{ margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
-                    <div style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
+                <div id="testOverlay" style={{ margin: 10, paddingLeft: 10,paddingRight:20, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
+                    <div  style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
                 </div>
             </div>
             
