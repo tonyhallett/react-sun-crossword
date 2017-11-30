@@ -506,7 +506,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             var $table = $(table);
             var height = $table.height();
             var width = $table.width();
-            var offset = $table.offset();
+            //var offset = $table.offset();
 
             var rect = table.getBoundingClientRect();
             /*
@@ -515,11 +515,24 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     bottom: $(window).height() - (offset.top + height)
 
             width and height does the trick
-            */
-            var styles = {
+
+             var styles = {
                 overlay: {
                     top: offset.top,
                     left: offset.left,
+                    right:"auto",
+                    bottom: "auto",
+                    width: width,
+                    height:height
+                }
+            }
+            */
+
+
+            var styles = {
+                overlay: {
+                    top: rect.top,
+                    left: rect.left,
                     right:"auto",
                     bottom: "auto",
                     width: width,
@@ -532,14 +545,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         
     }
     render() {
-        /*
-        <ConnectedTicTacToeBoard ref={(tttb) => {
-                this.modalIsReady = tttb ? true : false;
-            }} />
-
-        ref={(m)=>m?m.isReady():void 0} getStyle={this.getModalStyle}
-        */
-
         return <div>
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />

@@ -34507,7 +34507,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 var $table = $(table);
                 var height = $table.height();
                 var width = $table.width();
-                var offset = $table.offset();
+                //var offset = $table.offset();
                 var rect = table.getBoundingClientRect();
                 /*
                 works until resize
@@ -34515,11 +34515,22 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         bottom: $(window).height() - (offset.top + height)
     
                 width and height does the trick
-                */
-                var styles = {
+    
+                 var styles = {
                     overlay: {
                         top: offset.top,
                         left: offset.left,
+                        right:"auto",
+                        bottom: "auto",
+                        width: width,
+                        height:height
+                    }
+                }
+                */
+                var styles = {
+                    overlay: {
+                        top: rect.top,
+                        left: rect.left,
                         right: "auto",
                         bottom: "auto",
                         width: width,
@@ -34533,13 +34544,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        /*
-        <ConnectedTicTacToeBoard ref={(tttb) => {
-                this.modalIsReady = tttb ? true : false;
-            }} />
-
-        ref={(m)=>m?m.isReady():void 0} getStyle={this.getModalStyle}
-        */
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
