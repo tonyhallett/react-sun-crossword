@@ -34564,7 +34564,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 React.createElement(ConnectedScoreboard, null)),
             React.createElement("div", { style: { backgroundColor: "orange" } },
                 React.createElement("div", { style: { margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" } },
-                    React.createElement("div", { style: { minWidth: 300, minHeight: 300, backgroundColor: "blue" } }))),
+                    React.createElement("div", { style: { width: 300, height: 300, backgroundColor: "blue" } }))),
             React.createElement(ConnectedTicTacToeBoard, null),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
             React.createElement(ModalReady, { getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
