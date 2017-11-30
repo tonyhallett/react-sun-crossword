@@ -527,7 +527,7 @@ function getElementEdgeLength(element:HTMLElement,lengthType: ElementLengthType)
     var $el = $(element);
     return parseFloat($el.css(lengthType));
 }
-function getOverlay(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
+function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsChoice.PaddingAndBorder) {
     var $element = $(element);
     var offset = $element.offset();//border-box
     var left = offset.left;
@@ -567,77 +567,30 @@ function getOverlay(element: HTMLElement, dimensionsChoice: ElementDimensionsCho
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-//temp
-interface TicTacToAppState {
-    showModal: boolean,
-    modalDimension: ElementDimensionsChoice
-}
-class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToAppState>{
-    constructor(props) {
-        super(props);
-        this.state = { showModal: false, modalDimension:ElementDimensionsChoice.Content }
-    }
+class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
-    modalReady: ModalReady
     getModalStyle = () => {
-        var testOverlay = document.querySelector("#testOverlay") as HTMLElement;
+        var testOverlay = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
         return {
-            overlay: getOverlay(testOverlay, this.state.modalDimension)
+            overlay: getOverlay(testOverlay)
         }
-        //var table = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
-        //if (table) {
-
-        //    var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder)
-        //    var width = getElementWidth(table, ElementDimensionsChoice.PaddingAndBorder)
-        //    var offset = $(table).offset();//does this point include the padding,margin ?
-
-        //    var rect = table.getBoundingClientRect();
-           
-        //    var styles = {
-        //        overlay: {
-        //            top: rect.top,
-        //            left: rect.left,
-        //            right:"auto",
-        //            bottom: "auto",
-        //            width: width,
-        //            height:height
-        //        }
-        //    }
-        //    return styles;
-        //}
-        //return {};
         
     }
-    selectChanged = (event) => {
-        this.setState({modalDimension:parseInt(event.target.value)})
-    }
+
     render() {
         /*
-        <div style={{ marginTop: 10, marginBottom: 10 }}>
-                <ConnectedScoreboard />
-            </div>
-        <ConnectedTicTacToeBoard/>
-        <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
+        
 
-        <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
-                    {this.getWinDrawMessage()}
-                </div>
-            </ModalReady>
-        */
-        return <div>
-            
-            <div style={{ backgroundColor: "orange", overflow: "auto" }}>
+        <div style={{ backgroundColor: "orange", overflow: "auto" }}>
                 <div id="testOverlay" style={{ marginLeft: 40, marginRight: 30, marginTop: 20, marginBottom: 10, paddingLeft: 40, paddingRight: 30, paddingTop: 20, paddingBottom: 10, borderLeftWidth: 40, borderRightWidth: 30, borderTopWidth: 20, borderBottomWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
                     <div  style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
                 </div>
             </div>
-            
-            
-            <button onClick={() => { this.setState({ showModal: true }) }}>Show modal</button>
+
+        <button onClick={() => { this.setState({ showModal: true }) }}>Show modal</button>
             <select value={this.state.modalDimension} onChange={this.selectChanged}>
                 <option value={ElementDimensionsChoice.Content}>Content</option>
                 <option value={ElementDimensionsChoice.Padding}>Padding</option>
@@ -649,7 +602,19 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToAppState>{
                     {this.getWinDrawMessage()}
                 </div>
             </ModalReady>
+        */
+        return <div>
+            <div style={{ marginTop: 10, marginBottom: 10 }}>
+                <ConnectedScoreboard />
+            </div>
+            <ConnectedTicTacToeBoard />
+            <button style={{ margin: "10 auto", width: "80%", padding: 10 }} onClick={this.props.playAgain}>Play again</button>
 
+            <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                    {this.getWinDrawMessage()}
+                </div>
+            </ModalReady>
         </div>
     }
     getWinDrawMessage() {
@@ -695,7 +660,6 @@ interface ModalProps {
 interface ModalReadyProps extends ModalProps {
     getStyle: () => ModalStyle
 }
-
 interface ModalReadyState {
     ready:boolean
 }
@@ -708,17 +672,11 @@ class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
     componentDidMount() {
         this.setState({ ready: true })
     }
-    //isReady() {
-    //    if (!this.state.ready) {
-    //        this.setState({ ready: true })
-    //    }
-        
-    //}
     render() {
         if (!this.state.ready) {
             return null;
         }
-        //style={this.props.getStyle()} 
+
         return <Modal style={this.props.getStyle()} {...this.props} />
     }
 }
