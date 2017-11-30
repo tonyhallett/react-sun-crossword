@@ -492,8 +492,14 @@ interface TicTacToeAppProps {
     playAgain: () => void,
     finishedConfirmed: () => void,
 }
-
-class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
+interface TicTacToeAppState {
+    boardRendered:boolean
+}
+class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
+    constructor(props) {
+        super(props);
+        this.state = { boardRendered:false }
+    }
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -536,11 +542,11 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
-            
-            <ConnectedTicTacToeBoard />
+
+            <ConnectedTicTacToeBoard ref={() => { this.setState({ boardRendered: true }) }} />
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <Modal style={this.getModalStyle()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <Modal style={this.getModalStyle()} isOpen={this.modalShouldOpen() && this.state.boardRendered} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
