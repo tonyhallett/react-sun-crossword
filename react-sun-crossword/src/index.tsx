@@ -631,7 +631,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToAppState>{
         return <div>
             
             <div style={{ backgroundColor: "orange", overflow: "auto" }}>
-                <div id="testOverlay" style={{ marginLeft: 40, marginRight: 30, marginTop: 30, marginBottom: 10, paddingLeft: 40, paddingRight: 30, paddingTop: 30, paddingBottom: 10, borderLeftWidth: 40, borderRightWidth: 30, borderTopWidth: 20, borderBottomWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
+                <div id="testOverlay" style={{ marginLeft: 40, marginRight: 30, marginTop: 20, marginBottom: 10, paddingLeft: 40, paddingRight: 30, paddingTop: 20, paddingBottom: 10, borderLeftWidth: 40, borderRightWidth: 30, borderTopWidth: 20, borderBottomWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
                     <div  style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
                 </div>
             </div>
