@@ -498,6 +498,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
+    modalIsReady:boolean
     modalReady: ModalReady
     getModalStyle = () => {
         var table = document.querySelector("#" + ticTacToeBoardId);
@@ -537,10 +538,23 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 <ConnectedScoreboard />
             </div>
 
-            <ConnectedTicTacToeBoard ref={() => { this.modalReady.isReady() }} />
+            <ConnectedTicTacToeBoard ref={() => {
+                if (this.modalReady) {
+                    this.modalReady.isReady();
+                } else {
+                    this.modalIsReady = true;
+                }
+            }} />
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <ModalReady ref={(m)=>this.modalReady=m} style={this.getModalStyle()} isOpen={this.modalShouldOpen} onRequestClose={this.props.finishedConfirmed}>
+            <ModalReady ref={(m) => {
+                if (this.modalIsReady) {
+                    m.isReady();
+                } else {
+                    this.modalReady = m
+                }
+                }
+            } style={this.getModalStyle()} isOpen={this.modalShouldOpen} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
