@@ -4,8 +4,8 @@ import { Provider, connect, Store } from "react-redux"
 import { createStore, combineReducers, applyMiddleware, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import * as Modal from 'react-modal';
-import * as $ from "jquery"
 import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, createLocalStorageStore} from "./helpers/storage"
+import * as $ from 'jquery';
 
 enum SquareGo { X, O, None }
 enum Player { X, O }
@@ -492,43 +492,52 @@ interface TicTacToeAppProps {
     playAgain: () => void,
     finishedConfirmed: () => void,
 }
+enum ElementDimensionsChoice { Content, PaddingAndBorder, Padding, PaddingBorderMargin }
+//http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
+function getElementWidth(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerWidth(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerWidth();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerWidth(true);
+        case ElementDimensionsChoice.Content:
+            return $el.width()
 
+    }
+}
+function getElementHeight(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerHeight(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerHeight();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerHeight(true);
+        case ElementDimensionsChoice.Content:
+            return $el.height()
+
+    }
+}
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
-    //modalIsReady:boolean
     modalReady: ModalReady
     getModalStyle = () => {
-        var table = document.querySelector("#" + ticTacToeBoardId);
+        var table = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
         if (table) {
-            var $table = $(table);
-            var height = $table.height();
-            var width = $table.width();
-            //var offset = $table.offset();
+
+            var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder)
+            var width = getElementWidth(table, ElementDimensionsChoice.PaddingAndBorder)
+            var offset = $(table).offset();//does this point include the padding,margin ?
 
             var rect = table.getBoundingClientRect();
-            /*
-            works until resize
-            right: $(window).width() - (offset.left + width),
-                    bottom: $(window).height() - (offset.top + height)
-
-            width and height does the trick
-
-             var styles = {
-                overlay: {
-                    top: offset.top,
-                    left: offset.left,
-                    right:"auto",
-                    bottom: "auto",
-                    width: width,
-                    height:height
-                }
-            }
-            */
-
-
+           
             var styles = {
                 overlay: {
                     top: rect.top,
@@ -549,7 +558,11 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
-
+            <div style={{ backgroundColor: "orange" }}>
+                <div style={{ margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
+                    <div style={{ minWidth: 300, minHeight: 300, backgroundColor:"blue" }}></div>
+                </div>
+            </div>
             <ConnectedTicTacToeBoard/>
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>

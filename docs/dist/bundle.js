@@ -34066,8 +34066,8 @@ var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(13);
 var react_redux_1 = __webpack_require__(46);
 var Modal = __webpack_require__(45);
-var $ = __webpack_require__(44);
 var storage_1 = __webpack_require__(47);
+var $ = __webpack_require__(44);
 var SquareGo;
 (function (SquareGo) {
     SquareGo[SquareGo["X"] = 0] = "X";
@@ -34493,6 +34493,40 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     };
     return ScoreboardPlayer;
 }(React.Component));
+var ElementDimensionsChoice;
+(function (ElementDimensionsChoice) {
+    ElementDimensionsChoice[ElementDimensionsChoice["Content"] = 0] = "Content";
+    ElementDimensionsChoice[ElementDimensionsChoice["PaddingAndBorder"] = 1] = "PaddingAndBorder";
+    ElementDimensionsChoice[ElementDimensionsChoice["Padding"] = 2] = "Padding";
+    ElementDimensionsChoice[ElementDimensionsChoice["PaddingBorderMargin"] = 3] = "PaddingBorderMargin";
+})(ElementDimensionsChoice || (ElementDimensionsChoice = {}));
+//http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
+function getElementWidth(element, dimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerWidth(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerWidth();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerWidth(true);
+        case ElementDimensionsChoice.Content:
+            return $el.width();
+    }
+}
+function getElementHeight(element, dimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerHeight(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerHeight();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerHeight(true);
+        case ElementDimensionsChoice.Content:
+            return $el.height();
+    }
+}
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
@@ -34504,29 +34538,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
         _this.getModalStyle = function () {
             var table = document.querySelector("#" + ticTacToeBoardId);
             if (table) {
-                var $table = $(table);
-                var height = $table.height();
-                var width = $table.width();
-                //var offset = $table.offset();
+                var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder);
+                var width = getElementWidth(table, ElementDimensionsChoice.PaddingAndBorder);
+                var offset = $(table).offset(); //does this point include the padding,margin ?
                 var rect = table.getBoundingClientRect();
-                /*
-                works until resize
-                right: $(window).width() - (offset.left + width),
-                        bottom: $(window).height() - (offset.top + height)
-    
-                width and height does the trick
-    
-                 var styles = {
-                    overlay: {
-                        top: offset.top,
-                        left: offset.left,
-                        right:"auto",
-                        bottom: "auto",
-                        width: width,
-                        height:height
-                    }
-                }
-                */
                 var styles = {
                     overlay: {
                         top: rect.top,
@@ -34547,6 +34562,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
+            React.createElement("div", { style: { backgroundColor: "orange" } },
+                React.createElement("div", { style: { margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" } },
+                    React.createElement("div", { style: { minWidth: 300, minHeight: 300, backgroundColor: "blue" } }))),
             React.createElement(ConnectedTicTacToeBoard, null),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
             React.createElement(ModalReady, { getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
