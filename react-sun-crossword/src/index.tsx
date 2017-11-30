@@ -522,7 +522,17 @@ function getElementHeight(element: HTMLElement, dimensionsChoice: ElementDimensi
 
     }
 }
-class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
+
+//temp
+interface TicTacToAppState {
+    showModal: boolean,
+    modalDimension: ElementDimensionsChoice
+}
+class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToAppState>{
+    constructor(props) {
+        super(props);
+        this.state = { showModal: false, modalDimension:ElementDimensionsChoice.Content }
+    }
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -553,20 +563,40 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return {};
         
     }
+    selectChanged = (event) => {
+        this.setState({modalDimension:event.target.value})
+    }
     render() {
-        return <div>
-            <div style={{ marginTop: 10, marginBottom: 10 }}>
+        /*
+        <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
+        <ConnectedTicTacToeBoard/>
+        <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
+
+        <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
+                    {this.getWinDrawMessage()}
+                </div>
+            </ModalReady>
+        */
+        return <div>
+            
             <div style={{ backgroundColor: "orange",overflow:"auto" }}>
                 <div style={{ margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" }}>
                     <div style={{ width: 300, height: 300, backgroundColor:"blue" }}></div>
                 </div>
             </div>
-            <ConnectedTicTacToeBoard/>
             
-            <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            
+            <button onClick={() => { this.setState({ showModal: true }) }}>Show modal</button>
+            <select value={this.state.modalDimension} onChange={this.selectChanged}>
+                <option value={ElementDimensionsChoice.Content}>Content</option>
+                <option value={ElementDimensionsChoice.Padding}>Padding</option>
+                <option value={ElementDimensionsChoice.PaddingAndBorder}>PaddingAndBorder</option>
+                <option value={ElementDimensionsChoice.PaddingBorderMargin}>PaddingBorderMargin</option>
+            </select>
+            <ModalReady getStyle={this.getModalStyle} isOpen={this.state.showModal} onRequestClose={() => { this.setState({showModal:false})}}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>

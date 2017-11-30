@@ -34529,8 +34529,8 @@ function getElementHeight(element, dimensionsChoice) {
 }
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
-    function TicTacToeApp() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function TicTacToeApp(props) {
+        var _this = _super.call(this, props) || this;
         _this.modalShouldOpen = function () {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -34556,18 +34556,38 @@ var TicTacToeApp = /** @class */ (function (_super) {
             }
             return {};
         };
+        _this.selectChanged = function (event) {
+            _this.setState({ modalDimension: event.target.value });
+        };
+        _this.state = { showModal: false, modalDimension: ElementDimensionsChoice.Content };
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
+        var _this = this;
+        /*
+        <div style={{ marginTop: 10, marginBottom: 10 }}>
+                <ConnectedScoreboard />
+            </div>
+        <ConnectedTicTacToeBoard/>
+        <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
+
+        <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
+                    {this.getWinDrawMessage()}
+                </div>
+            </ModalReady>
+        */
         return React.createElement("div", null,
-            React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
-                React.createElement(ConnectedScoreboard, null)),
             React.createElement("div", { style: { backgroundColor: "orange", overflow: "auto" } },
                 React.createElement("div", { style: { margin: 10, padding: 10, borderWidth: 10, borderStyle: "solid", borderColor: "red", backgroundColor: "yellow" } },
                     React.createElement("div", { style: { width: 300, height: 300, backgroundColor: "blue" } }))),
-            React.createElement(ConnectedTicTacToeBoard, null),
-            React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
-            React.createElement(ModalReady, { getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+            React.createElement("button", { onClick: function () { _this.setState({ showModal: true }); } }, "Show modal"),
+            React.createElement("select", { value: this.state.modalDimension, onChange: this.selectChanged },
+                React.createElement("option", { value: ElementDimensionsChoice.Content }, "Content"),
+                React.createElement("option", { value: ElementDimensionsChoice.Padding }, "Padding"),
+                React.createElement("option", { value: ElementDimensionsChoice.PaddingAndBorder }, "PaddingAndBorder"),
+                React.createElement("option", { value: ElementDimensionsChoice.PaddingBorderMargin }, "PaddingBorderMargin")),
+            React.createElement(ModalReady, { getStyle: this.getModalStyle, isOpen: this.state.showModal, onRequestClose: function () { _this.setState({ showModal: false }); } },
                 React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
