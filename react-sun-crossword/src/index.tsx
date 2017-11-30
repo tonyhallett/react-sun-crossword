@@ -548,7 +548,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <ConnectedTicTacToeBoard/>
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <ModalReady style={this.getModalStyle()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
@@ -575,7 +575,11 @@ interface ModalClassNameProps {
     afterOpen?: string,
     beforeClose?:string
 }
-type classNameProps=string|ModalClassNameProps
+type classNameProps = string | ModalClassNameProps
+interface ModalStyle {
+    overlay ?: React.CSSProperties,
+    content ?:React.CSSProperties
+}
 interface ModalProps {
     isOpen: boolean,
     onAfterOpen?: () => any,
@@ -585,22 +589,22 @@ interface ModalProps {
     aria?: {
         [x:string]:string
     },
-    style?: {
-        overlay?: React.CSSProperties,
-        content?:React.CSSProperties
-    }
+    style?: ModalStyle
     className?: classNameProps,
     overlayClassName?: classNameProps,
     portalClassName?:string
 
 
 }
+interface ModalReadyProps extends ModalProps {
+    getStyle: () => ModalStyle
+}
 
 interface ModalReadyState {
     ready:boolean
 }
 //if this works then will want a Modal class that will overlay an element
-class ModalReady extends React.Component<ModalProps, ModalReadyState>{
+class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
     constructor(props) {
         super(props)
         this.state = { ready:false }
@@ -619,7 +623,7 @@ class ModalReady extends React.Component<ModalProps, ModalReadyState>{
             return null;
         }
         //style={this.props.getStyle()} 
-        return  <Modal  {...this.props} />
+        return <Modal style={this.props.getStyle()} {...this.props} />
     }
 }
 

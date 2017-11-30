@@ -34545,7 +34545,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 React.createElement(ConnectedScoreboard, null)),
             React.createElement(ConnectedTicTacToeBoard, null),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
-            React.createElement(ModalReady, { style: this.getModalStyle(), isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+            React.createElement(ModalReady, { getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
@@ -34583,7 +34583,7 @@ var ModalReady = /** @class */ (function (_super) {
             return null;
         }
         //style={this.props.getStyle()} 
-        return React.createElement(Modal, __assign({}, this.props));
+        return React.createElement(Modal, __assign({ style: this.props.getStyle() }, this.props));
     };
     return ModalReady;
 }(React.Component));
