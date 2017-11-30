@@ -5,7 +5,7 @@ import { createStore, combineReducers, applyMiddleware, AnyAction } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import * as Modal from 'react-modal';
 import * as $ from "jquery"
-import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem} from "./helpers/storage"
+import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, createLocalStorageStore} from "./helpers/storage"
 
 enum SquareGo { X, O, None }
 enum Player { X, O }
@@ -536,7 +536,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         <ConnectedTicTacToeBoard ref={(tttb) => {
                 this.modalIsReady = tttb ? true : false;
             }} />
+
+        ref={(m)=>m?m.isReady():void 0} getStyle={this.getModalStyle}
         */
+
         return <div>
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
@@ -545,7 +548,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <ConnectedTicTacToeBoard/>
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <ModalReady ref={(m)=>m?m.isReady():void 0} getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalReady style={this.getModalStyle()} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
@@ -566,30 +569,57 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return message;
     }
 }
-//[x:string] until get all the props for Modal types
-interface ModalReadyProps {
-    getStyle: () => {},
-    [x:string]:any
+//not entirely sure that this typing is correct - https://github.com/reactjs/react-modal
+interface ModalClassNameProps {
+    base?: string,
+    afterOpen?: string,
+    beforeClose?:string
 }
+type classNameProps=string|ModalClassNameProps
+interface ModalProps {
+    isOpen: boolean,
+    onAfterOpen?: () => any,
+    onRequestClose?: () => any,
+    closeTimeoutMS?: number,
+    contentLabel?: string,
+    aria?: {
+        [x:string]:string
+    },
+    style?: {
+        overlay?: React.CSSProperties,
+        content?:React.CSSProperties
+    }
+    className?: classNameProps,
+    overlayClassName?: classNameProps,
+    portalClassName?:string
+
+
+}
+
 interface ModalReadyState {
     ready:boolean
 }
-class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
+//if this works then will want a Modal class that will overlay an element
+class ModalReady extends React.Component<ModalProps, ModalReadyState>{
     constructor(props) {
         super(props)
         this.state = { ready:false }
     }
-    isReady() {
-        if (!this.state.ready) {
-            this.setState({ ready: true })
-        }
-        
+    componentDidMount() {
+        this.setState({ ready: true })
     }
+    //isReady() {
+    //    if (!this.state.ready) {
+    //        this.setState({ ready: true })
+    //    }
+        
+    //}
     render() {
         if (!this.state.ready) {
             return null;
         }
-        return  <Modal style={this.props.getStyle()} {...this.props} />
+        //style={this.props.getStyle()} 
+        return  <Modal  {...this.props} />
     }
 }
 
@@ -608,28 +638,7 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     }
     })(TicTacToeApp);
 
-//can be wrapped in a function with default for the store key
-var storeKey = "store";
-var store: Store<TicTacToeState>;
-var storageAvailable = isStorageAvailable("localStorage");
-var previousState: TicTacToeState;
-if (storageAvailable) {
-    previousState = parseGetStorageItem(storeKey);
-}
-if (previousState) {
-    store = createStore(reducer, previousState);
-}
-else {
-    store = createStore(reducer);
-}
-
-
-if (storageAvailable) {
-    store.subscribe(() => {
-        var state = store.getState();
-        stringifySetStorageItem(storeKey, state);
-    });
-}
+var store = createLocalStorageStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>

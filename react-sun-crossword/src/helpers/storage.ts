@@ -1,4 +1,6 @@
-﻿type storageType =  "localStorage" | "sessionStorage"
+﻿import { Reducer, Store, StoreEnhancer, createStore } from "redux";
+
+type storageType =  "localStorage" | "sessionStorage"
 export function isStorageAvailable(type: storageType) {
     try {
         var storage = window[type],
@@ -22,7 +24,7 @@ export function isStorageAvailable(type: storageType) {
             storage.length !== 0;
     }
 }
-    export function stringifySetStorageItem(itemKey: string, value: any, storageType: storageType = "localStorage") {
+export function stringifySetStorageItem(itemKey: string, value: any, storageType: storageType = "localStorage") {
     window[storageType].setItem(itemKey, JSON.stringify(value));
 }
 export function parseGetStorageItem(itemKey: string, storageType: storageType = "localStorage") {
@@ -32,4 +34,35 @@ export function parseGetStorageItem(itemKey: string, storageType: storageType = 
         return JSON.parse(setting);
     }
     return setting;
+}
+
+/*
+    export const createStore: StoreCreator;
+    export interface StoreCreator {
+  <S>(reducer: Reducer<S>, enhancer?: StoreEnhancer<S>): Store<S>;
+  <S>(reducer: Reducer<S>, preloadedState: S, enhancer?: StoreEnhancer<S>): Store<S>;
+}
+*/
+export function createLocalStorageStore<S>(reducer:Reducer<S>,enhancer?:StoreEnhancer<S>,storeKey="store"):Store<S> {
+    var store: Store<S>;
+    var storageAvailable = isStorageAvailable("localStorage");
+    var previousState: S;
+    if (storageAvailable) {
+        previousState = parseGetStorageItem(storeKey);
+    }
+    if (previousState) {
+        store = createStore(reducer, previousState,enhancer);
+    }
+    else {
+        store = createStore(reducer,enhancer);
+    }
+
+
+    if (storageAvailable) {
+        store.subscribe(() => {
+            var state = store.getState();
+            stringifySetStorageItem(storeKey, state);
+        });
+    }
+    return store;
 }
