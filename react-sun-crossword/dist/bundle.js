@@ -34570,6 +34570,22 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
+var InjectCss = /** @class */ (function (_super) {
+    __extends(InjectCss, _super);
+    function InjectCss() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    InjectCss.prototype.componentDidMount = function () {
+        var css = document.createElement('style');
+        css.type = 'text/css';
+        css.appendChild(document.createTextNode(this.props.css));
+        document.getElementsByTagName("head")[0].appendChild(css);
+    };
+    InjectCss.prototype.render = function () {
+        return React.createElement("div", null, this.props.children);
+    };
+    return InjectCss;
+}(React.Component));
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
@@ -34663,9 +34679,11 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     };
 })(TicTacToeApp);
 var store = storage_1.createLocalStorageStore(reducer);
+var overrideAgentBodyMarginCss = "body {margin:0}";
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(VerticallyCenteredContainer, null,
-        React.createElement(ConnectedTicTacToeApp, null))), document.getElementById("example"));
+    React.createElement(InjectCss, { css: "overrideAgentBodyMarginCss" },
+        React.createElement(VerticallyCenteredContainer, null,
+            React.createElement(ConnectedTicTacToeApp, null)))), document.getElementById("example"));
 
 
 /***/ })

@@ -567,6 +567,21 @@ function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsCh
         height: getElementHeight(element, dimensionsChoice)
     };
 }
+
+interface InjectCssProps {
+    css:string
+}
+class InjectCss extends React.Component<InjectCssProps, undefined>{
+    componentDidMount() {
+        var css = document.createElement('style');
+        css.type = 'text/css'; 
+        css.appendChild(document.createTextNode(this.props.css));
+        document.getElementsByTagName("head")[0].appendChild(css); 
+    }
+    render() {
+        return <div>{ this.props.children}</div>
+    }
+}
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
@@ -694,11 +709,14 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
 
 var store = createLocalStorageStore(reducer);
 
+const overrideAgentBodyMarginCss="body {margin:0}"
 ReactDOM.render(
     <Provider store={store}>
+        <InjectCss css="overrideAgentBodyMarginCss">
         <VerticallyCenteredContainer>
             <ConnectedTicTacToeApp />
         </VerticallyCenteredContainer>
+        </InjectCss>
     </Provider>,
 
     document.getElementById("example")
