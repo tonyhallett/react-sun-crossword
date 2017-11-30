@@ -554,7 +554,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     this.modalReady = m
                 }
                 }
-            } style={this.getModalStyle()} isOpen={this.modalShouldOpen} onRequestClose={this.props.finishedConfirmed}>
+            } getStyle={this.getModalStyle} isOpen={this.modalShouldOpen} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
@@ -578,6 +578,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 //[x:string] until get all the props for Modal types
 interface ModalReadyProps {
     isOpen: () => boolean,
+    getStyle: () => {},
     [x:string]:any
 }
 interface ModalReadyState {
@@ -592,7 +593,7 @@ class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
         this.setState({ready:true})
     }
     render() {
-        return <Modal {...this.props} isOpen={this.props.isOpen() && this.state.ready} />
+        return <Modal style={this.props.getStyle()} {...this.props} isOpen={this.props.isOpen() && this.state.ready} />
     }
 }
 
