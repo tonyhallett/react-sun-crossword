@@ -34609,7 +34609,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 </div>
             </ModalReady>
         */
-        return React.createElement("div", null,
+        return React.createElement("div", { style: { width: 350, margin: "0 auto" } },
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
             React.createElement(ConnectedTicTacToeBoard, null),

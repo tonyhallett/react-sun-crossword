@@ -603,7 +603,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 </div>
             </ModalReady>
         */
-        return <div>
+        return <div style={{width:350,margin:"0 auto"}}>
             <div style={{ marginTop: 10, marginBottom: 10 }}>
                 <ConnectedScoreboard />
             </div>
