@@ -34507,23 +34507,17 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
-            React.createElement(ConnectedTicTacToeBoard, { ref: function () {
-                    if (_this.modalReady) {
-                        _this.modalReady.isReady();
-                    }
-                    else {
-                        _this.modalIsReady = true;
-                    }
+            React.createElement(ConnectedTicTacToeBoard, { ref: function (tttb) {
+                    _this.modalIsReady = tttb ? true : false;
                 } }),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
             React.createElement(ModalReady, { ref: function (m) {
-                    if (_this.modalIsReady) {
-                        m.isReady();
+                    if (m) {
+                        if (_this.modalIsReady) {
+                            m.isReady();
+                        } //should I be resetting it as well
                     }
-                    else {
-                        _this.modalReady = m;
-                    }
-                }, getStyle: this.getModalStyle, isOpen: this.modalShouldOpen, onRequestClose: this.props.finishedConfirmed },
+                }, getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
@@ -34551,7 +34545,10 @@ var ModalReady = /** @class */ (function (_super) {
         this.setState({ ready: true });
     };
     ModalReady.prototype.render = function () {
-        return React.createElement(Modal, __assign({ style: this.props.getStyle() }, this.props, { isOpen: this.props.isOpen() && this.state.ready }));
+        if (!this.state.ready) {
+            return null;
+        }
+        return React.createElement(Modal, __assign({ style: this.props.getStyle() }, this.props));
     };
     return ModalReady;
 }(React.Component));

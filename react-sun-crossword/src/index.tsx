@@ -538,23 +538,19 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 <ConnectedScoreboard />
             </div>
 
-            <ConnectedTicTacToeBoard ref={() => {
-                if (this.modalReady) {
-                    this.modalReady.isReady();
-                } else {
-                    this.modalIsReady = true;
-                }
+            <ConnectedTicTacToeBoard ref={(tttb) => {
+                this.modalIsReady = tttb ? true : false;
             }} />
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
             <ModalReady ref={(m) => {
-                if (this.modalIsReady) {
-                    m.isReady();
-                } else {
-                    this.modalReady = m
+                if (m) {
+                    if (this.modalIsReady) {
+                        m.isReady();
+                    }//should I be resetting it as well
                 }
-                }
-            } getStyle={this.getModalStyle} isOpen={this.modalShouldOpen} onRequestClose={this.props.finishedConfirmed}>
+            }
+            } getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
@@ -577,7 +573,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 }
 //[x:string] until get all the props for Modal types
 interface ModalReadyProps {
-    isOpen: () => boolean,
     getStyle: () => {},
     [x:string]:any
 }
@@ -593,7 +588,10 @@ class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
         this.setState({ready:true})
     }
     render() {
-        return <Modal style={this.props.getStyle()} {...this.props} isOpen={this.props.isOpen() && this.state.ready} />
+        if (!this.state.ready) {
+            return null;
+        }
+        return  <Modal style={this.props.getStyle()} {...this.props} />
     }
 }
 
