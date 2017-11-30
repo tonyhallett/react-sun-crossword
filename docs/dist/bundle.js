@@ -34603,7 +34603,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             //return {};
         };
         _this.selectChanged = function (event) {
-            _this.setState({ modalDimension: event.target.value });
+            _this.setState({ modalDimension: parseInt(event.target.value) });
         };
         _this.state = { showModal: false, modalDimension: ElementDimensionsChoice.Content };
         return _this;

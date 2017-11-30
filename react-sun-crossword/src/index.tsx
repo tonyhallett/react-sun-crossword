@@ -612,7 +612,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToAppState>{
         
     }
     selectChanged = (event) => {
-        this.setState({modalDimension:event.target.value})
+        this.setState({modalDimension:parseInt(event.target.value)})
     }
     render() {
         /*
