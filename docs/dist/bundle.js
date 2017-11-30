@@ -34465,8 +34465,8 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
 }(React.Component));
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
-    function TicTacToeApp() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function TicTacToeApp(props) {
+        var _this = _super.call(this, props) || this;
         _this.modalShouldOpen = function () {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -34500,15 +34500,17 @@ var TicTacToeApp = /** @class */ (function (_super) {
             }
             return {};
         };
+        _this.state = { boardRendered: false };
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", null,
             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                 React.createElement(ConnectedScoreboard, null)),
-            React.createElement(ConnectedTicTacToeBoard, null),
+            React.createElement(ConnectedTicTacToeBoard, { ref: function () { _this.setState({ boardRendered: true }); } }),
             React.createElement("button", { style: { margin: 10, padding: 10 }, onClick: this.props.playAgain }, "Play again"),
-            React.createElement(Modal, { style: this.getModalStyle(), isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+            React.createElement(Modal, { style: this.getModalStyle(), isOpen: this.modalShouldOpen() && this.state.boardRendered, onRequestClose: this.props.finishedConfirmed },
                 React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
