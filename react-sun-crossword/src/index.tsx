@@ -492,19 +492,13 @@ interface TicTacToeAppProps {
     playAgain: () => void,
     finishedConfirmed: () => void,
 }
-interface TicTacToeAppState {
-    boardRendered:boolean
-}
-class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
-    constructor(props) {
-        super(props);
-        this.state = { boardRendered:false }
-    }
+
+class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
-    board: TicTacToeBoard
+    modalReady: ModalReady
     getModalStyle = () => {
         var table = document.querySelector("#" + ticTacToeBoardId);
         if (table) {
@@ -543,14 +537,14 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 <ConnectedScoreboard />
             </div>
 
-            <ConnectedTicTacToeBoard ref={() => { this.setState({ boardRendered: true }) }} />
+            <ConnectedTicTacToeBoard ref={() => { this.modalReady.isReady() }} />
             
             <button style={{ margin: 10, padding: 10 }} onClick={this.props.playAgain}>Play again</button>
-            <Modal style={this.getModalStyle()} isOpen={this.modalShouldOpen() && this.state.boardRendered} onRequestClose={this.props.finishedConfirmed}>
+            <ModalReady ref={(m)=>this.modalReady=m} style={this.getModalStyle()} isOpen={this.modalShouldOpen} onRequestClose={this.props.finishedConfirmed}>
                 <div style={{ margin: "0 auto", width: "80%", textAlign: "center"}}>
                     {this.getWinDrawMessage()}
                 </div>
-            </Modal>
+            </ModalReady>
 
         </div>
     }
@@ -567,6 +561,27 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         return message;
     }
 }
+//[x:string] until get all the props for Modal types
+interface ModalReadyProps {
+    isOpen: () => boolean,
+    [x:string]:any
+}
+interface ModalReadyState {
+    ready:boolean
+}
+class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
+    constructor(props) {
+        super(props)
+        this.state = { ready:false }
+    }
+    isReady() {
+        this.setState({ready:true})
+    }
+    render() {
+        return <Modal {...this.props} isOpen={this.props.isOpen() && this.state.ready} />
+    }
+}
+
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
         gameState:state.gameState
