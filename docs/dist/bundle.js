@@ -34527,26 +34527,47 @@ function getElementHeight(element, dimensionsChoice) {
             return $el.height();
     }
 }
+function getElementEdgeLength(element, lengthType) {
+    var $el = $(element);
+    return parseFloat($el.css(lengthType));
+}
 function getOverlay(element, dimensionsChoice) {
     var $element = $(element);
     var offset = $element.offset(); //border-box
     var left = offset.left;
     var top = offset.top;
-    var width;
-    var height;
-    var paddingLeft = $element.css('padding-left');
-    var paddingRight = $element.css('padding-right');
     switch (dimensionsChoice) {
         case ElementDimensionsChoice.Content:
+            //need function to remove the pixel
+            var paddingLeft = getElementEdgeLength(element, "padding-left");
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var paddingTop = getElementEdgeLength(element, "padding-top");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + paddingTop + borderTop;
+            left = left + paddingLeft + borderLeft;
             break;
         case ElementDimensionsChoice.Padding:
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + borderTop;
+            left = left + borderLeft;
             break;
         case ElementDimensionsChoice.PaddingAndBorder:
+            //no change
             break;
         case ElementDimensionsChoice.PaddingBorderMargin:
+            var marginLeft = getElementEdgeLength(element, "margin-left");
+            var marginTop = getElementEdgeLength(element, "margin-top");
+            top = top - marginTop;
+            left = left - marginLeft;
             break;
     }
-    return {};
+    return {
+        left: left,
+        top: top,
+        width: getElementWidth(element, dimensionsChoice),
+        height: getElementHeight(element, dimensionsChoice)
+    };
 }
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
@@ -34558,7 +34579,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
         };
         _this.getModalStyle = function () {
             var testOverlay = document.querySelector("#testOverlay");
-            return getOverlay(testOverlay, _this.state.modalDimension);
+            return {
+                overlay: getOverlay(testOverlay, _this.state.modalDimension)
+            };
             //var table = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
             //if (table) {
             //    var height = getElementHeight(table, ElementDimensionsChoice.PaddingAndBorder)
