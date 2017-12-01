@@ -590,9 +590,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
 
     render() {
-
-        return <div style={{ width: 350, margin: "0 auto" }}>
-            <div style={{ display: "inline-block", backgroundColor: "gray",margin:"0 auto"}}>
+        //<div style={{ width: 350, margin: "0 auto" }}>
+         
+        return <div style={{ display: "inline-block", backgroundColor: "gray", margin: "0 auto" }}>
+            <div style={{padding:10}}>
                 <div style={{ marginTop: 10, marginBottom: 10 }}>
                     <ConnectedScoreboard />
                 </div>
@@ -605,7 +606,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     </div>
                 </ModalCover>
             </div>
-        </div>
+            </div>
+       // </div>
     }
     getWinDrawMessage() {
         var message = "Game drawn";
