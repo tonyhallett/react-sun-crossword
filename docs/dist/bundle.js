@@ -34605,16 +34605,16 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        //
-        return React.createElement("div", { style: { width: 350, margin: "0 auto" } },
-            React.createElement("div", { style: { backgroundColor: "gray", margin: "0 auto" } },
-                React.createElement("div", { style: { padding: 10 } },
+        //if 
+        return React.createElement(HorizontalCenter, null,
+            React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
+                React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                         React.createElement(ConnectedScoreboard, null)),
-                    React.createElement(ConnectedTicTacToeBoard, null),
-                    React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again"),
-                    React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                        React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())))));
+                    React.createElement(ConnectedTicTacToeBoard, null)),
+                React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again"),
+                React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+                    React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "Game drawn";
@@ -34629,6 +34629,16 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return message;
     };
     return TicTacToeApp;
+}(React.Component));
+var HorizontalCenter = /** @class */ (function (_super) {
+    __extends(HorizontalCenter, _super);
+    function HorizontalCenter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    HorizontalCenter.prototype.render = function () {
+        return React.createElement("div", { style: { marginLeft: "50%", transform: "translateX(-50%)" } }, this.props.children);
+    };
+    return HorizontalCenter;
 }(React.Component));
 //if this works then will want a Modal class that will overlay an element
 var ModalReady = /** @class */ (function (_super) {
