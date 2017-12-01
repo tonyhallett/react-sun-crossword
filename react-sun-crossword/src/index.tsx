@@ -597,18 +597,21 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <div style={{ backgroundColor: "gray", padding: 10 }}>
 
                 <HorizontalCenter>
-                    <div style={{ marginTop: 10, marginBottom: 10 }}>
-                        <ConnectedScoreboard />
-                    </div>
-                    <ConnectedTicTacToeBoard />
-                </HorizontalCenter>
-                    <button style={{marginTop:10,paddingTop:10,paddingBottom:10,width: "100%"}} onClick={this.props.playAgain}>Play again</button>
-
-                    <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                        <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                            {this.getWinDrawMessage()}
+                    <div style={{display: "inline-block" }}>
+                        <div style={{ marginTop: 10, marginBottom: 10}}>
+                           <ConnectedScoreboard />
                         </div>
-                    </ModalCover>
+                        <ConnectedTicTacToeBoard />
+                        <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                    </div>
+                </HorizontalCenter>
+                    
+
+                <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                    <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                        {this.getWinDrawMessage()}
+                    </div>
+                </ModalCover>
             
             </div>
         </HorizontalCenter>
