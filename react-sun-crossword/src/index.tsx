@@ -595,16 +595,13 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
         return <HorizontalCenter>
             <div style={{ backgroundColor: "gray", padding: 10 }}>
-
-                <HorizontalCenter>
-                    <div style={{display: "inline-block" }}>
-                        <div style={{ marginTop: 10, marginBottom: 10}}>
-                           <ConnectedScoreboard />
-                        </div>
-                        <ConnectedTicTacToeBoard />
-                        <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                <div>
+                    <div style={{ marginTop: 10, marginBottom: 10}}>
+                        <ConnectedScoreboard />
                     </div>
-                </HorizontalCenter>
+                    <ConnectedTicTacToeBoard />
+                    <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                </div>
                     
 
                 <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
