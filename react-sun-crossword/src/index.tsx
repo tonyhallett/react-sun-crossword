@@ -419,6 +419,7 @@ interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
     currentPlayer:Player
 }
 interface ScoreboardProps { }
+
 function addPaddingToStyle(style) {
     style.paddingTop = 5;
     style.paddingBottom = 5;
@@ -475,17 +476,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>
             </tr>
     }
 }
-//const store = createStore(
-//    combineReducers({
-//        hooksAndMounts,
-//        router: routerReducer,
-//        is404Active,
-//        routeErrorDetails,
-//        handleRouteError
-//    }),
-//    composeWithDevTools(applyMiddleware(middleware))
 
-//)
 
 interface TicTacToeAppProps {
     gameState: GameState,
@@ -493,6 +484,7 @@ interface TicTacToeAppProps {
     finishedConfirmed: () => void,
 }
 enum ElementDimensionsChoice { Content, PaddingAndBorder, Padding, PaddingBorderMargin }
+//to consider box sizing - another day !
 //http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
 function getElementWidth(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
     var $el = $(element);
@@ -603,13 +595,13 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <button style={{marginTop:10,width: "100%"}} onClick={this.props.playAgain}>Play again</button>
+                <button style={{marginTop:10,paddingTop:10,paddingBottom:10,width: "100%"}} onClick={this.props.playAgain}>Play again</button>
 
-                <ModalReady getStyle={this.getModalStyle} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                     <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
                         {this.getWinDrawMessage()}
                     </div>
-                </ModalReady>
+                </ModalCover>
             </div>
         </div>
     }
@@ -676,6 +668,25 @@ class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
         return <Modal style={this.props.getStyle()} {...this.props} />
     }
 }
+interface ModalCoverProps extends ModalProps {
+    elementSelector: string,
+    coverType?: ElementDimensionsChoice
+    contentStyle?: React.CSSProperties
+}
+class ModalCover extends React.Component<ModalCoverProps, undefined>{
+    static defaultProps = {
+        coverType: ElementDimensionsChoice.PaddingAndBorder
+    }
+    getStyle = ()=>{
+        return {
+            overlay: getOverlay(document.querySelector(this.props.elementSelector) as HTMLElement, this.props.coverType),
+            content: this.props.contentStyle
+        }
+    }
+    render() {
+        return <ModalReady {...this.props} getStyle={this.getStyle} />
+    }
+}
 class VerticallyCenteredContainer extends React.Component<undefined, undefined>{
     render() {
         return <div style={{
@@ -713,9 +724,11 @@ const overrideAgentBodyMarginCss="body {margin:0}"
 ReactDOM.render(
     <Provider store={store}>
         <InjectCss css={overrideAgentBodyMarginCss}>
-        <VerticallyCenteredContainer>
-            <ConnectedTicTacToeApp />
-        </VerticallyCenteredContainer>
+            <div style={{backgroundColor:"yellow"}}>
+                <VerticallyCenteredContainer>
+                    <ConnectedTicTacToeApp />
+                </VerticallyCenteredContainer>
+            </div>
         </InjectCss>
     </Provider>,
 

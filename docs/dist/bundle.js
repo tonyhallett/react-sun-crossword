@@ -34500,6 +34500,7 @@ var ElementDimensionsChoice;
     ElementDimensionsChoice[ElementDimensionsChoice["Padding"] = 2] = "Padding";
     ElementDimensionsChoice[ElementDimensionsChoice["PaddingBorderMargin"] = 3] = "PaddingBorderMargin";
 })(ElementDimensionsChoice || (ElementDimensionsChoice = {}));
+//to consider box sizing - another day !
 //http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
 function getElementWidth(element, dimensionsChoice) {
     var $el = $(element);
@@ -34608,8 +34609,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
-                React.createElement("button", { style: { marginTop: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again"),
-                React.createElement(ModalReady, { getStyle: this.getModalStyle, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+                React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again"),
+                React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                     React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
@@ -34644,6 +34645,26 @@ var ModalReady = /** @class */ (function (_super) {
         return React.createElement(Modal, __assign({ style: this.props.getStyle() }, this.props));
     };
     return ModalReady;
+}(React.Component));
+var ModalCover = /** @class */ (function (_super) {
+    __extends(ModalCover, _super);
+    function ModalCover() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.getStyle = function () {
+            return {
+                overlay: getOverlay(document.querySelector(_this.props.elementSelector), _this.props.coverType),
+                content: _this.props.contentStyle
+            };
+        };
+        return _this;
+    }
+    ModalCover.prototype.render = function () {
+        return React.createElement(ModalReady, __assign({}, this.props, { getStyle: this.getStyle }));
+    };
+    ModalCover.defaultProps = {
+        coverType: ElementDimensionsChoice.PaddingAndBorder
+    };
+    return ModalCover;
 }(React.Component));
 var VerticallyCenteredContainer = /** @class */ (function (_super) {
     __extends(VerticallyCenteredContainer, _super);
@@ -34682,8 +34703,9 @@ var store = storage_1.createLocalStorageStore(reducer);
 var overrideAgentBodyMarginCss = "body {margin:0}";
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(InjectCss, { css: overrideAgentBodyMarginCss },
-        React.createElement(VerticallyCenteredContainer, null,
-            React.createElement(ConnectedTicTacToeApp, null)))), document.getElementById("example"));
+        React.createElement("div", { style: { backgroundColor: "yellow" } },
+            React.createElement(VerticallyCenteredContainer, null,
+                React.createElement(ConnectedTicTacToeApp, null))))), document.getElementById("example"));
 
 
 /***/ })

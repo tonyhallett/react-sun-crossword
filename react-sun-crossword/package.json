@@ -31,6 +31,7 @@
     "history": "^3.0.0",
     "muicss": "^0.9.16",
     "prop-types": "^15.6.0",
+    "radium": "^0.19.6",
     "react": "^16.1.1",
     "react-custom-scrollbars": "^4.1.2",
     "react-dom": "^16.1.1",
