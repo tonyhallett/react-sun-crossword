@@ -588,8 +588,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
 
     render() {
-       
-        return <div style={{ width: 350, margin: "0 auto" }}>
+
+        return <div style={{ width: 350, margin: "0 auto", backgroundColor:"gray" }}>
             <div style={{display:"inline-block"}}>
                 <div style={{ marginTop: 10, marginBottom: 10 }}>
                     <ConnectedScoreboard />

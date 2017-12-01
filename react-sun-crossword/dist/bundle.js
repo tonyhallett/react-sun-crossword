@@ -34604,7 +34604,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        return React.createElement("div", { style: { width: 350, margin: "0 auto" } },
+        return React.createElement("div", { style: { width: 350, margin: "0 auto", backgroundColor: "gray" } },
             React.createElement("div", { style: { display: "inline-block" } },
                 React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                     React.createElement(ConnectedScoreboard, null)),
