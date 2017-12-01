@@ -34672,12 +34672,16 @@ var VerticallyCenteredContainer = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     VerticallyCenteredContainer.prototype.render = function () {
-        return React.createElement("div", { style: {
-                display: "table",
-                position: "absolute",
-                height: "100%",
-                width: " 100%"
-            } },
+        var containerStyle = {
+            display: "table",
+            position: "absolute",
+            height: "100%",
+            width: " 100%"
+        };
+        if (this.props.backgroundColor) {
+            containerStyle.backgroundColor = this.props.backgroundColor;
+        }
+        return React.createElement("div", { style: containerStyle },
             React.createElement("div", { style: {
                     display: "table-cell",
                     verticalAlign: "middle"
@@ -34703,9 +34707,8 @@ var store = storage_1.createLocalStorageStore(reducer);
 var overrideAgentBodyMarginCss = "body {margin:0}";
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(InjectCss, { css: overrideAgentBodyMarginCss },
-        React.createElement("div", { style: { backgroundColor: "yellow" } },
-            React.createElement(VerticallyCenteredContainer, null,
-                React.createElement(ConnectedTicTacToeApp, null))))), document.getElementById("example"));
+        React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
+            React.createElement(ConnectedTicTacToeApp, null)))), document.getElementById("example"));
 
 
 /***/ })

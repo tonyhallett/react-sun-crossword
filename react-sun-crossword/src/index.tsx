@@ -687,13 +687,22 @@ class ModalCover extends React.Component<ModalCoverProps, undefined>{
         return <ModalReady {...this.props} getStyle={this.getStyle} />
     }
 }
-class VerticallyCenteredContainer extends React.Component<undefined, undefined>{
+//do as css properties and merged the two
+interface VerticallyCenteredContainerProps {
+    backgroundColor?:string
+}
+class VerticallyCenteredContainer extends React.Component<VerticallyCenteredContainerProps, undefined>{
     render() {
-        return <div style={{
+        var containerStyle: React.CSSProperties = {
             display: "table",
             position: "absolute",
             height: "100%",
-            width:" 100%"}}>
+            width: " 100%"
+        }
+        if (this.props.backgroundColor) {
+            containerStyle.backgroundColor = this.props.backgroundColor;
+        }
+        return <div style={containerStyle}>
             <div style={{
                 display: "table-cell",
                 verticalAlign: "middle"}}>
@@ -724,11 +733,9 @@ const overrideAgentBodyMarginCss="body {margin:0}"
 ReactDOM.render(
     <Provider store={store}>
         <InjectCss css={overrideAgentBodyMarginCss}>
-            <div style={{backgroundColor:"yellow"}}>
-                <VerticallyCenteredContainer>
+            <VerticallyCenteredContainer backgroundColor="orange">
                     <ConnectedTicTacToeApp />
                 </VerticallyCenteredContainer>
-            </div>
         </InjectCss>
     </Provider>,
 
