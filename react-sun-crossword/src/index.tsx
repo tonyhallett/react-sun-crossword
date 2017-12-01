@@ -7,6 +7,8 @@ import * as Modal from 'react-modal';
 import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, createLocalStorageStore} from "./helpers/storage"
 import * as $ from 'jquery';
 
+var componentBackgroundColor = "lightgray";
+
 enum SquareGo { X, O, None }
 enum Player { X, O }
 enum GameState {X,O,Playing,Draw,FinishedConfirmed}
@@ -346,7 +348,7 @@ interface TicTacToeBoardProps {
 const ticTacToeBoardId ="ticTacToeBoard"
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
-        return <table id={ticTacToeBoardId} style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
+        return <table id={ticTacToeBoardId} style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
             <tbody>
             {   this.props.board.map((rowSquares, rowIndex) => {
                 return <tr key={rowIndex}>
@@ -431,7 +433,7 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return <table style={{width:309, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
+        return <table style={{ width: 309, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
                     <th style={addPaddingToStyle({ width: 100 })}>Player</th>
@@ -589,8 +591,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
     render() {
 
-        return <div style={{ width: 350, margin: "0 auto", backgroundColor:"gray" }}>
-            <div style={{display:"inline-block"}}>
+        return <div style={{ width: 350, margin: "0 auto" }}>
+            <div style={{ display: "inline-block", backgroundColor: "gray",margin:"0 auto"}}>
                 <div style={{ marginTop: 10, marginBottom: 10 }}>
                     <ConnectedScoreboard />
                 </div>

@@ -34068,6 +34068,7 @@ var react_redux_1 = __webpack_require__(46);
 var Modal = __webpack_require__(45);
 var storage_1 = __webpack_require__(47);
 var $ = __webpack_require__(44);
+var componentBackgroundColor = "lightgray";
 var SquareGo;
 (function (SquareGo) {
     SquareGo[SquareGo["X"] = 0] = "X";
@@ -34389,7 +34390,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
-        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
@@ -34455,7 +34456,7 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return React.createElement("table", { style: { width: 309, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+        return React.createElement("table", { style: { width: 309, borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
                     React.createElement("th", { style: addPaddingToStyle({ width: 100 }) }, "Player"),
@@ -34604,8 +34605,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        return React.createElement("div", { style: { width: 350, margin: "0 auto", backgroundColor: "gray" } },
-            React.createElement("div", { style: { display: "inline-block" } },
+        return React.createElement("div", { style: { width: 350, margin: "0 auto" } },
+            React.createElement("div", { style: { display: "inline-block", backgroundColor: "gray", margin: "0 auto" } },
                 React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
