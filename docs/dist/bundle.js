@@ -39295,7 +39295,7 @@ function takeGo(row, column) {
         column: column
     };
 }
-var numRowsAndColumns = 3;
+var numRowsAndColumns = 4;
 function getDefaultBoard() {
     var rows = [];
     for (var i = 0; i < numRowsAndColumns; i++) {
@@ -39646,7 +39646,7 @@ var Scoreboard = /** @class */ (function (_super) {
         return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-                    React.createElement("th", { style: addPaddingToStyle({ width: 100 }) }, "Player"),
+                    React.createElement("th", { style: addPaddingToStyle({}) }, "Player"),
                     React.createElement("th", { style: addPaddingToStyle({}) }, "Won"),
                     React.createElement("th", { style: addPaddingToStyle({}) }, "Lost"),
                     React.createElement("th", { style: addPaddingToStyle({}) }, "Drawn"))),

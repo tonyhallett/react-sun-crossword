@@ -51,7 +51,7 @@ function takeGo(row, column) {
         column:column
     }
 }
-var numRowsAndColumns = 3;
+var numRowsAndColumns = 4;
 function getDefaultBoard(): SquareGo[][] {
     var rows = [];
     for (var i = 0; i < numRowsAndColumns; i++) {
@@ -437,7 +437,7 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         return <table style={{ borderCollapse: "collapse", borderWidth: "1px",width:"100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
-                    <th style={addPaddingToStyle({ width: 100 })}>Player</th>
+                    <th style={addPaddingToStyle({})}>Player</th>
                     <th style={addPaddingToStyle({})}>Won</th>
                     <th style={addPaddingToStyle({})}>Lost</th>
                     <th style={addPaddingToStyle({})}>Drawn</th>
