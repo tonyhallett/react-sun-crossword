@@ -434,12 +434,12 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return <table style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
+        return <table style={{ borderCollapse: "collapse", borderWidth: "1px",width:"100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
                     <th style={addPaddingToStyle({ width: 100 })}>Player</th>
-                    <th style={addPaddingToStyle({ width: 66 })}>Won</th>
-                    <th style={addPaddingToStyle({ width: 66 })}>Lost</th>
+                    <th style={addPaddingToStyle({})}>Won</th>
+                    <th style={addPaddingToStyle({})}>Lost</th>
                     <th style={addPaddingToStyle({})}>Drawn</th>
                 </tr>
             </thead>
