@@ -6,6 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import * as Modal from 'react-modal';
 import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, createLocalStorageStore} from "./helpers/storage"
 import * as $ from 'jquery';
+import { Style, StyleRoot } from "Radium";
 
 var componentBackgroundColor = "lightgray";
 
@@ -590,28 +591,52 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
 
     render() {
-        //if 
-         
-
-        return <HorizontalCenter>
-            <div style={{ backgroundColor: "gray", padding: 10 }}>
-                <div style={{display:"inline-block"}}>
-                    <div style={{ marginTop: 10, marginBottom: 10}}>
-                        <ConnectedScoreboard />
-                    </div>
-                    <ConnectedTicTacToeBoard />
-                    <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
-                </div>
+        return <StyleRoot>
+            <Style
+                rules={{
+                    body: {
+                        margin: 0,
+                        fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'
+                    },
+                    mediaQueries: {
+                        '(max-width: 600px)': {
+                            body: {
+                                background: 'gray'
+                            }
+                        },
+                        '(max-width: 500px)': {
+                            body: {
+                                background: 'blue'
+                            },
+                            'p, h1': {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }}
+            />
+            <VerticallyCenteredContainer backgroundColor="orange">
+                <HorizontalCenter>
+                    <div style={{ backgroundColor: "gray", padding: 10 }}>
+                        <div style={{display:"inline-block"}}>
+                            <div style={{ marginTop: 10, marginBottom: 10}}>
+                                <ConnectedScoreboard />
+                            </div>
+                            <ConnectedTicTacToeBoard />
+                            <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                        </div>
                     
 
-                <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                    <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                        {this.getWinDrawMessage()}
-                    </div>
-                </ModalCover>
+                        <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                                {this.getWinDrawMessage()}
+                            </div>
+                        </ModalCover>
             
-            </div>
-        </HorizontalCenter>
+                    </div>
+                </HorizontalCenter>
+            </VerticallyCenteredContainer>
+        </StyleRoot>
     }
     getWinDrawMessage() {
         var message = "Game drawn";
@@ -744,14 +769,10 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
 
 var store = createLocalStorageStore(reducer);
 
-const overrideAgentBodyMarginCss="body {margin:0}"
+
 ReactDOM.render(
     <Provider store={store}>
-        <InjectCss css={overrideAgentBodyMarginCss}>
-            <VerticallyCenteredContainer backgroundColor="orange">
-                    <ConnectedTicTacToeApp />
-                </VerticallyCenteredContainer>
-        </InjectCss>
+        <ConnectedTicTacToeApp />
     </Provider>,
 
     document.getElementById("example")
