@@ -34608,7 +34608,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         //if 
         return React.createElement(HorizontalCenter, null,
             React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                React.createElement("div", null,
+                React.createElement("div", { style: { display: "inline-block" } },
                     React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                         React.createElement(ConnectedScoreboard, null)),
                     React.createElement(ConnectedTicTacToeBoard, null),
@@ -34636,7 +34636,7 @@ var HorizontalCenter = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     HorizontalCenter.prototype.render = function () {
-        return React.createElement("div", { style: { marginLeft: "50%", transform: "translateX(-50%)" } }, this.props.children);
+        return React.createElement("div", { style: { display: "table", margin: "0 auto" } }, this.props.children);
     };
     return HorizontalCenter;
 }(React.Component));

@@ -595,7 +595,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
         return <HorizontalCenter>
             <div style={{ backgroundColor: "gray", padding: 10 }}>
-                <div>
+                <div style={{display:"inline-block"}}>
                     <div style={{ marginTop: 10, marginBottom: 10}}>
                         <ConnectedScoreboard />
                     </div>
@@ -628,7 +628,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 }
 class HorizontalCenter extends React.Component<undefined, undefined>{
     render() {
-        return <div style={{marginLeft:"50%",transform:"translateX(-50%)"}}>
+        return <div style={{ display: "table", margin: "0 auto"}}>
             {this.props.children}
             </div>
     }
