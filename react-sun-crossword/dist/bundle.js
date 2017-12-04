@@ -40428,8 +40428,7 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
                 case "exiting":
                     style = __assign({}, _this.props.exitStyle);
                     style.transition = _this.props.exitTransition;
-                    console.log("exitingStyle");
-                    console.log(style);
+                    break;
                 case "exited"://this is the state before in:true 
                     if (!_this.isFirstRender) {
                         style = __assign({}, _this.props.exitStyle);
@@ -40440,14 +40439,10 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
             var childElement = _this.props.children;
             var childStyle = childElement.props.style;
             var newStyle = __assign({}, childStyle, style);
-            console.log("newStyle");
-            console.log(newStyle);
             var newProps = {
                 style: newStyle
             };
             var clonedElement = React.cloneElement(childElement, newProps);
-            console.log("cloned style");
-            console.log(clonedElement.props.style);
             return clonedElement;
         });
         this.isFirstRender = false;

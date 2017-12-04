@@ -633,8 +633,7 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
                     case "exiting":
                         style = { ...this.props.exitStyle };
                         style.transition = this.props.exitTransition;
-                        console.log("exitingStyle");
-                        console.log(style);
+                        break;
                     case "exited"://this is the state before in:true 
                         if (!this.isFirstRender) {
                             style = { ...this.props.exitStyle };
@@ -645,15 +644,10 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
                 var childElement = this.props.children as React.ReactElement<any>;
                 var childStyle = childElement.props.style;
                 var newStyle = { ...childStyle, ...style };
-                console.log("newStyle");
-                console.log(newStyle);
                 var newProps = {
                     style:newStyle
                 }
                 var clonedElement = React.cloneElement(childElement, newProps);
-                console.log("cloned style");
-                console.log(clonedElement.props.style);
-               
                 return clonedElement;
 
             }}
