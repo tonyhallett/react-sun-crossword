@@ -678,38 +678,52 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
     autoOutTransition: AutoOutTransition
     render() {
         var enterStyle = {};
-        var exitStyle = {};
-        exitStyle[this.props.propName] = this.props.exitColour;
-        var color = Color(this.props.exitColour);
+
+        var exitColor = Color(this.props.exitColour);
+        var enterColor;
         var change = this.props.change;
         switch (this.props.colourChangeType) {
             case ColourChangeType.blacken:
-                color = color.blacken(change);
+                enterColor = exitColor.blacken(change);
                 break;
             case ColourChangeType.whiten:
-                color = color.whitem(change);
+                enterColor = exitColor.whitem(change);
                 break;
             case ColourChangeType.darken:
-                color=color.darken(change)
+                enterColor = exitColor.darken(change)
                 break;
             case ColourChangeType.desaturate:
-                color = color.desaturate(change);
+                enterColor = exitColor.desaturate(change);
                 break;
             case ColourChangeType.fade:
-                color =color.fade(change);
+                enterColor = exitColor.fade(change);
                 break;
             case ColourChangeType.lighten:
-                color = color.lighten(change);
+                enterColor = exitColor.lighten(change);
                 break;
             case ColourChangeType.opaquer:
-                color = color.opaquer(change);
+                enterColor = exitColor.opaquer(change);
                 break;
             case ColourChangeType.saturate:
-                color = color.saturate(change);
+                enterColor = exitColor.saturate(change);
                 break;
         }
-        var colorString = color.toString();
+        var colorString = enterColor.toString();
         enterStyle[this.props.propName] = colorString;//seems that once change to different model cannot go back
+
+        var exitStyle = {};
+        var exitColourString;
+        switch (exitColor.model) {
+            case "rgb":
+                exitColourString = exitColor.rgb().toString();
+                break;
+            case "hsl":
+                exitColourString = exitColor.hsl().toString();
+                break;
+
+        }
+        //more to do
+        exitStyle[this.props.propName] = exitColourString;
         return <AutoOutTransition ref={(at) => { this.autoOutTransition = at }} enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
     }
 }
