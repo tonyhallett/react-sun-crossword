@@ -668,8 +668,15 @@ class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutT
         this.setState({entered:true})
     }
     render() {
+        //prpblem with turning off in 
+        //not in - then will not be in
+        //in changes to true - entered should be false
+        //then onEnter cb - should then be true 
+        var actuallyIn = this.props.in ? (this.state.entered ? false : true) : false;
+        
+
         const { onEnter, "in":inn,...passThroughProps } = this.props;
-        return <TransitionHelper onEnter={this.onEnter} in={this.props.in && !this.state.entered} {...passThroughProps}/>
+        return <TransitionHelper onEnter={this.onEnter} in={actuallyIn} {...passThroughProps}/>
     }
 }
 interface TransitionedState {

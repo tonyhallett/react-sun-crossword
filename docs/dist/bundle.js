@@ -40466,8 +40466,13 @@ var AutoOutTransition = /** @class */ (function (_super) {
         return _this;
     }
     AutoOutTransition.prototype.render = function () {
+        //prpblem with turning off in 
+        //not in - then will not be in
+        //in changes to true - entered should be false
+        //then onEnter cb - should then be true 
+        var actuallyIn = this.props.in ? (this.state.entered ? false : true) : false;
         var _a = this.props, onEnter = _a.onEnter, inn = _a["in"], passThroughProps = __rest(_a, ["onEnter", "in"]);
-        return React.createElement(TransitionHelper, __assign({ onEnter: this.onEnter, in: this.props.in && !this.state.entered }, passThroughProps));
+        return React.createElement(TransitionHelper, __assign({ onEnter: this.onEnter, in: actuallyIn }, passThroughProps));
     };
     return AutoOutTransition;
 }(React.Component));
