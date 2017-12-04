@@ -643,7 +643,7 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
                 var childElement = this.props.children as React.ReactElement<any>;
                 var childStyle = childElement.props.style;
                 var newStyle = { ...childStyle, ...style };
-                var clonedElement = React.cloneElement(childElement,newStyle);
+                var clonedElement = React.cloneElement(childElement, { style: newStyle });
                 console.log(clonedElement.props.style);
                
                 return clonedElement;

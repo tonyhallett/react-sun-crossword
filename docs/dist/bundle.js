@@ -40438,7 +40438,7 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
             var childElement = _this.props.children;
             var childStyle = childElement.props.style;
             var newStyle = __assign({}, childStyle, style);
-            var clonedElement = React.cloneElement(childElement, newStyle);
+            var clonedElement = React.cloneElement(childElement, { style: newStyle });
             console.log(clonedElement.props.style);
             return clonedElement;
         });
