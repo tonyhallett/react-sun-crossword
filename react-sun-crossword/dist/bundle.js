@@ -42475,7 +42475,7 @@ var ColourChangeTransition = /** @class */ (function (_super) {
                 enterColor = exitColor.blacken(change);
                 break;
             case ColourChangeType.whiten:
-                enterColor = exitColor.whitem(change);
+                enterColor = exitColor.whiten(change);
                 break;
             case ColourChangeType.darken:
                 enterColor = exitColor.darken(change);
@@ -42499,15 +42499,15 @@ var ColourChangeTransition = /** @class */ (function (_super) {
         var colorString = enterColor.toString();
         enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
         var exitStyle = {};
-        var exitColourString;
-        switch (exitColor.model) {
-            case "rgb":
-                exitColourString = exitColor.rgb().toString();
-                break;
-            case "hsl":
-                exitColourString = exitColor.hsl().toString();
-                break;
-        }
+        var exitColourString = exitColor.toString();
+        //switch (exitColor.model) {
+        //    case "rgb":
+        //        exitColourString = exitColor.rgb().toString();
+        //        break;
+        //    case "hsl":
+        //        exitColourString = exitColor.hsl().toString();
+        //        break;
+        //}
         //more to do
         exitStyle[this.props.propName] = exitColourString;
         return React.createElement(AutoOutTransition, __assign({ ref: function (at) { _this.autoOutTransition = at; }, enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
