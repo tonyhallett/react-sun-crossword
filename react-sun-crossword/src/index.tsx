@@ -567,11 +567,38 @@ const duration = 5000;
 const defaultStyle = {
     opacity: 0,
 }
+var enterValue = 1;
+var exitValue = 0;
+//const transitionStyles = {
+//    entering: {
+//        opacity: enterValue, transition: `opacity 500ms ease-in-out`
+//    },
+//    entered: {
+//        opacity: enterValue,
+//    }
+    
+//};
 const transitionStyles = {
     entering: {
-        opacity: 1, transition: `opacity 500ms ease-in-out` },
-    
+        opacity: enterValue, transition: `opacity 500ms ease-in-out`
+    },
+    entered: {
+        opacity: enterValue,
+    },
+    exiting: {
+        opacity: exitValue, transition: `opacity 500ms ease-in-out`
+    },
+    exited: {
+        opacity:exitValue
+    }
+
+
 };
+//so could wrap for TransitionOnEntering which removes the transition
+//DelayedTransitionOnEntering - no need as just use the transition property itself
+
+//then need Transition that is in place for Enter, gets removed and then does again on exit
+//exiting will add the transition again, removing on exited
 
 interface TransitionedState {
     in: boolean,
@@ -584,14 +611,14 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
         this.state = {in:false,text:"Fade transition"}
     }
     transition = () => {
-        this.setState({in:true})
+        this.setState({in:!this.state.in})
     }
     changeText = () => {
         this.setState({text:"New text"})
     }
     render() {
         return <div>
-            <button onClick={this.transition}>Transition</button>
+            <button onClick={this.transition}>{this.state.in?"out":"in"}</button>
             <button onClick={this.changeText}>Change text</button>
         <Transition in={this.state.in} timeout={duration}>
                 {(state: TransitionState) => (

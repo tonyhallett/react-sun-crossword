@@ -40382,17 +40382,36 @@ var duration = 5000;
 var defaultStyle = {
     opacity: 0,
 };
+var enterValue = 1;
+var exitValue = 0;
+//const transitionStyles = {
+//    entering: {
+//        opacity: enterValue, transition: `opacity 500ms ease-in-out`
+//    },
+//    entered: {
+//        opacity: enterValue,
+//    }
+//};
 var transitionStyles = {
     entering: {
-        opacity: 1, transition: "opacity 500ms ease-in-out"
+        opacity: enterValue, transition: "opacity 500ms ease-in-out"
     },
+    entered: {
+        opacity: enterValue,
+    },
+    exiting: {
+        opacity: exitValue, transition: "opacity 500ms ease-in-out"
+    },
+    exited: {
+        opacity: exitValue
+    }
 };
 var Transitioned = /** @class */ (function (_super) {
     __extends(Transitioned, _super);
     function Transitioned(props) {
         var _this = _super.call(this, props) || this;
         _this.transition = function () {
-            _this.setState({ in: true });
+            _this.setState({ in: !_this.state.in });
         };
         _this.changeText = function () {
             _this.setState({ text: "New text" });
@@ -40403,7 +40422,7 @@ var Transitioned = /** @class */ (function (_super) {
     Transitioned.prototype.render = function () {
         var _this = this;
         return React.createElement("div", null,
-            React.createElement("button", { onClick: this.transition }, "Transition"),
+            React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
             React.createElement("button", { onClick: this.changeText }, "Change text"),
             React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, _this.state.text)); }));
     };
