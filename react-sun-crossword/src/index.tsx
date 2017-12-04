@@ -597,8 +597,8 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
                 <div style={{
                     ...defaultStyle,
                     ...transitionStyles[state]
-                }}>
-                    I'm A fade Transition!
+                    }}>
+                        {this.state.text}
              </div>
             )}
         </Transition>

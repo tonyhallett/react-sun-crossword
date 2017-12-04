@@ -40401,10 +40401,11 @@ var Transitioned = /** @class */ (function (_super) {
         return _this;
     }
     Transitioned.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.transition }, "Transition"),
             React.createElement("button", { onClick: this.changeText }, "Change text"),
-            React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, "I'm A fade Transition!")); }));
+            React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, _this.state.text)); }));
     };
     return Transitioned;
 }(React.Component));
