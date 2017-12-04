@@ -42553,7 +42553,7 @@ var Transitioned = /** @class */ (function (_super) {
         //should be able to use an HOC 
         ,
             "//should be able to use an HOC",
-            React.createElement(ColourChangeTransition, { propName: "backgroundColor", ref: function (at) { _this.autoOutTransition = at; }, exitColour: "yellow", colourChangeType: ColourChangeType.lighten, change: 0.2, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
+            React.createElement(ColourChangeTransition, { propName: "backgroundColor", ref: function (at) { _this.autoOutTransition = at; }, exitColour: "yellow", colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
                 React.createElement("div", { style: {
                         height: 300, width: 300
                     } })));

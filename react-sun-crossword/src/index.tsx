@@ -763,7 +763,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
 
 
             //should be able to use an HOC 
-            <ColourChangeTransition propName="backgroundColor" ref={(at) => { this.autoOutTransition = at }} exitColour="yellow" colourChangeType={ColourChangeType.lighten} change={0.2} enterTransition={`background-color ${duration}ms linear`}  timeout={duration}>
+            <ColourChangeTransition propName="backgroundColor" ref={(at) => { this.autoOutTransition = at }} exitColour="yellow" colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
                 
                 <div style={{
                     height:300,width:300
