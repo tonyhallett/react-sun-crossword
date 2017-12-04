@@ -574,19 +574,24 @@ const transitionStyles = {
 };
 
 interface TransitionedState {
-    in:boolean
+    in: boolean,
+    text:string
 }
 class Transitioned extends React.Component<undefined, TransitionedState>{
     constructor(props) {
         super(props);
-        this.state = {in:false}
+        this.state = {in:false,text:"Fade transition"}
     }
     transition = () => {
         this.setState({in:true})
     }
+    changeText = () => {
+        this.setState({text:"New text"})
+    }
     render() {
         return <div>
             <button onClick={this.transition}>Transition</button>
+            <button onClick={this.changeText}>Change text</button>
         <Transition in={this.state.in} timeout={duration}>
             {(state) => (
                 <div style={{

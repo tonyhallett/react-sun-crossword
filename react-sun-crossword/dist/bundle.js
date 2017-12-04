@@ -40394,12 +40394,16 @@ var Transitioned = /** @class */ (function (_super) {
         _this.transition = function () {
             _this.setState({ in: true });
         };
-        _this.state = { in: false };
+        _this.changeText = function () {
+            _this.setState({ text: "New text" });
+        };
+        _this.state = { in: false, text: "Fade transition" };
         return _this;
     }
     Transitioned.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.transition }, "Transition"),
+            React.createElement("button", { onClick: this.changeText }, "Change text"),
             React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, "I'm A fade Transition!")); }));
     };
     return Transitioned;
