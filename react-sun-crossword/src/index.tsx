@@ -654,25 +654,33 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
     }
 }
 interface AutoOutTransitionProps extends TransitionHelperProps {
-
+    
 }
 interface AutoOutTransitionState {
-   entered:boolean
+    entered: boolean
+    in:boolean
 }
 class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
     constructor(props) {
+        //should wrap all callbacks
         super(props);
-        this.state = {entered:false}
+        this.state = {entered:false,in:false}
     }
     onEntered=()=> {
         this.setState({entered:true})
     }
+    onExited = () => {
+        this.setState({ entered: false,in:false })
+    }
+    setIn() {
+        this.setState({in:true})
+    }
     render() {
-        var actuallyIn = this.props.in ? (this.state.entered ? false : true) : false;
+        var actuallyIn = this.state.in ? (this.state.entered ? false : true) : false;
         
 
-        const { onEnter, "in":inn,...passThroughProps } = this.props;
-        return <TransitionHelper onEntered={this.onEntered} in={actuallyIn} {...passThroughProps}/>
+        const { onEntered,onExited, "in":inn,...passThroughProps } = this.props;
+        return <TransitionHelper onExited={this.onExited} onEntered={this.onEntered} in={actuallyIn} {...passThroughProps}/>
     }
 }
 interface TransitionedState {
@@ -685,11 +693,12 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
         this.state = { in: false, colour: {r:255,g:0,b:0}}
     }
     transition = () => {
-        this.setState({in:!this.state.in})
+        this.autoOutTransition.setIn();
     }
     changeColour = () => {
         this.setState({ colour: {r:51,g:51,b:204}})
     }
+    autoOutTransition: AutoOutTransition
     render() {
         var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
         var enterAlpha = 0.2;
@@ -697,11 +706,11 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
         var exitAlpha = 1;
         var exitColour = "rgba(" + colorPart + exitAlpha + ")";
         return <div>
-            <button onClick={this.transition}>{this.state.in?"out":"in"}</button>
+            <button onClick={this.transition}>In</button>
             <button onClick={this.changeColour}>Change colour</button>
 
 
-            <AutoOutTransition exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }} enterTransition={`background-color ${duration}ms linear`} in={this.state.in} timeout={duration}>
+            <AutoOutTransition ref={(at) => { this.autoOutTransition=at }} exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }} enterTransition={`background-color ${duration}ms linear`} in={this.state.in} timeout={duration}>
                 
                 <div style={{
                     height:300,width:300

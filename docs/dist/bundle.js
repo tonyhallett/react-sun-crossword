@@ -40458,17 +40458,25 @@ var TransitionHelper = /** @class */ (function (_super) {
 var AutoOutTransition = /** @class */ (function (_super) {
     __extends(AutoOutTransition, _super);
     function AutoOutTransition(props) {
-        var _this = _super.call(this, props) || this;
+        var _this = 
+        //should wrap all callbacks
+        _super.call(this, props) || this;
         _this.onEntered = function () {
             _this.setState({ entered: true });
         };
-        _this.state = { entered: false };
+        _this.onExited = function () {
+            _this.setState({ entered: false, in: false });
+        };
+        _this.state = { entered: false, in: false };
         return _this;
     }
+    AutoOutTransition.prototype.setIn = function () {
+        this.setState({ in: true });
+    };
     AutoOutTransition.prototype.render = function () {
-        var actuallyIn = this.props.in ? (this.state.entered ? false : true) : false;
-        var _a = this.props, onEnter = _a.onEnter, inn = _a["in"], passThroughProps = __rest(_a, ["onEnter", "in"]);
-        return React.createElement(TransitionHelper, __assign({ onEntered: this.onEntered, in: actuallyIn }, passThroughProps));
+        var actuallyIn = this.state.in ? (this.state.entered ? false : true) : false;
+        var _a = this.props, onEntered = _a.onEntered, onExited = _a.onExited, inn = _a["in"], passThroughProps = __rest(_a, ["onEntered", "onExited", "in"]);
+        return React.createElement(TransitionHelper, __assign({ onExited: this.onExited, onEntered: this.onEntered, in: actuallyIn }, passThroughProps));
     };
     return AutoOutTransition;
 }(React.Component));
@@ -40477,7 +40485,7 @@ var Transitioned = /** @class */ (function (_super) {
     function Transitioned(props) {
         var _this = _super.call(this, props) || this;
         _this.transition = function () {
-            _this.setState({ in: !_this.state.in });
+            _this.autoOutTransition.setIn();
         };
         _this.changeColour = function () {
             _this.setState({ colour: { r: 51, g: 51, b: 204 } });
@@ -40486,15 +40494,16 @@ var Transitioned = /** @class */ (function (_super) {
         return _this;
     }
     Transitioned.prototype.render = function () {
+        var _this = this;
         var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ",";
         var enterAlpha = 0.2;
         var enterColour = "rgba(" + colorPart + enterAlpha + ")";
         var exitAlpha = 1;
         var exitColour = "rgba(" + colorPart + exitAlpha + ")";
         return React.createElement("div", null,
-            React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
+            React.createElement("button", { onClick: this.transition }, "In"),
             React.createElement("button", { onClick: this.changeColour }, "Change colour"),
-            React.createElement(AutoOutTransition, { exitStyle: { backgroundColor: exitColour }, enterStyle: { backgroundColor: enterColour }, enterTransition: "background-color " + duration + "ms linear", in: this.state.in, timeout: duration },
+            React.createElement(AutoOutTransition, { ref: function (at) { _this.autoOutTransition = at; }, exitStyle: { backgroundColor: exitColour }, enterStyle: { backgroundColor: enterColour }, enterTransition: "background-color " + duration + "ms linear", in: this.state.in, timeout: duration },
                 React.createElement("div", { style: {
                         height: 300, width: 300
                     } })));
