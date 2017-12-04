@@ -40471,7 +40471,7 @@ var Transitioned = /** @class */ (function (_super) {
             React.createElement("button", { onClick: this.changeOpacity }, "Change opacity"),
             React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) {
                 console.log("Normal transition state: " + state);
-                React.createElement("div", { style: {
+                return React.createElement("div", { style: {
                         opacity: _this.state.opacity
                     } }, "This will fade !");
             }),

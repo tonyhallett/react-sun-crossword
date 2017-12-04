@@ -676,7 +676,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <Transition in={this.state.in} timeout={duration}>
                 {(state: TransitionState) => {
                     console.log("Normal transition state: " + state);
-                    <div style={{
+                    return <div style={{
                         opacity: this.state.opacity
                     }}>
                         This will fade !
