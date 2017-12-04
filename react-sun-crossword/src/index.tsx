@@ -673,6 +673,16 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
         return <div>
             <button onClick={this.transition}>{this.state.in?"out":"in"}</button>
             <button onClick={this.changeOpacity}>Change opacity</button>
+            <Transition in={this.state.in} timeout={duration}>
+                {(state: TransitionState) => {
+                    console.log("Normal transition state: " + state);
+                    <div style={{
+                        opacity: this.state.opacity
+                    }}>
+                        This will fade !
+                    </div>
+                }}
+            </Transition>
             <TransitionOnlyInTransition exitStyle={{ opacity: 0 }} enterStyle={{opacity:1}} exitTransition="opacity 500ms ease-in-out" enterTransition="opacity 500ms ease-in-out" in={this.state.in} timeout={duration}>
                 
                 <div style={{
