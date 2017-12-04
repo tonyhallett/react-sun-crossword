@@ -601,31 +601,21 @@ const transitionStyles = {
 //then need Transition that is in place for Enter, gets removed and then does again on exit
 //exiting will add the transition again, removing on exited
 
-interface TransitionedState {
-    in: boolean,
-    opacity: number,
-    somethingElse:any
-}
+
 type TransitionState = "exited" | "exiting" | "entered" | "entering";
 
-interface TransitionOnlyInTransitionProps extends TransitionProps {
+interface TransitionHelperProps extends TransitionProps {
     enterTransition: string,
     exitTransition: string,
     enterStyle: React.CSSProperties,
     exitStyle:React.CSSProperties
 }
-class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransitionProps, undefined>{
-    isFirstRender
-    renderTransition=true
-    componentWillReceiveProps(newProps: TransitionOnlyInTransitionProps) {
-        this.renderTransition = newProps.in !== this.props.in ? true : false;
-    }
+class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
     render() {
         //should remove that do not pertain
 
         var transition= <Transition  {...this.props}>
             {(state: TransitionState) => {
-                console.log("Transition state: " + state);
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":
@@ -637,63 +627,66 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
                         break;
                     case "exiting":
                         style = { ...this.props.exitStyle };
-                        style.transition = this.props.exitTransition;
+                        style.transition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
                         break;
                     case "exited"://this is the state before in:true 
-                        if (!this.isFirstRender) {
-                            style = { ...this.props.exitStyle };
-                        }
+                        style = { ...this.props.exitStyle };
+
                         break;
                 }
                 //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
                 var childElement = this.props.children as React.ReactElement<any>;
-                if (this.renderTransition) {
-                    var childStyle = childElement.props.style;
-                    var newStyle = { ...childStyle, ...style };
-                    var newProps = {
-                        style: newStyle
-                    }
-                    var clonedElement = React.cloneElement(childElement, newProps);
-                    return clonedElement;
+                
+                var childStyle = childElement.props.style;
+                var newStyle = { ...childStyle, ...style };
+                var newProps = {
+                    style: newStyle
                 }
-                return childElement;
+                var clonedElement = React.cloneElement(childElement, newProps);
+                return clonedElement;
+                
+
                 
 
             }}
         </Transition>
-        this.isFirstRender = false;
         return transition;
     }
 }
 
-//what happens after have merged ( exited ) will no longer be able to set the style ?
+interface TransitionedState {
+    in: boolean,
+    colour: {r:number,g:number,b:number},
+}
 class Transitioned extends React.Component<undefined, TransitionedState>{
     constructor(props) {
         super(props);
-        this.state = {in:false,opacity:0,somethingElse:"original"}
+        this.state = { in: false, colour: {r:255,g:0,b:0}}
     }
     transition = () => {
         this.setState({in:!this.state.in})
     }
-    changeOpacity = () => {
-        this.setState({opacity:0.5})
-    }
-    changeSomethingElse = () => {
-        this.setState({ somethingElse: 0.5 })
+    changeColour = () => {
+        this.setState({ colour: {r:51,g:51,b:204}})
     }
     render() {
+        var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
+        var enterAlpha = 0.6;
+        var enterColour = "rgba(" + colorPart + enterAlpha + ")";
+        var exitAlpha = 1;
+        var exitColour = "rgba(" + colorPart + exitAlpha + ")";
         return <div>
             <button onClick={this.transition}>{this.state.in?"out":"in"}</button>
-            <button onClick={this.changeOpacity}>Change opacity</button>
-            <button onClick={this.changeSomethingElse}>Change something else</button>
-            <TransitionOnlyInTransition exitStyle={{ opacity: this.state.opacity }} enterStyle={{ opacity: 1 }} exitTransition="opacity 5000ms ease-in-out" enterTransition="opacity 5000ms ease-in-out" in={this.state.in} timeout={duration}>
+            <button onClick={this.changeColour}>Change colour</button>
+
+
+            <TransitionHelper exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }} exitTransition="opacity 5000ms ease-in-out" enterTransition="opacity 5000ms ease-in-out" in={this.state.in} timeout={duration}>
                 
                 <div style={{
-                    opacity:this.state.opacity
+                    height:300,width:300
                     }}>
-                        This will fade !
                 </div>
-            </TransitionOnlyInTransition>
+            </TransitionHelper>
 
             </div>
     }

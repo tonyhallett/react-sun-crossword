@@ -40406,21 +40406,15 @@ var transitionStyles = {
         opacity: exitValue
     }
 };
-var TransitionOnlyInTransition = /** @class */ (function (_super) {
-    __extends(TransitionOnlyInTransition, _super);
-    function TransitionOnlyInTransition() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.renderTransition = true;
-        return _this;
+var TransitionHelper = /** @class */ (function (_super) {
+    __extends(TransitionHelper, _super);
+    function TransitionHelper() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    TransitionOnlyInTransition.prototype.componentWillReceiveProps = function (newProps) {
-        this.renderTransition = newProps.in !== this.props.in ? true : false;
-    };
-    TransitionOnlyInTransition.prototype.render = function () {
+    TransitionHelper.prototype.render = function () {
         //should remove that do not pertain
         var _this = this;
         var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
-            console.log("Transition state: " + state);
             var style = {};
             switch (state) {
                 case "entering":
@@ -40432,33 +40426,26 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
                     break;
                 case "exiting":
                     style = __assign({}, _this.props.exitStyle);
-                    style.transition = _this.props.exitTransition;
+                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
                     break;
                 case "exited"://this is the state before in:true 
-                    if (!_this.isFirstRender) {
-                        style = __assign({}, _this.props.exitStyle);
-                    }
+                    style = __assign({}, _this.props.exitStyle);
                     break;
             }
             //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
             var childElement = _this.props.children;
-            if (_this.renderTransition) {
-                var childStyle = childElement.props.style;
-                var newStyle = __assign({}, childStyle, style);
-                var newProps = {
-                    style: newStyle
-                };
-                var clonedElement = React.cloneElement(childElement, newProps);
-                return clonedElement;
-            }
-            return childElement;
+            var childStyle = childElement.props.style;
+            var newStyle = __assign({}, childStyle, style);
+            var newProps = {
+                style: newStyle
+            };
+            var clonedElement = React.cloneElement(childElement, newProps);
+            return clonedElement;
         });
-        this.isFirstRender = false;
         return transition;
     };
-    return TransitionOnlyInTransition;
+    return TransitionHelper;
 }(React.Component));
-//what happens after have merged ( exited ) will no longer be able to set the style ?
 var Transitioned = /** @class */ (function (_super) {
     __extends(Transitioned, _super);
     function Transitioned(props) {
@@ -40466,24 +40453,25 @@ var Transitioned = /** @class */ (function (_super) {
         _this.transition = function () {
             _this.setState({ in: !_this.state.in });
         };
-        _this.changeOpacity = function () {
-            _this.setState({ opacity: 0.5 });
+        _this.changeColour = function () {
+            _this.setState({ colour: { r: 51, g: 51, b: 204 } });
         };
-        _this.changeSomethingElse = function () {
-            _this.setState({ somethingElse: 0.5 });
-        };
-        _this.state = { in: false, opacity: 0, somethingElse: "original" };
+        _this.state = { in: false, colour: { r: 255, g: 0, b: 0 } };
         return _this;
     }
     Transitioned.prototype.render = function () {
+        var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ",";
+        var enterAlpha = 0.6;
+        var enterColour = "rgba(" + colorPart + enterAlpha + ")";
+        var exitAlpha = 1;
+        var exitColour = "rgba(" + colorPart + exitAlpha + ")";
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
-            React.createElement("button", { onClick: this.changeOpacity }, "Change opacity"),
-            React.createElement("button", { onClick: this.changeSomethingElse }, "Change something else"),
-            React.createElement(TransitionOnlyInTransition, { exitStyle: { opacity: this.state.opacity }, enterStyle: { opacity: 1 }, exitTransition: "opacity 5000ms ease-in-out", enterTransition: "opacity 5000ms ease-in-out", in: this.state.in, timeout: duration },
+            React.createElement("button", { onClick: this.changeColour }, "Change colour"),
+            React.createElement(TransitionHelper, { exitStyle: { backgroundColor: exitColour }, enterStyle: { backgroundColor: enterColour }, exitTransition: "opacity 5000ms ease-in-out", enterTransition: "opacity 5000ms ease-in-out", in: this.state.in, timeout: duration },
                 React.createElement("div", { style: {
-                        opacity: this.state.opacity
-                    } }, "This will fade !")));
+                        height: 300, width: 300
+                    } })));
     };
     return Transitioned;
 }(React.Component));
