@@ -34,6 +34,10 @@ var react_redux_1 = require("react-redux");
 var react_json_view_1 = require("react-json-view");
 var react_router_redux_1 = require("react-router-redux");
 var Modal = require("react-modal"); //https://github.com/reactjs/react-modal/issues/497
+var routeProviders_1 = require("./routeProviders");
+var reactHelpers_1 = require("../helpers/reactHelpers");
+react_json_view_1.default.displayName = "ReactJsonView";
+//#endregion
 //#endregion
 //#region js helpers
 function clone(orig, blacklistedProps) {
@@ -65,9 +69,60 @@ var StyledLink = (function (_super) {
     };
     return StyledLink;
 }(React.Component));
-function createStyledLink(linkProps, linkText) {
-    return React.createElement(react_router_1.Link, __assign({ style: linkStyle, activeStyle: linkActiveStyle }, linkProps), linkText);
-}
+var RelativeLinksParent = (function (_super) {
+    __extends(RelativeLinksParent, _super);
+    function RelativeLinksParent() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RelativeLinksParent.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement(routeProviders_1.RelativeLink, { relativePath: "relative", activeStyle: linkActiveStyle, style: linkStyle }, "Relative"),
+            React.createElement(Container, null, this.props.children));
+    };
+    return RelativeLinksParent;
+}(React.Component));
+exports.RelativeLinksParent = RelativeLinksParent;
+var RelativeLinksChild = (function (_super) {
+    __extends(RelativeLinksChild, _super);
+    function RelativeLinksChild() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RelativeLinksChild.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement(routeProviders_1.RelativeLink, { relativePath: "relative", activeStyle: linkActiveStyle, style: linkStyle }, "Relative"),
+            React.createElement(Container, null, this.props.children));
+    };
+    return RelativeLinksChild;
+}(React.Component));
+exports.RelativeLinksChild = RelativeLinksChild;
+//export const WithRelativeLinksParent = withRelativeLink(wrapMountDispatch(RelativeLinksParent));
+//export const WithRelativeLinksChild = withRelativeLink(wrapMountDispatch(RelativeLinksChild));
+//export const WithRelativeLinksParent = withRelativeLink(RelativeLinksParent);
+//export const WithRelativeLinksChild = withRelativeLink(RelativeLinksChild);
+var RelativeLinkParentMatched = (function (_super) {
+    __extends(RelativeLinkParentMatched, _super);
+    function RelativeLinkParentMatched() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RelativeLinkParentMatched.prototype.render = function () {
+        return React.createElement("div", null, "Relative link matched from parent");
+    };
+    return RelativeLinkParentMatched;
+}(React.Component));
+exports.RelativeLinkParentMatched = RelativeLinkParentMatched;
+var RelativeLinkChildMatched = (function (_super) {
+    __extends(RelativeLinkChildMatched, _super);
+    function RelativeLinkChildMatched() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    RelativeLinkChildMatched.prototype.render = function () {
+        return React.createElement("div", null, "Relative link matched from child");
+    };
+    return RelativeLinkChildMatched;
+}(React.Component));
+exports.RelativeLinkChildMatched = RelativeLinkChildMatched;
+//export const MountDispatchRelativeLinkParentMatched = wrapMountDispatch(RelativeLinkParentMatched);
+//export const MountDispatchRelativeLinkChildMatched = wrapMountDispatch(RelativeLinkChildMatched);
 //#endregion
 //#region actions/reducers/state/selectors
 //#region toggle
@@ -91,8 +146,23 @@ function is404ActiveSelector(state) {
 }
 //#endregion
 //#region errors
+var TOGGLE_HANDLE_ROUTE_ERROR = "TOGGLE_HANDLE_ROUTE_ERROR";
 var ROUTE_ERROR = "ROUTE_ERROR";
 var CLEAR_ROUTE_ERROR = "CLEAR_ROUTE_ERROR";
+function toggleHandleRouteError() {
+    var action = {
+        type: TOGGLE_HANDLE_ROUTE_ERROR,
+    };
+    return action;
+}
+function handleRouteError(state, action) {
+    if (state === void 0) { state = false; }
+    if (action.type === TOGGLE_HANDLE_ROUTE_ERROR) {
+        return !state;
+    }
+    return state;
+}
+exports.handleRouteError = handleRouteError;
 function routeError(error) {
     var action = {
         type: ROUTE_ERROR,
@@ -122,6 +192,10 @@ exports.routeErrorDetails = routeErrorDetails;
 function routeErrorSelector(state) {
     return state.routeErrorDetails;
 }
+function handleRouteErrorSelector(state) {
+    return state.handleRouteError;
+}
+exports.handleRouteErrorSelector = handleRouteErrorSelector;
 //#endregion
 //#region hookOrMount
 var HOOK_OR_MOUNT = "HOOK_OR_MOUNT";
@@ -141,7 +215,7 @@ var ONUPDATE = "OnUpdate";
 function hooksAndMountsSelector(state) {
     return state.hooksAndMounts;
 }
-function filterComponent(component) {
+function mapComponentName(component) {
     if (component === null) {
         return "null";
     }
@@ -151,52 +225,52 @@ function filterComponent(component) {
     var componentName = component.displayName ? component.displayName : component.name;
     return componentName;
 }
-function filterComponents(components) {
+function mapComponents(components) {
     var filteredComponents = {};
     Object.keys(components).forEach(function (k) {
         var component = components[k];
-        filteredComponents[k] = filterComponent(component);
+        filteredComponents[k] = mapComponentName(component);
     });
     return filteredComponents;
 }
-function filterRoute(route) {
-    var filteredRoute = clone(route, ["getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
+function mapRoute(route) {
+    //could have used object destructuring and ...rest
+    var mappedRoute = clone(route, ["parentRoute", "getComponent", "getComponents", "onEnter", "onChange", "onLeave", "getChildRoutes", "getIndexRoute", "indexRoute", "childRoutes", "component", "components"]);
     if (route.component) {
-        filteredRoute.component = filterComponent(route.component);
+        mappedRoute.component = mapComponentName(route.component);
     }
     if (route.components) {
-        filteredRoute.components = filterComponents(route.components);
+        mappedRoute.components = mapComponents(route.components);
     }
     if (route.indexRoute) {
-        filteredRoute.indexRoute = filterIndexRoute(route.indexRoute);
+        mappedRoute.indexRoute = mapIndexRoute(route.indexRoute);
     }
     if (route.childRoutes) {
-        filteredRoute.childRoutes = filterRoutes(route.childRoutes);
+        mappedRoute.childRoutes = mapRoutes(route.childRoutes);
     }
-    return filteredRoute;
+    return mappedRoute;
 }
-function filterIndexRoute(indexRoute) {
-    return filterRoute(indexRoute);
+function mapIndexRoute(indexRoute) {
+    return mapRoute(indexRoute);
 }
-function filterRoutes(routes) {
+function mapRoutes(routes) {
     return routes.map(function (route) {
-        return filterRoute(route);
+        return mapRoute(route);
     });
 }
-function filterRouterState(routerState) {
-    var components;
-    var filteredState = {
-        location: routerState.location,
+function mapRouterState(routerState) {
+    var mappedState = {
+        location: cloneLocation(routerState.location),
         params: routerState.params,
-        routes: filterRoutes(routerState.routes)
+        routes: mapRoutes(routerState.routes)
     };
     if (routerState.components) {
-        filteredState.components = routerState.components.map(function (c) { return filterComponent(c); });
+        mappedState.components = routerState.components.map(function (c) { return mapComponentName(c); });
     }
     else {
-        filteredState.components = routerState.components;
+        mappedState.components = routerState.components;
     }
-    return filteredState;
+    return mappedState;
 }
 function hooksAndMounts(state, action) {
     if (state === void 0) { state = []; }
@@ -205,13 +279,13 @@ function hooksAndMounts(state, action) {
             var hookOrMountAction = action;
             var details = hookOrMountAction.details;
             if (hookOrMountAction.hookOrMountType == ENTERHOOK) {
-                details = { nextState: filterRouterState(details.nextState) };
+                details = { routeId: details.routeId, nextState: mapRouterState(details.nextState) };
             }
             else if (hookOrMountAction.hookOrMountType == LEAVEHOOK) {
-                details = { prevState: filterRouterState(details.prevState) };
+                details = { routeId: details.routeId, prevState: mapRouterState(details.prevState) };
             }
             else if (hookOrMountAction.hookOrMountType == CHANGEHOOK) {
-                details = { prevState: filterRouterState(details.prevState), nextState: filterRouterState(details.nextState) };
+                details = { routeId: details.routeId, prevState: mapRouterState(details.prevState), nextState: mapRouterState(details.nextState) };
             }
             var newHookOrMountDetail;
             if (details) {
@@ -232,6 +306,7 @@ function hooksAndMounts(state, action) {
 }
 exports.hooksAndMounts = hooksAndMounts;
 //#endregion
+//#region layout components
 var Container = (function (_super) {
     __extends(Container, _super);
     function Container() {
@@ -242,13 +317,12 @@ var Container = (function (_super) {
     };
     return Container;
 }(React.Component));
-exports.Container = Container;
-var AppComp = (function (_super) {
-    __extends(AppComp, _super);
-    function AppComp() {
+var App = (function (_super) {
+    __extends(App, _super);
+    function App() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    AppComp.prototype.render = function () {
+    App.prototype.render = function () {
         var _this = this;
         return React.createElement("div", null,
             React.createElement("div", null, "This is the app, has children from sub routes including the index route"),
@@ -261,10 +335,10 @@ var AppComp = (function (_super) {
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/additionalProps" }, "Additional props"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/leaveHook" }, "Leave hook"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/propsFromParent" }, "Props from parent"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change1" }, "On change child route 1"),
-            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/onChange/change2" }, "On change child route 2"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation" }, "Nav/Matching"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/getComponentError" }, "GetComponent/Error"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/relativeLinks" }, "Relative links"),
+            React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/relativeLinks/relativeLinksChild" }, "Relative Links Child"),
             React.createElement(ReactJsonContainer, null),
             React.createElement(Modal, { isOpen: this.props.routeErrorDetails !== "", onRequestClose: function () { _this.props.clearRouteError(); } },
                 React.createElement("div", null,
@@ -272,10 +346,9 @@ var AppComp = (function (_super) {
                     React.createElement("div", null, this.props.routeErrorDetails))),
             React.createElement(Container, null, this.props.children));
     };
-    return AppComp;
+    return App;
 }(React.Component));
-exports.AppComp = AppComp;
-exports.App = react_redux_1.connect(function (state) {
+exports.ConnectedApp = react_redux_1.connect(function (state) {
     return {
         routeErrorDetails: routeErrorSelector(state)
     };
@@ -285,157 +358,159 @@ exports.App = react_redux_1.connect(function (state) {
             dispatch(clearRouteError());
         }
     };
-}))(AppComp);
-function wrapMountDispatch(Component, displayName) {
-    var wrapper = (function (_super) {
-        __extends(MountWrapper, _super);
-        function MountWrapper() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        MountWrapper.prototype.componentDidMount = function () {
-            this.props.mountUnmount(true);
-        };
-        MountWrapper.prototype.componentWillUnmount = function () {
-            this.props.mountUnmount(false);
-        };
-        MountWrapper.prototype.render = function () {
-            //cast necessary for spread operator - https://github.com/Microsoft/TypeScript/issues/10727
-            var _a = this.props, mountUnmount = _a.mountUnmount, passThroughProps = __rest(_a, ["mountUnmount"]);
-            return React.createElement(Component, __assign({}, passThroughProps));
-        };
-        return MountWrapper;
-    }(React.Component));
+}))(App);
+function wrapMountDispatch(Component) {
+    var wrapper = (_a = (function (_super) {
+            __extends(MountWrapper, _super);
+            function MountWrapper() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            MountWrapper.prototype.componentDidMount = function () {
+                this.props.mountUnmount(true);
+            };
+            MountWrapper.prototype.componentWillUnmount = function () {
+                this.props.mountUnmount(false);
+            };
+            MountWrapper.prototype.render = function () {
+                //cast necessary for spread operator - https://github.com/Microsoft/TypeScript/issues/10727
+                var _a = this.props, mountUnmount = _a.mountUnmount, passThroughProps = __rest(_a, ["mountUnmount"]);
+                return React.createElement(Component, __assign({}, passThroughProps));
+            };
+            return MountWrapper;
+        }(React.Component)),
+        _a.displayName = reactHelpers_1.getWrapperComponentName("MountWrapper", Component),
+        _a);
+    var componentName = reactHelpers_1.getWrappedComponentClassName(Component);
     var connected = react_redux_1.connect(null, (function (dispatch) {
         var wrapperProps = {
             mountUnmount: function (isMount) {
-                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: displayName }));
+                dispatch(hookOrMountActionCreator(isMount ? "ComponentDidMount" : "ComponentWillUnmount", { componentName: componentName }));
             }
         };
         return wrapperProps;
     }))(wrapper);
-    connected.displayName = displayName;
     return connected;
+    var _a;
 }
-//#endregion
-var ReactJsonContainer = react_redux_1.connect(function (state, ownProps) {
+var ReactJsonContainer = react_redux_1.connect(function (state) {
     return {
         src: {
             hookAndMounts: hooksAndMountsSelector(state)
         }
     };
 })(react_json_view_1.default);
+//#endregion
 //#region Introduction
-var IntroductionComp = (function (_super) {
-    __extends(IntroductionComp, _super);
-    function IntroductionComp() {
+var Introduction = (function (_super) {
+    __extends(Introduction, _super);
+    function Introduction() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    IntroductionComp.prototype.render = function () {
-        return "This is the introduction - the index route";
+    Introduction.prototype.render = function () {
+        return React.createElement("div", null, "This is the introduction - the index route");
     };
-    return IntroductionComp;
+    return Introduction;
 }(React.Component));
-exports.IntroductionComp = IntroductionComp;
-exports.Introduction = wrapMountDispatch(IntroductionComp, "Introduction");
+exports.Introduction = Introduction;
+//export const MountDispatchIntroduction = wrapMountDispatch(Introduction);
 //#endregion
 //#region Pathless
-var PathlessComp = (function (_super) {
-    __extends(PathlessComp, _super);
-    function PathlessComp() {
+var Pathless = (function (_super) {
+    __extends(Pathless, _super);
+    function Pathless() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PathlessComp.prototype.render = function () {
+    Pathless.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "This component can have a child whose path is not a subpath"),
             React.createElement(Container, null, this.props.children));
     };
-    return PathlessComp;
+    return Pathless;
 }(React.Component));
-exports.PathlessComp = PathlessComp;
-exports.Pathless = wrapMountDispatch(PathlessComp, "Pathless");
-var PathlessIndexComp = (function (_super) {
-    __extends(PathlessIndexComp, _super);
-    function PathlessIndexComp() {
+exports.Pathless = Pathless;
+//export const MountDispatchPathless = wrapMountDispatch(Pathless);
+var PathlessIndex = (function (_super) {
+    __extends(PathlessIndex, _super);
+    function PathlessIndex() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PathlessIndexComp.prototype.render = function () {
+    PathlessIndex.prototype.render = function () {
         return "This is the index route component";
     };
-    return PathlessIndexComp;
+    return PathlessIndex;
 }(React.Component));
-exports.PathlessIndexComp = PathlessIndexComp;
-exports.PathlessIndex = wrapMountDispatch(PathlessIndexComp, "PathlessIndex");
-var PathlessChildComp = (function (_super) {
-    __extends(PathlessChildComp, _super);
-    function PathlessChildComp() {
+exports.PathlessIndex = PathlessIndex;
+//export const MountDispatchPathlessIndex = wrapMountDispatch(PathlessIndex);
+var PathlessChild = (function (_super) {
+    __extends(PathlessChild, _super);
+    function PathlessChild() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PathlessChildComp.prototype.render = function () {
+    PathlessChild.prototype.render = function () {
         return "This component has been rendered without its route being a subpath";
     };
-    return PathlessChildComp;
+    return PathlessChild;
 }(React.Component));
-exports.PathlessChildComp = PathlessChildComp;
-exports.PathlessChild = wrapMountDispatch(PathlessChildComp, "PathlessChild");
+exports.PathlessChild = PathlessChild;
+//export const MountDispatchPathlessChild = wrapMountDispatch(PathlessChild);
 //#endregion
 //#region multiple
-var MultipleComp = (function (_super) {
-    __extends(MultipleComp, _super);
-    function MultipleComp() {
+var Multiple = (function (_super) {
+    __extends(Multiple, _super);
+    function Multiple() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    MultipleComp.prototype.render = function () {
+    Multiple.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "This route component receives child components through a matching child route's components property"),
             React.createElement(Container, null, this.props["child1"]),
             React.createElement(Container, null, this.props["child2"]));
     };
-    return MultipleComp;
+    return Multiple;
 }(React.Component));
-exports.MultipleComp = MultipleComp;
-exports.Multiple = wrapMountDispatch(MultipleComp, "Multiple");
-var Child1Comp = (function (_super) {
-    __extends(Child1Comp, _super);
-    function Child1Comp() {
+exports.Multiple = Multiple;
+//export const MountDispatchMultiple = wrapMountDispatch(Multiple);
+var MultipleChild1 = (function (_super) {
+    __extends(MultipleChild1, _super);
+    function MultipleChild1() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Child1Comp.prototype.render = function () {
+    MultipleChild1.prototype.render = function () {
         return "Child1 from Route components property";
     };
-    return Child1Comp;
+    return MultipleChild1;
 }(React.Component));
-exports.Child1Comp = Child1Comp;
-exports.Child1 = wrapMountDispatch(Child1Comp, "MultipleChild1");
-var Child2Comp = (function (_super) {
-    __extends(Child2Comp, _super);
-    function Child2Comp() {
+exports.MultipleChild1 = MultipleChild1;
+//export const MountDispatchMultipleChild1 = wrapMountDispatch(MultipleChild1);
+var MultipleChild2 = (function (_super) {
+    __extends(MultipleChild2, _super);
+    function MultipleChild2() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    Child2Comp.prototype.render = function () {
+    MultipleChild2.prototype.render = function () {
         return "Child2 from Route components property";
     };
-    return Child2Comp;
+    return MultipleChild2;
 }(React.Component));
-exports.Child2Comp = Child2Comp;
-exports.Child2 = wrapMountDispatch(Child2Comp, "MultipleChild2");
+exports.MultipleChild2 = MultipleChild2;
+//export const MountDispatchMultipleChild2 = wrapMountDispatch(MultipleChild2);
 //#endregion
 //#region additional props
-var AdditionalPropsComp = (function (_super) {
-    __extends(AdditionalPropsComp, _super);
-    function AdditionalPropsComp() {
+var AdditionalProps = (function (_super) {
+    __extends(AdditionalProps, _super);
+    function AdditionalProps() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    AdditionalPropsComp.prototype.render = function () {
+    AdditionalProps.prototype.render = function () {
         var additionalProp = this.props.route.additionalProp.additional;
         return React.createElement("div", null, "Received additional prop from route " + additionalProp);
     };
-    return AdditionalPropsComp;
+    return AdditionalProps;
 }(React.Component));
-exports.AdditionalPropsComp = AdditionalPropsComp;
-exports.AdditionalProps = wrapMountDispatch(AdditionalPropsComp, "AdditionalProps");
-var LeaveHookComponentComp = (function (_super) {
-    __extends(LeaveHookComponentComp, _super);
-    function LeaveHookComponentComp(props) {
+exports.AdditionalProps = AdditionalProps;
+var LeaveHookComponent = (function (_super) {
+    __extends(LeaveHookComponent, _super);
+    function LeaveHookComponent(props) {
         var _this = _super.call(this, props) || this;
         _this.toggleCanLeave = function () {
             _this.setState(function (prevState, props) {
@@ -445,10 +520,10 @@ var LeaveHookComponentComp = (function (_super) {
         _this.state = { canLeave: false };
         return _this;
     }
-    LeaveHookComponentComp.prototype.componentDidMount = function () {
+    LeaveHookComponent.prototype.componentDidMount = function () {
         this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave.bind(this));
     };
-    LeaveHookComponentComp.prototype.routerWillLeave = function (nextLocation) {
+    LeaveHookComponent.prototype.routerWillLeave = function (nextLocation) {
         // return false to prevent a transition w/o prompting the user,
         // or return a string to allow the user to decide:
         // return `null` or nothing to let other hooks to be executed
@@ -457,57 +532,16 @@ var LeaveHookComponentComp = (function (_super) {
         if (!this.state.canLeave)
             return "Please don't leave. Ok to leave, cancel to stay";
     };
-    LeaveHookComponentComp.prototype.render = function () {
+    LeaveHookComponent.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.toggleCanLeave }, this.state.canLeave ? "Can leave" : "Can't leave"));
     };
-    return LeaveHookComponentComp;
+    return LeaveHookComponent;
 }(React.Component));
-exports.LeaveHookComponentComp = LeaveHookComponentComp;
-exports.LeaveHookComponent = wrapMountDispatch(LeaveHookComponentComp, "LeaveHook");
-//#endregion
-//#region change component
-var OnChangeComp = (function (_super) {
-    __extends(OnChangeComp, _super);
-    function OnChangeComp() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    OnChangeComp.prototype.render = function () {
-        return React.createElement("div", null,
-            "By switching between the child routes, the onChange hook should be fired",
-            React.createElement(Container, null, this.props.children));
-    };
-    return OnChangeComp;
-}(React.Component));
-exports.OnChangeComp = OnChangeComp;
-exports.OnChangeComponent = wrapMountDispatch(OnChangeComp, "OnChange");
-var OnChangeChild1Comp = (function (_super) {
-    __extends(OnChangeChild1Comp, _super);
-    function OnChangeChild1Comp() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    OnChangeChild1Comp.prototype.render = function () {
-        return "On change child 1";
-    };
-    return OnChangeChild1Comp;
-}(React.Component));
-exports.OnChangeChild1Comp = OnChangeChild1Comp;
-exports.OnChangeChild1 = wrapMountDispatch(OnChangeChild1Comp, "OnChangeChild1");
-var OnChangeChild2Comp = (function (_super) {
-    __extends(OnChangeChild2Comp, _super);
-    function OnChangeChild2Comp() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    OnChangeChild2Comp.prototype.render = function () {
-        return "On change child 2";
-    };
-    return OnChangeChild2Comp;
-}(React.Component));
-exports.OnChangeChild2Comp = OnChangeChild2Comp;
-exports.OnChangeChild2 = wrapMountDispatch(OnChangeChild2Comp, "OnChangeChild2");
-var PropsFromParentParentComp = (function (_super) {
-    __extends(PropsFromParentParentComp, _super);
-    function PropsFromParentParentComp(props) {
+exports.LeaveHookComponent = LeaveHookComponent;
+var PropsFromParentParent = (function (_super) {
+    __extends(PropsFromParentParent, _super);
+    function PropsFromParentParent(props) {
         var _this = _super.call(this, props) || this;
         _this.changeState = function () {
             _this.setState({ someState: "Change by parent" });
@@ -515,33 +549,32 @@ var PropsFromParentParentComp = (function (_super) {
         _this.state = { someState: "Initial from parent" };
         return _this;
     }
-    PropsFromParentParentComp.prototype.render = function () {
+    PropsFromParentParent.prototype.render = function () {
         var _this = this;
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.changeState }, "Change state"),
             React.createElement(Container, null, React.Children.map(this.props.children, function (c) { return React.cloneElement(c, { someState: _this.state.someState }); })));
     };
-    return PropsFromParentParentComp;
+    return PropsFromParentParent;
 }(React.Component));
-exports.PropsFromParentParentComp = PropsFromParentParentComp;
-exports.PropsFromParentParent = wrapMountDispatch(PropsFromParentParentComp, "PropsFromParentParent");
-var PropsFromParentChildComp = (function (_super) {
-    __extends(PropsFromParentChildComp, _super);
-    function PropsFromParentChildComp() {
+exports.PropsFromParentParent = PropsFromParentParent;
+//export const MountDispatchPropsFromParentParent = wrapMountDispatch(PropsFromParentParent);
+var PropsFromParentChild = (function (_super) {
+    __extends(PropsFromParentChild, _super);
+    function PropsFromParentChild() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PropsFromParentChildComp.prototype.render = function () {
+    PropsFromParentChild.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "this prop has come from parent:" + this.props.someState),
             React.createElement("div", null, "this prop ( location.pathname ) has come from the router: " + this.props.location.pathname));
     };
-    return PropsFromParentChildComp;
+    return PropsFromParentChild;
 }(React.Component));
-exports.PropsFromParentChildComp = PropsFromParentChildComp;
-exports.PropsFromParentChild = wrapMountDispatch(PropsFromParentChildComp, "PropsFromParentChild");
-var NavigationComp = (function (_super) {
-    __extends(NavigationComp, _super);
-    function NavigationComp(props) {
+exports.PropsFromParentChild = PropsFromParentChild;
+var Navigation = (function (_super) {
+    __extends(Navigation, _super);
+    function Navigation(props) {
         var _this = _super.call(this, props) || this;
         _this.doPush = function () {
             _this.props.navThroughDispatch("/leaveHook");
@@ -554,10 +587,11 @@ var NavigationComp = (function (_super) {
         _this.state = { someState: 0 };
         return _this;
     }
-    NavigationComp.prototype.render = function () {
+    Navigation.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null,
                 React.createElement("div", null, "Matching"),
+                React.createElement("br", null),
                 React.createElement("div", null,
                     React.createElement("div", null, "Params"),
                     React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/params/someParamValue1/greedySplat1MatchPart" }, "Params 1"),
@@ -566,25 +600,56 @@ var NavigationComp = (function (_super) {
                     React.createElement("div", null, "Optional"),
                     React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/optionalPartNotOptional" }, "Optional 1"),
                     React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/NotOptional" }, "Optional 2"))),
+            React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
             React.createElement("div", null,
                 React.createElement("div", null, "No match"),
+                React.createElement("br", null),
+                React.createElement("br", null),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/navigation/noMatchingChildRoute" }, "No matching child route"),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: "/noMatchingRoute" }, "No matching route"),
                 React.createElement("br", null),
                 React.createElement("button", { onClick: this.props.toggle404Active }, this.props.is404Active ? "Deactivate 404" : "Activate 404")),
+            React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
             React.createElement("div", null,
                 React.createElement("div", null, "Query/Search & State"),
+                React.createElement("br", null),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", search: "?someSearch", state: { someState: this.state.someState } } }, "Search + State"),
                 React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/navigation/querySearchState", query: { someQuery1: "someQuery1Value", someQuery2: "someQuery2Value" }, state: { someState: this.state.someState } } }, "Query + State"),
                 React.createElement("button", { onClick: this.incrementLinkState }, "Increment link state")),
             React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
             React.createElement("button", { onClick: this.doPush }, "Test push ( leave hook )"),
-            this.props.children);
+            React.createElement("br", null),
+            React.createElement("div", null, "--------------------------"),
+            React.createElement("br", null),
+            React.createElement(Container, null, this.props.children));
     };
-    return NavigationComp;
+    return Navigation;
 }(React.Component));
-exports.NavigationComp = NavigationComp;
-exports.Navigation = wrapMountDispatch(react_redux_1.connect(function (routerAppState) {
+//export const MountDispatchNavigation = wrapMountDispatch(connect(
+//    (routerAppState: RouterAppState) => {
+//        var stateToProps:NavigationStateToProps= {
+//            is404Active: is404ActiveSelector(routerAppState)
+//        }
+//        return stateToProps;
+//    },
+//    (dispatch) => {
+//        var mappedDispatch: NavigationDispatchProps = {
+//            navThroughDispatch: function (location: LocationDescriptor) {
+//                dispatch(push(location));
+//            },
+//            toggle404Active: function () {
+//                dispatch(toggle404Active());
+//            }
+//        }
+//        return mappedDispatch;
+//})(Navigation));
+exports.ConnectedNavigation = react_redux_1.connect(function (routerAppState) {
     var stateToProps = {
         is404Active: is404ActiveSelector(routerAppState)
     };
@@ -599,27 +664,33 @@ exports.Navigation = wrapMountDispatch(react_redux_1.connect(function (routerApp
         }
     };
     return mappedDispatch;
-})(NavigationComp), "Navigation");
-function createNavigationComponent(Component, displayName) {
-    var wrapper = (function (_super) {
-        __extends(Wrapper, _super);
-        function Wrapper() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.displayName = displayName;
-            return _this;
-        }
-        Wrapper.prototype.render = function () {
-            var actualLocation = this.props.location;
-            var location = clone(actualLocation, []);
-            location.query = clone(location.query, []);
-            return React.createElement("div", null,
-                React.createElement(Component, __assign({}, this.props)),
-                React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
-        };
-        return Wrapper;
-    }(React.Component));
+})(Navigation);
+function cloneLocation(location) {
+    var clonedLocation = clone(location, []);
+    clonedLocation.query = clone(location.query, []);
+    return clonedLocation;
+}
+function createNavigationComponent(Component) {
+    //var MountDispatchComponent = wrapMountDispatch(Component);
+    var wrapper = (_a = (function (_super) {
+            __extends(ReactJsonRoutePropsWrapper, _super);
+            function ReactJsonRoutePropsWrapper() {
+                return _super !== null && _super.apply(this, arguments) || this;
+            }
+            ReactJsonRoutePropsWrapper.prototype.render = function () {
+                var location = cloneLocation(this.props.location);
+                //<MountDispatchComponent {...this.props} />
+                return React.createElement("div", null,
+                    React.createElement(Component, __assign({}, this.props)),
+                    React.createElement(react_json_view_1.default, { src: { location: location, params: this.props.params, routeParams: this.props.routeParams } }));
+            };
+            return ReactJsonRoutePropsWrapper;
+        }(React.Component)),
+        //static displayName = getWrapperComponentName("ReactJsonRoutePropsWrapper", MountDispatchComponent);
+        _a.displayName = reactHelpers_1.getWrapperComponentName("ReactJsonRoutePropsWrapper", Component),
+        _a);
     return wrapper;
-    //return wrapMountDispatch(wrapper, displayName); 
+    var _a;
 }
 var PageNotFound = (function (_super) {
     __extends(PageNotFound, _super);
@@ -632,59 +703,48 @@ var PageNotFound = (function (_super) {
     return PageNotFound;
 }(React.Component));
 exports.PageNotFound = PageNotFound;
-var PathSwitch = (function (_super) {
-    __extends(PathSwitch, _super);
-    function PathSwitch() {
+var ParamParent = (function (_super) {
+    __extends(ParamParent, _super);
+    function ParamParent() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    PathSwitch.prototype.render = function () {
-        return React.createElement("div", null, "Route that matched had a dynamic path");
-    };
-    return PathSwitch;
-}(React.Component));
-exports.PathSwitch = PathSwitch;
-var ParamParentComp = (function (_super) {
-    __extends(ParamParentComp, _super);
-    function ParamParentComp() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ParamParentComp.prototype.render = function () {
+    ParamParent.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "ParamParent"),
             React.createElement(Container, null, this.props.children));
     };
-    return ParamParentComp;
+    return ParamParent;
 }(React.Component));
-var ParamChildComp = (function (_super) {
-    __extends(ParamChildComp, _super);
-    function ParamChildComp() {
+var ParamChild = (function (_super) {
+    __extends(ParamChild, _super);
+    function ParamChild() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    ParamChildComp.prototype.render = function () {
+    ParamChild.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("div", null, "ParamChild"));
     };
-    return ParamChildComp;
+    return ParamChild;
 }(React.Component));
-var OptionalComp = (function (_super) {
-    __extends(OptionalComp, _super);
-    function OptionalComp() {
+var Optional = (function (_super) {
+    __extends(Optional, _super);
+    function Optional() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    OptionalComp.prototype.render = function () {
+    Optional.prototype.render = function () {
         return React.createElement("div", null, "Optional");
     };
-    return OptionalComp;
+    return Optional;
 }(React.Component));
-var QuerySearchStateComp = (function (_super) {
-    __extends(QuerySearchStateComp, _super);
-    function QuerySearchStateComp() {
+var QuerySearchState = (function (_super) {
+    __extends(QuerySearchState, _super);
+    function QuerySearchState() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    QuerySearchStateComp.prototype.render = function () {
+    QuerySearchState.prototype.render = function () {
         return React.createElement("div", null, "Query Search State");
     };
-    return QuerySearchStateComp;
+    return QuerySearchState;
 }(React.Component));
 var GetComponentError = (function (_super) {
     __extends(GetComponentError, _super);
@@ -692,19 +752,33 @@ var GetComponentError = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     GetComponentError.prototype.render = function () {
+        var _this = this;
         return React.createElement("div", null,
             React.createElement("div", null, "The link below is to a route that provides the component using the getComponent method."),
             React.createElement("div", null, "To demonstrate that the component is provided lazily use the two links below which provide state that getComponent uses to determine the component"),
             React.createElement(StyledLink, { to: { pathname: "/getComponentError/getComponent", state: { isComponent1: true } } }, "Choose component 1"),
             React.createElement(react_router_1.Link, { style: linkStyle, activeStyle: linkActiveStyle, to: { pathname: "/getComponentError/getComponent", state: { isComponent1: false } } }, "Choose component 2"),
+            React.createElement("br", null),
             React.createElement("div", null, "The Router also allow for handling of errors - such as those thrown by getComponent"),
             React.createElement("div", null, "The link below is matched by a route that will throw from getComponent"),
             React.createElement(react_router_1.Link, { to: "/getComponentError/error" }, "Throw"),
+            React.createElement("div", null, "Use the button below to toggle adding a handler"),
+            React.createElement("button", { onClick: function () { _this.props.toggleHandleRouterError(); } }, this.props.handleRouterError ? "Remove handler" : "Add handler"),
             React.createElement(Container, null, this.props.children));
     };
     return GetComponentError;
 }(React.Component));
-exports.GetComponentError = GetComponentError;
+exports.ConnectedGetComponentError = react_redux_1.connect(function (state) {
+    return {
+        handleRouterError: handleRouteErrorSelector(state)
+    };
+}, function (dispatch) {
+    return {
+        toggleHandleRouterError: function () {
+            dispatch(toggleHandleRouteError());
+        }
+    };
+})(GetComponentError);
 var GetComponentComp1 = (function (_super) {
     __extends(GetComponentComp1, _super);
     function GetComponentComp1() {
@@ -727,10 +801,10 @@ var GetComponentComp2 = (function (_super) {
     return GetComponentComp2;
 }(React.Component));
 exports.GetComponentComp2 = GetComponentComp2;
-exports.ParamParent = createNavigationComponent(ParamParentComp, "ParamParent");
-exports.ParamChild = createNavigationComponent(ParamChildComp, "ParamChild");
-exports.Optional = createNavigationComponent(OptionalComp, "Optional");
-exports.QuerySearchState = createNavigationComponent(QuerySearchStateComp, "QuerySearchState");
+exports.ReactJsonRoutePropsParamParent = createNavigationComponent(ParamParent);
+exports.ReactJsonRoutePropsParamChild = createNavigationComponent(ParamChild);
+exports.ReactJsonRoutePropsOptional = createNavigationComponent(Optional);
+exports.ReactJsonRoutePropsQuerySearchState = createNavigationComponent(QuerySearchState);
 //#region demo action
 var DEMO_CHANGE_STRING = "DEMO_CHANGE_STRING";
 function changeDemoStateStringAction(newString) {

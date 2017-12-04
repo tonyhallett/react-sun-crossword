@@ -21,97 +21,692 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var ReactDOM = require("react-dom");
 var react_redux_1 = require("react-redux");
-var redux_1 = require("redux");
-var redux_devtools_extension_1 = require("redux-devtools-extension");
-var DemoRouterApp_1 = require("./router_test/DemoRouterApp");
-var react_router_1 = require("react-router");
-var history_1 = require("history");
-var react_router_redux_1 = require("react-router-redux");
-var react_router_2 = require("react-router");
-var routeProviders_1 = require("./router_test/routeProviders");
-//ReactDOM.render(
-//    <CrosswordPuzzleApp/>,
-//    document.getElementById("example")
-//);
-//#region setup
-var history = react_router_1.useRouterHistory(history_1.createHistory)({
-    basename: '/react-sun-crossword'
-});
-var middleware = react_router_redux_1.routerMiddleware(history);
-var store = redux_1.createStore(redux_1.combineReducers({
-    hooksAndMounts: DemoRouterApp_1.hooksAndMounts,
-    router: react_router_redux_1.routerReducer,
-    is404Active: DemoRouterApp_1.is404Active,
-    routeErrorDetails: DemoRouterApp_1.routeErrorDetails
-}), redux_devtools_extension_1.composeWithDevTools(redux_1.applyMiddleware(middleware)));
-var RouteAdditional = (function (_super) {
-    __extends(RouteAdditional, _super);
-    function RouteAdditional() {
+var Modal = require("react-modal");
+var storage_1 = require("./helpers/storage");
+var $ = require("jquery");
+var Radium_1 = require("Radium");
+var Transition_1 = require("react-transition-group/Transition");
+var componentBackgroundColor = "lightgray";
+var SquareGo;
+(function (SquareGo) {
+    SquareGo[SquareGo["X"] = 0] = "X";
+    SquareGo[SquareGo["O"] = 1] = "O";
+    SquareGo[SquareGo["None"] = 2] = "None";
+})(SquareGo || (SquareGo = {}));
+var Player;
+(function (Player) {
+    Player[Player["X"] = 0] = "X";
+    Player[Player["O"] = 1] = "O";
+})(Player || (Player = {}));
+var GameState;
+(function (GameState) {
+    GameState[GameState["X"] = 0] = "X";
+    GameState[GameState["O"] = 1] = "O";
+    GameState[GameState["Playing"] = 2] = "Playing";
+    GameState[GameState["Draw"] = 3] = "Draw";
+    GameState[GameState["FinishedConfirmed"] = 4] = "FinishedConfirmed";
+})(GameState || (GameState = {}));
+var Finished_Confirmed = "FINISHED_CONFIRMED";
+var Play_Again = "PLAY_AGAIN";
+var Take_Go = "TAKE_GO";
+function finishedConfirmed() {
+    return {
+        type: Finished_Confirmed
+    };
+}
+function playAgain() {
+    return {
+        type: Play_Again
+    };
+}
+function takeGo(row, column) {
+    return {
+        type: Take_Go,
+        row: row,
+        column: column
+    };
+}
+var numRowsAndColumns = 4;
+function getDefaultBoard() {
+    var rows = [];
+    for (var i = 0; i < numRowsAndColumns; i++) {
+        var squares = [];
+        for (var j = 0; j < numRowsAndColumns; j++) {
+            squares.push(SquareGo.None);
+        }
+        rows.push(squares);
+    }
+    return rows;
+}
+var firstPlayer = Player.X;
+function checkWinner(board) {
+    var winner = checkRowsWinner(board);
+    if (winner === SquareGo.None) {
+        winner = checkColumnsWinner(board);
+        if (winner === SquareGo.None) {
+            winner = checkDiagonalWinner(board);
+        }
+    }
+    return winner;
+}
+function checkRowsWinner(board) {
+    var checkSquareGo;
+    var winner;
+    for (var i = 0; i < board.length; i++) {
+        winner = true;
+        for (var j = 0; j < board.length; j++) {
+            var squareGo = board[i][j];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (j === 0) {
+                checkSquareGo = squareGo;
+            }
+            else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+        }
+        if (winner) {
+            break;
+        }
+    }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
+    }
+    return checkSquareGo;
+}
+function checkColumnsWinner(board) {
+    var checkSquareGo;
+    var winner;
+    for (var i = 0; i < board.length; i++) {
+        winner = true;
+        for (var j = 0; j < board.length; j++) {
+            var squareGo = board[j][i];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (j === 0) {
+                checkSquareGo = squareGo;
+            }
+            else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+        }
+        if (winner) {
+            break;
+        }
+    }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
+    }
+    return checkSquareGo;
+}
+function checkDiagonalWinner(board) {
+    var checkSquareGo;
+    var winner = true;
+    for (var i = 0; i < board.length; i++) {
+        var squareGo = board[i][i];
+        if (squareGo == SquareGo.None) {
+            winner = false;
+            break;
+        }
+        if (i === 0) {
+            checkSquareGo = squareGo;
+        }
+        else {
+            if (checkSquareGo !== squareGo) {
+                winner = false;
+                break;
+            }
+        }
+    }
+    if (!winner) {
+        winner = true;
+        for (var i = 0; i < board.length; i++) {
+            var squareGo = board[i][board.length - 1 - i];
+            if (squareGo == SquareGo.None) {
+                winner = false;
+                break;
+            }
+            if (i === 0) {
+                checkSquareGo = squareGo;
+            }
+            else {
+                if (checkSquareGo !== squareGo) {
+                    winner = false;
+                    break;
+                }
+            }
+        }
+    }
+    if (!winner) {
+        checkSquareGo = SquareGo.None;
+    }
+    return checkSquareGo;
+}
+function checkDraw(board) {
+    var isDraw = true;
+    for (var i = 0; i < board.length; i++) {
+        for (var j = 0; j < board.length; j++) {
+            var square = board[i][j];
+            if (square === SquareGo.None) {
+                isDraw = false;
+                break;
+            }
+        }
+    }
+    return isDraw;
+}
+function reducer(state, action) {
+    if (state === void 0) { state = {
+        currentPlayer: firstPlayer,
+        board: getDefaultBoard(),
+        oColour: "red",
+        xColour: "blue",
+        gameState: GameState.Playing,
+        playCount: 0,
+        drawCount: 0,
+        playerXWinCount: 0
+    }; }
+    switch (action.type) {
+        case Finished_Confirmed:
+            return __assign({}, state, { gameState: GameState.FinishedConfirmed });
+        case Play_Again:
+            var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
+            return {
+                board: getDefaultBoard(),
+                currentPlayer: nextPlayer,
+                oColour: state.oColour,
+                xColour: state.xColour,
+                gameState: GameState.Playing,
+                drawCount: state.drawCount,
+                playCount: state.playCount,
+                playerXWinCount: state.playerXWinCount
+            };
+        case Take_Go:
+            var row = action.row;
+            var column = action.column;
+            var currentPlayer = state.currentPlayer;
+            var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
+            var newBoard = state.board.map(function (rowSquares, index) {
+                if (index === row) {
+                    return rowSquares.map(function (sq, colIndex) {
+                        if (colIndex === column) {
+                            var squareGo = SquareGo.O;
+                            if (currentPlayer === Player.X) {
+                                squareGo = SquareGo.X;
+                            }
+                            return squareGo;
+                        }
+                        return sq;
+                    });
+                }
+                return rowSquares;
+            });
+            var winner = checkWinner(newBoard);
+            var gameState = GameState.Playing;
+            var drawCount = state.drawCount;
+            var playCount = state.playCount;
+            var playerXWinCount = state.playerXWinCount;
+            switch (winner) {
+                case SquareGo.None:
+                    if (checkDraw(newBoard)) {
+                        gameState = GameState.Draw;
+                        playCount++;
+                        drawCount++;
+                    }
+                    break;
+                case SquareGo.X:
+                    gameState = GameState.X;
+                    playCount++;
+                    playerXWinCount++;
+                    break;
+                case SquareGo.O:
+                    gameState = GameState.O;
+                    playCount++;
+                    break;
+            }
+            return {
+                board: newBoard,
+                currentPlayer: nextPlayer,
+                oColour: state.oColour,
+                xColour: state.xColour,
+                gameState: gameState,
+                drawCount: drawCount,
+                playCount: playCount,
+                playerXWinCount: playerXWinCount
+            };
+        default:
+            return state;
+    }
+}
+var TicTacToeSquare = (function (_super) {
+    __extends(TicTacToeSquare, _super);
+    function TicTacToeSquare() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.squareClicked = function () {
+            if (_this.props.canGo) {
+                _this.props.takeGo();
+            }
+        };
+        return _this;
+    }
+    TicTacToeSquare.prototype.render = function () {
+        return React.createElement("td", { style: {
+                color: this.props.squareGoColour,
+                textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+            }, onClick: this.squareClicked }, this.props.squareText);
+    };
+    return TicTacToeSquare;
+}(React.Component));
+var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
+    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
+    var squareGoColour = "white";
+    var squareText = "";
+    var canGo = false;
+    switch (squareGo) {
+        case SquareGo.O:
+            squareGoColour = state.oColour;
+            squareText = "O";
+            break;
+        case SquareGo.X:
+            squareText = "X";
+            squareGoColour = state.xColour;
+            break;
+        case SquareGo.None:
+            canGo = true;
+            break;
+    }
+    if (state.gameState !== GameState.Playing) {
+        canGo = false;
+    }
+    var connectState = {
+        squareGoColour: squareGoColour,
+        squareText: squareText,
+        canGo: canGo
+    };
+    return connectState;
+}, function (dispatch, ownProps) {
+    return {
+        takeGo: function () {
+            dispatch(takeGo(ownProps.rowIndex, ownProps.colIndex));
+        }
+    };
+})(TicTacToeSquare);
+var ticTacToeBoardId = "ticTacToeBoard";
+var TicTacToeBoard = (function (_super) {
+    __extends(TicTacToeBoard, _super);
+    function TicTacToeBoard() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    RouteAdditional.prototype.render = function () {
-        return React.createElement(react_router_2.Route, __assign({}, this.props));
+    TicTacToeBoard.prototype.render = function () {
+        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
+            React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
+                return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
+                    return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
+                }));
+            })));
     };
-    return RouteAdditional;
+    return TicTacToeBoard;
 }(React.Component));
-var RouteAny = react_router_2.Route;
-var RouterAny = react_router_2.Router;
-//#endregion
-//#region hooks
-var onEnter = function routeOnEnter(nextState, replace) {
-    var nextStateLocationPathname = nextState.location.pathname;
-    additionalPropsValue.additional = "have entered, nextState.location.pathname: " + nextStateLocationPathname;
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("EnterHook", { nextState: nextState }));
-    if (nextState.location.pathname == "/redirect") {
-        replace("/multiple");
+exports.TicTacToeBoard = TicTacToeBoard;
+var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
+    return {
+        board: state.board
+    };
+})(TicTacToeBoard);
+var PlayerView = (function (_super) {
+    __extends(PlayerView, _super);
+    function PlayerView() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
+    PlayerView.prototype.render = function () {
+        return React.createElement("div", { style: { width: 274, padding: 10, borderWidth: "3px", borderStyle: "solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour } },
+            React.createElement("div", null, this.props.playerText),
+            this.props.isWinner && React.createElement("div", null, "Winner !"));
+    };
+    return PlayerView;
+}(React.Component));
+var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
+    var playerColour = state.oColour;
+    if (ownProps.player === Player.X) {
+        playerColour = state.xColour;
+    }
+    var isWinner = false;
+    switch (state.gameState) {
+        case GameState.O:
+            isWinner = ownProps.player === Player.O;
+            break;
+        case GameState.X:
+            isWinner = ownProps.player === Player.X;
+            break;
+    }
+    var isCurrent = state.currentPlayer === ownProps.player;
+    var playerId = ownProps.player === Player.X ? "X" : "O";
+    return {
+        playerColour: playerColour,
+        isWinner: isWinner,
+        currentColour: isCurrent ? "green" : "black",
+        currentFontWeight: isCurrent ? "bolder" : "normal",
+        playerText: "Player " + playerId
+    };
+})(PlayerView);
+function addPaddingToStyle(style) {
+    style.paddingTop = 5;
+    style.paddingBottom = 5;
+    return style;
+}
+var Scoreboard = (function (_super) {
+    __extends(Scoreboard, _super);
+    function Scoreboard() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Scoreboard.prototype.render = function () {
+        var totalWins = this.props.playCount - this.props.drawCount;
+        var playerXLossCount = totalWins - this.props.playerXWinCount;
+        var playerOWinCount = playerXLossCount;
+        var playerOLossCount = this.props.playerXWinCount;
+        return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
+            React.createElement("thead", null,
+                React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+                    React.createElement("th", { style: addPaddingToStyle({}) }, "Player"),
+                    React.createElement("th", { style: addPaddingToStyle({}) }, "Won"),
+                    React.createElement("th", { style: addPaddingToStyle({}) }, "Lost"),
+                    React.createElement("th", { style: addPaddingToStyle({}) }, "Drawn"))),
+            React.createElement("tbody", null,
+                React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
+                React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
+    };
+    return Scoreboard;
+}(React.Component));
+var ConnectedScoreboard = react_redux_1.connect(function (state) {
+    var scoreboardState = {
+        currentPlayer: state.currentPlayer,
+        drawCount: state.drawCount,
+        playCount: state.playCount,
+        playerXWinCount: state.playerXWinCount,
+        oColour: state.oColour,
+        xColour: state.xColour
+    };
+    return scoreboardState;
+})(Scoreboard);
+var ScoreboardPlayer = (function (_super) {
+    __extends(ScoreboardPlayer, _super);
+    function ScoreboardPlayer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ScoreboardPlayer.prototype.render = function () {
+        return React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.won),
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.lost),
+            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.drawn));
+    };
+    return ScoreboardPlayer;
+}(React.Component));
+var ElementDimensionsChoice;
+(function (ElementDimensionsChoice) {
+    ElementDimensionsChoice[ElementDimensionsChoice["Content"] = 0] = "Content";
+    ElementDimensionsChoice[ElementDimensionsChoice["PaddingAndBorder"] = 1] = "PaddingAndBorder";
+    ElementDimensionsChoice[ElementDimensionsChoice["Padding"] = 2] = "Padding";
+    ElementDimensionsChoice[ElementDimensionsChoice["PaddingBorderMargin"] = 3] = "PaddingBorderMargin";
+})(ElementDimensionsChoice || (ElementDimensionsChoice = {}));
+//to consider box sizing - another day !
+//http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
+function getElementWidth(element, dimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerWidth(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerWidth();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerWidth(true);
+        case ElementDimensionsChoice.Content:
+            return $el.width();
+    }
+}
+function getElementHeight(element, dimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerHeight(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerHeight();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerHeight(true);
+        case ElementDimensionsChoice.Content:
+            return $el.height();
+    }
+}
+function getElementEdgeLength(element, lengthType) {
+    var $el = $(element);
+    return parseFloat($el.css(lengthType));
+}
+function getOverlay(element, dimensionsChoice) {
+    if (dimensionsChoice === void 0) { dimensionsChoice = ElementDimensionsChoice.PaddingAndBorder; }
+    var $element = $(element);
+    var offset = $element.offset(); //border-box
+    var left = offset.left;
+    var top = offset.top;
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.Content:
+            //need function to remove the pixel
+            var paddingLeft = getElementEdgeLength(element, "padding-left");
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var paddingTop = getElementEdgeLength(element, "padding-top");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + paddingTop + borderTop;
+            left = left + paddingLeft + borderLeft;
+            break;
+        case ElementDimensionsChoice.Padding:
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + borderTop;
+            left = left + borderLeft;
+            break;
+        case ElementDimensionsChoice.PaddingAndBorder:
+            //no change
+            break;
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            var marginLeft = getElementEdgeLength(element, "margin-left");
+            var marginTop = getElementEdgeLength(element, "margin-top");
+            top = top - marginTop;
+            left = left - marginLeft;
+            break;
+    }
+    return {
+        left: left,
+        top: top,
+        width: getElementWidth(element, dimensionsChoice),
+        height: getElementHeight(element, dimensionsChoice)
+    };
+}
+var duration = 5000;
+var defaultStyle = {
+    transition: "opacity 500ms ease-in-out",
+    opacity: 0,
 };
-var onLeave = function routeOnLeave(prevState) {
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("LeaveHook", { prevState: prevState }));
+var transitionStyles = {
+    entering: { opacity: 0 },
+    entered: { opacity: 1 },
 };
-var onChange = function routeOnChange(prevState, nextState, replace) {
-    store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("ChangeHook", { prevState: prevState, nextState: nextState }));
-};
-//#endregion
-//note that if want to be able to change then needs to be an object
-var additionalPropsValue = { additional: "This is additional" };
-ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
-    React.createElement(RouterAny, { history: history, onError: function (error) {
-            store.dispatch(DemoRouterApp_1.routeError(error));
-        }, onUpdate: function () { store.dispatch(DemoRouterApp_1.hookOrMountActionCreator("OnUpdate")); } },
-        React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "/", component: DemoRouterApp_1.App },
-            React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Introduction }),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathless", component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.PathlessIndex })),
-            React.createElement(react_router_2.Route, { component: DemoRouterApp_1.Pathless },
-                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "pathlessChild", component: DemoRouterApp_1.PathlessChild })),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "multiple", component: DemoRouterApp_1.Multiple },
-                React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, components: { child1: DemoRouterApp_1.Child1, child2: DemoRouterApp_1.Child2 } })),
-            React.createElement(react_router_2.Redirect, { from: "many", to: "multiple" }),
-            React.createElement(RouteAdditional, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "additionalProps", component: DemoRouterApp_1.AdditionalProps, additionalProp: additionalPropsValue }),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "leaveHook", component: DemoRouterApp_1.LeaveHookComponent }),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "propsFromParent", component: DemoRouterApp_1.PropsFromParentParent },
-                React.createElement(react_router_2.IndexRoute, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.PropsFromParentChild })),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "onChange", component: DemoRouterApp_1.OnChangeComponent },
-                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "change1", component: DemoRouterApp_1.OnChangeChild1 }),
-                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "change2", component: DemoRouterApp_1.OnChangeChild2 })),
-            React.createElement(react_router_2.Route, { path: "redirect", onEnter: onEnter, onLeave: onLeave, onChange: onChange }),
-            React.createElement(react_router_2.Route, { path: "navigation", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Navigation },
-                React.createElement(react_router_2.Route, { path: "params" },
-                    React.createElement(react_router_2.Route, { path: ":someParam", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamParent },
-                        React.createElement(react_router_2.Route, { path: "*MatchPart", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.ParamChild }))),
-                React.createElement(react_router_2.Route, { path: "(optionalPart)NotOptional", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.Optional }),
-                React.createElement(react_router_2.Route, { path: "querySearchState", onEnter: onEnter, onLeave: onLeave, onChange: onChange, component: DemoRouterApp_1.QuerySearchState })),
-            React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponentError", component: DemoRouterApp_1.GetComponentError },
-                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "getComponent", getComponent: function (nextState, cb) {
-                        //this context is the route
-                        if (nextState.location.state.isComponent1) {
-                            cb(null, DemoRouterApp_1.GetComponentComp1);
+var Transitioned = (function (_super) {
+    __extends(Transitioned, _super);
+    function Transitioned() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.transition = function () {
+            _this.setState({ in: true });
+        };
+        return _this;
+    }
+    Transitioned.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("button", { onClick: this.transition }, "Transition"),
+            React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, "I'm A fade Transition!")); }));
+    };
+    return Transitioned;
+}(React.Component));
+var TicTacToeApp = (function (_super) {
+    __extends(TicTacToeApp, _super);
+    function TicTacToeApp() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.modalShouldOpen = function () {
+            var gameState = _this.props.gameState;
+            return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
+        };
+        _this.getModalStyle = function () {
+            var testOverlay = document.querySelector("#" + ticTacToeBoardId);
+            return {
+                overlay: getOverlay(testOverlay)
+            };
+        };
+        return _this;
+    }
+    TicTacToeApp.prototype.render = function () {
+        return React.createElement(Radium_1.StyleRoot, null,
+            React.createElement(Radium_1.Style, { rules: {
+                    body: {
+                        margin: 0,
+                        fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'
+                    },
+                    mediaQueries: {
+                        '(max-width: 600px)': {
+                            body: {
+                                background: 'gray'
+                            }
+                        },
+                        '(max-width: 500px)': {
+                            body: {
+                                background: 'blue'
+                            },
+                            'p, h1': {
+                                color: 'white'
+                            }
                         }
-                        cb(null, DemoRouterApp_1.GetComponentComp2);
-                    } }),
-                React.createElement(react_router_2.Route, { onEnter: onEnter, onLeave: onLeave, onChange: onChange, path: "error", getComponent: function (nextState, cb) {
-                        cb(new Error("Error thrown by getComponent"), null);
-                    } })),
-            React.createElement(routeProviders_1.ReduxRoute, { store: store, change: function (state, route) { route.path = state.is404Active ? "*" : ""; }, path: "", component: DemoRouterApp_1.PageNotFound })))), document.getElementById("example"));
+                    }
+                } }),
+            React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
+                React.createElement(HorizontalCenter, null,
+                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
+                        React.createElement(Transitioned, null),
+                        React.createElement("div", { style: { display: "inline-block" } },
+                            React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
+                                React.createElement(ConnectedScoreboard, null)),
+                            React.createElement(ConnectedTicTacToeBoard, null),
+                            React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
+                        React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+                            React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
+    };
+    TicTacToeApp.prototype.getWinDrawMessage = function () {
+        var message = "Game drawn";
+        switch (this.props.gameState) {
+            case GameState.X:
+                message = "Player X Won !";
+                break;
+            case GameState.O:
+                message = "Player O Won !";
+                break;
+        }
+        return message;
+    };
+    return TicTacToeApp;
+}(React.Component));
+var HorizontalCenter = (function (_super) {
+    __extends(HorizontalCenter, _super);
+    function HorizontalCenter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    HorizontalCenter.prototype.render = function () {
+        return React.createElement("div", { style: { display: "table", margin: "0 auto" } }, this.props.children);
+    };
+    return HorizontalCenter;
+}(React.Component));
+//if this works then will want a Modal class that will overlay an element
+var ModalReady = (function (_super) {
+    __extends(ModalReady, _super);
+    function ModalReady(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { ready: false };
+        return _this;
+    }
+    ModalReady.prototype.componentDidMount = function () {
+        this.setState({ ready: true });
+    };
+    ModalReady.prototype.render = function () {
+        if (!this.state.ready) {
+            return null;
+        }
+        return React.createElement(Modal, __assign({ style: this.props.getStyle() }, this.props));
+    };
+    return ModalReady;
+}(React.Component));
+var ModalCover = (function (_super) {
+    __extends(ModalCover, _super);
+    function ModalCover() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.getStyle = function () {
+            return {
+                overlay: getOverlay(document.querySelector(_this.props.elementSelector), _this.props.coverType),
+                content: _this.props.contentStyle
+            };
+        };
+        return _this;
+    }
+    ModalCover.prototype.render = function () {
+        return React.createElement(ModalReady, __assign({}, this.props, { getStyle: this.getStyle }));
+    };
+    return ModalCover;
+}(React.Component));
+ModalCover.defaultProps = {
+    coverType: ElementDimensionsChoice.PaddingAndBorder
+};
+var VerticallyCenteredContainer = (function (_super) {
+    __extends(VerticallyCenteredContainer, _super);
+    function VerticallyCenteredContainer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    VerticallyCenteredContainer.prototype.render = function () {
+        var containerStyle = {
+            display: "table",
+            position: "absolute",
+            height: "100%",
+            width: " 100%"
+        };
+        if (this.props.backgroundColor) {
+            containerStyle.backgroundColor = this.props.backgroundColor;
+        }
+        return React.createElement("div", { style: containerStyle },
+            React.createElement("div", { style: {
+                    display: "table-cell",
+                    verticalAlign: "middle"
+                } }, this.props.children));
+    };
+    return VerticallyCenteredContainer;
+}(React.Component));
+var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
+    return {
+        gameState: state.gameState
+    };
+}, function (dispatch) {
+    return {
+        playAgain: function () {
+            dispatch(playAgain());
+        },
+        finishedConfirmed: function () {
+            dispatch(finishedConfirmed());
+        }
+    };
+})(TicTacToeApp);
+var store = storage_1.createLocalStorageStore(reducer);
+ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
+    React.createElement(ConnectedTicTacToeApp, null)), document.getElementById("example"));
 //# sourceMappingURL=index.js.map

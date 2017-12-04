@@ -917,6 +917,7 @@ if (SpeechRecognition) {
         invokeCallbacks(callbacks.enteredState, state.name, context);
         if (!state.isDefault) {
             if (state.stateTimeout) {
+                //having to type this due to some strange @type/node behaviour that reappears even after deleting
                 stateTimeoutIdentifier = setTimeout(function () {
                     enterAndExitState(defaultState, {});
                 }, state.stateTimeout);
