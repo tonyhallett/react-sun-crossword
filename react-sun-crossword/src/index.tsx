@@ -653,7 +653,25 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
         return transition;
     }
 }
+interface AutoOutTransitionProps extends TransitionHelperProps {
 
+}
+interface AutoOutTransitionState {
+   entered:boolean
+}
+class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
+    constructor(props) {
+        super(props);
+        this.state = {entered:false}
+    }
+    onEnter=()=> {
+        this.setState({entered:true})
+    }
+    render() {
+        const { onEnter, "in":inn,...passThroughProps } = this.props;
+        return <TransitionHelper onEnter={this.onEnter} in={this.props.in && !this.state.entered} {...passThroughProps}/>
+    }
+}
 interface TransitionedState {
     in: boolean,
     colour: {r:number,g:number,b:number},
@@ -680,13 +698,13 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <button onClick={this.changeColour}>Change colour</button>
 
 
-            <TransitionHelper exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }} enterTransition={`background-color ${duration}ms linear`} in={this.state.in} timeout={duration}>
+            <AutoOutTransition exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }} enterTransition={`background-color ${duration}ms linear`} in={this.state.in} timeout={duration}>
                 
                 <div style={{
                     height:300,width:300
                     }}>
                 </div>
-            </TransitionHelper>
+            </AutoOutTransition>
 
             </div>
     }

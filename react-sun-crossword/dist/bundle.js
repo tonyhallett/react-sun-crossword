@@ -39865,6 +39865,15 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(1);
 var ReactDOM = __webpack_require__(7);
@@ -40446,6 +40455,22 @@ var TransitionHelper = /** @class */ (function (_super) {
     };
     return TransitionHelper;
 }(React.Component));
+var AutoOutTransition = /** @class */ (function (_super) {
+    __extends(AutoOutTransition, _super);
+    function AutoOutTransition(props) {
+        var _this = _super.call(this, props) || this;
+        _this.onEnter = function () {
+            _this.setState({ entered: true });
+        };
+        _this.state = { entered: false };
+        return _this;
+    }
+    AutoOutTransition.prototype.render = function () {
+        var _a = this.props, onEnter = _a.onEnter, inn = _a["in"], passThroughProps = __rest(_a, ["onEnter", "in"]);
+        return React.createElement(TransitionHelper, __assign({ onEnter: this.onEnter, in: this.props.in && !this.state.entered }, passThroughProps));
+    };
+    return AutoOutTransition;
+}(React.Component));
 var Transitioned = /** @class */ (function (_super) {
     __extends(Transitioned, _super);
     function Transitioned(props) {
@@ -40468,7 +40493,7 @@ var Transitioned = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
             React.createElement("button", { onClick: this.changeColour }, "Change colour"),
-            React.createElement(TransitionHelper, { exitStyle: { backgroundColor: exitColour }, enterStyle: { backgroundColor: enterColour }, enterTransition: "background-color " + duration + "ms linear", in: this.state.in, timeout: duration },
+            React.createElement(AutoOutTransition, { exitStyle: { backgroundColor: exitColour }, enterStyle: { backgroundColor: enterColour }, enterTransition: "background-color " + duration + "ms linear", in: this.state.in, timeout: duration },
                 React.createElement("div", { style: {
                         height: 300, width: 300
                     } })));
