@@ -40469,21 +40469,18 @@ var Transitioned = /** @class */ (function (_super) {
         _this.changeOpacity = function () {
             _this.setState({ opacity: 0.5 });
         };
-        _this.state = { in: false, opacity: 0 };
+        _this.changeSomethingElse = function () {
+            _this.setState({ somethingElse: 0.5 });
+        };
+        _this.state = { in: false, opacity: 0, somethingElse: "original" };
         return _this;
     }
     Transitioned.prototype.render = function () {
-        var _this = this;
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
             React.createElement("button", { onClick: this.changeOpacity }, "Change opacity"),
-            React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) {
-                console.log("Normal transition state: " + state);
-                return React.createElement("div", { style: {
-                        opacity: _this.state.opacity
-                    } }, "This will fade !");
-            }),
-            React.createElement(TransitionOnlyInTransition, { exitStyle: { opacity: 0 }, enterStyle: { opacity: 1 }, exitTransition: "opacity 500ms ease-in-out", enterTransition: "opacity 500ms ease-in-out", in: this.state.in, timeout: duration },
+            React.createElement("button", { onClick: this.changeSomethingElse }, "Change something else"),
+            React.createElement(TransitionOnlyInTransition, { exitStyle: { opacity: this.state.opacity }, enterStyle: { opacity: 1 }, exitTransition: "opacity 500ms ease-in-out", enterTransition: "opacity 500ms ease-in-out", in: this.state.in, timeout: duration },
                 React.createElement("div", { style: {
                         opacity: this.state.opacity
                     } }, "This will fade !")));

@@ -603,7 +603,8 @@ const transitionStyles = {
 
 interface TransitionedState {
     in: boolean,
-    opacity:number
+    opacity: number,
+    somethingElse:any
 }
 type TransitionState = "exited" | "exiting" | "entered" | "entering";
 
@@ -669,7 +670,7 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
 class Transitioned extends React.Component<undefined, TransitionedState>{
     constructor(props) {
         super(props);
-        this.state = {in:false,opacity:0}
+        this.state = {in:false,opacity:0,somethingElse:"original"}
     }
     transition = () => {
         this.setState({in:!this.state.in})
@@ -677,21 +678,15 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
     changeOpacity = () => {
         this.setState({opacity:0.5})
     }
+    changeSomethingElse = () => {
+        this.setState({ somethingElse: 0.5 })
+    }
     render() {
         return <div>
             <button onClick={this.transition}>{this.state.in?"out":"in"}</button>
             <button onClick={this.changeOpacity}>Change opacity</button>
-            <Transition in={this.state.in} timeout={duration}>
-                {(state: TransitionState) => {
-                    console.log("Normal transition state: " + state);
-                    return <div style={{
-                        opacity: this.state.opacity
-                    }}>
-                        This will fade !
-                    </div>
-                }}
-            </Transition>
-            <TransitionOnlyInTransition exitStyle={{ opacity: 0 }} enterStyle={{opacity:1}} exitTransition="opacity 500ms ease-in-out" enterTransition="opacity 500ms ease-in-out" in={this.state.in} timeout={duration}>
+            <button onClick={this.changeSomethingElse}>Change something else</button>
+            <TransitionOnlyInTransition exitStyle={{ opacity: this.state.opacity }} enterStyle={{ opacity: 1 }} exitTransition="opacity 500ms ease-in-out" enterTransition="opacity 500ms ease-in-out" in={this.state.in} timeout={duration}>
                 
                 <div style={{
                     opacity:this.state.opacity
