@@ -620,6 +620,7 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
 
         var transition= <Transition  {...this.props}>
             {(state: TransitionState) => {
+                console.log("Transition state: " + state);
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":
@@ -639,7 +640,9 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
                         break;
                 }
                 //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-                return React.cloneElement(this.props.children as React.ReactElement<any>, style);
+                var clonedElement = React.cloneElement(this.props.children as React.ReactElement<any>, style);
+                console.log(clonedElement.props.style);
+                return clonedElement;
 
             }}
         </Transition>

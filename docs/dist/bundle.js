@@ -40415,6 +40415,7 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
         //should remove that do not pertain
         var _this = this;
         var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
+            console.log("Transition state: " + state);
             var style = {};
             switch (state) {
                 case "entering":
@@ -40434,7 +40435,9 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
                     break;
             }
             //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-            return React.cloneElement(_this.props.children, style);
+            var clonedElement = React.cloneElement(_this.props.children, style);
+            console.log(clonedElement.props.style);
+            return clonedElement;
         });
         this.isFirstRender = false;
         return transition;
