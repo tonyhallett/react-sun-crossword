@@ -40378,7 +40378,7 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-var duration = 500;
+var duration = 5000;
 var defaultStyle = {
     opacity: 0,
 };
@@ -40480,7 +40480,7 @@ var Transitioned = /** @class */ (function (_super) {
             React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
             React.createElement("button", { onClick: this.changeOpacity }, "Change opacity"),
             React.createElement("button", { onClick: this.changeSomethingElse }, "Change something else"),
-            React.createElement(TransitionOnlyInTransition, { exitStyle: { opacity: this.state.opacity }, enterStyle: { opacity: 1 }, exitTransition: "opacity 500ms ease-in-out", enterTransition: "opacity 500ms ease-in-out", in: this.state.in, timeout: duration },
+            React.createElement(TransitionOnlyInTransition, { exitStyle: { opacity: this.state.opacity }, enterStyle: { opacity: 1 }, exitTransition: "opacity 5000ms ease-in-out", enterTransition: "opacity 5000ms ease-in-out", in: this.state.in, timeout: duration },
                 React.createElement("div", { style: {
                         opacity: this.state.opacity
                     } }, "This will fade !")));

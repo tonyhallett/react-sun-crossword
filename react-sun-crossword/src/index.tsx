@@ -564,7 +564,7 @@ function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsCh
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-const duration = 500;
+const duration = 5000;
 const defaultStyle = {
     opacity: 0,
 }
@@ -686,7 +686,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <button onClick={this.transition}>{this.state.in?"out":"in"}</button>
             <button onClick={this.changeOpacity}>Change opacity</button>
             <button onClick={this.changeSomethingElse}>Change something else</button>
-            <TransitionOnlyInTransition exitStyle={{ opacity: this.state.opacity }} enterStyle={{ opacity: 1 }} exitTransition="opacity 500ms ease-in-out" enterTransition="opacity 500ms ease-in-out" in={this.state.in} timeout={duration}>
+            <TransitionOnlyInTransition exitStyle={{ opacity: this.state.opacity }} enterStyle={{ opacity: 1 }} exitTransition="opacity 5000ms ease-in-out" enterTransition="opacity 5000ms ease-in-out" in={this.state.in} timeout={duration}>
                 
                 <div style={{
                     opacity:this.state.opacity
