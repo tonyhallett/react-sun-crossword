@@ -671,7 +671,6 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
                     }}>
                         This will fade !
                 </div>
-            )}
             </TransitionOnlyInTransition>
 
             </div>

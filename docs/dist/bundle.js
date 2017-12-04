@@ -40462,8 +40462,7 @@ var Transitioned = /** @class */ (function (_super) {
             React.createElement(TransitionOnlyInTransition, { exitStyle: { opacity: 0 }, enterStyle: { opacity: 1 }, exitTransition: "opacity 500ms ease-in-out", enterTransition: "opacity 500ms ease-in-out", in: this.state.in, timeout: duration },
                 React.createElement("div", { style: {
                         opacity: this.state.opacity
-                    } }, "This will fade !"),
-                ")}"));
+                    } }, "This will fade !")));
     };
     return Transitioned;
 }(React.Component));
