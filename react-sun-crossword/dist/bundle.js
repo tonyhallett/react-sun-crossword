@@ -40468,7 +40468,7 @@ var Transitioned = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
             React.createElement("button", { onClick: this.changeColour }, "Change colour"),
-            React.createElement(TransitionHelper, { exitStyle: { backgroundColor: exitColour }, enterStyle: { backgroundColor: enterColour }, enterTransition: "background-color 5000ms ease-in-out", in: this.state.in, timeout: duration },
+            React.createElement(TransitionHelper, { exitStyle: { backgroundColor: exitColour }, enterStyle: { backgroundColor: enterColour }, enterTransition: "background-color " + duration + "ms linear", in: this.state.in, timeout: duration },
                 React.createElement("div", { style: {
                         height: 300, width: 300
                     } })));
