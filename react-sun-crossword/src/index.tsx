@@ -606,7 +606,7 @@ type TransitionState = "exited" | "exiting" | "entered" | "entering";
 
 interface TransitionHelperProps extends TransitionProps {
     enterTransition: string,
-    exitTransition: string,
+    exitTransition?: string,
     enterStyle: React.CSSProperties,
     exitStyle:React.CSSProperties
 }
@@ -680,7 +680,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <button onClick={this.changeColour}>Change colour</button>
 
 
-            <TransitionHelper exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }} exitTransition="opacity 5000ms ease-in-out" enterTransition="opacity 5000ms ease-in-out" in={this.state.in} timeout={duration}>
+            <TransitionHelper exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }}  enterTransition="background-color 5000ms ease-in-out" in={this.state.in} timeout={duration}>
                 
                 <div style={{
                     height:300,width:300
