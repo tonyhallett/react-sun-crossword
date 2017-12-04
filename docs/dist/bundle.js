@@ -40378,7 +40378,7 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-var duration = 5000;
+var duration = 1000;
 var defaultStyle = {
     opacity: 0,
 };
@@ -40461,7 +40461,7 @@ var Transitioned = /** @class */ (function (_super) {
     }
     Transitioned.prototype.render = function () {
         var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ",";
-        var enterAlpha = 0.6;
+        var enterAlpha = 0.2;
         var enterColour = "rgba(" + colorPart + enterAlpha + ")";
         var exitAlpha = 1;
         var exitColour = "rgba(" + colorPart + exitAlpha + ")";

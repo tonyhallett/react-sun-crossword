@@ -564,7 +564,7 @@ function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsCh
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-const duration = 5000;
+const duration = 1000;
 const defaultStyle = {
     opacity: 0,
 }
@@ -671,7 +671,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
     }
     render() {
         var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
-        var enterAlpha = 0.6;
+        var enterAlpha = 0.2;
         var enterColour = "rgba(" + colorPart + enterAlpha + ")";
         var exitAlpha = 1;
         var exitColour = "rgba(" + colorPart + exitAlpha + ")";
