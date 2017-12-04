@@ -708,7 +708,8 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
                 color = color.saturate(change);
                 break;
         }
-        enterStyle[this.props.propName] = color.rbg().toString();
+        var colorString = color.toString();
+        enterStyle[this.props.propName] = colorString;//seems that once change to different model cannot go back
         return <AutoOutTransition ref={(at) => { this.autoOutTransition = at }} enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
     }
 }

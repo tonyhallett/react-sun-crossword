@@ -42497,7 +42497,8 @@ var ColourChangeTransition = /** @class */ (function (_super) {
                 color = color.saturate(change);
                 break;
         }
-        enterStyle[this.props.propName] = color.rbg().toString();
+        var colorString = color.toString();
+        enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
         return React.createElement(AutoOutTransition, __assign({ ref: function (at) { _this.autoOutTransition = at; }, enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
     };
     return ColourChangeTransition;
