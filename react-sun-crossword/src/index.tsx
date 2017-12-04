@@ -7,6 +7,7 @@ import * as Modal from 'react-modal';
 import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, createLocalStorageStore} from "./helpers/storage"
 import * as $ from 'jquery';
 import { Style, StyleRoot } from "Radium";
+import Transition from 'react-transition-group/Transition';
 
 var componentBackgroundColor = "lightgray";
 
@@ -562,19 +563,38 @@ function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsCh
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-
-interface InjectCssProps {
-    css:string
+const duration = 5000;
+const defaultStyle = {
+    transition: `opacity 500ms ease-in-out`,
+    opacity: 0,
 }
-class InjectCss extends React.Component<InjectCssProps, undefined>{
-    componentDidMount() {
-        var css = document.createElement('style');
-        css.type = 'text/css'; 
-        css.appendChild(document.createTextNode(this.props.css));
-        document.getElementsByTagName("head")[0].appendChild(css); 
+const transitionStyles = {
+    entering: { opacity: 0 },
+    entered: { opacity: 1 },
+};
+
+interface TransitionedState {
+    in:boolean
+}
+class Transitioned extends React.Component<undefined, TransitionedState>{
+    transition = () => {
+        this.setState({in:true})
     }
     render() {
-        return <div>{ this.props.children}</div>
+        return <div>
+            <button onClick={this.transition}>Transition</button>
+        <Transition in={this.state.in} timeout={duration}>
+            {(state) => (
+                <div style={{
+                    ...defaultStyle,
+                    ...transitionStyles[state]
+                }}>
+                    I'm A fade Transition!
+             </div>
+            )}
+        </Transition>
+
+            </div>
     }
 }
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
@@ -618,6 +638,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
+                        <Transitioned/>
                         <div style={{display:"inline-block"}}>
                             <div style={{ marginTop: 10, marginBottom: 10}}>
                                 <ConnectedScoreboard />
@@ -632,7 +653,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                                 {this.getWinDrawMessage()}
                             </div>
                         </ModalCover>
-            
+                         
                     </div>
                 </HorizontalCenter>
             </VerticallyCenteredContainer>
