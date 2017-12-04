@@ -8,6 +8,7 @@ import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, creat
 import * as $ from 'jquery';
 import { Style, StyleRoot } from "Radium";
 import Transition from 'react-transition-group/Transition';
+import { TransitionProps } from 'react-transition-group/Transition';
 
 var componentBackgroundColor = "lightgray";
 
@@ -602,35 +603,76 @@ const transitionStyles = {
 
 interface TransitionedState {
     in: boolean,
-    text:string
+    opacity:number
 }
 type TransitionState = "exited" | "exiting" | "entered" | "entering";
+
+interface TransitionOnlyInTransitionProps extends TransitionProps {
+    enterTransition: string,
+    exitTransition: string,
+    enterStyle: React.CSSProperties,
+    exitStyle:React.CSSProperties
+}
+class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransitionProps, undefined>{
+    isFirstRender
+    render() {
+        //should remove that do not pertain
+
+        var transition= <Transition  {...this.props}>
+            {(state: TransitionState) => {
+                var style:React.CSSProperties = {} ;
+                switch (state) {
+                    case "entering":
+                        style = { ...this.props.enterStyle }
+                        style.transition = this.props.enterTransition;
+                        break;
+                    case "entered":
+                        style = { ...this.props.enterStyle };
+                        break;
+                    case "exiting":
+                        style = { ...this.props.exitStyle };
+                        style.transition = this.props.exitTransition;
+                    case "exited"://this is the state before in:true 
+                        if (!this.isFirstRender) {
+                            style = { ...this.props.exitStyle };
+                        }
+                        break;
+                }
+                //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
+                return React.cloneElement(this.props.children as React.ReactElement<any>, style);
+
+            }}
+        </Transition>
+        this.isFirstRender = false;
+        return transition;
+    }
+}
+
+//what happens after have merged ( exited ) will no longer be able to set the style ?
 class Transitioned extends React.Component<undefined, TransitionedState>{
     constructor(props) {
         super(props);
-        this.state = {in:false,text:"Fade transition"}
+        this.state = {in:false,opacity:0}
     }
     transition = () => {
         this.setState({in:!this.state.in})
     }
-    changeText = () => {
-        this.setState({text:"New text"})
+    changeOpacity = () => {
+        this.setState({opacity:0.5})
     }
     render() {
         return <div>
             <button onClick={this.transition}>{this.state.in?"out":"in"}</button>
-            <button onClick={this.changeText}>Change text</button>
-        <Transition in={this.state.in} timeout={duration}>
-                {(state: TransitionState) => (
-                  
+            <button onClick={this.changeOpacity}>Change opacity</button>
+            <TransitionOnlyInTransition exitStyle={{ opacity: 0 }} enterStyle={{opacity:1}} exitTransition="opacity 500ms ease-in-out" enterTransition="opacity 500ms ease-in-out" in={this.state.in} timeout={duration}>
+                
                 <div style={{
-                    ...defaultStyle,
-                    ...transitionStyles[state]
+                    opacity:this.state.opacity
                     }}>
-                        {this.state.text}
-             </div>
+                        This will fade !
+                </div>
             )}
-        </Transition>
+            </TransitionOnlyInTransition>
 
             </div>
     }

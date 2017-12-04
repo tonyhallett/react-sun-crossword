@@ -40406,6 +40406,42 @@ var transitionStyles = {
         opacity: exitValue
     }
 };
+var TransitionOnlyInTransition = /** @class */ (function (_super) {
+    __extends(TransitionOnlyInTransition, _super);
+    function TransitionOnlyInTransition() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TransitionOnlyInTransition.prototype.render = function () {
+        //should remove that do not pertain
+        var _this = this;
+        var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
+            var style = {};
+            switch (state) {
+                case "entering":
+                    style = __assign({}, _this.props.enterStyle);
+                    style.transition = _this.props.enterTransition;
+                    break;
+                case "entered":
+                    style = __assign({}, _this.props.enterStyle);
+                    break;
+                case "exiting":
+                    style = __assign({}, _this.props.exitStyle);
+                    style.transition = _this.props.exitTransition;
+                case "exited"://this is the state before in:true 
+                    if (!_this.isFirstRender) {
+                        style = __assign({}, _this.props.exitStyle);
+                    }
+                    break;
+            }
+            //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
+            return React.cloneElement(_this.props.children, style);
+        });
+        this.isFirstRender = false;
+        return transition;
+    };
+    return TransitionOnlyInTransition;
+}(React.Component));
+//what happens after have merged ( exited ) will no longer be able to set the style ?
 var Transitioned = /** @class */ (function (_super) {
     __extends(Transitioned, _super);
     function Transitioned(props) {
@@ -40413,18 +40449,21 @@ var Transitioned = /** @class */ (function (_super) {
         _this.transition = function () {
             _this.setState({ in: !_this.state.in });
         };
-        _this.changeText = function () {
-            _this.setState({ text: "New text" });
+        _this.changeOpacity = function () {
+            _this.setState({ opacity: 0.5 });
         };
-        _this.state = { in: false, text: "Fade transition" };
+        _this.state = { in: false, opacity: 0 };
         return _this;
     }
     Transitioned.prototype.render = function () {
-        var _this = this;
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.transition }, this.state.in ? "out" : "in"),
-            React.createElement("button", { onClick: this.changeText }, "Change text"),
-            React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, _this.state.text)); }));
+            React.createElement("button", { onClick: this.changeOpacity }, "Change opacity"),
+            React.createElement(TransitionOnlyInTransition, { exitStyle: { opacity: 0 }, enterStyle: { opacity: 1 }, exitTransition: "opacity 500ms ease-in-out", enterTransition: "opacity 500ms ease-in-out", in: this.state.in, timeout: duration },
+                React.createElement("div", { style: {
+                        opacity: this.state.opacity
+                    } }, "This will fade !"),
+                ")}"));
     };
     return Transitioned;
 }(React.Component));
