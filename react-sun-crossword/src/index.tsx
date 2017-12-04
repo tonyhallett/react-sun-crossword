@@ -640,8 +640,12 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
                         break;
                 }
                 //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-                var clonedElement = React.cloneElement(this.props.children as React.ReactElement<any>, style);
+                var childElement = this.props.children as React.ReactElement<any>;
+                var childStyle = childElement.props.style;
+                var newStyle = { ...childStyle, ...style };
+                var clonedElement = React.cloneElement(childElement,newStyle);
                 console.log(clonedElement.props.style);
+               
                 return clonedElement;
 
             }}

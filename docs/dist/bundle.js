@@ -40435,7 +40435,10 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
                     break;
             }
             //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-            var clonedElement = React.cloneElement(_this.props.children, style);
+            var childElement = _this.props.children;
+            var childStyle = childElement.props.style;
+            var newStyle = __assign({}, childStyle, style);
+            var clonedElement = React.cloneElement(childElement, newStyle);
             console.log(clonedElement.props.style);
             return clonedElement;
         });
