@@ -563,7 +563,7 @@ function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsCh
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-const duration = 5000;
+const duration = 500;
 const defaultStyle = {
     opacity: 0,
 }

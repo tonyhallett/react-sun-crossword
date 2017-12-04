@@ -40378,7 +40378,7 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-var duration = 5000;
+var duration = 500;
 var defaultStyle = {
     opacity: 0,
 };
