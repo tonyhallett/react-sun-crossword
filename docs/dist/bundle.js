@@ -40409,8 +40409,13 @@ var transitionStyles = {
 var TransitionOnlyInTransition = /** @class */ (function (_super) {
     __extends(TransitionOnlyInTransition, _super);
     function TransitionOnlyInTransition() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.renderTransition = true;
+        return _this;
     }
+    TransitionOnlyInTransition.prototype.componentWillReceiveProps = function (newProps) {
+        this.renderTransition = newProps.in !== this.props.in ? true : false;
+    };
     TransitionOnlyInTransition.prototype.render = function () {
         //should remove that do not pertain
         var _this = this;
@@ -40437,13 +40442,16 @@ var TransitionOnlyInTransition = /** @class */ (function (_super) {
             }
             //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
             var childElement = _this.props.children;
-            var childStyle = childElement.props.style;
-            var newStyle = __assign({}, childStyle, style);
-            var newProps = {
-                style: newStyle
-            };
-            var clonedElement = React.cloneElement(childElement, newProps);
-            return clonedElement;
+            if (_this.renderTransition) {
+                var childStyle = childElement.props.style;
+                var newStyle = __assign({}, childStyle, style);
+                var newProps = {
+                    style: newStyle
+                };
+                var clonedElement = React.cloneElement(childElement, newProps);
+                return clonedElement;
+            }
+            return childElement;
         });
         this.isFirstRender = false;
         return transition;

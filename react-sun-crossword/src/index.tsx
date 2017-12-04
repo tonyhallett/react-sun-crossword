@@ -615,6 +615,10 @@ interface TransitionOnlyInTransitionProps extends TransitionProps {
 }
 class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransitionProps, undefined>{
     isFirstRender
+    renderTransition=true
+    componentWillReceiveProps(newProps: TransitionOnlyInTransitionProps) {
+        this.renderTransition = newProps.in !== this.props.in ? true : false;
+    }
     render() {
         //should remove that do not pertain
 
@@ -642,13 +646,17 @@ class TransitionOnlyInTransition extends React.Component<TransitionOnlyInTransit
                 }
                 //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
                 var childElement = this.props.children as React.ReactElement<any>;
-                var childStyle = childElement.props.style;
-                var newStyle = { ...childStyle, ...style };
-                var newProps = {
-                    style:newStyle
+                if (this.renderTransition) {
+                    var childStyle = childElement.props.style;
+                    var newStyle = { ...childStyle, ...style };
+                    var newProps = {
+                        style: newStyle
+                    }
+                    var clonedElement = React.cloneElement(childElement, newProps);
+                    return clonedElement;
                 }
-                var clonedElement = React.cloneElement(childElement, newProps);
-                return clonedElement;
+                return childElement;
+                
 
             }}
         </Transition>
