@@ -577,6 +577,10 @@ interface TransitionedState {
     in:boolean
 }
 class Transitioned extends React.Component<undefined, TransitionedState>{
+    constructor(props) {
+        super(props);
+        this.state = {in:false}
+    }
     transition = () => {
         this.setState({in:true})
     }

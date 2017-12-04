@@ -40389,11 +40389,12 @@ var transitionStyles = {
 };
 var Transitioned = /** @class */ (function (_super) {
     __extends(Transitioned, _super);
-    function Transitioned() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function Transitioned(props) {
+        var _this = _super.call(this, props) || this;
         _this.transition = function () {
             _this.setState({ in: true });
         };
+        _this.state = { in: false };
         return _this;
     }
     Transitioned.prototype.render = function () {
