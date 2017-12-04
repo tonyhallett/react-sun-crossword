@@ -9,6 +9,7 @@ import * as $ from 'jquery';
 import { Style, StyleRoot } from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps } from 'react-transition-group/Transition';
+import * as Color from 'Color'
 
 var componentBackgroundColor = "lightgray";
 
@@ -653,14 +654,65 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
         return transition;
     }
 }
-interface AutoOutTransitionProps extends TransitionHelperProps {
-    
-}
+
 interface AutoOutTransitionState {
     entered: boolean
     in:boolean
 }
-class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
+enum ColourChangeType{lighten,darken,saturate,desaturate,whiten,blacken,fade,opaquer}
+//need to refactor the props interfaces - needs TransitionHelperProps with couple of omits
+interface ColourChangeTransitionProps{
+    change: number,
+    exitColour: string,
+    colourChangeType: ColourChangeType,
+    propName: string,
+    enterTransition: string,
+    exitTransition?: string,
+    timeout: number | { enter?: number, exit?: number };//taken from the @types - should be optional
+    
+}
+class ColourChangeTransition extends React.Component<ColourChangeTransitionProps, undefined> {
+    setIn() {
+        this.autoOutTransition.setIn();
+    }
+    autoOutTransition: AutoOutTransition
+    render() {
+        var enterStyle = {};
+        var exitStyle = {};
+        exitStyle[this.props.propName] = this.props.exitColour;
+        var color = Color(this.props.exitColour);
+        var change = this.props.change;
+        switch (this.props.colourChangeType) {
+            case ColourChangeType.blacken:
+                color = color.blacken(change);
+                break;
+            case ColourChangeType.whiten:
+                color = color.whitem(change);
+                break;
+            case ColourChangeType.darken:
+                color=color.darken(change)
+                break;
+            case ColourChangeType.desaturate:
+                color = color.desaturate(change);
+                break;
+            case ColourChangeType.fade:
+                color =color.fade(change);
+                break;
+            case ColourChangeType.lighten:
+                color = color.lighten(change);
+                break;
+            case ColourChangeType.opaquer:
+                color = color.opaquer(change);
+                break;
+            case ColourChangeType.saturate:
+                color = color.saturate(change);
+                break;
+        }
+        enterStyle[this.props.propName] = color.rbg.toString();
+        return <AutoOutTransition ref={(at) => { this.autoOutTransition = at }} enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
+    }
+}
+class AutoOutTransition extends React.Component<TransitionHelperProps, AutoOutTransitionState>{
     constructor(props) {
         //should wrap all callbacks
         super(props);
@@ -698,25 +750,25 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
     changeColour = () => {
         this.setState({ colour: {r:51,g:51,b:204}})
     }
-    autoOutTransition: AutoOutTransition
+    autoOutTransition: ColourChangeTransition
     render() {
-        var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
-        var enterAlpha = 0.2;
-        var enterColour = "rgba(" + colorPart + enterAlpha + ")";
-        var exitAlpha = 1;
-        var exitColour = "rgba(" + colorPart + exitAlpha + ")";
+        //var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
+        //var enterAlpha = 0.2;
+        //var enterColour = "rgba(" + colorPart + enterAlpha + ")";
+        //var exitAlpha = 1;
+        //var exitColour = "rgba(" + colorPart + exitAlpha + ")";
         return <div>
             <button onClick={this.transition}>In</button>
-            <button onClick={this.changeColour}>Change colour</button>
 
 
-            <AutoOutTransition ref={(at) => { this.autoOutTransition=at }} exitStyle={{ backgroundColor: exitColour }} enterStyle={{ backgroundColor: enterColour }} enterTransition={`background-color ${duration}ms linear`} in={this.state.in} timeout={duration}>
+
+            <ColourChangeTransition propName="backgroundColor" ref={(at) => { this.autoOutTransition = at }} exitColour="yellow" colourChangeType={ColourChangeType.lighten} change={0.2} enterTransition={`background-color ${duration}ms linear`}  timeout={duration}>
                 
                 <div style={{
                     height:300,width:300
                     }}>
                 </div>
-            </AutoOutTransition>
+            </ColourChangeTransition>
 
             </div>
     }
