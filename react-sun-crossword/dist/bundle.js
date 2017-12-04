@@ -42497,7 +42497,7 @@ var ColourChangeTransition = /** @class */ (function (_super) {
                 color = color.saturate(change);
                 break;
         }
-        enterStyle[this.props.propName] = color.rbg.toString();
+        enterStyle[this.props.propName] = color.rbg().toString();
         return React.createElement(AutoOutTransition, __assign({ ref: function (at) { _this.autoOutTransition = at; }, enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
     };
     return ColourChangeTransition;
@@ -42548,7 +42548,10 @@ var Transitioned = /** @class */ (function (_super) {
         //var exitAlpha = 1;
         //var exitColour = "rgba(" + colorPart + exitAlpha + ")";
         return React.createElement("div", null,
-            React.createElement("button", { onClick: this.transition }, "In"),
+            React.createElement("button", { onClick: this.transition }, "In")
+        //should be able to use an HOC 
+        ,
+            "//should be able to use an HOC",
             React.createElement(ColourChangeTransition, { propName: "backgroundColor", ref: function (at) { _this.autoOutTransition = at; }, exitColour: "yellow", colourChangeType: ColourChangeType.lighten, change: 0.2, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
                 React.createElement("div", { style: {
                         height: 300, width: 300

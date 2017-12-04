@@ -708,7 +708,7 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
                 color = color.saturate(change);
                 break;
         }
-        enterStyle[this.props.propName] = color.rbg.toString();
+        enterStyle[this.props.propName] = color.rbg().toString();
         return <AutoOutTransition ref={(at) => { this.autoOutTransition = at }} enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
     }
 }
@@ -761,7 +761,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <button onClick={this.transition}>In</button>
 
 
-
+            //should be able to use an HOC 
             <ColourChangeTransition propName="backgroundColor" ref={(at) => { this.autoOutTransition = at }} exitColour="yellow" colourChangeType={ColourChangeType.lighten} change={0.2} enterTransition={`background-color ${duration}ms linear`}  timeout={duration}>
                 
                 <div style={{
