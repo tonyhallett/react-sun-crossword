@@ -565,18 +565,19 @@ function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsCh
 }
 const duration = 5000;
 const defaultStyle = {
-    transition: `opacity 500ms ease-in-out`,
     opacity: 0,
 }
 const transitionStyles = {
-    entering: { opacity: 0 },
-    entered: { opacity: 1 },
+    entering: {
+        opacity: 1, transition: `opacity 500ms ease-in-out` },
+    
 };
 
 interface TransitionedState {
     in: boolean,
     text:string
 }
+type TransitionState = "exited" | "exiting" | "entered" | "entering";
 class Transitioned extends React.Component<undefined, TransitionedState>{
     constructor(props) {
         super(props);
@@ -593,7 +594,8 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <button onClick={this.transition}>Transition</button>
             <button onClick={this.changeText}>Change text</button>
         <Transition in={this.state.in} timeout={duration}>
-            {(state) => (
+                {(state: TransitionState) => (
+                  
                 <div style={{
                     ...defaultStyle,
                     ...transitionStyles[state]

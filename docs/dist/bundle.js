@@ -40380,12 +40380,12 @@ function getOverlay(element, dimensionsChoice) {
 }
 var duration = 5000;
 var defaultStyle = {
-    transition: "opacity 500ms ease-in-out",
     opacity: 0,
 };
 var transitionStyles = {
-    entering: { opacity: 0 },
-    entered: { opacity: 1 },
+    entering: {
+        opacity: 1, transition: "opacity 500ms ease-in-out"
+    },
 };
 var Transitioned = /** @class */ (function (_super) {
     __extends(Transitioned, _super);
