@@ -42564,6 +42564,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
+        //<ConnectedTicTacToeBoard />
         return React.createElement(Radium_1.StyleRoot, null,
             React.createElement(Radium_1.Style, { rules: {
                     body: {
@@ -42593,7 +42594,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),
-                            React.createElement(ConnectedTicTacToeBoard, null),
                             React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
                         React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                             React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));

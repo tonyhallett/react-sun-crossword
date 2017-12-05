@@ -311,7 +311,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
             this.setState({inSignal:"in!"})
         }
     }
-    colourChangeTransition: ColourChangeTransition
+    
     render() {
         var transitionDuration = 1000;
         return <ColourChangeTransition inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
@@ -677,7 +677,6 @@ interface ColourChangeTransitionProps {
     
 }
 class ColourChangeTransition extends React.Component<ColourChangeTransitionProps, undefined> {
-    autoOutTransition: AutoOutTransition
     render() {
         var enterStyle = {};
 
@@ -771,7 +770,6 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
     changeColour = () => {
         this.setState({ exitColour: "red"})
     }
-    autoOutTransition: ColourChangeTransition
     render() {
         var duration = 5000;
         return <div>
@@ -804,6 +802,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
 
     render() {
+        //<ConnectedTicTacToeBoard />
         return <StyleRoot>
             <Style
                 rules={{
@@ -836,7 +835,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                             <div style={{ marginTop: 10, marginBottom: 10}}>
                                 <ConnectedScoreboard />
                             </div>
-                            <ConnectedTicTacToeBoard />
+                            
                             <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                         </div>
                     
