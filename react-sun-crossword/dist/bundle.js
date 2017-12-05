@@ -42534,7 +42534,7 @@ var Transitioned = /** @class */ (function (_super) {
         _this.changeColour = function () {
             _this.setState({ exitColour: "red" });
         };
-        _this.state = { inSignal: null, exitColour: "yellow" };
+        _this.state = { inSignal: 0, exitColour: "yellow" };
         return _this;
     }
     Transitioned.prototype.render = function () {

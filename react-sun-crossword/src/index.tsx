@@ -759,7 +759,7 @@ interface TransitionedState {
 class Transitioned extends React.Component<undefined, TransitionedState>{
     constructor(props) {
         super(props);
-        this.state = { inSignal: null, exitColour:"yellow" }
+        this.state = { inSignal: 0, exitColour:"yellow" }
     }
     setIn = () => {
         if (this.state.inSignal === null) {
