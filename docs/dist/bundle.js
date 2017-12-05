@@ -42540,7 +42540,7 @@ var Transitioned = /** @class */ (function (_super) {
             React.createElement("button", { onClick: this.setIn }, "In"),
             React.createElement("button", { onClick: this.setOut }, "Out"),
             React.createElement("button", { onClick: this.changeColour }, "Change colour"),
-            React.createElement(ColourChangeTransition, { mountOnEnter: true, inSignal: this.state.inSignal, propName: "backgroundColor", exitColour: this.state.exitColour, colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
+            React.createElement(ColourChangeTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", exitColour: this.state.exitColour, colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
                 React.createElement("div", { style: {
                         height: 300, width: 300
                     } })));

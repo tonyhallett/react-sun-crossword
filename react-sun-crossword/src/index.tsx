@@ -779,7 +779,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <button onClick={this.setOut}>Out</button>
             <button onClick={this.changeColour}>Change colour</button>
 
-            <ColourChangeTransition mountOnEnter={true} inSignal={this.state.inSignal} propName="backgroundColor" exitColour={this.state.exitColour} colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
+            <ColourChangeTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" exitColour={this.state.exitColour} colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
                 
                 <div style={{
                     height:300,width:300
