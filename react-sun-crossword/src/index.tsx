@@ -803,6 +803,13 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
     render() {
         //<ConnectedTicTacToeBoard />
+        /*
+        <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                                {this.getWinDrawMessage()}
+                            </div>
+                        </ModalCover>
+        */
         return <StyleRoot>
             <Style
                 rules={{
@@ -840,11 +847,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                         </div>
                     
 
-                        <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                                {this.getWinDrawMessage()}
-                            </div>
-                        </ModalCover>
+                        
                          
                     </div>
                 </HorizontalCenter>
