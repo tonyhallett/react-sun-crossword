@@ -42401,7 +42401,7 @@ var TransitionHelper = /** @class */ (function (_super) {
         //should remove that do not pertain
         console.log("Transition helper rendering");
         var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
-            console.log("In transition: state is " + state + ", " + Date.now().toString());
+            console.log("In transition: state is " + state + ", " + new Date().toString());
             var style = {};
             switch (state) {
                 case "entering":
