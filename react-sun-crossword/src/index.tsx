@@ -802,13 +802,13 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
 const duration = 300;
 
 const defaultStyle = {
-    transition: `opacity ${duration}ms ease-in-out`,
-    opacity: 0,
+    transition: `background-color ${duration}ms linear`,
+    
 }
 
 const transitionStyles = {
-    entering: { opacity: 0 },
-    entered: { opacity: 1 },
+    entering: { backgroundColor: "yellow" },
+    entered: { backgroundColor: "orange" },
 };
 
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{

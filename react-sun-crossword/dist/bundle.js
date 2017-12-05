@@ -42557,12 +42557,11 @@ var Transitioned = /** @class */ (function (_super) {
 }(React.Component));
 var duration = 300;
 var defaultStyle = {
-    transition: "opacity " + duration + "ms ease-in-out",
-    opacity: 0,
+    transition: "background-color " + duration + "ms linear",
 };
 var transitionStyles = {
-    entering: { opacity: 0 },
-    entered: { opacity: 1 },
+    entering: { backgroundColor: "yellow" },
+    entered: { backgroundColor: "orange" },
 };
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
