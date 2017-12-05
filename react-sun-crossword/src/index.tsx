@@ -604,10 +604,10 @@ interface TransitionHelperProps extends TransitionProps {
 class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
     render() {
         //should remove that do not pertain
-
+        console.log("Transition helper rendering");
         var transition= <Transition  {...this.props}>
             {(state: TransitionState) => {
-                console.log("In transition: state is " + state);
+                console.log("In transition: state is " + state + ", " + Date.now());
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":

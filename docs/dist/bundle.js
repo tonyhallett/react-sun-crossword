@@ -42397,10 +42397,11 @@ var TransitionHelper = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TransitionHelper.prototype.render = function () {
-        //should remove that do not pertain
         var _this = this;
+        //should remove that do not pertain
+        console.log("Transition helper rendering");
         var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
-            console.log("In transition: state is " + state);
+            console.log("In transition: state is " + state + ", " + Date.now());
             var style = {};
             switch (state) {
                 case "entering":
