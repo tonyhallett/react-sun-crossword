@@ -855,15 +855,15 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                         <Transition in={true} appear={true} timeout={duration}>
                             {(state) => {
                                 console.log("Fade state " + state);
-                                (
                                 
-                              <div style={{
+                                
+                              return <div style={{
                                 ...defaultStyle,
                                 ...transitionStyles[state]
-                            }}>
+                                 }}>
                                 <div>Fade me</div>
                             </div>
-                            )}}
+                            }}
                         </Transition>
                         <div style={{display:"inline-block"}}>
                             <div style={{ marginTop: 10, marginBottom: 10}}>

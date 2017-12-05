@@ -42609,8 +42609,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         React.createElement(Transitioned, null),
                         React.createElement(Transition_1.default, { in: true, appear: true, timeout: duration }, function (state) {
                             console.log("Fade state " + state);
-                            (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
-                                React.createElement("div", null, "Fade me")));
+                            return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
+                                React.createElement("div", null, "Fade me"));
                         }),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
