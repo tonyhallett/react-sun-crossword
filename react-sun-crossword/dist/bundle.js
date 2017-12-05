@@ -42551,7 +42551,7 @@ var Transitioned = /** @class */ (function (_super) {
     };
     return Transitioned;
 }(React.Component));
-var duration = 300;
+var duration = 5000;
 var defaultStyle = {
     transition: "background-color " + duration + "ms linear",
 };

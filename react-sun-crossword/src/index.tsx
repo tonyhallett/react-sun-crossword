@@ -797,7 +797,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
 }
 
 
-const duration = 300;
+const duration = 5000;
 
 const defaultStyle = {
     transition: `background-color ${duration}ms linear`,
