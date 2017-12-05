@@ -42423,6 +42423,8 @@ var TransitionHelper = /** @class */ (function (_super) {
             var childElement = _this.props.children;
             var childStyle = childElement.props.style;
             var newStyle = __assign({}, childStyle, style);
+            console.log("TransitionHelper applied style");
+            console.log(newStyle);
             var newProps = {
                 style: newStyle
             };

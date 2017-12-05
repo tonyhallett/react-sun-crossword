@@ -633,6 +633,8 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
                 
                 var childStyle = childElement.props.style;
                 var newStyle = { ...childStyle, ...style };
+                console.log("TransitionHelper applied style");
+                console.log(newStyle);
                 var newProps = {
                     style: newStyle
                 }
