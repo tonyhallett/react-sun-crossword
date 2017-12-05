@@ -646,10 +646,7 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
     }
 }
 
-interface AutoOutTransitionState {
-    entered: boolean
-    in:boolean
-}
+
 enum ColourChangeType{lighten,darken,saturate,desaturate,fade,opaquer}
 //need to refactor the props interfaces - needs TransitionHelperProps with couple of omits
 interface ColourChangeTransitionProps {
@@ -716,11 +713,16 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
 interface AutoOutTransitionProps extends TransitionHelperProps {
     inSignal:any
 }
+interface AutoOutTransitionState {
+    entered: boolean
+    in: boolean
+}
 class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
     constructor(props) {
         super(props);
         this.state = {entered:false,in:false}
     }
+    initialRender=true
     onEntered = (node: HTMLElement, isAppearing: boolean) => {
         this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
         this.setState({ entered: true });
@@ -740,10 +742,13 @@ class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutT
         }
     }
     render() {
-        var actuallyIn = this.state.in ? (this.state.entered ? false : true) : false;
+        //might only need onExited and in state ?
+        var actuallyIn = this.initialRender ? this.props.inSignal !== null : (this.state.in ? (this.state.entered ? false : true) : false);
+            
         
 
-        const { onEntered,onExited, "in":inn,...passThroughProps } = this.props;
+        const { onEntered, onExited, "in": inn, ...passThroughProps } = this.props;
+        this.initialRender = false;
         return <TransitionHelper onExited={this.onExited} onEntered={this.onEntered} in={actuallyIn} {...passThroughProps}/>
     }
 }
