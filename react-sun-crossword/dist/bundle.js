@@ -42556,10 +42556,6 @@ var transitionStyles = {
     entering: { opacity: 1 },
     entered: { opacity: 1 },
 };
-var Fade = function (_a) {
-    var inProp = _a.in, children = _a.children, otherProps = __rest(_a, ["in", "children"]);
-    return (React.createElement(Transition_1.default, __assign({ in: inProp, timeout: duration }, otherProps), function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, children)); }));
-};
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
@@ -42611,8 +42607,11 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
                         React.createElement(Transitioned, null),
-                        React.createElement(Fade, { appear: true, in: true },
-                            React.createElement("div", null, "Fade me")),
+                        React.createElement(Transition_1.default, { in: true, appear: true, timeout: duration }, function (state) {
+                            console.log("Fade state " + state);
+                            (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
+                                React.createElement("div", null, "Fade me")));
+                        }),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),
