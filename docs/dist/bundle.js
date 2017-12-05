@@ -42146,11 +42146,25 @@ var TicTacToeSquare = /** @class */ (function (_super) {
         };
         return _this;
     }
+    TicTacToeSquare.prototype.componentWillReceiveProps = function (newProps) {
+        if (newProps.canGo !== this.props.canGo) {
+            this.colourChangeTransition.setIn();
+        }
+    };
     TicTacToeSquare.prototype.render = function () {
-        return React.createElement("td", { style: {
-                color: this.props.squareGoColour,
-                textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
-            }, onClick: this.squareClicked }, this.props.squareText);
+        var _this = this;
+        var transitionDuration = 1000;
+        return React.createElement(ColourChangeTransition, { propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten, ref: function (ctt) { return _this.colourChangeTransition = ctt; } },
+            React.createElement("td", { style: {
+                    color: this.props.squareGoColour,
+                    textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+                }, onClick: this.squareClicked }, this.props.squareText));
+        //return <td style={{
+        //    color: this.props.squareGoColour,
+        //    textAlign:"center",width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+        //}} onClick={this.squareClicked}>
+        //    {this.props.squareText}
+        //    </td>
     };
     return TicTacToeSquare;
 }(React.Component));
@@ -42451,10 +42465,8 @@ var ColourChangeType;
     ColourChangeType[ColourChangeType["darken"] = 1] = "darken";
     ColourChangeType[ColourChangeType["saturate"] = 2] = "saturate";
     ColourChangeType[ColourChangeType["desaturate"] = 3] = "desaturate";
-    ColourChangeType[ColourChangeType["whiten"] = 4] = "whiten";
-    ColourChangeType[ColourChangeType["blacken"] = 5] = "blacken";
-    ColourChangeType[ColourChangeType["fade"] = 6] = "fade";
-    ColourChangeType[ColourChangeType["opaquer"] = 7] = "opaquer";
+    ColourChangeType[ColourChangeType["fade"] = 4] = "fade";
+    ColourChangeType[ColourChangeType["opaquer"] = 5] = "opaquer";
 })(ColourChangeType || (ColourChangeType = {}));
 var ColourChangeTransition = /** @class */ (function (_super) {
     __extends(ColourChangeTransition, _super);
@@ -42471,12 +42483,6 @@ var ColourChangeTransition = /** @class */ (function (_super) {
         var enterColor;
         var change = this.props.change;
         switch (this.props.colourChangeType) {
-            case ColourChangeType.blacken:
-                enterColor = exitColor.blacken(change);
-                break;
-            case ColourChangeType.whiten:
-                enterColor = exitColor.whiten(change);
-                break;
             case ColourChangeType.darken:
                 enterColor = exitColor.darken(change);
                 break;
@@ -42539,38 +42545,40 @@ var AutoOutTransition = /** @class */ (function (_super) {
     };
     return AutoOutTransition;
 }(React.Component));
-var Transitioned = /** @class */ (function (_super) {
-    __extends(Transitioned, _super);
-    function Transitioned(props) {
-        var _this = _super.call(this, props) || this;
-        _this.transition = function () {
-            _this.autoOutTransition.setIn();
-        };
-        _this.changeColour = function () {
-            _this.setState({ colour: { r: 51, g: 51, b: 204 } });
-        };
-        _this.state = { in: false, colour: { r: 255, g: 0, b: 0 } };
-        return _this;
-    }
-    Transitioned.prototype.render = function () {
-        var _this = this;
-        //var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
-        //var enterAlpha = 0.2;
-        //var enterColour = "rgba(" + colorPart + enterAlpha + ")";
-        //var exitAlpha = 1;
-        //var exitColour = "rgba(" + colorPart + exitAlpha + ")";
-        return React.createElement("div", null,
-            React.createElement("button", { onClick: this.transition }, "In")
-        //should be able to use an HOC 
-        ,
-            "//should be able to use an HOC",
-            React.createElement(ColourChangeTransition, { propName: "backgroundColor", ref: function (at) { _this.autoOutTransition = at; }, exitColour: "yellow", colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
-                React.createElement("div", { style: {
-                        height: 300, width: 300
-                    } })));
-    };
-    return Transitioned;
-}(React.Component));
+//interface TransitionedState {
+//    in: boolean,
+//    colour: {r:number,g:number,b:number},
+//}
+//class Transitioned extends React.Component<undefined, TransitionedState>{
+//    constructor(props) {
+//        super(props);
+//        this.state = { in: false, colour: {r:255,g:0,b:0}}
+//    }
+//    transition = () => {
+//        this.autoOutTransition.setIn();
+//    }
+//    changeColour = () => {
+//        this.setState({ colour: {r:51,g:51,b:204}})
+//    }
+//    autoOutTransition: ColourChangeTransition
+//    render() {
+//        //var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
+//        //var enterAlpha = 0.2;
+//        //var enterColour = "rgba(" + colorPart + enterAlpha + ")";
+//        //var exitAlpha = 1;
+//        //var exitColour = "rgba(" + colorPart + exitAlpha + ")";
+//        return <div>
+//            <button onClick={this.transition}>In</button>
+//            //should be able to use an HOC 
+//            <ColourChangeTransition propName="backgroundColor" ref={(at) => { this.autoOutTransition = at }} exitColour="yellow" colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
+//                <div style={{
+//                    height:300,width:300
+//                    }}>
+//                </div>
+//            </ColourChangeTransition>
+//            </div>
+//    }
+//}
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
@@ -42613,7 +42621,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                        React.createElement(Transitioned, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),
