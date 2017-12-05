@@ -601,13 +601,17 @@ interface TransitionHelperProps extends TransitionProps {
     enterStyle: React.CSSProperties,
     exitStyle:React.CSSProperties
 }
+function getTime(date: Date) {
+    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() +
+        ":" + date.getMilliseconds(); 
+}
 class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
     render() {
         //should remove that do not pertain
         console.log("Transition helper rendering");
         var transition= <Transition  {...this.props}>
             {(state: TransitionState) => {
-                console.log("In transition: state is " + state + ", " + new Date().toString());
+                console.log("In transition: state is " + state + ", " + getTime(new Date()));
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":
@@ -859,7 +863,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                         <Transitioned />
                         <Transition in={true} appear={true} timeout={duration}>
                             {(state) => {
-                                console.log("Fade state " + state);
+                                console.log("Fade state " + state + ", " + getTime(new Date()));
                                 
                                 
                               return <div style={{

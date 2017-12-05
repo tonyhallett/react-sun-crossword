@@ -42391,6 +42391,10 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
+function getTime(date) {
+    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() +
+        ":" + date.getMilliseconds();
+}
 var TransitionHelper = /** @class */ (function (_super) {
     __extends(TransitionHelper, _super);
     function TransitionHelper() {
@@ -42401,7 +42405,7 @@ var TransitionHelper = /** @class */ (function (_super) {
         //should remove that do not pertain
         console.log("Transition helper rendering");
         var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
-            console.log("In transition: state is " + state + ", " + new Date().toString());
+            console.log("In transition: state is " + state + ", " + getTime(new Date()));
             var style = {};
             switch (state) {
                 case "entering":
@@ -42612,7 +42616,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
                         React.createElement(Transitioned, null),
                         React.createElement(Transition_1.default, { in: true, appear: true, timeout: duration }, function (state) {
-                            console.log("Fade state " + state);
+                            console.log("Fade state " + state + ", " + getTime(new Date()));
                             return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
                                 React.createElement("div", null, "Fade me"));
                         }),
