@@ -807,8 +807,10 @@ const defaultStyle = {
 }
 
 const transitionStyles = {
-    entering: { backgroundColor: "yellow" },
+    entering: { backgroundColor: "orange" },
     entered: { backgroundColor: "orange" },
+    exiting: { backgroundColor: "yellow" },
+    exited: { backgroundColor: "yellow" }
 };
 
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{

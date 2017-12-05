@@ -42558,8 +42558,10 @@ var defaultStyle = {
     transition: "background-color " + duration + "ms linear",
 };
 var transitionStyles = {
-    entering: { backgroundColor: "yellow" },
+    entering: { backgroundColor: "orange" },
     entered: { backgroundColor: "orange" },
+    exiting: { backgroundColor: "yellow" },
+    exited: { backgroundColor: "yellow" }
 };
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
