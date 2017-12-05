@@ -788,6 +788,32 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             </div>
     }
 }
+
+
+const duration = 300;
+
+const defaultStyle = {
+    transition: `opacity ${duration}ms ease-in-out`,
+    opacity: 0,
+}
+
+const transitionStyles = {
+    entering: { opacity: 1 },
+    entered: { opacity: 1 },
+};
+
+const Fade = ({ in: inProp, children, ...otherProps }) => (
+    <Transition in={inProp} timeout={duration} { ...otherProps }>
+        {(state) => (
+            <div style={{
+                ...defaultStyle,
+                ...transitionStyles[state]
+            }}>
+                {children}
+            </div>
+        )}
+    </Transition>
+);
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
@@ -837,7 +863,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
-                        <Transitioned/>
+                        <Transitioned />
+                        <Fade appear={true} in={true}>
+                            <div>Fade me</div>
+                        </Fade>
                         <div style={{display:"inline-block"}}>
                             <div style={{ marginTop: 10, marginBottom: 10}}>
                                 <ConnectedScoreboard />
