@@ -852,7 +852,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
                         <Transitioned />
-                        <Transition in={true} appear={false} timeout={duration}>
+                        <Transition in={true} appear={true} timeout={duration}>
                             {(state) => {
                                 console.log("Fade state " + state);
                                 
