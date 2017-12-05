@@ -292,8 +292,14 @@ interface TicTacToeSquareDispatchProps {
 interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSquareConnectStateProps, TicTacToeSquareDispatchProps {
 
 }
-
-class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
+interface TicTacToeSquareState {
+    inSignal:any
+}
+class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSquareState>{
+    constructor(props) {
+        super(props);
+        this.state = {inSignal:null}
+    }
     squareClicked = () => {
         if (this.props.canGo) {
             this.props.takeGo();
@@ -301,14 +307,14 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, undefined>{
         
     }
     componentWillReceiveProps(newProps: TicTacToeSquareProps) {
-        if (newProps.canGo !== this.props.canGo) {
-            this.colourChangeTransition.setIn();
+        if (newProps.canGo !== this.props.canGo) {//this will flash the whole board when start again - bring in the squareGo from connected and check X/O if do not want this behaviour
+            this.setState({inSignal:"in!"})
         }
     }
     colourChangeTransition: ColourChangeTransition
     render() {
         var transitionDuration = 1000;
-        return <ColourChangeTransition propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten} ref={(ctt) => this.colourChangeTransition = ctt}>
+        return <ColourChangeTransition inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
             <td style={{
                 color: this.props.squareGoColour,
                 textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
@@ -683,12 +689,9 @@ interface ColourChangeTransitionProps{
     enterTransition: string,
     exitTransition?: string,
     timeout: number | { enter?: number, exit?: number };//taken from the @types - should be optional
-    
+    inSignal:any
 }
 class ColourChangeTransition extends React.Component<ColourChangeTransitionProps, undefined> {
-    setIn() {
-        this.autoOutTransition.setIn();
-    }
     autoOutTransition: AutoOutTransition
     render() {
         var enterStyle = {};
@@ -732,10 +735,13 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
         //}
         //more to do
         exitStyle[this.props.propName] = exitColourString;
-        return <AutoOutTransition ref={(at) => { this.autoOutTransition = at }} enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
+        return <AutoOutTransition  enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
     }
 }
-class AutoOutTransition extends React.Component<TransitionHelperProps, AutoOutTransitionState>{
+interface AutoOutTransitionProps extends TransitionHelperProps {
+    inSignal:any
+}
+class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
     constructor(props) {
         //should wrap all callbacks
         super(props);
@@ -747,8 +753,15 @@ class AutoOutTransition extends React.Component<TransitionHelperProps, AutoOutTr
     onExited = () => {
         this.setState({ entered: false,in:false })
     }
-    setIn() {
-        this.setState({in:true})
+
+    componentWillReceiveProps(newProps: TransitionHelperProps) {
+        if (newProps.inSignal !== null) {
+            if (newProps.inSignal !== this.props.inSignal) {
+                this.setState({in:true})//same as below
+            }
+        } else {
+            this.setState({ in: false });//reset entered as well - if already exiting will get again ?
+        }
     }
     render() {
         var actuallyIn = this.state.in ? (this.state.entered ? false : true) : false;

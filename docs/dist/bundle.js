@@ -42137,24 +42137,24 @@ function reducer(state, action) {
 }
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
-    function TicTacToeSquare() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function TicTacToeSquare(props) {
+        var _this = _super.call(this, props) || this;
         _this.squareClicked = function () {
             if (_this.props.canGo) {
                 _this.props.takeGo();
             }
         };
+        _this.state = { inSignal: null };
         return _this;
     }
     TicTacToeSquare.prototype.componentWillReceiveProps = function (newProps) {
         if (newProps.canGo !== this.props.canGo) {
-            this.colourChangeTransition.setIn();
+            this.setState({ inSignal: "in!" });
         }
     };
     TicTacToeSquare.prototype.render = function () {
-        var _this = this;
         var transitionDuration = 1000;
-        return React.createElement(ColourChangeTransition, { propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten, ref: function (ctt) { return _this.colourChangeTransition = ctt; } },
+        return React.createElement(ColourChangeTransition, { inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
             React.createElement("td", { style: {
                     color: this.props.squareGoColour,
                     textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
@@ -42473,11 +42473,7 @@ var ColourChangeTransition = /** @class */ (function (_super) {
     function ColourChangeTransition() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    ColourChangeTransition.prototype.setIn = function () {
-        this.autoOutTransition.setIn();
-    };
     ColourChangeTransition.prototype.render = function () {
-        var _this = this;
         var enterStyle = {};
         var exitColor = Color(this.props.exitColour);
         var enterColor;
@@ -42516,7 +42512,7 @@ var ColourChangeTransition = /** @class */ (function (_super) {
         //}
         //more to do
         exitStyle[this.props.propName] = exitColourString;
-        return React.createElement(AutoOutTransition, __assign({ ref: function (at) { _this.autoOutTransition = at; }, enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
+        return React.createElement(AutoOutTransition, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
     };
     return ColourChangeTransition;
 }(React.Component));
@@ -42535,8 +42531,15 @@ var AutoOutTransition = /** @class */ (function (_super) {
         _this.state = { entered: false, in: false };
         return _this;
     }
-    AutoOutTransition.prototype.setIn = function () {
-        this.setState({ in: true });
+    AutoOutTransition.prototype.componentWillReceiveProps = function (newProps) {
+        if (newProps.inSignal !== null) {
+            if (newProps.inSignal !== this.props.inSignal) {
+                this.setState({ in: true }); //same as below
+            }
+        }
+        else {
+            this.setState({ in: false }); //reset entered as well - if already exiting will get again ?
+        }
     };
     AutoOutTransition.prototype.render = function () {
         var actuallyIn = this.state.in ? (this.state.entered ? false : true) : false;
