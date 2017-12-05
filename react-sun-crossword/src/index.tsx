@@ -798,7 +798,7 @@ const defaultStyle = {
 }
 
 const transitionStyles = {
-    entering: { opacity: 1 },
+    entering: { opacity: 0 },
     entered: { opacity: 1 },
 };
 
@@ -852,7 +852,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
                         <Transitioned />
-                        <Transition in={true} appear={true} timeout={duration}>
+                        <Transition in={false} appear={true} timeout={duration}>
                             {(state) => {
                                 console.log("Fade state " + state);
                                 

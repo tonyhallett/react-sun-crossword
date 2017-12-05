@@ -42553,7 +42553,7 @@ var defaultStyle = {
     opacity: 0,
 };
 var transitionStyles = {
-    entering: { opacity: 1 },
+    entering: { opacity: 0 },
     entered: { opacity: 1 },
 };
 var TicTacToeApp = /** @class */ (function (_super) {
@@ -42607,7 +42607,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
                         React.createElement(Transitioned, null),
-                        React.createElement(Transition_1.default, { in: true, appear: true, timeout: duration }, function (state) {
+                        React.createElement(Transition_1.default, { in: false, appear: true, timeout: duration }, function (state) {
                             console.log("Fade state " + state);
                             return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
                                 React.createElement("div", null, "Fade me"));
