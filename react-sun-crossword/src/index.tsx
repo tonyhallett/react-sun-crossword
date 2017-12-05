@@ -607,7 +607,7 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
         console.log("Transition helper rendering");
         var transition= <Transition  {...this.props}>
             {(state: TransitionState) => {
-                console.log("In transition: state is " + state + ", " + Date.now());
+                console.log("In transition: state is " + state + ", " + Date.now().toString());
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":
