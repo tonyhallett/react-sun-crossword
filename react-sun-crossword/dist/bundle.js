@@ -42391,34 +42391,6 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-var duration = 1000;
-var defaultStyle = {
-    opacity: 0,
-};
-var enterValue = 1;
-var exitValue = 0;
-//const transitionStyles = {
-//    entering: {
-//        opacity: enterValue, transition: `opacity 500ms ease-in-out`
-//    },
-//    entered: {
-//        opacity: enterValue,
-//    }
-//};
-var transitionStyles = {
-    entering: {
-        opacity: enterValue, transition: "opacity 500ms ease-in-out"
-    },
-    entered: {
-        opacity: enterValue,
-    },
-    exiting: {
-        opacity: exitValue, transition: "opacity 500ms ease-in-out"
-    },
-    exited: {
-        opacity: exitValue
-    }
-};
 var TransitionHelper = /** @class */ (function (_super) {
     __extends(TransitionHelper, _super);
     function TransitionHelper() {
@@ -42478,6 +42450,7 @@ var ColourChangeTransition = /** @class */ (function (_super) {
         var exitColor = Color(this.props.exitColour);
         var enterColor;
         var change = this.props.change;
+        //note that whiten/blacken is not css3!
         switch (this.props.colourChangeType) {
             case ColourChangeType.darken:
                 enterColor = exitColor.darken(change);
@@ -42519,13 +42492,13 @@ var ColourChangeTransition = /** @class */ (function (_super) {
 var AutoOutTransition = /** @class */ (function (_super) {
     __extends(AutoOutTransition, _super);
     function AutoOutTransition(props) {
-        var _this = 
-        //should wrap all callbacks
-        _super.call(this, props) || this;
-        _this.onEntered = function () {
+        var _this = _super.call(this, props) || this;
+        _this.onEntered = function (node, isAppearing) {
+            _this.props.onEntered ? _this.props.onEntered(node, isAppearing) : void 0;
             _this.setState({ entered: true });
         };
-        _this.onExited = function () {
+        _this.onExited = function (node) {
+            _this.props.onExited ? _this.props.onExited(node) : void 0;
             _this.setState({ entered: false, in: false });
         };
         _this.state = { entered: false, in: false };
@@ -42534,11 +42507,11 @@ var AutoOutTransition = /** @class */ (function (_super) {
     AutoOutTransition.prototype.componentWillReceiveProps = function (newProps) {
         if (newProps.inSignal !== null) {
             if (newProps.inSignal !== this.props.inSignal) {
-                this.setState({ in: true }); //same as below
+                this.setState({ in: true });
             }
         }
         else {
-            this.setState({ in: false }); //reset entered as well - if already exiting will get again ?
+            this.setState({ in: false });
         }
     };
     AutoOutTransition.prototype.render = function () {
@@ -42548,40 +42521,43 @@ var AutoOutTransition = /** @class */ (function (_super) {
     };
     return AutoOutTransition;
 }(React.Component));
-//interface TransitionedState {
-//    in: boolean,
-//    colour: {r:number,g:number,b:number},
-//}
-//class Transitioned extends React.Component<undefined, TransitionedState>{
-//    constructor(props) {
-//        super(props);
-//        this.state = { in: false, colour: {r:255,g:0,b:0}}
-//    }
-//    transition = () => {
-//        this.autoOutTransition.setIn();
-//    }
-//    changeColour = () => {
-//        this.setState({ colour: {r:51,g:51,b:204}})
-//    }
-//    autoOutTransition: ColourChangeTransition
-//    render() {
-//        //var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
-//        //var enterAlpha = 0.2;
-//        //var enterColour = "rgba(" + colorPart + enterAlpha + ")";
-//        //var exitAlpha = 1;
-//        //var exitColour = "rgba(" + colorPart + exitAlpha + ")";
-//        return <div>
-//            <button onClick={this.transition}>In</button>
-//            //should be able to use an HOC 
-//            <ColourChangeTransition propName="backgroundColor" ref={(at) => { this.autoOutTransition = at }} exitColour="yellow" colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
-//                <div style={{
-//                    height:300,width:300
-//                    }}>
-//                </div>
-//            </ColourChangeTransition>
-//            </div>
-//    }
-//}
+var Transitioned = /** @class */ (function (_super) {
+    __extends(Transitioned, _super);
+    function Transitioned(props) {
+        var _this = _super.call(this, props) || this;
+        _this.setIn = function () {
+            if (_this.state.inSignal === null) {
+                _this.setState({ inSignal: 0 });
+            }
+            else {
+                _this.setState({ inSignal: _this.state.inSignal + 1 });
+            }
+        };
+        _this.setOut = function () {
+            _this.setState({ inSignal: null });
+        };
+        _this.changeColour = function () {
+            _this.setState({ exitColour: "red" });
+        };
+        _this.state = { inSignal: null, exitColour: "yellow" };
+        return _this;
+    }
+    Transitioned.prototype.render = function () {
+        var duration = 5000;
+        return React.createElement("div", null,
+            React.createElement("button", { onClick: this.setIn }, "In"),
+            React.createElement("button", { onClick: this.setOut }, "Out"),
+            React.createElement("button", { onClick: this.changeColour }, "Change colour")
+        //should be able to use an HOC 
+        ,
+            "//should be able to use an HOC",
+            React.createElement(ColourChangeTransition, { inSignal: this.state.inSignal, propName: "backgroundColor", exitColour: this.state.exitColour, colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
+                React.createElement("div", { style: {
+                        height: 300, width: 300
+                    } })));
+    };
+    return Transitioned;
+}(React.Component));
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {

@@ -585,37 +585,7 @@ function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsCh
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-const duration = 1000;
-const defaultStyle = {
-    opacity: 0,
-}
-var enterValue = 1;
-var exitValue = 0;
-//const transitionStyles = {
-//    entering: {
-//        opacity: enterValue, transition: `opacity 500ms ease-in-out`
-//    },
-//    entered: {
-//        opacity: enterValue,
-//    }
-    
-//};
-const transitionStyles = {
-    entering: {
-        opacity: enterValue, transition: `opacity 500ms ease-in-out`
-    },
-    entered: {
-        opacity: enterValue,
-    },
-    exiting: {
-        opacity: exitValue, transition: `opacity 500ms ease-in-out`
-    },
-    exited: {
-        opacity:exitValue
-    }
 
-
-};
 //so could wrap for TransitionOnEntering which removes the transition
 //DelayedTransitionOnEntering - no need as just use the transition property itself
 
@@ -699,6 +669,7 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
         var exitColor = Color(this.props.exitColour);
         var enterColor;
         var change = this.props.change;
+        //note that whiten/blacken is not css3!
         switch (this.props.colourChangeType) {
             case ColourChangeType.darken:
                 enterColor = exitColor.darken(change)
@@ -743,24 +714,25 @@ interface AutoOutTransitionProps extends TransitionHelperProps {
 }
 class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
     constructor(props) {
-        //should wrap all callbacks
         super(props);
         this.state = {entered:false,in:false}
     }
-    onEntered=()=> {
-        this.setState({entered:true})
+    onEntered = (node: HTMLElement, isAppearing: boolean) => {
+        this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
+        this.setState({ entered: true });
     }
-    onExited = () => {
-        this.setState({ entered: false,in:false })
+    onExited = (node: HTMLElement) => {
+        this.props.onExited ? this.props.onExited(node) : void 0
+        this.setState({ entered: false, in: false })
     }
 
     componentWillReceiveProps(newProps: TransitionHelperProps) {
         if (newProps.inSignal !== null) {
             if (newProps.inSignal !== this.props.inSignal) {
-                this.setState({in:true})//same as below
+                this.setState({ in: true });
             }
         } else {
-            this.setState({ in: false });//reset entered as well - if already exiting will get again ?
+            this.setState({ in: false });
         }
     }
     render() {
@@ -771,44 +743,50 @@ class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutT
         return <TransitionHelper onExited={this.onExited} onEntered={this.onEntered} in={actuallyIn} {...passThroughProps}/>
     }
 }
-//interface TransitionedState {
-//    in: boolean,
-//    colour: {r:number,g:number,b:number},
-//}
-//class Transitioned extends React.Component<undefined, TransitionedState>{
-//    constructor(props) {
-//        super(props);
-//        this.state = { in: false, colour: {r:255,g:0,b:0}}
-//    }
-//    transition = () => {
-//        this.autoOutTransition.setIn();
-//    }
-//    changeColour = () => {
-//        this.setState({ colour: {r:51,g:51,b:204}})
-//    }
-//    autoOutTransition: ColourChangeTransition
-//    render() {
-//        //var colorPart = this.state.colour.r + "," + this.state.colour.g + "," + this.state.colour.b + ","
-//        //var enterAlpha = 0.2;
-//        //var enterColour = "rgba(" + colorPart + enterAlpha + ")";
-//        //var exitAlpha = 1;
-//        //var exitColour = "rgba(" + colorPart + exitAlpha + ")";
-//        return <div>
-//            <button onClick={this.transition}>In</button>
+interface TransitionedState {
+    inSignal: any,
+    exitColour:string
+}
+class Transitioned extends React.Component<undefined, TransitionedState>{
+    constructor(props) {
+        super(props);
+        this.state = { inSignal: null, exitColour:"yellow" }
+    }
+    setIn = () => {
+        if (this.state.inSignal === null) {
+            this.setState({ inSignal:0 })
+        } else {
+            this.setState({inSignal:this.state.inSignal+1})
+        }
+        
+    }
+    setOut = () => {
+        this.setState({inSignal:null})
+    }
+    changeColour = () => {
+        this.setState({ exitColour: "red"})
+    }
+    autoOutTransition: ColourChangeTransition
+    render() {
+        var duration = 5000;
+        return <div>
+            <button onClick={this.setIn}>In</button>
+            <button onClick={this.setOut}>Out</button>
+            <button onClick={this.changeColour}>Change colour</button>
 
 
-//            //should be able to use an HOC 
-//            <ColourChangeTransition propName="backgroundColor" ref={(at) => { this.autoOutTransition = at }} exitColour="yellow" colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
+            //should be able to use an HOC 
+            <ColourChangeTransition inSignal={this.state.inSignal} propName="backgroundColor" exitColour={this.state.exitColour} colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
                 
-//                <div style={{
-//                    height:300,width:300
-//                    }}>
-//                </div>
-//            </ColourChangeTransition>
+                <div style={{
+                    height:300,width:300
+                    }}>
+                </div>
+            </ColourChangeTransition>
 
-//            </div>
-//    }
-//}
+            </div>
+    }
+}
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
