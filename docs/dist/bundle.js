@@ -42400,6 +42400,7 @@ var TransitionHelper = /** @class */ (function (_super) {
         //should remove that do not pertain
         var _this = this;
         var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
+            console.log("In transition: state is " + state);
             var style = {};
             switch (state) {
                 case "entering":
@@ -42475,15 +42476,6 @@ var ColourChangeTransition = /** @class */ (function (_super) {
         enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
         var exitStyle = {};
         var exitColourString = exitColor.toString();
-        //switch (exitColor.model) {
-        //    case "rgb":
-        //        exitColourString = exitColor.rgb().toString();
-        //        break;
-        //    case "hsl":
-        //        exitColourString = exitColor.hsl().toString();
-        //        break;
-        //}
-        //more to do
         exitStyle[this.props.propName] = exitColourString;
         return React.createElement(AutoOutTransition, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
     };
@@ -42547,11 +42539,8 @@ var Transitioned = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.setIn }, "In"),
             React.createElement("button", { onClick: this.setOut }, "Out"),
-            React.createElement("button", { onClick: this.changeColour }, "Change colour")
-        //should be able to use an HOC 
-        ,
-            "//should be able to use an HOC",
-            React.createElement(ColourChangeTransition, { inSignal: this.state.inSignal, propName: "backgroundColor", exitColour: this.state.exitColour, colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
+            React.createElement("button", { onClick: this.changeColour }, "Change colour"),
+            React.createElement(ColourChangeTransition, { mountOnEnter: true, inSignal: this.state.inSignal, propName: "backgroundColor", exitColour: this.state.exitColour, colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
                 React.createElement("div", { style: {
                         height: 300, width: 300
                     } })));

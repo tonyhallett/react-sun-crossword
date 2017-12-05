@@ -8,7 +8,7 @@ import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, creat
 import * as $ from 'jquery';
 import { Style, StyleRoot } from "Radium";
 import Transition from 'react-transition-group/Transition';
-import { TransitionProps } from 'react-transition-group/Transition';
+import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
 
 var componentBackgroundColor = "lightgray";
@@ -607,6 +607,7 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
 
         var transition= <Transition  {...this.props}>
             {(state: TransitionState) => {
+                console.log("In transition: state is " + state);
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":
@@ -651,15 +652,29 @@ interface AutoOutTransitionState {
 }
 enum ColourChangeType{lighten,darken,saturate,desaturate,fade,opaquer}
 //need to refactor the props interfaces - needs TransitionHelperProps with couple of omits
-interface ColourChangeTransitionProps{
+interface ColourChangeTransitionProps {
     change: number,
     exitColour: string,
     colourChangeType: ColourChangeType,
     propName: string,
+
     enterTransition: string,
     exitTransition?: string,
-    timeout: number | { enter?: number, exit?: number };//taken from the @types - should be optional
-    inSignal:any
+
+    inSignal: any
+
+    mountOnEnter?: boolean;
+    unmountOnExit?: boolean;
+    timeout: number | { enter?: number, exit?: number };
+    addEndListener?: EndHandler;
+    onEnter?: EnterHandler;
+    onEntering?: EnterHandler;
+    onEntered?: EnterHandler;
+    onExit?: ExitHandler;
+    onExiting?: ExitHandler;
+    onExited?: ExitHandler;
+    [prop: string]: any;
+    
 }
 class ColourChangeTransition extends React.Component<ColourChangeTransitionProps, undefined> {
     autoOutTransition: AutoOutTransition
@@ -695,16 +710,6 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
 
         var exitStyle = {};
         var exitColourString = exitColor.toString();
-        //switch (exitColor.model) {
-        //    case "rgb":
-        //        exitColourString = exitColor.rgb().toString();
-        //        break;
-        //    case "hsl":
-        //        exitColourString = exitColor.hsl().toString();
-        //        break;
-
-        //}
-        //more to do
         exitStyle[this.props.propName] = exitColourString;
         return <AutoOutTransition  enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
     }
@@ -774,9 +779,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
             <button onClick={this.setOut}>Out</button>
             <button onClick={this.changeColour}>Change colour</button>
 
-
-            //should be able to use an HOC 
-            <ColourChangeTransition inSignal={this.state.inSignal} propName="backgroundColor" exitColour={this.state.exitColour} colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
+            <ColourChangeTransition mountOnEnter={true} inSignal={this.state.inSignal} propName="backgroundColor" exitColour={this.state.exitColour} colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
                 
                 <div style={{
                     height:300,width:300
