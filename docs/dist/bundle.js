@@ -42409,18 +42409,14 @@ var TransitionHelper = /** @class */ (function (_super) {
             var style = {};
             switch (state) {
                 case "entering":
+                case "entered":
                     style = __assign({}, _this.props.enterStyle);
                     style.transition = _this.props.enterTransition;
                     break;
-                case "entered":
-                    style = __assign({}, _this.props.enterStyle);
-                    break;
                 case "exiting":
-                    style = __assign({}, _this.props.exitStyle);
-                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
-                    break;
                 case "exited"://this is the state before in:true 
                     style = __assign({}, _this.props.exitStyle);
+                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
                     break;
             }
             //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
@@ -42617,7 +42613,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         React.createElement(Transition_1.default, { in: true, appear: true, timeout: duration }, function (state) {
                             console.log("Fade state " + state + ", " + getTime(new Date()));
                             return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
-                                React.createElement("div", null, "Fade me"));
+                                React.createElement("div", { style: { width: 300, height: 300 } }, "Fade me"));
                         }),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },

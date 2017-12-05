@@ -615,19 +615,17 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":
+                        
+                        
+                    case "entered":
                         style = { ...this.props.enterStyle }
                         style.transition = this.props.enterTransition;
                         break;
-                    case "entered":
-                        style = { ...this.props.enterStyle };
-                        break;
                     case "exiting":
-                        style = { ...this.props.exitStyle };
-                        style.transition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
-                        break;
+                        
                     case "exited"://this is the state before in:true 
                         style = { ...this.props.exitStyle };
-
+                        style.transition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
                         break;
                 }
                 //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
@@ -870,7 +868,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                                 ...defaultStyle,
                                 ...transitionStyles[state]
                                  }}>
-                                <div>Fade me</div>
+                                  <div style={{width:300,height:300}}>Fade me</div>
                             </div>
                             }}
                         </Transition>
