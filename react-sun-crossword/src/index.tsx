@@ -605,78 +605,42 @@ function getTime(date: Date) {
     return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() +
         ":" + date.getMilliseconds(); 
 }
-class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
-    node: HTMLElement
-    addTransitionHandlers(node: HTMLElement) {
-        var added = false;
-        if (this.node) {
-            added = true;
-            if (node !==this.node){
-                console.log("different nodes********************");
+interface TransitionHelperState {
+    in:boolean
+}
+class TransitionHelper extends React.Component<TransitionHelperProps, TransitionHelperState>{
+    inOnMount=false
+    constructor(props) {
+        super(props);
+        var isIn = false;
+        if (props.in) {
+            if (props.appear) {
+                this.inOnMount = true;
+            } else {
+                isIn = true;//not sure ....
             }
 
-        } else {
-            this.node = node;
         }
-        if (!added) {
-            var n = node as any;
-            n.ontransitionrun = function () {
-                console.log("Transition run");
-            }
-            n.ontransitioncancel = function () {
-                console.log("Transition cancel");
-            }
-            n.ontransitionstart = function () {
-                console.log("Transition start");
-            }
-            n.ontransitionend = function () {
-                console.log("Transition end");
-            }
-        }
+        this.state = {in:isIn}
         
+
     }
-    onExiting = (node: HTMLElement) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop
-        if (this.props.onExiting) {
-            this.props.onExiting(node)
+    componentDidMount() {
+        if (this.inOnMount) {
+            requestAnimationFrame(() =>
+                requestAnimationFrame(
+                    () => this.setState({ in: true })
+                )
+            )
         }
     }
-    onEntering = (node: HTMLElement, isAppearing: boolean) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop;
-        if (this.props.onEntering) {
-            this.props.onEntering(node, isAppearing)
-        }
-    }
-    onEnter = (node: HTMLElement, isAppearing: boolean)=>{
-        this.addTransitionHandlers(node);
-        if (this.props.onEnter) {
-            this.props.onEnter(node, isAppearing)
-        }
-    }
-    onEntered = (node: HTMLElement, isAppearing: boolean) => {
-        this.addTransitionHandlers(node);
-        if (this.props.onEntered) {
-            this.props.onEntered(node, isAppearing)
-        }
-    }
-    onExit = (node: HTMLElement) => {
-        this.addTransitionHandlers(node);
-        if (this.props.onExit) {
-            this.props.onxit(node)
-        }
-    }
-    onExited = (node: HTMLElement) => {
-        this.addTransitionHandlers(node);
-        if (this.props.onExited) {
-            this.props.onExited(node)
-        }
-    }
+    
+    
     render() {
-        //should remove that do not pertain
+        
         console.log("Transition helper rendering");
-        var transition = <Transition   {...this.props} onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit}>
+        const { "in": inn,appear, ...passThroughProps } = this.props;
+        var transition = <Transition   {...passThroughProps}>
             {(state: TransitionState) => {
                 console.log("In transition: state is " + state + ", " + getTime(new Date()));
                 var style:React.CSSProperties = {} ;

@@ -42397,80 +42397,34 @@ function getTime(date) {
 }
 var TransitionHelper = /** @class */ (function (_super) {
     __extends(TransitionHelper, _super);
-    function TransitionHelper() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.onExiting = function (node) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-            if (_this.props.onExiting) {
-                _this.props.onExiting(node);
+    function TransitionHelper(props) {
+        var _this = _super.call(this, props) || this;
+        _this.inOnMount = false;
+        var isIn = false;
+        if (props.in) {
+            if (props.appear) {
+                _this.inOnMount = true;
             }
-        };
-        _this.onEntering = function (node, isAppearing) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-            if (_this.props.onEntering) {
-                _this.props.onEntering(node, isAppearing);
+            else {
+                isIn = true; //not sure ....
             }
-        };
-        _this.onEnter = function (node, isAppearing) {
-            _this.addTransitionHandlers(node);
-            if (_this.props.onEnter) {
-                _this.props.onEnter(node, isAppearing);
-            }
-        };
-        _this.onEntered = function (node, isAppearing) {
-            _this.addTransitionHandlers(node);
-            if (_this.props.onEntered) {
-                _this.props.onEntered(node, isAppearing);
-            }
-        };
-        _this.onExit = function (node) {
-            _this.addTransitionHandlers(node);
-            if (_this.props.onExit) {
-                _this.props.onxit(node);
-            }
-        };
-        _this.onExited = function (node) {
-            _this.addTransitionHandlers(node);
-            if (_this.props.onExited) {
-                _this.props.onExited(node);
-            }
-        };
+        }
+        _this.state = { in: isIn };
         return _this;
     }
-    TransitionHelper.prototype.addTransitionHandlers = function (node) {
-        var added = false;
-        if (this.node) {
-            added = true;
-            if (node !== this.node) {
-                console.log("different nodes********************");
-            }
-        }
-        else {
-            this.node = node;
-        }
-        if (!added) {
-            var n = node;
-            n.ontransitionrun = function () {
-                console.log("Transition run");
-            };
-            n.ontransitioncancel = function () {
-                console.log("Transition cancel");
-            };
-            n.ontransitionstart = function () {
-                console.log("Transition start");
-            };
-            n.ontransitionend = function () {
-                console.log("Transition end");
-            };
+    TransitionHelper.prototype.componentDidMount = function () {
+        var _this = this;
+        if (this.inOnMount) {
+            requestAnimationFrame(function () {
+                return requestAnimationFrame(function () { return _this.setState({ in: true }); });
+            });
         }
     };
     TransitionHelper.prototype.render = function () {
         var _this = this;
-        //should remove that do not pertain
         console.log("Transition helper rendering");
-        var transition = React.createElement(Transition_1.default, __assign({}, this.props, { onEnter: this.onEnter, onEntered: this.onEntered, onEntering: this.onEntering, onExiting: this.onExiting, onExited: this.onExited, onExit: this.onExit }), function (state) {
+        var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
+        var transition = React.createElement(Transition_1.default, __assign({}, passThroughProps), function (state) {
             console.log("In transition: state is " + state + ", " + getTime(new Date()));
             var style = {};
             switch (state) {
