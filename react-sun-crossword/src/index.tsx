@@ -625,6 +625,9 @@ class TransitionHelper extends React.Component<TransitionHelperProps, Transition
         
 
     }
+    componentWillReceiveProps(newProps) {
+        this.setState({ in: newProps.in });
+    }
     //change to account for no requestAnimationFrame
     componentDidMount() {
         if (this.inOnMount) {

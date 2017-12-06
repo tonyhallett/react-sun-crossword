@@ -42412,6 +42412,9 @@ var TransitionHelper = /** @class */ (function (_super) {
         _this.state = { in: isIn };
         return _this;
     }
+    TransitionHelper.prototype.componentWillReceiveProps = function (newProps) {
+        this.setState({ in: newProps.in });
+    };
     //change to account for no requestAnimationFrame
     TransitionHelper.prototype.componentDidMount = function () {
         var _this = this;
