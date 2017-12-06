@@ -42415,18 +42415,28 @@ var TransitionHelper = /** @class */ (function (_super) {
     TransitionHelper.prototype.componentWillReceiveProps = function (newProps) {
         this.setState({ in: newProps.in });
     };
-    //change to account for no requestAnimationFrame
     TransitionHelper.prototype.componentDidMount = function () {
-        var _this = this;
+        var self = this;
         if (this.inOnMount) {
-            requestAnimationFrame(function () {
-                return requestAnimationFrame(function () { return _this.setState({ in: true }); });
+            this.requestAnimationStart(function () { return self.setState({ in: true }); });
+        }
+    };
+    TransitionHelper.prototype.requestAnimationStart = function (callback) {
+        // Feature detect rAF, fallback to setTimeout
+        if (window.requestAnimationFrame) {
+            // Chrome and Safari have a bug where calling rAF once returns the current
+            // frame instead of the next frame, so we need to call a double rAF here.
+            // See https://crbug.com/675795 for more.
+            window.requestAnimationFrame(function () {
+                window.requestAnimationFrame(callback);
             });
+        }
+        else {
+            setTimeout(callback, 0);
         }
     };
     TransitionHelper.prototype.render = function () {
         var _this = this;
-        console.log("Transition helper rendering");
         var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
         var transition = React.createElement(Transition_1.default, __assign({ in: this.state.in }, passThroughProps), function (state) {
             console.log("In transition: state is " + state + ", " + getTime(new Date()));
@@ -42517,7 +42527,7 @@ var AutoOutTransition = /** @class */ (function (_super) {
             _this.props.onEntered ? _this.props.onEntered(node, isAppearing) : void 0;
             _this.setState({ in: false });
         };
-        _this.state = { entered: false, in: props.inSignal !== null };
+        _this.state = { in: props.inSignal !== null };
         return _this;
     }
     AutoOutTransition.prototype.componentWillReceiveProps = function (newProps) {
@@ -42531,7 +42541,7 @@ var AutoOutTransition = /** @class */ (function (_super) {
         }
     };
     AutoOutTransition.prototype.render = function () {
-        var _a = this.props, onEntered = _a.onEntered, onExited = _a.onExited, inn = _a["in"], passThroughProps = __rest(_a, ["onEntered", "onExited", "in"]);
+        var _a = this.props, onEntered = _a.onEntered, inSignal = _a.inSignal, passThroughProps = __rest(_a, ["onEntered", "inSignal"]);
         return React.createElement(TransitionHelper, __assign({ onEntered: this.onEntered, in: this.state.in }, passThroughProps));
     };
     return AutoOutTransition;
@@ -42582,8 +42592,8 @@ var transitionStyles = {
 };
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
-    function TicTacToeApp(props) {
-        var _this = _super.call(this, props) || this;
+    function TicTacToeApp() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.modalShouldOpen = function () {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -42594,82 +42604,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 overlay: getOverlay(testOverlay)
             };
         };
-        _this.onExiting = function (node) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-        };
-        _this.onEntering = function (node, isAppearing) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-        };
-        _this.onEnter = function (node, isAppearing) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-        };
-        _this.onEntered = function (node, isAppearing) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-        };
-        _this.onExit = function (node) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-        };
-        _this.onExited = function (node) {
-            _this.addTransitionHandlers(node);
-            node.scrollTop;
-        };
-        _this.setIn = function () {
-            _this.setState({ in: true });
-        };
-        _this.setOut = function () {
-            _this.setState({ in: false });
-        };
-        _this.state = { in: false };
         return _this;
     }
-    TicTacToeApp.prototype.addTransitionHandlers = function (node) {
-        var added = false;
-        if (this.node) {
-            added = true;
-            if (node !== this.node) {
-                console.log("different nodes********************");
-            }
-        }
-        else {
-            this.node = node;
-        }
-        //if (!added) {
-        var n = node;
-        n.ontransitionrun = function () {
-            console.log("Transition run");
-        };
-        n.ontransitioncancel = function () {
-            console.log("Transition cancel");
-        };
-        n.ontransitionstart = function () {
-            console.log("Transition start");
-        };
-        n.ontransitionend = function () {
-            console.log("Transition end");
-        };
-        //}
-    };
-    TicTacToeApp.prototype.componentDidMount = function () {
-        var _this = this;
-        //this replicates appear ?
-        requestAnimationFrame(function () {
-            return requestAnimationFrame(function () { return _this.setState({ in: true }); });
-        });
-    };
     TicTacToeApp.prototype.render = function () {
-        //<ConnectedTicTacToeBoard />
-        /*
-        <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                                {this.getWinDrawMessage()}
-                            </div>
-                        </ModalCover>
-        */
         return React.createElement(Radium_1.StyleRoot, null,
             React.createElement(Radium_1.Style, { rules: {
                     body: {
@@ -42695,18 +42632,13 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                        React.createElement(Transitioned, null),
-                        React.createElement("button", { onClick: this.setIn }, "In"),
-                        React.createElement("button", { onClick: this.setOut }, "Out"),
-                        React.createElement(Transition_1.default, { onEnter: this.onEnter, onEntered: this.onEntered, onEntering: this.onEntering, onExiting: this.onExiting, onExited: this.onExited, onExit: this.onExit, in: this.state.in, timeout: duration }, function (state) {
-                            console.log("Fade state " + state + ", " + getTime(new Date()));
-                            return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
-                                React.createElement("div", { style: { width: 300, height: 300 } }, "Fade me"));
-                        }),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),
-                            React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again"))))));
+                            React.createElement(ConnectedTicTacToeBoard, null),
+                            React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
+                        React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+                            React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "Game drawn";

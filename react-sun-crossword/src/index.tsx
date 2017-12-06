@@ -622,27 +622,32 @@ class TransitionHelper extends React.Component<TransitionHelperProps, Transition
 
         }
         this.state = {in:isIn}
-        
-
     }
     componentWillReceiveProps(newProps) {
         this.setState({ in: newProps.in });
     }
-    //change to account for no requestAnimationFrame
+    
     componentDidMount() {
+        var self = this;
         if (this.inOnMount) {
-            requestAnimationFrame(() =>
-                requestAnimationFrame(
-                    () => this.setState({ in: true })
-                )
-            )
+            this.requestAnimationStart(() => self.setState({ in: true}))
+        }
+    }
+    requestAnimationStart(callback) {
+        // Feature detect rAF, fallback to setTimeout
+        if (window.requestAnimationFrame) {
+            // Chrome and Safari have a bug where calling rAF once returns the current
+            // frame instead of the next frame, so we need to call a double rAF here.
+            // See https://crbug.com/675795 for more.
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(callback);
+            });
+        } else {
+            setTimeout(callback, 0);
         }
     }
     
-    
     render() {
-        
-        console.log("Transition helper rendering");
         const { "in": inn,appear, ...passThroughProps } = this.props;
         var transition = <Transition in={this.state.in}  {...passThroughProps}>
             {(state: TransitionState) => {
@@ -753,13 +758,12 @@ interface AutoOutTransitionProps extends TransitionHelperProps {
     inSignal:any
 }
 interface AutoOutTransitionState {
-    entered: boolean
     in: boolean
 }
 class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
     constructor(props) {
         super(props);
-        this.state = {entered:false,in:props.inSignal!==null}
+        this.state = {in:props.inSignal!==null}
     }
     initialRender=true
     onEntered = (node: HTMLElement, isAppearing: boolean) => {
@@ -778,7 +782,7 @@ class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutT
         }
     }
     render() {
-        const { onEntered, onExited, "in": inn, ...passThroughProps } = this.props;
+        const {onEntered, inSignal, ...passThroughProps } = this.props;
         return <TransitionHelper onEntered={this.onEntered} in={this.state.in} {...passThroughProps}/>
     }
 }
@@ -839,14 +843,8 @@ const transitionStyles = {
     exiting: { backgroundColor: "rgb(255,255,0)" },
     exited: { backgroundColor: "rgb(255,255,0)" }
 };
-interface TicTacToeAppState {
-    in:boolean
-}
-class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
-    constructor(props) {
-        super(props);
-        this.state = { in: false };
-    }
+
+class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -858,85 +856,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         }
         
     }
-    node: HTMLElement
-    addTransitionHandlers(node: HTMLElement) {
-        var added = false;
-        if (this.node) {
-            added = true;
-            if (node !== this.node) {
-                console.log("different nodes********************");
-            }
-
-        } else {
-            this.node = node;
-        }
-        //if (!added) {
-            var n = node as any;
-            n.ontransitionrun = function () {
-                console.log("Transition run");
-            }
-            n.ontransitioncancel = function () {
-                console.log("Transition cancel");
-            }
-            n.ontransitionstart = function () {
-                console.log("Transition start");
-            }
-            n.ontransitionend = function () {
-                console.log("Transition end");
-            }
-        //}
-
-    }
-    onExiting = (node: HTMLElement) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop
-        
-    }
-    onEntering = (node: HTMLElement, isAppearing: boolean) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop;
-        
-    }
-    onEnter = (node: HTMLElement, isAppearing: boolean) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop;
-    }
-    onEntered = (node: HTMLElement, isAppearing: boolean) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop;
-    }
-    onExit = (node: HTMLElement) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop;
-    }
-    onExited = (node: HTMLElement) => {
-        this.addTransitionHandlers(node);
-        node.scrollTop;
-    }
-    setIn = () => {
-        this.setState({in:true})
-
-    }
-    setOut = () => {
-        this.setState({ in: false })
-    }
-    componentDidMount() {
-        //this replicates appear ?
-        requestAnimationFrame(() =>
-            requestAnimationFrame(
-                () => this.setState({ in: true })
-            )
-        )
-    }
+    
     render() {
-        //<ConnectedTicTacToeBoard />
-        /*
-        <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                                {this.getWinDrawMessage()}
-                            </div>
-                        </ModalCover>
-        */
         return <StyleRoot>
             <Style
                 rules={{
@@ -964,30 +885,19 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
-                        <Transitioned />
-                        <button onClick={this.setIn}>In</button>
-                        <button onClick={this.setOut}>Out</button>
-                        <Transition onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit} in={this.state.in}  timeout={duration}>
-                            {(state) => {
-                                console.log("Fade state " + state + ", " + getTime(new Date()));
-                                
-                                
-                              return <div style={{
-                                ...defaultStyle,
-                                ...transitionStyles[state]
-                                 }}>
-                                  <div style={{width:300,height:300}}>Fade me</div>
-                            </div>
-                            }}
-                        </Transition>
+                        
                         <div style={{display:"inline-block"}}>
                             <div style={{ marginTop: 10, marginBottom: 10}}>
                                 <ConnectedScoreboard />
                             </div>
-                            
+                            <ConnectedTicTacToeBoard />
                             <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                         </div>
-                    
+                        <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                                {this.getWinDrawMessage()}
+                            </div>
+                        </ModalCover>
 
                         
                          
