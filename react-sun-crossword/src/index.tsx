@@ -874,10 +874,10 @@ const defaultStyle = {
 }
 
 const transitionStyles = {
-    entering: { backgroundColor: "orange" },
-    entered: { backgroundColor: "orange" },
-    exiting: { backgroundColor: "yellow" },
-    exited: { backgroundColor: "yellow" }
+    entering: { backgroundColor: "hsl(60, 40%, 50%)"},
+    entered: { backgroundColor: "hsl(60, 40%, 50%)" },
+    exiting: { backgroundColor: "rgb(255,255,0)" },
+    exited: { backgroundColor: "rgb(255,255,0)" }
 };
 
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
@@ -923,12 +923,12 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
     onExiting = (node: HTMLElement) => {
         this.addTransitionHandlers(node);
-        //node.scrollTop
+        node.scrollTop
         
     }
     onEntering = (node: HTMLElement, isAppearing: boolean) => {
         this.addTransitionHandlers(node);
-        //node.scrollTop;
+        node.scrollTop;
         
     }
     onEnter = (node: HTMLElement, isAppearing: boolean) => {

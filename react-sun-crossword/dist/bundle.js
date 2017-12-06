@@ -42624,10 +42624,10 @@ var defaultStyle = {
     transition: "background-color " + duration + "ms linear",
 };
 var transitionStyles = {
-    entering: { backgroundColor: "orange" },
-    entered: { backgroundColor: "orange" },
-    exiting: { backgroundColor: "yellow" },
-    exited: { backgroundColor: "yellow" }
+    entering: { backgroundColor: "hsl(60, 40%, 50%)" },
+    entered: { backgroundColor: "hsl(60, 40%, 50%)" },
+    exiting: { backgroundColor: "rgb(255,255,0)" },
+    exited: { backgroundColor: "rgb(255,255,0)" }
 };
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
@@ -42645,11 +42645,11 @@ var TicTacToeApp = /** @class */ (function (_super) {
         };
         _this.onExiting = function (node) {
             _this.addTransitionHandlers(node);
-            //node.scrollTop
+            node.scrollTop;
         };
         _this.onEntering = function (node, isAppearing) {
             _this.addTransitionHandlers(node);
-            //node.scrollTop;
+            node.scrollTop;
         };
         _this.onEnter = function (node, isAppearing) {
             _this.addTransitionHandlers(node);
