@@ -606,22 +606,60 @@ function getTime(date: Date) {
         ":" + date.getMilliseconds(); 
 }
 class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
+    node: HTMLElement
+    addTransitionHandlers(node: HTMLElement) {
+        if (this.node) {
+            if (node !==this.node){
+                console.log("different nodes********************");
+            }
+
+        } else {
+            this.node = node;
+        }
+        var n = node as any;
+        n.ontransitionrun = function () {
+            console.log("Transition run");
+        }
+        n.ontransitioncancel = function () {
+            console.log("Transition cancel");
+        }
+        n.ontransitionstart = function () {
+            console.log("Transition start");
+        }
+        n.ontransitionend = function () {
+            console.log("Transition end");
+        }
+    }
     onExiting = (node: HTMLElement) => {
+        this.addTransitionHandlers(node);
         node.scrollTop
         if (this.props.onExiting) {
             this.props.onExiting(node)
         }
     }
     onEntering = (node: HTMLElement, isAppearing: boolean) => {
+        this.addTransitionHandlers(node);
         node.scrollTop;
         if (this.props.onEntering) {
             this.props.onEntering(node, isAppearing)
         }
     }
+    onEnter = (node: HTMLElement, isAppearing: boolean)=>{
+        this.addTransitionHandlers(node);
+    }
+    onEntered = (node: HTMLElement, isAppearing: boolean) => {
+        this.addTransitionHandlers(node);
+    }
+    onExit = (node: HTMLElement) => {
+        this.addTransitionHandlers(node);
+    }
+    onExited = (node: HTMLElement) => {
+        this.addTransitionHandlers(node);
+    }
     render() {
         //should remove that do not pertain
         console.log("Transition helper rendering");
-        var transition = <Transition   {...this.props} onEntering={this.onEntering} onExiting={this.onExiting}>
+        var transition = <Transition   {...this.props} onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit}>
             {(state: TransitionState) => {
                 console.log("In transition: state is " + state + ", " + getTime(new Date()));
                 var style:React.CSSProperties = {} ;

@@ -42400,24 +42400,61 @@ var TransitionHelper = /** @class */ (function (_super) {
     function TransitionHelper() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.onExiting = function (node) {
+            _this.addTransitionHandlers(node);
             node.scrollTop;
             if (_this.props.onExiting) {
                 _this.props.onExiting(node);
             }
         };
         _this.onEntering = function (node, isAppearing) {
+            _this.addTransitionHandlers(node);
             node.scrollTop;
             if (_this.props.onEntering) {
                 _this.props.onEntering(node, isAppearing);
             }
         };
+        _this.onEnter = function (node, isAppearing) {
+            _this.addTransitionHandlers(node);
+        };
+        _this.onEntered = function (node, isAppearing) {
+            _this.addTransitionHandlers(node);
+        };
+        _this.onExit = function (node) {
+            _this.addTransitionHandlers(node);
+        };
+        _this.onExited = function (node) {
+            _this.addTransitionHandlers(node);
+        };
         return _this;
     }
+    TransitionHelper.prototype.addTransitionHandlers = function (node) {
+        if (this.node) {
+            if (node !== this.node) {
+                console.log("different nodes********************");
+            }
+        }
+        else {
+            this.node = node;
+        }
+        var n = node;
+        n.ontransitionrun = function () {
+            console.log("Transition run");
+        };
+        n.ontransitioncancel = function () {
+            console.log("Transition cancel");
+        };
+        n.ontransitionstart = function () {
+            console.log("Transition start");
+        };
+        n.ontransitionend = function () {
+            console.log("Transition end");
+        };
+    };
     TransitionHelper.prototype.render = function () {
         var _this = this;
         //should remove that do not pertain
         console.log("Transition helper rendering");
-        var transition = React.createElement(Transition_1.default, __assign({}, this.props, { onEntering: this.onEntering, onExiting: this.onExiting }), function (state) {
+        var transition = React.createElement(Transition_1.default, __assign({}, this.props, { onEnter: this.onEnter, onEntered: this.onEntered, onEntering: this.onEntering, onExiting: this.onExiting, onExited: this.onExited, onExit: this.onExit }), function (state) {
             console.log("In transition: state is " + state + ", " + getTime(new Date()));
             var style = {};
             switch (state) {
