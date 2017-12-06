@@ -879,8 +879,14 @@ const transitionStyles = {
     exiting: { backgroundColor: "rgb(255,255,0)" },
     exited: { backgroundColor: "rgb(255,255,0)" }
 };
-
-class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
+interface TicTacToeAppState {
+    in:boolean
+}
+class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
+    constructor(props) {
+        super(props);
+        this.state = { in: true };
+    }
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -947,6 +953,13 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         this.addTransitionHandlers(node);
         
     }
+    setIn = () => {
+        this.setState({in:true})
+
+    }
+    setOut = () => {
+        this.setState({ in: false })
+    }
     render() {
         //<ConnectedTicTacToeBoard />
         /*
@@ -984,7 +997,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
                         <Transitioned />
-                        <Transition onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit} in={true} appear={true} timeout={duration}>
+                        <button onClick={this.setIn}>In</button>
+                        <button onClick={this.setOut}>Out</button>
+                        <Transition onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit} in={this.state.in} appear={true} timeout={duration}>
                             {(state) => {
                                 console.log("Fade state " + state + ", " + getTime(new Date()));
                                 

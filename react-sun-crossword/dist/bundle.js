@@ -42631,8 +42631,8 @@ var transitionStyles = {
 };
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
-    function TicTacToeApp() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function TicTacToeApp(props) {
+        var _this = _super.call(this, props) || this;
         _this.modalShouldOpen = function () {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -42663,6 +42663,13 @@ var TicTacToeApp = /** @class */ (function (_super) {
         _this.onExited = function (node) {
             _this.addTransitionHandlers(node);
         };
+        _this.setIn = function () {
+            _this.setState({ in: true });
+        };
+        _this.setOut = function () {
+            _this.setState({ in: false });
+        };
+        _this.state = { in: true };
         return _this;
     }
     TicTacToeApp.prototype.addTransitionHandlers = function (node) {
@@ -42727,7 +42734,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
                         React.createElement(Transitioned, null),
-                        React.createElement(Transition_1.default, { onEnter: this.onEnter, onEntered: this.onEntered, onEntering: this.onEntering, onExiting: this.onExiting, onExited: this.onExited, onExit: this.onExit, in: true, appear: true, timeout: duration }, function (state) {
+                        React.createElement("button", { onClick: this.setIn }, "In"),
+                        React.createElement("button", { onClick: this.setOut }, "Out"),
+                        React.createElement(Transition_1.default, { onEnter: this.onEnter, onEntered: this.onEntered, onEntering: this.onEntering, onExiting: this.onExiting, onExited: this.onExited, onExit: this.onExit, in: this.state.in, appear: true, timeout: duration }, function (state) {
                             console.log("Fade state " + state + ", " + getTime(new Date()));
                             return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
                                 React.createElement("div", { style: { width: 300, height: 300 } }, "Fade me"));
