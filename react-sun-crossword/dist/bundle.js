@@ -42415,20 +42415,34 @@ var TransitionHelper = /** @class */ (function (_super) {
         };
         _this.onEnter = function (node, isAppearing) {
             _this.addTransitionHandlers(node);
+            if (_this.props.onEnter) {
+                _this.props.onEnter(node, isAppearing);
+            }
         };
         _this.onEntered = function (node, isAppearing) {
             _this.addTransitionHandlers(node);
+            if (_this.props.onEntered) {
+                _this.props.onEntered(node, isAppearing);
+            }
         };
         _this.onExit = function (node) {
             _this.addTransitionHandlers(node);
+            if (_this.props.onExit) {
+                _this.props.onxit(node);
+            }
         };
         _this.onExited = function (node) {
             _this.addTransitionHandlers(node);
+            if (_this.props.onExited) {
+                _this.props.onExited(node);
+            }
         };
         return _this;
     }
     TransitionHelper.prototype.addTransitionHandlers = function (node) {
+        var added = false;
         if (this.node) {
+            added = true;
             if (node !== this.node) {
                 console.log("different nodes********************");
             }
@@ -42436,19 +42450,21 @@ var TransitionHelper = /** @class */ (function (_super) {
         else {
             this.node = node;
         }
-        var n = node;
-        n.ontransitionrun = function () {
-            console.log("Transition run");
-        };
-        n.ontransitioncancel = function () {
-            console.log("Transition cancel");
-        };
-        n.ontransitionstart = function () {
-            console.log("Transition start");
-        };
-        n.ontransitionend = function () {
-            console.log("Transition end");
-        };
+        if (!added) {
+            var n = node;
+            n.ontransitionrun = function () {
+                console.log("Transition run");
+            };
+            n.ontransitioncancel = function () {
+                console.log("Transition cancel");
+            };
+            n.ontransitionstart = function () {
+                console.log("Transition start");
+            };
+            n.ontransitionend = function () {
+                console.log("Transition end");
+            };
+        }
     };
     TransitionHelper.prototype.render = function () {
         var _this = this;

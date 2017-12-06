@@ -608,7 +608,9 @@ function getTime(date: Date) {
 class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
     node: HTMLElement
     addTransitionHandlers(node: HTMLElement) {
+        var added = false;
         if (this.node) {
+            added = true;
             if (node !==this.node){
                 console.log("different nodes********************");
             }
@@ -616,19 +618,22 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
         } else {
             this.node = node;
         }
-        var n = node as any;
-        n.ontransitionrun = function () {
-            console.log("Transition run");
+        if (!added) {
+            var n = node as any;
+            n.ontransitionrun = function () {
+                console.log("Transition run");
+            }
+            n.ontransitioncancel = function () {
+                console.log("Transition cancel");
+            }
+            n.ontransitionstart = function () {
+                console.log("Transition start");
+            }
+            n.ontransitionend = function () {
+                console.log("Transition end");
+            }
         }
-        n.ontransitioncancel = function () {
-            console.log("Transition cancel");
-        }
-        n.ontransitionstart = function () {
-            console.log("Transition start");
-        }
-        n.ontransitionend = function () {
-            console.log("Transition end");
-        }
+        
     }
     onExiting = (node: HTMLElement) => {
         this.addTransitionHandlers(node);
@@ -646,15 +651,27 @@ class TransitionHelper extends React.Component<TransitionHelperProps, undefined>
     }
     onEnter = (node: HTMLElement, isAppearing: boolean)=>{
         this.addTransitionHandlers(node);
+        if (this.props.onEnter) {
+            this.props.onEnter(node, isAppearing)
+        }
     }
     onEntered = (node: HTMLElement, isAppearing: boolean) => {
         this.addTransitionHandlers(node);
+        if (this.props.onEntered) {
+            this.props.onEntered(node, isAppearing)
+        }
     }
     onExit = (node: HTMLElement) => {
         this.addTransitionHandlers(node);
+        if (this.props.onExit) {
+            this.props.onxit(node)
+        }
     }
     onExited = (node: HTMLElement) => {
         this.addTransitionHandlers(node);
+        if (this.props.onExited) {
+            this.props.onExited(node)
+        }
     }
     render() {
         //should remove that do not pertain
