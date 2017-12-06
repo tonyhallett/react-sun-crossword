@@ -42557,11 +42557,7 @@ var AutoOutTransition = /** @class */ (function (_super) {
         _this.initialRender = true;
         _this.onEntered = function (node, isAppearing) {
             _this.props.onEntered ? _this.props.onEntered(node, isAppearing) : void 0;
-            _this.setState({ entered: true });
-        };
-        _this.onExited = function (node) {
-            _this.props.onExited ? _this.props.onExited(node) : void 0;
-            _this.setState({ entered: false, in: false });
+            _this.setState({ in: false });
         };
         _this.state = { entered: false, in: false };
         return _this;
@@ -42577,11 +42573,16 @@ var AutoOutTransition = /** @class */ (function (_super) {
         }
     };
     AutoOutTransition.prototype.render = function () {
-        //might only need onExited and in state ?
-        var actuallyIn = this.initialRender ? this.props.inSignal !== null : (this.state.in ? (this.state.entered ? false : true) : false);
+        var actuallyIn;
+        if (this.initialRender) {
+            actuallyIn = this.props.inSignal !== null;
+        }
+        else {
+            actuallyIn = this.state.in;
+        }
         var _a = this.props, onEntered = _a.onEntered, onExited = _a.onExited, inn = _a["in"], passThroughProps = __rest(_a, ["onEntered", "onExited", "in"]);
         this.initialRender = false;
-        return React.createElement(TransitionHelper, __assign({ onExited: this.onExited, onEntered: this.onEntered, in: actuallyIn }, passThroughProps));
+        return React.createElement(TransitionHelper, __assign({ onEntered: this.onEntered, in: actuallyIn }, passThroughProps));
     };
     return AutoOutTransition;
 }(React.Component));

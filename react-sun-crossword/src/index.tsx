@@ -796,12 +796,9 @@ class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutT
     initialRender=true
     onEntered = (node: HTMLElement, isAppearing: boolean) => {
         this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
-        this.setState({ entered: true });
+        this.setState({ in: false });
     }
-    onExited = (node: HTMLElement) => {
-        this.props.onExited ? this.props.onExited(node) : void 0
-        this.setState({ entered: false, in: false })
-    }
+
 
     componentWillReceiveProps(newProps: TransitionHelperProps) {
         if (newProps.inSignal !== null) {
@@ -813,14 +810,17 @@ class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutT
         }
     }
     render() {
-        //might only need onExited and in state ?
-        var actuallyIn = this.initialRender ? this.props.inSignal !== null : (this.state.in ? (this.state.entered ? false : true) : false);
-            
+        var actuallyIn: boolean;
+        if (this.initialRender) {
+            actuallyIn = this.props.inSignal !== null;
+        } else {
+            actuallyIn = this.state.in;
+        }
         
 
         const { onEntered, onExited, "in": inn, ...passThroughProps } = this.props;
         this.initialRender = false;
-        return <TransitionHelper onExited={this.onExited} onEntered={this.onEntered} in={actuallyIn} {...passThroughProps}/>
+        return <TransitionHelper onEntered={this.onEntered} in={actuallyIn} {...passThroughProps}/>
     }
 }
 interface TransitionedState {
@@ -843,6 +843,7 @@ class Transitioned extends React.Component<undefined, TransitionedState>{
     setOut = () => {
         this.setState({inSignal:null})
     }
+
     changeColour = () => {
         this.setState({ exitColour: "red"})
     }
