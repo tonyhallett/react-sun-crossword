@@ -42676,21 +42676,21 @@ var TicTacToeApp = /** @class */ (function (_super) {
         else {
             this.node = node;
         }
-        if (!added) {
-            var n = node;
-            n.transitionrun = function () {
-                console.log("Transition run");
-            };
-            n.transitioncancel = function () {
-                console.log("Transition cancel");
-            };
-            n.transitionstart = function () {
-                console.log("Transition start");
-            };
-            n.transitionend = function () {
-                console.log("Transition end");
-            };
-        }
+        //if (!added) {
+        var n = node;
+        n.ontransitionrun = function () {
+            console.log("Transition run");
+        };
+        n.ontransitioncancel = function () {
+            console.log("Transition cancel");
+        };
+        n.ontransitionstart = function () {
+            console.log("Transition start");
+        };
+        n.ontransitionend = function () {
+            console.log("Transition end");
+        };
+        //}
     };
     TicTacToeApp.prototype.render = function () {
         //<ConnectedTicTacToeBoard />
