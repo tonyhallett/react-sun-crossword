@@ -608,9 +608,15 @@ function getTime(date: Date) {
 class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
     onExiting = (node: HTMLElement) => {
         node.scrollTop
+        if (this.props.onExiting) {
+            this.props.onExiting(node)
+        }
     }
     onEntering = (node: HTMLElement, isAppearing: boolean) => {
         node.scrollTop;
+        if (this.props.onEntering) {
+            this.props.onEntering(node, isAppearing)
+        }
     }
     render() {
         //should remove that do not pertain

@@ -42401,9 +42401,15 @@ var TransitionHelper = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.onExiting = function (node) {
             node.scrollTop;
+            if (_this.props.onExiting) {
+                _this.props.onExiting(node);
+            }
         };
         _this.onEntering = function (node, isAppearing) {
             node.scrollTop;
+            if (_this.props.onEntering) {
+                _this.props.onEntering(node, isAppearing);
+            }
         };
         return _this;
     }
