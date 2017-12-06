@@ -42149,7 +42149,12 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     }
     TicTacToeSquare.prototype.componentWillReceiveProps = function (newProps) {
         if (newProps.canGo !== this.props.canGo) {
-            this.setState({ inSignal: "in!" });
+            if (this.state.inSignal !== null) {
+                this.setState({ inSignal: this.state.inSignal + 1 });
+            }
+            else {
+                this.setState({ inSignal: 0 });
+            }
         }
     };
     TicTacToeSquare.prototype.render = function () {

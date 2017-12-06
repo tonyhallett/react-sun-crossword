@@ -308,7 +308,12 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
     }
     componentWillReceiveProps(newProps: TicTacToeSquareProps) {
         if (newProps.canGo !== this.props.canGo) {//this will flash the whole board when start again - bring in the squareGo from connected and check X/O if do not want this behaviour
-            this.setState({inSignal:"in!"})
+            if (this.state.inSignal !== null) {
+                this.setState({ inSignal: this.state.inSignal+1 })
+            } else {
+                this.setState({ inSignal: 0 })
+            }
+            
         }
     }
     
