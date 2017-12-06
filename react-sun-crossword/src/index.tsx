@@ -791,7 +791,7 @@ interface AutoOutTransitionState {
 class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
     constructor(props) {
         super(props);
-        this.state = {entered:false,in:false}
+        this.state = {entered:false,in:props.inSignal!==null}
     }
     initialRender=true
     onEntered = (node: HTMLElement, isAppearing: boolean) => {
@@ -810,17 +810,8 @@ class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutT
         }
     }
     render() {
-        var actuallyIn: boolean;
-        if (this.initialRender) {
-            actuallyIn = this.props.inSignal !== null;
-        } else {
-            actuallyIn = this.state.in;
-        }
-        
-
         const { onEntered, onExited, "in": inn, ...passThroughProps } = this.props;
-        this.initialRender = false;
-        return <TransitionHelper onEntered={this.onEntered} in={actuallyIn} {...passThroughProps}/>
+        return <TransitionHelper onEntered={this.onEntered} in={this.state.in} {...passThroughProps}/>
     }
 }
 interface TransitionedState {
