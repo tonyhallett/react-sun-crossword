@@ -606,10 +606,16 @@ function getTime(date: Date) {
         ":" + date.getMilliseconds(); 
 }
 class TransitionHelper extends React.Component<TransitionHelperProps, undefined>{
+    onExiting = (node: HTMLElement) => {
+        node.scrollTop
+    }
+    onEntering = (node: HTMLElement, isAppearing: boolean) => {
+        node.scrollTop;
+    }
     render() {
         //should remove that do not pertain
         console.log("Transition helper rendering");
-        var transition= <Transition  {...this.props}>
+        var transition = <Transition   {...this.props} onEntering={this.onEntering} onExiting={this.onExiting}>
             {(state: TransitionState) => {
                 console.log("In transition: state is " + state + ", " + getTime(new Date()));
                 var style:React.CSSProperties = {} ;

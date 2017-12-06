@@ -42398,13 +42398,20 @@ function getTime(date) {
 var TransitionHelper = /** @class */ (function (_super) {
     __extends(TransitionHelper, _super);
     function TransitionHelper() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.onExiting = function (node) {
+            node.scrollTop;
+        };
+        _this.onEntering = function (node, isAppearing) {
+            node.scrollTop;
+        };
+        return _this;
     }
     TransitionHelper.prototype.render = function () {
         var _this = this;
         //should remove that do not pertain
         console.log("Transition helper rendering");
-        var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
+        var transition = React.createElement(Transition_1.default, __assign({}, this.props, { onEntering: this.onEntering, onExiting: this.onExiting }), function (state) {
             console.log("In transition: state is " + state + ", " + getTime(new Date()));
             var style = {};
             switch (state) {

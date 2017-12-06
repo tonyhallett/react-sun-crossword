@@ -17,6 +17,15 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var ReactDOM = require("react-dom");
@@ -26,6 +35,7 @@ var storage_1 = require("./helpers/storage");
 var $ = require("jquery");
 var Radium_1 = require("Radium");
 var Transition_1 = require("react-transition-group/Transition");
+var Color = require("Color");
 var componentBackgroundColor = "lightgray";
 var SquareGo;
 (function (SquareGo) {
@@ -290,20 +300,34 @@ function reducer(state, action) {
 }
 var TicTacToeSquare = (function (_super) {
     __extends(TicTacToeSquare, _super);
-    function TicTacToeSquare() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function TicTacToeSquare(props) {
+        var _this = _super.call(this, props) || this;
         _this.squareClicked = function () {
             if (_this.props.canGo) {
                 _this.props.takeGo();
             }
         };
+        _this.state = { inSignal: null };
         return _this;
     }
+    TicTacToeSquare.prototype.componentWillReceiveProps = function (newProps) {
+        if (newProps.canGo !== this.props.canGo) {
+            this.setState({ inSignal: "in!" });
+        }
+    };
     TicTacToeSquare.prototype.render = function () {
-        return React.createElement("td", { style: {
-                color: this.props.squareGoColour,
-                textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
-            }, onClick: this.squareClicked }, this.props.squareText);
+        var transitionDuration = 1000;
+        return React.createElement(ColourChangeTransition, { inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
+            React.createElement("td", { style: {
+                    color: this.props.squareGoColour,
+                    textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+                }, onClick: this.squareClicked }, this.props.squareText));
+        //return <td style={{
+        //    color: this.props.squareGoColour,
+        //    textAlign:"center",width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+        //}} onClick={this.squareClicked}>
+        //    {this.props.squareText}
+        //    </td>
     };
     return TicTacToeSquare;
 }(React.Component));
@@ -530,31 +554,183 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-var duration = 5000;
-var defaultStyle = {
-    transition: "opacity 500ms ease-in-out",
-    opacity: 0,
-};
-var transitionStyles = {
-    entering: { opacity: 0 },
-    entered: { opacity: 1 },
-};
-var Transitioned = (function (_super) {
-    __extends(Transitioned, _super);
-    function Transitioned() {
+function getTime(date) {
+    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() +
+        ":" + date.getMilliseconds();
+}
+var TransitionHelper = (function (_super) {
+    __extends(TransitionHelper, _super);
+    function TransitionHelper() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.transition = function () {
-            _this.setState({ in: true });
+        _this.onExiting = function () {
+        };
+        _this.onEntering = function () {
         };
         return _this;
     }
+    TransitionHelper.prototype.render = function () {
+        var _this = this;
+        //should remove that do not pertain
+        console.log("Transition helper rendering");
+        var transition = React.createElement(Transition_1.default, __assign({}, this.props, { onEntering: this.onEntering, onExiting: this.onExiting }), function (state) {
+            console.log("In transition: state is " + state + ", " + getTime(new Date()));
+            var style = {};
+            switch (state) {
+                case "entering":
+                case "entered":
+                    style = __assign({}, _this.props.enterStyle);
+                    style.transition = _this.props.enterTransition;
+                    break;
+                case "exiting":
+                case "exited":
+                    style = __assign({}, _this.props.exitStyle);
+                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
+                    break;
+            }
+            //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
+            var childElement = _this.props.children;
+            var childStyle = childElement.props.style;
+            var newStyle = __assign({}, childStyle, style);
+            console.log("TransitionHelper applied style");
+            console.log(newStyle);
+            var newProps = {
+                style: newStyle
+            };
+            var clonedElement = React.cloneElement(childElement, newProps);
+            return clonedElement;
+        });
+        return transition;
+    };
+    return TransitionHelper;
+}(React.Component));
+var ColourChangeType;
+(function (ColourChangeType) {
+    ColourChangeType[ColourChangeType["lighten"] = 0] = "lighten";
+    ColourChangeType[ColourChangeType["darken"] = 1] = "darken";
+    ColourChangeType[ColourChangeType["saturate"] = 2] = "saturate";
+    ColourChangeType[ColourChangeType["desaturate"] = 3] = "desaturate";
+    ColourChangeType[ColourChangeType["fade"] = 4] = "fade";
+    ColourChangeType[ColourChangeType["opaquer"] = 5] = "opaquer";
+})(ColourChangeType || (ColourChangeType = {}));
+var ColourChangeTransition = (function (_super) {
+    __extends(ColourChangeTransition, _super);
+    function ColourChangeTransition() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ColourChangeTransition.prototype.render = function () {
+        var enterStyle = {};
+        var exitColor = Color(this.props.exitColour);
+        var enterColor;
+        var change = this.props.change;
+        //note that whiten/blacken is not css3!
+        switch (this.props.colourChangeType) {
+            case ColourChangeType.darken:
+                enterColor = exitColor.darken(change);
+                break;
+            case ColourChangeType.desaturate:
+                enterColor = exitColor.desaturate(change);
+                break;
+            case ColourChangeType.fade:
+                enterColor = exitColor.fade(change);
+                break;
+            case ColourChangeType.lighten:
+                enterColor = exitColor.lighten(change);
+                break;
+            case ColourChangeType.opaquer:
+                enterColor = exitColor.opaquer(change);
+                break;
+            case ColourChangeType.saturate:
+                enterColor = exitColor.saturate(change);
+                break;
+        }
+        var colorString = enterColor.toString();
+        enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
+        var exitStyle = {};
+        var exitColourString = exitColor.toString();
+        exitStyle[this.props.propName] = exitColourString;
+        return React.createElement(AutoOutTransition, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
+    };
+    return ColourChangeTransition;
+}(React.Component));
+var AutoOutTransition = (function (_super) {
+    __extends(AutoOutTransition, _super);
+    function AutoOutTransition(props) {
+        var _this = _super.call(this, props) || this;
+        _this.initialRender = true;
+        _this.onEntered = function (node, isAppearing) {
+            _this.props.onEntered ? _this.props.onEntered(node, isAppearing) : void 0;
+            _this.setState({ entered: true });
+        };
+        _this.onExited = function (node) {
+            _this.props.onExited ? _this.props.onExited(node) : void 0;
+            _this.setState({ entered: false, in: false });
+        };
+        _this.state = { entered: false, in: false };
+        return _this;
+    }
+    AutoOutTransition.prototype.componentWillReceiveProps = function (newProps) {
+        if (newProps.inSignal !== null) {
+            if (newProps.inSignal !== this.props.inSignal) {
+                this.setState({ in: true });
+            }
+        }
+        else {
+            this.setState({ in: false });
+        }
+    };
+    AutoOutTransition.prototype.render = function () {
+        //might only need onExited and in state ?
+        var actuallyIn = this.initialRender ? this.props.inSignal !== null : (this.state.in ? (this.state.entered ? false : true) : false);
+        var _a = this.props, onEntered = _a.onEntered, onExited = _a.onExited, inn = _a["in"], passThroughProps = __rest(_a, ["onEntered", "onExited", "in"]);
+        this.initialRender = false;
+        return React.createElement(TransitionHelper, __assign({ onExited: this.onExited, onEntered: this.onEntered, in: actuallyIn }, passThroughProps));
+    };
+    return AutoOutTransition;
+}(React.Component));
+var Transitioned = (function (_super) {
+    __extends(Transitioned, _super);
+    function Transitioned(props) {
+        var _this = _super.call(this, props) || this;
+        _this.setIn = function () {
+            if (_this.state.inSignal === null) {
+                _this.setState({ inSignal: 0 });
+            }
+            else {
+                _this.setState({ inSignal: _this.state.inSignal + 1 });
+            }
+        };
+        _this.setOut = function () {
+            _this.setState({ inSignal: null });
+        };
+        _this.changeColour = function () {
+            _this.setState({ exitColour: "red" });
+        };
+        _this.state = { inSignal: 0, exitColour: "yellow" };
+        return _this;
+    }
     Transitioned.prototype.render = function () {
+        var duration = 5000;
         return React.createElement("div", null,
-            React.createElement("button", { onClick: this.transition }, "Transition"),
-            React.createElement(Transition_1.default, { in: this.state.in, timeout: duration }, function (state) { return (React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) }, "I'm A fade Transition!")); }));
+            React.createElement("button", { onClick: this.setIn }, "In"),
+            React.createElement("button", { onClick: this.setOut }, "Out"),
+            React.createElement("button", { onClick: this.changeColour }, "Change colour"),
+            React.createElement(ColourChangeTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", exitColour: this.state.exitColour, colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
+                React.createElement("div", { style: {
+                        height: 300, width: 300
+                    } })));
     };
     return Transitioned;
 }(React.Component));
+var duration = 5000;
+var defaultStyle = {
+    transition: "background-color " + duration + "ms linear",
+};
+var transitionStyles = {
+    entering: { backgroundColor: "orange" },
+    entered: { backgroundColor: "orange" },
+    exiting: { backgroundColor: "yellow" },
+    exited: { backgroundColor: "yellow" }
+};
 var TicTacToeApp = (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
@@ -572,6 +748,14 @@ var TicTacToeApp = (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
+        //<ConnectedTicTacToeBoard />
+        /*
+        <ModalCover elementSelector={"#" + ticTacToeBoardId}  isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                                {this.getWinDrawMessage()}
+                            </div>
+                        </ModalCover>
+        */
         return React.createElement(Radium_1.StyleRoot, null,
             React.createElement(Radium_1.Style, { rules: {
                     body: {
@@ -598,13 +782,15 @@ var TicTacToeApp = (function (_super) {
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
                         React.createElement(Transitioned, null),
+                        React.createElement(Transition_1.default, { in: true, appear: true, timeout: duration }, function (state) {
+                            console.log("Fade state " + state + ", " + getTime(new Date()));
+                            return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
+                                React.createElement("div", { style: { width: 300, height: 300 } }, "Fade me"));
+                        }),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),
-                            React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
-                        React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                            React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
+                            React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again"))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "Game drawn";
