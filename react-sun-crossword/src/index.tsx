@@ -892,7 +892,61 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         }
         
     }
+    node: HTMLElement
+    addTransitionHandlers(node: HTMLElement) {
+        var added = false;
+        if (this.node) {
+            added = true;
+            if (node !== this.node) {
+                console.log("different nodes********************");
+            }
 
+        } else {
+            this.node = node;
+        }
+        if (!added) {
+            var n = node as any;
+            n.ontransitionrun = function () {
+                console.log("Transition run");
+            }
+            n.ontransitioncancel = function () {
+                console.log("Transition cancel");
+            }
+            n.ontransitionstart = function () {
+                console.log("Transition start");
+            }
+            n.ontransitionend = function () {
+                console.log("Transition end");
+            }
+        }
+
+    }
+    onExiting = (node: HTMLElement) => {
+        this.addTransitionHandlers(node);
+        //node.scrollTop
+        
+    }
+    onEntering = (node: HTMLElement, isAppearing: boolean) => {
+        this.addTransitionHandlers(node);
+        //node.scrollTop;
+        
+    }
+    onEnter = (node: HTMLElement, isAppearing: boolean) => {
+        this.addTransitionHandlers(node);
+       
+    }
+    onEntered = (node: HTMLElement, isAppearing: boolean) => {
+        this.addTransitionHandlers(node);
+        
+    }
+    onExit = (node: HTMLElement) => {
+        this.addTransitionHandlers(node);
+        
+    }
+    onExited = (node: HTMLElement) => {
+        this.addTransitionHandlers(node);
+        
+    }
     render() {
         //<ConnectedTicTacToeBoard />
         /*
@@ -930,7 +984,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
                         <Transitioned />
-                        <Transition in={true} appear={true} timeout={duration}>
+                        <Transition onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit} in={true} appear={true} timeout={duration}>
                             {(state) => {
                                 console.log("Fade state " + state + ", " + getTime(new Date()));
                                 
