@@ -42149,12 +42149,17 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     }
     TicTacToeSquare.prototype.componentWillReceiveProps = function (newProps) {
         if (newProps.canGo !== this.props.canGo) {
-            if (this.state.inSignal !== null) {
-                this.setState({ inSignal: this.state.inSignal + 1 });
+            if (!newProps.canGo) {
+                this.signal();
             }
-            else {
-                this.setState({ inSignal: 0 });
-            }
+        }
+    };
+    TicTacToeSquare.prototype.signal = function () {
+        if (this.state.inSignal !== null) {
+            this.setState({ inSignal: this.state.inSignal + 1 });
+        }
+        else {
+            this.setState({ inSignal: 0 });
         }
     };
     TicTacToeSquare.prototype.render = function () {
@@ -42444,7 +42449,6 @@ var TransitionHelper = /** @class */ (function (_super) {
         var _this = this;
         var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
         var transition = React.createElement(Transition_1.default, __assign({ in: this.state.in }, passThroughProps), function (state) {
-            console.log("In transition: state is " + state + ", " + getTime(new Date()));
             var style = {};
             switch (state) {
                 case "entering":
@@ -42462,8 +42466,6 @@ var TransitionHelper = /** @class */ (function (_super) {
             var childElement = _this.props.children;
             var childStyle = childElement.props.style;
             var newStyle = __assign({}, childStyle, style);
-            console.log("TransitionHelper applied style");
-            console.log(newStyle);
             var newProps = {
                 style: newStyle
             };

@@ -307,16 +307,21 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         
     }
     componentWillReceiveProps(newProps: TicTacToeSquareProps) {
-        if (newProps.canGo !== this.props.canGo) {//this will flash the whole board when start again - bring in the squareGo from connected and check X/O if do not want this behaviour
-            if (this.state.inSignal !== null) {
-                this.setState({ inSignal: this.state.inSignal+1 })
-            } else {
-                this.setState({ inSignal: 0 })
+        if (newProps.canGo !== this.props.canGo) {
+            if (!newProps.canGo) {
+                this.signal();
             }
+            
             
         }
     }
-    
+    signal() {
+        if (this.state.inSignal !== null) {
+            this.setState({ inSignal: this.state.inSignal + 1 })
+        } else {
+            this.setState({ inSignal: 0 })
+        }
+    }
     render() {
         var transitionDuration = 1000;
         return <ColourChangeTransition inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
@@ -656,7 +661,6 @@ class TransitionHelper extends React.Component<TransitionHelperProps, Transition
         const { "in": inn,appear, ...passThroughProps } = this.props;
         var transition = <Transition in={this.state.in}  {...passThroughProps}>
             {(state: TransitionState) => {
-                console.log("In transition: state is " + state + ", " + getTime(new Date()));
                 var style:React.CSSProperties = {} ;
                 switch (state) {
                     case "entering":
@@ -678,8 +682,6 @@ class TransitionHelper extends React.Component<TransitionHelperProps, Transition
                 
                 var childStyle = childElement.props.style;
                 var newStyle = { ...childStyle, ...style };
-                console.log("TransitionHelper applied style");
-                console.log(newStyle);
                 var newProps = {
                     style: newStyle
                 }
