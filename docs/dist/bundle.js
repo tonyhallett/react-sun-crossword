@@ -42152,6 +42152,9 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             if (!newProps.canGo) {
                 this.signal();
             }
+            else {
+                this.setState({ inSignal: null });
+            }
         }
     };
     TicTacToeSquare.prototype.signal = function () {

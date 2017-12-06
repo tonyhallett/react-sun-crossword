@@ -310,6 +310,8 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         if (newProps.canGo !== this.props.canGo) {
             if (!newProps.canGo) {
                 this.signal();
+            } else {
+                this.setState({ inSignal: null })
             }
             
             
