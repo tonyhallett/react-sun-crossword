@@ -906,16 +906,16 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         }
         if (!added) {
             var n = node as any;
-            n.ontransitionrun = function () {
+            n.transitionrun = function () {
                 console.log("Transition run");
             }
-            n.ontransitioncancel = function () {
+            n.transitioncancel = function () {
                 console.log("Transition cancel");
             }
-            n.ontransitionstart = function () {
+            n.transitionstart = function () {
                 console.log("Transition start");
             }
-            n.ontransitionend = function () {
+            n.transitionend = function () {
                 console.log("Transition end");
             }
         }
