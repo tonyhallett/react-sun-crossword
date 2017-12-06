@@ -42653,15 +42653,19 @@ var TicTacToeApp = /** @class */ (function (_super) {
         };
         _this.onEnter = function (node, isAppearing) {
             _this.addTransitionHandlers(node);
+            node.scrollTop;
         };
         _this.onEntered = function (node, isAppearing) {
             _this.addTransitionHandlers(node);
+            node.scrollTop;
         };
         _this.onExit = function (node) {
             _this.addTransitionHandlers(node);
+            node.scrollTop;
         };
         _this.onExited = function (node) {
             _this.addTransitionHandlers(node);
+            node.scrollTop;
         };
         _this.setIn = function () {
             _this.setState({ in: true });
@@ -42669,7 +42673,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         _this.setOut = function () {
             _this.setState({ in: false });
         };
-        _this.state = { in: true };
+        _this.state = { in: false };
         return _this;
     }
     TicTacToeApp.prototype.addTransitionHandlers = function (node) {
@@ -42698,6 +42702,13 @@ var TicTacToeApp = /** @class */ (function (_super) {
             console.log("Transition end");
         };
         //}
+    };
+    TicTacToeApp.prototype.componentDidMount = function () {
+        var _this = this;
+        //this replicates appear ?
+        requestAnimationFrame(function () {
+            return requestAnimationFrame(function () { return _this.setState({ in: true }); });
+        });
     };
     TicTacToeApp.prototype.render = function () {
         //<ConnectedTicTacToeBoard />
@@ -42736,7 +42747,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         React.createElement(Transitioned, null),
                         React.createElement("button", { onClick: this.setIn }, "In"),
                         React.createElement("button", { onClick: this.setOut }, "Out"),
-                        React.createElement(Transition_1.default, { onEnter: this.onEnter, onEntered: this.onEntered, onEntering: this.onEntering, onExiting: this.onExiting, onExited: this.onExited, onExit: this.onExit, in: this.state.in, appear: true, timeout: duration }, function (state) {
+                        React.createElement(Transition_1.default, { onEnter: this.onEnter, onEntered: this.onEntered, onEntering: this.onEntering, onExiting: this.onExiting, onExited: this.onExited, onExit: this.onExit, in: this.state.in, timeout: duration }, function (state) {
                             console.log("Fade state " + state + ", " + getTime(new Date()));
                             return React.createElement("div", { style: __assign({}, defaultStyle, transitionStyles[state]) },
                                 React.createElement("div", { style: { width: 300, height: 300 } }, "Fade me"));

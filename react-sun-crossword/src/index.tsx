@@ -885,7 +885,7 @@ interface TicTacToeAppState {
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     constructor(props) {
         super(props);
-        this.state = { in: true };
+        this.state = { in: false };
     }
     modalShouldOpen=()=> {
         var gameState = this.props.gameState;
@@ -939,19 +939,19 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     onEnter = (node: HTMLElement, isAppearing: boolean) => {
         this.addTransitionHandlers(node);
-       
+        node.scrollTop;
     }
     onEntered = (node: HTMLElement, isAppearing: boolean) => {
         this.addTransitionHandlers(node);
-        
+        node.scrollTop;
     }
     onExit = (node: HTMLElement) => {
         this.addTransitionHandlers(node);
-        
+        node.scrollTop;
     }
     onExited = (node: HTMLElement) => {
         this.addTransitionHandlers(node);
-        
+        node.scrollTop;
     }
     setIn = () => {
         this.setState({in:true})
@@ -959,6 +959,14 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     setOut = () => {
         this.setState({ in: false })
+    }
+    componentDidMount() {
+        //this replicates appear ?
+        requestAnimationFrame(() =>
+            requestAnimationFrame(
+                () => this.setState({ in: true })
+            )
+        )
     }
     render() {
         //<ConnectedTicTacToeBoard />
@@ -999,7 +1007,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                         <Transitioned />
                         <button onClick={this.setIn}>In</button>
                         <button onClick={this.setOut}>Out</button>
-                        <Transition onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit} in={this.state.in} appear={true} timeout={duration}>
+                        <Transition onEnter={this.onEnter} onEntered={this.onEntered} onEntering={this.onEntering} onExiting={this.onExiting} onExited={this.onExited} onExit={this.onExit} in={this.state.in}  timeout={duration}>
                             {(state) => {
                                 console.log("Fade state " + state + ", " + getTime(new Date()));
                                 
