@@ -42412,6 +42412,7 @@ var TransitionHelper = /** @class */ (function (_super) {
         _this.state = { in: isIn };
         return _this;
     }
+    //change to account for no requestAnimationFrame
     TransitionHelper.prototype.componentDidMount = function () {
         var _this = this;
         if (this.inOnMount) {
@@ -42424,7 +42425,7 @@ var TransitionHelper = /** @class */ (function (_super) {
         var _this = this;
         console.log("Transition helper rendering");
         var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
-        var transition = React.createElement(Transition_1.default, __assign({}, passThroughProps), function (state) {
+        var transition = React.createElement(Transition_1.default, __assign({ in: this.state.in }, passThroughProps), function (state) {
             console.log("In transition: state is " + state + ", " + getTime(new Date()));
             var style = {};
             switch (state) {

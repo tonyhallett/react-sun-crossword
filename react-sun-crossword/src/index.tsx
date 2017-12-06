@@ -625,6 +625,7 @@ class TransitionHelper extends React.Component<TransitionHelperProps, Transition
         
 
     }
+    //change to account for no requestAnimationFrame
     componentDidMount() {
         if (this.inOnMount) {
             requestAnimationFrame(() =>
@@ -640,7 +641,7 @@ class TransitionHelper extends React.Component<TransitionHelperProps, Transition
         
         console.log("Transition helper rendering");
         const { "in": inn,appear, ...passThroughProps } = this.props;
-        var transition = <Transition   {...passThroughProps}>
+        var transition = <Transition in={this.state.in}  {...passThroughProps}>
             {(state: TransitionState) => {
                 console.log("In transition: state is " + state + ", " + getTime(new Date()));
                 var style:React.CSSProperties = {} ;
