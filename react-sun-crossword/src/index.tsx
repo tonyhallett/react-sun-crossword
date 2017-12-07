@@ -754,7 +754,7 @@ class Demo extends React.Component<undefined, DemoState>{
             </div>
     }
 }
-
+const DemoRadium = Radium(Demo);
 //#endregion
 
 //#region App components
@@ -998,7 +998,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
-                        <Demo/>
+                        <DemoRadium/>
                         <div style={{ display: "inline-block" }}>
                             <div style={{ marginTop: 10, marginBottom: 10 }}>
                                 <ConnectedScoreboard />
