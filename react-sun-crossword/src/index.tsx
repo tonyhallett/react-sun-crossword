@@ -992,9 +992,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         
         var style = (document.querySelector("#addInlinePrefixes") as HTMLElement).style as any;
         var transform = "rotate(30deg)";
-        style.transform = transform;
+        //style.transform = transform;
         style.msTransform = transform;
-        style.WebkitTransform = transform;
+        style.webkitTransform = transform;
 
     }
     firstRead = true;
@@ -1037,8 +1037,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
                         <button onClick={this.addPrefixes}>add prefixes</button>
                         <button onClick={this.readPrefixes}>read prefixes</button>
-                        <div id="addInlinePrefixes"/>
-                        <div id="testInlinePrefixes" style={{ width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", webkitTransform:"rotate(30deg)" }}></div>
+                        <div id="addInlinePrefixes" style={{
+                            width: 10, height: 10, backgroundColor: "purple"
+                        }}/>
+                        <div id="testInlinePrefixes" style={{ width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", WebkitTransform:"rotate(30deg)" }}></div>
                         <DemoRadium/>
                         <div style={{ display: "inline-block" }}>
                             <div style={{ marginTop: 10, marginBottom: 10 }}>

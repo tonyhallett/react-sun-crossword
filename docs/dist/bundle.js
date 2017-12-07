@@ -42732,9 +42732,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
         _this.addPrefixes = function () {
             var style = document.querySelector("#addInlinePrefixes").style;
             var transform = "rotate(30deg)";
-            style.transform = transform;
+            //style.transform = transform;
             style.msTransform = transform;
-            style.WebkitTransform = transform;
+            style.webkitTransform = transform;
         };
         _this.firstRead = true;
         _this.readPrefixes = function () {
@@ -42777,8 +42777,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
                         React.createElement("button", { onClick: this.addPrefixes }, "add prefixes"),
                         React.createElement("button", { onClick: this.readPrefixes }, "read prefixes"),
-                        React.createElement("div", { id: "addInlinePrefixes" }),
-                        React.createElement("div", { id: "testInlinePrefixes", style: { width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", webkitTransform: "rotate(30deg)" } }),
+                        React.createElement("div", { id: "addInlinePrefixes", style: {
+                                width: 10, height: 10, backgroundColor: "purple"
+                            } }),
+                        React.createElement("div", { id: "testInlinePrefixes", style: { width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", WebkitTransform: "rotate(30deg)" } }),
                         React.createElement(DemoRadium, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
