@@ -42580,7 +42580,7 @@ var Demo = /** @class */ (function (_super) {
         //then autoOut with kill
         //then change appear in callbacks
         return React.createElement("div", null,
-            React.createElement(InOnMountTransition, { appear: true, in: true, timeout: 1000 }, function (state) {
+            React.createElement(InOnMountTransition, { onEntering: this.onEntering, appear: true, in: true, timeout: 1000 }, function (state) {
                 return React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
             }));
     };

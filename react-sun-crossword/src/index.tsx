@@ -781,7 +781,7 @@ class Demo extends React.Component<undefined, undefined>{
         //then autoOut with kill
         //then change appear in callbacks
         return <div>
-            <InOnMountTransition appear={true} in={true} timeout={1000}>
+            <InOnMountTransition onEntering={this.onEntering} appear={true} in={true} timeout={1000}>
                 {(state: TransitionState) => {
                     return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
 
