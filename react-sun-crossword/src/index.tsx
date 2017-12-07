@@ -7,6 +7,7 @@ import * as Modal from 'react-modal';
 import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, createLocalStorageStore} from "./helpers/storage"
 import * as $ from 'jquery';
 import { Style, StyleRoot } from "Radium";
+import * as Radium from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
@@ -810,20 +811,15 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         return <AutoOutColourChangeTransitionInOnMount appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
             <td style={{
                 color: this.props.squareGoColour,
+                transform:"rotate(0deg)",
                 textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
             }} onClick={this.squareClicked}>
                 {this.props.squareText}
             </td>
         </AutoOutColourChangeTransitionInOnMount>
-        //return <td style={{
-        //    color: this.props.squareGoColour,
-        //    textAlign:"center",width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
-        //}} onClick={this.squareClicked}>
-        //    {this.props.squareText}
-        //    </td>
     }
 }
-
+const RadiumTicTacToeSquare = Radium(TicTacToeSquare);
 const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";
@@ -858,7 +854,7 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
             dispatch(takeGo(ownProps.rowIndex, ownProps.colIndex))
         }
         }
-    })(TicTacToeSquare as any);
+    })(RadiumTicTacToeSquare as any);
 //#endregion
 //#region TicTacToeBoard
 interface TicTacToeBoardProps {
