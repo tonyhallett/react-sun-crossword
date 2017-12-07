@@ -762,6 +762,7 @@ class Demo extends React.Component<undefined, DemoState>{
         return <div>
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
+            
             <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor:"green" }}></div>
             <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
                 {(state: TransitionState) => {
@@ -1016,6 +1017,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
+                        <div style={{ width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", webkitTransform:"rotate(30deg)" }}></div>
                         <DemoRadium/>
                         <div style={{ display: "inline-block" }}>
                             <div style={{ marginTop: 10, marginBottom: 10 }}>
