@@ -42581,7 +42581,7 @@ var Demo = /** @class */ (function (_super) {
         //then change appear in callbacks
         return React.createElement("div", null,
             React.createElement(InOnMountTransition, { appear: true, in: true, timeout: 1000 }, function (state) {
-                React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
+                return React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
             }));
     };
     return Demo;

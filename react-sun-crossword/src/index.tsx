@@ -783,7 +783,7 @@ class Demo extends React.Component<undefined, undefined>{
         return <div>
             <InOnMountTransition appear={true} in={true} timeout={1000}>
                 {(state: TransitionState) => {
-                    <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
+                    return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
 
                 }}
             </InOnMountTransition>
