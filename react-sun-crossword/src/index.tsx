@@ -494,7 +494,23 @@ function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
             }
             this.state = { in: isIn }
         }
-
+        
+        onEnter(node: HTMLElement) {
+            if (this.props.onEnter) {
+                this.props.onEnter(node, this.inOnMount);
+            }
+        }
+        onEntering(node: HTMLElement) {
+            if (this.props.onEntering) {
+                this.props.onEnter(node, this.inOnMount);
+            }
+        }
+        onEntered(node: HTMLElement) {
+            if (this.props.onEntered) {
+                this.props.onEntered(node, this.inOnMount);
+            }
+            this.inOnMount = false;
+        }
         componentDidMount() {
             var self = this;
             if (this.inOnMount) {
@@ -515,8 +531,8 @@ function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
             }
         }
         render() {
-            const { "in": inn, appear, ...passThroughProps } = this.props;
-            var transitionProps = { ...passThroughProps, in: this.state.in };
+            const { "in": inn, onEnter, onEntering, onExiting, appear, ...passThroughProps } = this.props;
+            var transitionProps = { ...passThroughProps, in: this.state.in,onEnter:this.onEnter,onEntering:this.onEntering,onEntered:this.onEntered };
             return <Component {...transitionProps} />
         }
         componentWillReceiveProps(newProps) {

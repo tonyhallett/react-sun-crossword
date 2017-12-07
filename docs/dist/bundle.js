@@ -42320,6 +42320,22 @@ function withInOnMount(Component) {
             _this.state = { in: isIn };
             return _this;
         }
+        InOnMount.prototype.onEnter = function (node) {
+            if (this.props.onEnter) {
+                this.props.onEnter(node, this.inOnMount);
+            }
+        };
+        InOnMount.prototype.onEntering = function (node) {
+            if (this.props.onEntering) {
+                this.props.onEnter(node, this.inOnMount);
+            }
+        };
+        InOnMount.prototype.onEntered = function (node) {
+            if (this.props.onEntered) {
+                this.props.onEntered(node, this.inOnMount);
+            }
+            this.inOnMount = false;
+        };
         InOnMount.prototype.componentDidMount = function () {
             var self = this;
             if (this.inOnMount) {
@@ -42341,8 +42357,8 @@ function withInOnMount(Component) {
             }
         };
         InOnMount.prototype.render = function () {
-            var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
-            var transitionProps = __assign({}, passThroughProps, { in: this.state.in });
+            var _a = this.props, inn = _a["in"], onEnter = _a.onEnter, onEntering = _a.onEntering, onExiting = _a.onExiting, appear = _a.appear, passThroughProps = __rest(_a, ["in", "onEnter", "onEntering", "onExiting", "appear"]);
+            var transitionProps = __assign({}, passThroughProps, { in: this.state.in, onEnter: this.onEnter, onEntering: this.onEntering, onEntered: this.onEntered });
             return React.createElement(Component, __assign({}, transitionProps));
         };
         InOnMount.prototype.componentWillReceiveProps = function (newProps) {
