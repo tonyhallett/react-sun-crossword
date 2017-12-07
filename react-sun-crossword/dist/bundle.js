@@ -42491,7 +42491,13 @@ var ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
 var AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
 //should demonstrate in on mount with regular transition
 //same with autoOut - perhaps will be able to do kill and then to put kill in withAutoOut
-var InOnMountTransition = withInOnMount(Radium(Transition_1.default));
+var radiumConfig = {
+    userAgent: "My made up browser"
+};
+function ConfiguredRadium(component) {
+    return Radium(radiumConfig)(component);
+}
+var InOnMountTransition = withInOnMount(ConfiguredRadium(Transition_1.default));
 var demoDefaultStyle = {
     width: 300,
     height: 300
@@ -42558,7 +42564,7 @@ var Demo = /** @class */ (function (_super) {
     };
     return Demo;
 }(React.Component));
-var DemoRadium = Radium(Demo);
+var DemoRadium = ConfiguredRadium(Demo);
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -42599,7 +42605,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     };
     return TicTacToeSquare;
 }(React.Component));
-var RadiumTicTacToeSquare = Radium(TicTacToeSquare);
+var RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
 var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";

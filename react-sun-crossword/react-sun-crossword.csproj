@@ -88,6 +88,7 @@
     <Content Include="assets\css\react-tabs.css" />
     <Content Include="assets\sounds\default-state.mp3" />
     <Content Include="assets\sounds\small-bell-ring.mp3" />
+    <Content Include="prefixPropsCopy.js" />
     <Content Include="src\helpers\annyang.js" />
     <Content Include="src\lib\index.js" />
     <Content Include="assets\sounds\family-fortunes-wrong-buzzer.mp3" />

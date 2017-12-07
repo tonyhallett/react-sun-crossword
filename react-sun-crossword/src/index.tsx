@@ -698,7 +698,15 @@ const AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitio
 
 //should demonstrate in on mount with regular transition
 //same with autoOut - perhaps will be able to do kill and then to put kill in withAutoOut
-const InOnMountTransition = withInOnMount(Radium(Transition));
+
+var radiumConfig = {
+    userAgent:"My made up browser"
+}
+function ConfiguredRadium(component) {
+    return Radium(radiumConfig)(component);
+}
+
+const InOnMountTransition = withInOnMount(ConfiguredRadium(Transition));
 const demoDefaultStyle = {
     width: 300,
     height:300
@@ -764,7 +772,7 @@ class Demo extends React.Component<undefined, DemoState>{
             </div>
     }
 }
-const DemoRadium = Radium(Demo);
+const DemoRadium = ConfiguredRadium(Demo);
 //#endregion
 
 //#region App components
@@ -829,7 +837,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         </AutoOutColourChangeTransitionInOnMount>
     }
 }
-const RadiumTicTacToeSquare = Radium(TicTacToeSquare);
+const RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
 const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";
