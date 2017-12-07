@@ -42314,7 +42314,7 @@ function withInOnMount(Component) {
             };
             _this.onEntering = function (node) {
                 if (_this.props.onEntering) {
-                    _this.props.onEnter(node, _this.inOnMount);
+                    _this.props.onEntering(node, _this.inOnMount);
                 }
             };
             _this.onEntered = function (node) {
@@ -42485,6 +42485,7 @@ var ColourChangeTransition = /** @class */ (function (_super) {
     return ColourChangeTransition;
 }(React.Component));
 //#endregion
+//assume that order matters if want appear
 var ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
 var AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
 //should demonstrate in on mount with regular transition

@@ -502,7 +502,7 @@ function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
         }
         onEntering=(node: HTMLElement)=> {
             if (this.props.onEntering) {
-                this.props.onEnter(node, this.inOnMount);
+                this.props.onEntering(node, this.inOnMount);
             }
         }
         onEntered=(node: HTMLElement)=> {
@@ -691,6 +691,7 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
 }
 //#endregion
 
+//assume that order matters if want appear
 const ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
 const AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
 
