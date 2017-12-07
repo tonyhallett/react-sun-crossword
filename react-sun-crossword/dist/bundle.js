@@ -42491,7 +42491,7 @@ var ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
 var AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
 //should demonstrate in on mount with regular transition
 //same with autoOut - perhaps will be able to do kill and then to put kill in withAutoOut
-var InOnMountTransition = Radium(withInOnMount(Transition_1.default));
+var InOnMountTransition = withInOnMount(Radium(Transition_1.default));
 var demoDefaultStyle = {
     width: 300,
     height: 300
