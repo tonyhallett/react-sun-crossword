@@ -477,6 +477,7 @@ type TransitionState = "exited" | "exiting" | "entered" | "entering";
 interface InOnMountState {
     in: boolean
 }
+//*********************************************************************************   should change the callbacks to provide appear value
 function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
     var inOnMount = class InOnMount extends React.Component<TransitionProps, InOnMountState>{
         inOnMount = false
@@ -562,9 +563,7 @@ function withAutoOut(Component: React.ComponentClass<TransitionProps>) {
     }
     return autoOut;
 }
-
-
-
+//#endregion
 
 //#region TransitionHelper
 interface TransitionHelperProps extends TransitionProps {
@@ -745,40 +744,53 @@ class ColourChangeTransition extends React.Component<ColourChangeTransitionProps
     }
 }
 //#endregion
-//#region AutoOutTransition
-//interface AutoOutTransitionProps extends TransitionHelperProps {
-//    inSignal: any
-//}
 
-//class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
-//    constructor(props) {
-//        super(props);
-//        this.state = { in: props.inSignal !== null }
-//    }
-//    onEntered = (node: HTMLElement, isAppearing: boolean) => {
-//        this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
-//        this.setState({ in: false });
-//    }
-    
-//    componentWillReceiveProps(newProps: TransitionHelperProps) {
-//        if (newProps.inSignal !== null) {
-//            if (newProps.inSignal !== this.props.inSignal) {
-//                this.setState({ in: true });
-//            }
-//        } else {
-//            this.setState({ in: false });
-//        }
-//    }
-//    render() {
-//        const { onEntered, inSignal, ...passThroughProps } = this.props;
-//        return <TransitionHelper onEntered={this.onEntered} in={this.state.in} {...passThroughProps} />
-//    }
-//}
-//#endregion
-
-//assume that this is incorrect and should be passing in ColourChangeTransition instead
 const ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
 const AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
+
+//should demonstrate in on mount with regular transition
+//same with autoOut - perhaps will be able to do kill and then to put kill in withAutoOut
+const InOnMountTransition = withInOnMount(Transition);
+const demoDefaultStyle = {
+    width: 300,
+    height:300
+}
+const demoTimeout = 1000;
+const demoStyle = {
+    entering: {
+        backgroundColor: "red",
+        transition: `background-color ${demoTimeout}ms linear`
+    },
+    entered: {
+        backgroundColor: "red"
+    },
+    exiting: {
+        backgroundColor: "yellow",
+        transition: `background-color ${demoTimeout}ms linear`
+    },
+    exited: {
+        backgroundColor:"yellow"
+    }
+}
+class Demo extends React.Component<undefined, undefined>{
+    onEntering(node: HTMLElement,appear:boolean) {
+        console.log("OnEntering, appear : " + appear);
+    }
+    render() {
+        //will then demo different timeouts
+        //then autoOut with kill
+        //then change appear in callbacks
+        return <div>
+            <InOnMountTransition appear={true} in={true} timeout={1000}>
+                {(state: TransitionState) => {
+                    <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
+
+                }}
+            </InOnMountTransition>
+            </div>
+    }
+}
+
 //#endregion
 
 //#region App components
@@ -1027,7 +1039,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
-
+                        <Demo/>
                         <div style={{ display: "inline-block" }}>
                             <div style={{ marginTop: 10, marginBottom: 10 }}>
                                 <ConnectedScoreboard />

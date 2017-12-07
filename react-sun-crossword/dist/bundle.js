@@ -42301,6 +42301,7 @@ var ModalCover = /** @class */ (function (_super) {
     };
     return ModalCover;
 }(React.Component));
+//*********************************************************************************   should change the callbacks to provide appear value
 function withInOnMount(Component) {
     var inOnMount = /** @class */ (function (_super) {
         __extends(InOnMount, _super);
@@ -42540,37 +42541,51 @@ var ColourChangeTransition = /** @class */ (function (_super) {
     return ColourChangeTransition;
 }(React.Component));
 //#endregion
-//#region AutoOutTransition
-//interface AutoOutTransitionProps extends TransitionHelperProps {
-//    inSignal: any
-//}
-//class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
-//    constructor(props) {
-//        super(props);
-//        this.state = { in: props.inSignal !== null }
-//    }
-//    onEntered = (node: HTMLElement, isAppearing: boolean) => {
-//        this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
-//        this.setState({ in: false });
-//    }
-//    componentWillReceiveProps(newProps: TransitionHelperProps) {
-//        if (newProps.inSignal !== null) {
-//            if (newProps.inSignal !== this.props.inSignal) {
-//                this.setState({ in: true });
-//            }
-//        } else {
-//            this.setState({ in: false });
-//        }
-//    }
-//    render() {
-//        const { onEntered, inSignal, ...passThroughProps } = this.props;
-//        return <TransitionHelper onEntered={this.onEntered} in={this.state.in} {...passThroughProps} />
-//    }
-//}
-//#endregion
-//assume that this is incorrect and should be passing in ColourChangeTransition instead
 var ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
 var AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
+//should demonstrate in on mount with regular transition
+//same with autoOut - perhaps will be able to do kill and then to put kill in withAutoOut
+var InOnMountTransition = withInOnMount(Transition_1.default);
+var demoDefaultStyle = {
+    width: 300,
+    height: 300
+};
+var demoTimeout = 1000;
+var demoStyle = {
+    entering: {
+        backgroundColor: "red",
+        transition: "background-color " + demoTimeout + "ms linear"
+    },
+    entered: {
+        backgroundColor: "red"
+    },
+    exiting: {
+        backgroundColor: "yellow",
+        transition: "background-color " + demoTimeout + "ms linear"
+    },
+    exited: {
+        backgroundColor: "yellow"
+    }
+};
+var Demo = /** @class */ (function (_super) {
+    __extends(Demo, _super);
+    function Demo() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Demo.prototype.onEntering = function (node, appear) {
+        console.log("OnEntering, appear : " + appear);
+    };
+    Demo.prototype.render = function () {
+        //will then demo different timeouts
+        //then autoOut with kill
+        //then change appear in callbacks
+        return React.createElement("div", null,
+            React.createElement(InOnMountTransition, { appear: true, in: true, timeout: 1000 }, function (state) {
+                React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
+            }));
+    };
+    return Demo;
+}(React.Component));
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -42768,6 +42783,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
+                        React.createElement(Demo, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),
