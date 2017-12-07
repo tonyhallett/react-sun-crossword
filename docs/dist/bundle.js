@@ -42734,10 +42734,18 @@ var TicTacToeApp = /** @class */ (function (_super) {
             var transform = "rotate(30deg)";
             style.transform = transform;
             style.msTransform = transform;
-            style.webkitTransform = transform;
+            style.WebkitTransform = transform;
         };
+        _this.firstRead = true;
         _this.readPrefixes = function () {
-            alert(document.querySelector("#testInlinePrefixes").style.cssText);
+            var id = "testInlinePrefixes";
+            if (_this.firstRead) {
+                _this.firstRead = false;
+            }
+            else {
+                id = "addInlinePrefixes";
+            }
+            alert(document.querySelector("#" + id).style.cssText);
         };
         return _this;
     }

@@ -994,11 +994,18 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         var transform = "rotate(30deg)";
         style.transform = transform;
         style.msTransform = transform;
-        style.webkitTransform = transform;
+        style.WebkitTransform = transform;
 
     }
+    firstRead = true;
     readPrefixes = () => {
-        alert((document.querySelector("#testInlinePrefixes") as HTMLElement).style.cssText);
+        var id = "testInlinePrefixes";
+        if (this.firstRead) {
+            this.firstRead = false;
+        } else {
+            id = "addInlinePrefixes";
+        }
+        alert((document.querySelector("#"+ id) as HTMLElement).style.cssText);
     }
     render() {
         return <StyleRoot>
