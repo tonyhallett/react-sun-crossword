@@ -42144,7 +42144,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
                 _this.props.takeGo();
             }
         };
-        _this.state = { inSignal: null };
+        _this.state = { inSignal: {} };
         return _this;
     }
     TicTacToeSquare.prototype.componentWillReceiveProps = function (newProps) {
@@ -42167,7 +42167,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     };
     TicTacToeSquare.prototype.render = function () {
         var transitionDuration = 1000;
-        return React.createElement(ColourChangeTransition, { inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
+        return React.createElement(ColourChangeTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
             React.createElement("td", { style: {
                     color: this.props.squareGoColour,
                     textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"

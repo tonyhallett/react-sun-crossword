@@ -298,7 +298,7 @@ interface TicTacToeSquareState {
 class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSquareState>{
     constructor(props) {
         super(props);
-        this.state = {inSignal:null}
+        this.state = { inSignal: {}}
     }
     squareClicked = () => {
         if (this.props.canGo) {
@@ -326,7 +326,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
     }
     render() {
         var transitionDuration = 1000;
-        return <ColourChangeTransition inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+        return <ColourChangeTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
             <td style={{
                 color: this.props.squareGoColour,
                 textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
