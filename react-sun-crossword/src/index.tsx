@@ -998,7 +998,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
     }
     readPrefixes = () => {
-        alert((document.querySelector("#testInlinePrefixes") as HTMLElement).style);
+        alert((document.querySelector("#testInlinePrefixes") as HTMLElement).style.cssText);
     }
     render() {
         return <StyleRoot>

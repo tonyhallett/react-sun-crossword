@@ -42737,7 +42737,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             style.webkitTransform = transform;
         };
         _this.readPrefixes = function () {
-            alert(document.querySelector("#testInlinePrefixes").style);
+            alert(document.querySelector("#testInlinePrefixes").style.cssText);
         };
         return _this;
     }
