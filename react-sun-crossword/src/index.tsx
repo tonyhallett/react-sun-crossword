@@ -477,7 +477,7 @@ type TransitionState = "exited" | "exiting" | "entered" | "entering";
 interface InOnMountState {
     in: boolean
 }
-//*********************************************************************************   should change the callbacks to provide appear value
+
 function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
     var inOnMount = class InOnMount extends React.Component<TransitionProps, InOnMountState>{
         inOnMount = false
@@ -495,17 +495,17 @@ function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
             this.state = { in: isIn }
         }
         
-        onEnter(node: HTMLElement) {
+        onEnter=(node: HTMLElement)=> {
             if (this.props.onEnter) {
                 this.props.onEnter(node, this.inOnMount);
             }
         }
-        onEntering(node: HTMLElement) {
+        onEntering=(node: HTMLElement)=> {
             if (this.props.onEntering) {
                 this.props.onEnter(node, this.inOnMount);
             }
         }
-        onEntered(node: HTMLElement) {
+        onEntered=(node: HTMLElement)=> {
             if (this.props.onEntered) {
                 this.props.onEntered(node, this.inOnMount);
             }
@@ -623,77 +623,7 @@ class TransitionHelper extends React.Component<TransitionHelperProps, Transition
         return transition;
     }
 }
-class TransitionHelperOld extends React.Component<TransitionHelperProps, TransitionHelperState>{
-    inOnMount = false
-    constructor(props) {
-        super(props);
-        var isIn = false;
-        if (props.in) {
-            if (props.appear) {
-                this.inOnMount = true;
-            } else {
-                isIn = true;//not sure ....
-            }
 
-        }
-        this.state = { in: isIn }
-    }
-    componentWillReceiveProps(newProps) {
-        this.setState({ in: newProps.in });
-    }
-
-    componentDidMount() {
-        var self = this;
-        if (this.inOnMount) {
-            this.requestAnimationStart(() => self.setState({ in: true }))
-        }
-    }
-    requestAnimationStart(callback) {
-        // Feature detect rAF, fallback to setTimeout
-        if (window.requestAnimationFrame) {
-            // Chrome and Safari have a bug where calling rAF once returns the current
-            // frame instead of the next frame, so we need to call a double rAF here.
-            // See https://crbug.com/675795 for more.
-            window.requestAnimationFrame(() => {
-                window.requestAnimationFrame(callback);
-            });
-        } else {
-            setTimeout(callback, 0);
-        }
-    }
-
-    render() {
-        const { "in": inn, appear, ...passThroughProps } = this.props;
-        var transition = <Transition in={this.state.in}  {...passThroughProps}>
-            {(state: TransitionState) => {
-                var style: React.CSSProperties = {};
-                switch (state) {
-                    case "entering":
-                    case "entered":
-                        style = { ...this.props.enterStyle }
-                        style.transition = this.props.enterTransition;
-                        break;
-                    case "exiting":
-                    case "exited"://this is the state before in:true 
-                        style = { ...this.props.exitStyle };
-                        style.transition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
-                        break;
-                }
-                //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-                var childElement = this.props.children as React.ReactElement<any>;
-
-                var childStyle = childElement.props.style;
-                var newStyle = { ...childStyle, ...style };
-                var newProps = {
-                    style: newStyle
-                }
-                var clonedElement = React.cloneElement(childElement, newProps);
-                return clonedElement;
-            }}
-        </Transition>
-        return transition;
-    }
-}
 //#endregion
 //#region ColourChangeTransition
 enum ColourChangeType { lighten, darken, saturate, desaturate, fade, opaquer }

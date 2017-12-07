@@ -42301,13 +42301,28 @@ var ModalCover = /** @class */ (function (_super) {
     };
     return ModalCover;
 }(React.Component));
-//*********************************************************************************   should change the callbacks to provide appear value
 function withInOnMount(Component) {
     var inOnMount = /** @class */ (function (_super) {
         __extends(InOnMount, _super);
         function InOnMount(props) {
             var _this = _super.call(this, props) || this;
             _this.inOnMount = false;
+            _this.onEnter = function (node) {
+                if (_this.props.onEnter) {
+                    _this.props.onEnter(node, _this.inOnMount);
+                }
+            };
+            _this.onEntering = function (node) {
+                if (_this.props.onEntering) {
+                    _this.props.onEnter(node, _this.inOnMount);
+                }
+            };
+            _this.onEntered = function (node) {
+                if (_this.props.onEntered) {
+                    _this.props.onEntered(node, _this.inOnMount);
+                }
+                _this.inOnMount = false;
+            };
             var isIn = false;
             if (props.in) {
                 if (props.appear) {
@@ -42320,22 +42335,6 @@ function withInOnMount(Component) {
             _this.state = { in: isIn };
             return _this;
         }
-        InOnMount.prototype.onEnter = function (node) {
-            if (this.props.onEnter) {
-                this.props.onEnter(node, this.inOnMount);
-            }
-        };
-        InOnMount.prototype.onEntering = function (node) {
-            if (this.props.onEntering) {
-                this.props.onEnter(node, this.inOnMount);
-            }
-        };
-        InOnMount.prototype.onEntered = function (node) {
-            if (this.props.onEntered) {
-                this.props.onEntered(node, this.inOnMount);
-            }
-            this.inOnMount = false;
-        };
         InOnMount.prototype.componentDidMount = function () {
             var self = this;
             if (this.inOnMount) {
@@ -42433,77 +42432,6 @@ var TransitionHelper = /** @class */ (function (_super) {
         return transition;
     };
     return TransitionHelper;
-}(React.Component));
-var TransitionHelperOld = /** @class */ (function (_super) {
-    __extends(TransitionHelperOld, _super);
-    function TransitionHelperOld(props) {
-        var _this = _super.call(this, props) || this;
-        _this.inOnMount = false;
-        var isIn = false;
-        if (props.in) {
-            if (props.appear) {
-                _this.inOnMount = true;
-            }
-            else {
-                isIn = true; //not sure ....
-            }
-        }
-        _this.state = { in: isIn };
-        return _this;
-    }
-    TransitionHelperOld.prototype.componentWillReceiveProps = function (newProps) {
-        this.setState({ in: newProps.in });
-    };
-    TransitionHelperOld.prototype.componentDidMount = function () {
-        var self = this;
-        if (this.inOnMount) {
-            this.requestAnimationStart(function () { return self.setState({ in: true }); });
-        }
-    };
-    TransitionHelperOld.prototype.requestAnimationStart = function (callback) {
-        // Feature detect rAF, fallback to setTimeout
-        if (window.requestAnimationFrame) {
-            // Chrome and Safari have a bug where calling rAF once returns the current
-            // frame instead of the next frame, so we need to call a double rAF here.
-            // See https://crbug.com/675795 for more.
-            window.requestAnimationFrame(function () {
-                window.requestAnimationFrame(callback);
-            });
-        }
-        else {
-            setTimeout(callback, 0);
-        }
-    };
-    TransitionHelperOld.prototype.render = function () {
-        var _this = this;
-        var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
-        var transition = React.createElement(Transition_1.default, __assign({ in: this.state.in }, passThroughProps), function (state) {
-            var style = {};
-            switch (state) {
-                case "entering":
-                case "entered":
-                    style = __assign({}, _this.props.enterStyle);
-                    style.transition = _this.props.enterTransition;
-                    break;
-                case "exiting":
-                case "exited"://this is the state before in:true 
-                    style = __assign({}, _this.props.exitStyle);
-                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
-                    break;
-            }
-            //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-            var childElement = _this.props.children;
-            var childStyle = childElement.props.style;
-            var newStyle = __assign({}, childStyle, style);
-            var newProps = {
-                style: newStyle
-            };
-            var clonedElement = React.cloneElement(childElement, newProps);
-            return clonedElement;
-        });
-        return transition;
-    };
-    return TransitionHelperOld;
 }(React.Component));
 //#endregion
 //#region ColourChangeTransition
