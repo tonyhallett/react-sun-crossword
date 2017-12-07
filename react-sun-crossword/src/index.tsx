@@ -702,33 +702,49 @@ const demoDefaultStyle = {
     width: 300,
     height:300
 }
-const demoTimeout = 1000;
+const demoTimeout = {
+    enter: 1000,
+    exit:5000
+};
 const demoStyle = {
     entering: {
         backgroundColor: "red",
-        transition: `background-color ${demoTimeout}ms linear`
+        transition: `background-color ${demoTimeout.enter}ms linear`
     },
     entered: {
         backgroundColor: "red"
     },
     exiting: {
         backgroundColor: "yellow",
-        transition: `background-color ${demoTimeout}ms linear`
+        transition: `background-color ${demoTimeout.exit}ms linear`
     },
     exited: {
         backgroundColor:"yellow"
     }
 }
-class Demo extends React.Component<undefined, undefined>{
+interface DemoState {
+    in:boolean
+}
+class Demo extends React.Component<undefined, DemoState>{
+    constructor(props) {
+        super(props);
+        this.state = { in: true };
+    }
     onEntering(node: HTMLElement,appear:boolean) {
         console.log("OnEntering, appear : " + appear);
     }
+    out = () => {
+        this.setState({in:false})
+    }
+    in = () => {
+        this.setState({ in: true })
+    }
     render() {
-        //will then demo different timeouts
         //then autoOut with kill
-        //then change appear in callbacks
         return <div>
-            <InOnMountTransition onEntering={this.onEntering} appear={true} in={true} timeout={1000}>
+            <button onClick={this.out}>out</button>
+            <button onClick={this.in}>in</button >
+            <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
                 {(state: TransitionState) => {
                     return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
 

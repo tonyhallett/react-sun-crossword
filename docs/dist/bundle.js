@@ -42495,18 +42495,21 @@ var demoDefaultStyle = {
     width: 300,
     height: 300
 };
-var demoTimeout = 1000;
+var demoTimeout = {
+    enter: 1000,
+    exit: 5000
+};
 var demoStyle = {
     entering: {
         backgroundColor: "red",
-        transition: "background-color " + demoTimeout + "ms linear"
+        transition: "background-color " + demoTimeout.enter + "ms linear"
     },
     entered: {
         backgroundColor: "red"
     },
     exiting: {
         backgroundColor: "yellow",
-        transition: "background-color " + demoTimeout + "ms linear"
+        transition: "background-color " + demoTimeout.exit + "ms linear"
     },
     exited: {
         backgroundColor: "yellow"
@@ -42514,18 +42517,26 @@ var demoStyle = {
 };
 var Demo = /** @class */ (function (_super) {
     __extends(Demo, _super);
-    function Demo() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function Demo(props) {
+        var _this = _super.call(this, props) || this;
+        _this.out = function () {
+            _this.setState({ in: false });
+        };
+        _this.in = function () {
+            _this.setState({ in: true });
+        };
+        _this.state = { in: true };
+        return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {
         console.log("OnEntering, appear : " + appear);
     };
     Demo.prototype.render = function () {
-        //will then demo different timeouts
         //then autoOut with kill
-        //then change appear in callbacks
         return React.createElement("div", null,
-            React.createElement(InOnMountTransition, { onEntering: this.onEntering, appear: true, in: true, timeout: 1000 }, function (state) {
+            React.createElement("button", { onClick: this.out }, "out"),
+            React.createElement("button", { onClick: this.in }, "in"),
+            React.createElement(InOnMountTransition, { onEntering: this.onEntering, appear: true, in: this.state.in, timeout: demoTimeout }, function (state) {
                 return React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
             }));
     };
