@@ -42736,15 +42736,22 @@ var TicTacToeApp = /** @class */ (function (_super) {
             style.msTransform = transform;
             style.webkitTransform = transform;
         };
-        _this.firstRead = true;
+        _this.readCount = 0;
         _this.readPrefixes = function () {
-            var id = "testInlinePrefixes";
-            if (_this.firstRead) {
-                _this.firstRead = false;
+            var id;
+            switch (_this.readCount) {
+                case 0:
+                    id = "inlinePrefixed";
+                    break;
+                case 1:
+                    id = "readInlinePrefixes";
+                    break;
+                case 2:
+                    id = "addInlinePrefixes";
+                    break;
             }
-            else {
-                id = "addInlinePrefixes";
-            }
+            _this.readCount++;
+            alert("css text for: " + id);
             alert(document.querySelector("#" + id).style.cssText);
         };
         return _this;
@@ -42780,7 +42787,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         React.createElement("div", { id: "addInlinePrefixes", style: {
                                 width: 10, height: 10, backgroundColor: "purple"
                             } }),
-                        React.createElement("div", { id: "testInlinePrefixes", style: { width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", WebkitTransform: "rotate(30deg)" } }),
+                        React.createElement("div", { id: "readInlinePrefixes", style: { width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", WebkitTransform: "rotate(30deg)" } }),
                         React.createElement(DemoRadium, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },

@@ -997,14 +997,23 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         style.webkitTransform = transform;
 
     }
-    firstRead = true;
+    readCount = 0;
     readPrefixes = () => {
-        var id = "testInlinePrefixes";
-        if (this.firstRead) {
-            this.firstRead = false;
-        } else {
-            id = "addInlinePrefixes";
+        var id
+        switch (this.readCount) {
+            case 0:
+                id ="inlinePrefixed"
+                break;
+            case 1:
+                id ="readInlinePrefixes"
+                break;
+            case 2:
+                id = "addInlinePrefixes";
+                break;
+
         }
+        this.readCount++;
+        alert("css text for: " + id);
         alert((document.querySelector("#"+ id) as HTMLElement).style.cssText);
     }
     render() {
@@ -1040,7 +1049,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                         <div id="addInlinePrefixes" style={{
                             width: 10, height: 10, backgroundColor: "purple"
                         }}/>
-                        <div id="testInlinePrefixes" style={{ width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", WebkitTransform:"rotate(30deg)" }}></div>
+                        <div id="readInlinePrefixes" style={{ width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", WebkitTransform:"rotate(30deg)" }}></div>
                         <DemoRadium/>
                         <div style={{ display: "inline-block" }}>
                             <div style={{ marginTop: 10, marginBottom: 10 }}>
