@@ -12,7 +12,8 @@ import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-tr
 import * as Color from 'Color'
 
 var componentBackgroundColor = "lightgray";
-
+//#region redux
+//#region redux state
 enum SquareGo { X, O, None }
 enum Player { X, O }
 enum GameState {X,O,Playing,Draw,FinishedConfirmed}
@@ -26,17 +27,19 @@ interface PlayerColourState {
     xColour: string
     oColour: string
 }
-
 interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     board: SquareGo[][],
     currentPlayer: Player,
-    
     gameState: GameState,
     
 }
+//#endregion
+//#region action types
 const Finished_Confirmed="FINISHED_CONFIRMED"
 const Play_Again = "PLAY_AGAIN";
 const Take_Go = "TAKE_GO"
+//#endregion
+//#region action creators
 function finishedConfirmed() {
     return {
         type: Finished_Confirmed
@@ -54,6 +57,8 @@ function takeGo(row, column) {
         column:column
     }
 }
+//#endregion
+//#region state defaults
 var numRowsAndColumns = 4;
 function getDefaultBoard(): SquareGo[][] {
     var rows = [];
@@ -67,6 +72,9 @@ function getDefaultBoard(): SquareGo[][] {
     return rows;
 }
 var firstPlayer = Player.X;
+//#endregion
+//#region reducer 
+//#region check winner
 function checkWinner(board: SquareGo[][]):SquareGo {
     var winner = checkRowsWinner(board);
     if (winner === SquareGo.None) {
@@ -178,6 +186,7 @@ function checkDiagonalWinner(board: SquareGo[][]): SquareGo {
     }
     return checkSquareGo;
 }
+//#endregion
 function checkDraw(board: SquareGo[][]) {
     var isDraw = true;
     for (var i = 0; i < board.length; i++) {
@@ -276,7 +285,504 @@ function reducer(state: TicTacToeState = {
             return state;
     }
 }
+//#endregion
+//#endregion
 
+//#region Layout Components
+class HorizontalCenter extends React.Component<undefined, undefined>{
+    render() {
+        return <div style={{ display: "table", margin: "0 auto" }}>
+            {this.props.children}
+        </div>
+    }
+}
+//do as css properties and merged the two
+interface VerticallyCenteredContainerProps {
+    backgroundColor?: string
+}
+class VerticallyCenteredContainer extends React.Component<VerticallyCenteredContainerProps, undefined>{
+    render() {
+        var containerStyle: React.CSSProperties = {
+            display: "table",
+            position: "absolute",
+            height: "100%",
+            width: " 100%"
+        }
+        if (this.props.backgroundColor) {
+            containerStyle.backgroundColor = this.props.backgroundColor;
+        }
+        return <div style={containerStyle}>
+            <div style={{
+                display: "table-cell",
+                verticalAlign: "middle"
+            }}>
+                {this.props.children}
+            </div>
+        </div>
+    }
+}
+//#endregion
+//#region Modal
+enum ElementDimensionsChoice { Content, PaddingAndBorder, Padding, PaddingBorderMargin }
+//to consider box sizing - another day !
+//http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
+function getElementWidth(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerWidth(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerWidth();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerWidth(true);
+        case ElementDimensionsChoice.Content:
+            return $el.width()
+
+    }
+}
+function getElementHeight(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerHeight(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerHeight();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerHeight(true);
+        case ElementDimensionsChoice.Content:
+            return $el.height()
+
+    }
+}
+type ElementLengthType = "padding-left" | "border-left" | "margin-left" | "padding-top" | "border-top" | "margin-top";
+function getElementEdgeLength(element: HTMLElement, lengthType: ElementLengthType) {
+    var $el = $(element);
+    return parseFloat($el.css(lengthType));
+}
+function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsChoice.PaddingAndBorder) {
+    var $element = $(element);
+    var offset = $element.offset();//border-box
+    var left = offset.left;
+    var top = offset.top;
+
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.Content:
+            var paddingLeft = getElementEdgeLength(element, "padding-left");
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var paddingTop = getElementEdgeLength(element, "padding-top");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + paddingTop + borderTop;
+            left = left + paddingLeft + borderLeft;
+            break;
+        case ElementDimensionsChoice.Padding:
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + borderTop;
+            left = left + borderLeft;
+            break;
+        case ElementDimensionsChoice.PaddingAndBorder:
+            //no change
+            break;
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            var marginLeft = getElementEdgeLength(element, "margin-left");
+            var marginTop = getElementEdgeLength(element, "margin-top");
+            top = top - marginTop;
+            left = left - marginLeft;
+            break;
+
+    }
+    return {
+        left: left,
+        top: top,
+        width: getElementWidth(element, dimensionsChoice),
+        height: getElementHeight(element, dimensionsChoice)
+    };
+}
+
+//not entirely sure that this typing is correct - https://github.com/reactjs/react-modal
+interface ModalClassNameProps {
+    base?: string,
+    afterOpen?: string,
+    beforeClose?: string
+}
+type classNameProps = string | ModalClassNameProps
+interface ModalStyle {
+    overlay?: React.CSSProperties,
+    content?: React.CSSProperties
+}
+interface ModalProps {
+    isOpen: boolean,
+    onAfterOpen?: () => any,
+    onRequestClose?: () => any,
+    closeTimeoutMS?: number,
+    contentLabel?: string,
+    aria?: {
+        [x: string]: string
+    },
+    style?: ModalStyle
+    className?: classNameProps,
+    overlayClassName?: classNameProps,
+    portalClassName?: string
+
+
+}
+interface ModalReadyProps extends ModalProps {
+    getStyle: () => ModalStyle
+}
+interface ModalReadyState {
+    ready: boolean
+}
+//if this works then will want a Modal class that will overlay an element
+class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
+    constructor(props) {
+        super(props)
+        this.state = { ready: false }
+    }
+    componentDidMount() {
+        this.setState({ ready: true })
+    }
+    render() {
+        if (!this.state.ready) {
+            return null;
+        }
+
+        return <Modal style={this.props.getStyle()} {...this.props} />
+    }
+}
+interface ModalCoverProps extends ModalProps {
+    elementSelector: string,
+    coverType?: ElementDimensionsChoice
+    contentStyle?: React.CSSProperties
+}
+class ModalCover extends React.Component<ModalCoverProps, undefined>{
+    static defaultProps = {
+        coverType: ElementDimensionsChoice.PaddingAndBorder
+    }
+    getStyle = () => {
+        return {
+            overlay: getOverlay(document.querySelector(this.props.elementSelector) as HTMLElement, this.props.coverType),
+            content: this.props.contentStyle
+        }
+    }
+    render() {
+        return <ModalReady {...this.props} getStyle={this.getStyle} />
+    }
+}
+//#endregion
+//#region Transitions
+//#region additional typing
+type TransitionState = "exited" | "exiting" | "entered" | "entering";
+//#endregion
+//#region hocs
+interface InOnMountState {
+    in: boolean
+}
+function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
+    var inOnMount = class InOnMount extends React.Component<TransitionProps, InOnMountState>{
+        inOnMount = false
+        constructor(props) {
+            super(props);
+            var isIn = false;
+            if (props.in) {
+                if (props.appear) {
+                    this.inOnMount = true;
+                } else {
+                    isIn = true;//not sure ....
+                }
+
+            }
+            this.state = { in: isIn }
+        }
+
+        componentDidMount() {
+            var self = this;
+            if (this.inOnMount) {
+                this.requestAnimationStart(() => self.setState({ in: true }))
+            }
+        }
+        requestAnimationStart(callback) {
+            // Feature detect rAF, fallback to setTimeout
+            if (window.requestAnimationFrame) {
+                // Chrome and Safari have a bug where calling rAF once returns the current
+                // frame instead of the next frame, so we need to call a double rAF here.
+                // See https://crbug.com/675795 for more.
+                window.requestAnimationFrame(() => {
+                    window.requestAnimationFrame(callback);
+                });
+            } else {
+                setTimeout(callback, 0);
+            }
+        }
+        render() {
+            const { "in": inn, appear, ...passThroughProps } = this.props;
+            var transitionProps = { ...passThroughProps, in: this.state.in };
+            return <Component {...transitionProps} />
+        }
+        componentWillReceiveProps(newProps) {
+            this.setState({ in: newProps.in });
+        }
+    }
+    return inOnMount;
+}
+interface AutoOutTransitionState {
+    in: boolean
+}
+interface AutoOutTransitionProps {
+    inSignal: any
+}
+function withAutoOut(Component: React.ComponentClass<TransitionProps>) {
+    var autoOut = class AutoOutTransition extends React.Component<AutoOutTransitionProps & TransitionProps, AutoOutTransitionState>{
+        constructor(props) {
+            super(props);
+            this.state = { in: props.inSignal !== null }
+        }
+        onEntered = (node: HTMLElement, isAppearing: boolean) => {
+            this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
+            this.setState({ in: false });
+        }
+
+        componentWillReceiveProps(newProps: AutoOutTransitionProps & TransitionProps) {
+            if (newProps.inSignal !== null) {
+                if (newProps.inSignal !== this.props.inSignal) {
+                    this.setState({ in: true });
+                }
+            } else {
+                this.setState({ in: false });
+            }
+        }
+        render() {
+            const { onEntered, "in": inn, inSignal, ...passThroughProps } = this.props;
+            var transitionProps = {
+                ...passThroughProps,
+                onEntered: this.onEntered,
+                in:this.state.in
+            }
+            return <Component {...transitionProps}/>
+        }
+    }
+    return autoOut;
+}
+
+
+
+
+//#region TransitionHelper
+interface TransitionHelperProps extends TransitionProps {
+    enterTransition: string,
+    exitTransition?: string,
+    enterStyle: React.CSSProperties,
+    exitStyle: React.CSSProperties
+}
+interface TransitionHelperState {
+    in: boolean
+}
+class TransitionHelper extends React.Component<TransitionHelperProps, TransitionHelperState>{
+    render() {
+        var transition = <Transition {...this.props}>
+            {(state: TransitionState) => {
+                var style: React.CSSProperties = {};
+                switch (state) {
+                    case "entering":
+                    case "entered":
+                        style = { ...this.props.enterStyle }
+                        style.transition = this.props.enterTransition;
+                        break;
+                    case "exiting":
+                    case "exited"://this is the state before in:true 
+                        style = { ...this.props.exitStyle };
+                        style.transition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
+                        break;
+                }
+                //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
+                var childElement = this.props.children as React.ReactElement<any>;
+
+                var childStyle = childElement.props.style;
+                var newStyle = { ...childStyle, ...style };
+                var newProps = {
+                    style: newStyle
+                }
+                var clonedElement = React.cloneElement(childElement, newProps);
+                return clonedElement;
+            }}
+        </Transition>
+        return transition;
+    }
+}
+class TransitionHelperOld extends React.Component<TransitionHelperProps, TransitionHelperState>{
+    inOnMount = false
+    constructor(props) {
+        super(props);
+        var isIn = false;
+        if (props.in) {
+            if (props.appear) {
+                this.inOnMount = true;
+            } else {
+                isIn = true;//not sure ....
+            }
+
+        }
+        this.state = { in: isIn }
+    }
+    componentWillReceiveProps(newProps) {
+        this.setState({ in: newProps.in });
+    }
+
+    componentDidMount() {
+        var self = this;
+        if (this.inOnMount) {
+            this.requestAnimationStart(() => self.setState({ in: true }))
+        }
+    }
+    requestAnimationStart(callback) {
+        // Feature detect rAF, fallback to setTimeout
+        if (window.requestAnimationFrame) {
+            // Chrome and Safari have a bug where calling rAF once returns the current
+            // frame instead of the next frame, so we need to call a double rAF here.
+            // See https://crbug.com/675795 for more.
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(callback);
+            });
+        } else {
+            setTimeout(callback, 0);
+        }
+    }
+
+    render() {
+        const { "in": inn, appear, ...passThroughProps } = this.props;
+        var transition = <Transition in={this.state.in}  {...passThroughProps}>
+            {(state: TransitionState) => {
+                var style: React.CSSProperties = {};
+                switch (state) {
+                    case "entering":
+                    case "entered":
+                        style = { ...this.props.enterStyle }
+                        style.transition = this.props.enterTransition;
+                        break;
+                    case "exiting":
+                    case "exited"://this is the state before in:true 
+                        style = { ...this.props.exitStyle };
+                        style.transition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
+                        break;
+                }
+                //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
+                var childElement = this.props.children as React.ReactElement<any>;
+
+                var childStyle = childElement.props.style;
+                var newStyle = { ...childStyle, ...style };
+                var newProps = {
+                    style: newStyle
+                }
+                var clonedElement = React.cloneElement(childElement, newProps);
+                return clonedElement;
+            }}
+        </Transition>
+        return transition;
+    }
+}
+//#endregion
+//#region ColourChangeTransition
+enum ColourChangeType { lighten, darken, saturate, desaturate, fade, opaquer }
+//need to refactor the props interfaces - needs TransitionHelperProps with couple of omits
+interface ColourChangeTransitionProps {
+    change: number,
+    exitColour: string,
+    colourChangeType: ColourChangeType,
+    propName: string,
+
+    enterTransition: string,
+    exitTransition?: string,
+
+    inSignal: any
+
+    mountOnEnter?: boolean;
+    unmountOnExit?: boolean;
+    timeout: number | { enter?: number, exit?: number };
+    addEndListener?: EndHandler;
+    onEnter?: EnterHandler;
+    onEntering?: EnterHandler;
+    onEntered?: EnterHandler;
+    onExit?: ExitHandler;
+    onExiting?: ExitHandler;
+    onExited?: ExitHandler;
+    [prop: string]: any;
+
+}
+class ColourChangeTransition extends React.Component<ColourChangeTransitionProps, undefined> {
+    render() {
+        var enterStyle = {};
+
+        var exitColor = Color(this.props.exitColour);
+        var enterColor;
+        var change = this.props.change;
+        //note that whiten/blacken is not css3!
+        switch (this.props.colourChangeType) {
+            case ColourChangeType.darken:
+                enterColor = exitColor.darken(change)
+                break;
+            case ColourChangeType.desaturate:
+                enterColor = exitColor.desaturate(change);
+                break;
+            case ColourChangeType.fade:
+                enterColor = exitColor.fade(change);
+                break;
+            case ColourChangeType.lighten:
+                enterColor = exitColor.lighten(change);
+                break;
+            case ColourChangeType.opaquer:
+                enterColor = exitColor.opaquer(change);
+                break;
+            case ColourChangeType.saturate:
+                enterColor = exitColor.saturate(change);
+                break;
+        }
+        var colorString = enterColor.toString();
+        enterStyle[this.props.propName] = colorString;//seems that once change to different model cannot go back
+
+        var exitStyle = {};
+        var exitColourString = exitColor.toString();
+        exitStyle[this.props.propName] = exitColourString;
+        return <TransitionHelper enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
+    }
+}
+//#endregion
+//#region AutoOutTransition
+//interface AutoOutTransitionProps extends TransitionHelperProps {
+//    inSignal: any
+//}
+
+//class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
+//    constructor(props) {
+//        super(props);
+//        this.state = { in: props.inSignal !== null }
+//    }
+//    onEntered = (node: HTMLElement, isAppearing: boolean) => {
+//        this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
+//        this.setState({ in: false });
+//    }
+    
+//    componentWillReceiveProps(newProps: TransitionHelperProps) {
+//        if (newProps.inSignal !== null) {
+//            if (newProps.inSignal !== this.props.inSignal) {
+//                this.setState({ in: true });
+//            }
+//        } else {
+//            this.setState({ in: false });
+//        }
+//    }
+//    render() {
+//        const { onEntered, inSignal, ...passThroughProps } = this.props;
+//        return <TransitionHelper onEntered={this.onEntered} in={this.state.in} {...passThroughProps} />
+//    }
+//}
+//#endregion
+
+//assume that this is incorrect and should be passing in ColourChangeTransition instead
+const ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
+const AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
+//#endregion
+
+//#region App components
+//#region TicTacToeSquare
 interface TicTacToeSquareRowColProps {
     rowIndex: number,
     colIndex: number
@@ -326,14 +832,14 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
     }
     render() {
         var transitionDuration = 1000;
-        return <ColourChangeTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+        return <AutoOutColourChangeTransitionInOnMount appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
             <td style={{
                 color: this.props.squareGoColour,
                 textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
             }} onClick={this.squareClicked}>
                 {this.props.squareText}
             </td>
-        </ColourChangeTransition>
+        </AutoOutColourChangeTransitionInOnMount>
         //return <td style={{
         //    color: this.props.squareGoColour,
         //    textAlign:"center",width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
@@ -342,6 +848,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         //    </td>
     }
 }
+
 const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";
@@ -377,7 +884,8 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
         }
         }
     })(TicTacToeSquare as any);
-
+//#endregion
+//#region TicTacToeBoard
 interface TicTacToeBoardProps {
     board: SquareGo[][]
 }
@@ -406,53 +914,8 @@ const ConnectedTicTacToeBoard:any = connect((state: TicTacToeState) => {
         board: state.board
     }
 })(TicTacToeBoard);
-
-interface PlayerViewOwnProps {
-    player: Player,
-    
-}
-interface PlayerViewStateProps {
-    isWinner: boolean,
-    playerColour: string,
-    currentColour: string,
-    playerText: string,
-    currentFontWeight: fontWeightBolderOrNormal
-}
-class PlayerView extends React.Component<PlayerViewOwnProps&PlayerViewStateProps, undefined > {
-    render() {
-
-        return <div style={{  width: 274, padding: 10, borderWidth: "3px",borderStyle:"solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour }}>
-            <div>{this.props.playerText}</div>
-            {this.props.isWinner&&<div>Winner !</div>}
-            </div>
-    }
-}
-type fontWeightBolderOrNormal = "bolder" | "normal";
-var ConnectedPlayerView:any = connect((state: TicTacToeState, ownProps: PlayerViewOwnProps) => {
-    var playerColour = state.oColour;
-    if (ownProps.player === Player.X) {
-        playerColour = state.xColour;
-    }
-    var isWinner = false;
-    switch (state.gameState) {
-        case GameState.O:
-            isWinner = ownProps.player === Player.O;
-            break;
-        case GameState.X:
-            isWinner = ownProps.player === Player.X;
-            break;
-    }
-    var isCurrent = state.currentPlayer === ownProps.player;
-    var playerId = ownProps.player === Player.X ? "X" : "O";
-    return {
-        playerColour: playerColour,
-        isWinner: isWinner,
-        currentColour: isCurrent ? "green" : "black",
-        currentFontWeight:isCurrent? "bolder":"normal",
-        playerText: "Player " + playerId
-    }
-})(PlayerView);
-
+//#endregion
+//#region Scoreboard
 interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
     currentPlayer:Player
 }
@@ -496,9 +959,10 @@ const ConnectedScoreboard:any = connect((state: TicTacToeState) => {
     } 
     return scoreboardState;
 })(Scoreboard);
+
 interface ScoreboardPlayerProps {
     playerId: string,
-    playerBoldStyle: fontWeightBolderOrNormal,
+    playerBoldStyle: "bolder"|"normal",
     playerColour: string,
     won: number,
     lost: number,
@@ -514,347 +978,16 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>
             </tr>
     }
 }
-
+//#endregion
+//#region TicTacToeApp
 
 interface TicTacToeAppProps {
     gameState: GameState,
     playAgain: () => void,
     finishedConfirmed: () => void,
 }
-enum ElementDimensionsChoice { Content, PaddingAndBorder, Padding, PaddingBorderMargin }
-//to consider box sizing - another day !
-//http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
-function getElementWidth(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
-    var $el = $(element);
-    switch (dimensionsChoice) {
-        case ElementDimensionsChoice.PaddingAndBorder:
-            return $el.outerWidth(false);
-        case ElementDimensionsChoice.Padding:
-            return $el.innerWidth();
-        case ElementDimensionsChoice.PaddingBorderMargin:
-            return $el.outerWidth(true);
-        case ElementDimensionsChoice.Content:
-            return $el.width()
-
-    }
-}
-function getElementHeight(element: HTMLElement, dimensionsChoice: ElementDimensionsChoice) {
-    var $el = $(element);
-    switch (dimensionsChoice) {
-        case ElementDimensionsChoice.PaddingAndBorder:
-            return $el.outerHeight(false);
-        case ElementDimensionsChoice.Padding:
-            return $el.innerHeight();
-        case ElementDimensionsChoice.PaddingBorderMargin:
-            return $el.outerHeight(true);
-        case ElementDimensionsChoice.Content:
-            return $el.height()
-
-    }
-}
-type ElementLengthType = "padding-left" | "border-left" | "margin-left" | "padding-top" | "border-top" | "margin-top";
-function getElementEdgeLength(element:HTMLElement,lengthType: ElementLengthType) {
-    var $el = $(element);
-    return parseFloat($el.css(lengthType));
-}
-function getOverlay(element: HTMLElement, dimensionsChoice = ElementDimensionsChoice.PaddingAndBorder) {
-    var $element = $(element);
-    var offset = $element.offset();//border-box
-    var left = offset.left;
-    var top = offset.top;
-    
-    switch (dimensionsChoice) {
-        case ElementDimensionsChoice.Content:
-            //need function to remove the pixel
-            var paddingLeft = getElementEdgeLength(element,"padding-left");
-            var borderLeft = getElementEdgeLength(element, "border-left");
-            var paddingTop = getElementEdgeLength(element, "padding-top");
-            var borderTop = getElementEdgeLength(element, "border-top");
-            top = top + paddingTop + borderTop;
-            left = left + paddingLeft + borderLeft;
-            break;
-        case ElementDimensionsChoice.Padding:
-            var borderLeft = getElementEdgeLength(element, "border-left");
-            var borderTop = getElementEdgeLength(element, "border-top");
-            top = top + borderTop;
-            left = left + borderLeft;
-            break;
-        case ElementDimensionsChoice.PaddingAndBorder:
-            //no change
-            break;
-        case ElementDimensionsChoice.PaddingBorderMargin:
-            var marginLeft = getElementEdgeLength(element, "margin-left");
-            var marginTop = getElementEdgeLength(element, "margin-top");
-            top = top - marginTop;
-            left = left - marginLeft;
-            break;
-
-    }
-    return {
-        left: left,
-        top: top,
-        width: getElementWidth(element, dimensionsChoice),
-        height: getElementHeight(element, dimensionsChoice)
-    };
-}
-
-//so could wrap for TransitionOnEntering which removes the transition
-//DelayedTransitionOnEntering - no need as just use the transition property itself
-
-//then need Transition that is in place for Enter, gets removed and then does again on exit
-//exiting will add the transition again, removing on exited
-
-
-type TransitionState = "exited" | "exiting" | "entered" | "entering";
-
-interface TransitionHelperProps extends TransitionProps {
-    enterTransition: string,
-    exitTransition?: string,
-    enterStyle: React.CSSProperties,
-    exitStyle:React.CSSProperties
-}
-function getTime(date: Date) {
-    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() +
-        ":" + date.getMilliseconds(); 
-}
-interface TransitionHelperState {
-    in:boolean
-}
-class TransitionHelper extends React.Component<TransitionHelperProps, TransitionHelperState>{
-    inOnMount=false
-    constructor(props) {
-        super(props);
-        var isIn = false;
-        if (props.in) {
-            if (props.appear) {
-                this.inOnMount = true;
-            } else {
-                isIn = true;//not sure ....
-            }
-
-        }
-        this.state = {in:isIn}
-    }
-    componentWillReceiveProps(newProps) {
-        this.setState({ in: newProps.in });
-    }
-    
-    componentDidMount() {
-        var self = this;
-        if (this.inOnMount) {
-            this.requestAnimationStart(() => self.setState({ in: true}))
-        }
-    }
-    requestAnimationStart(callback) {
-        // Feature detect rAF, fallback to setTimeout
-        if (window.requestAnimationFrame) {
-            // Chrome and Safari have a bug where calling rAF once returns the current
-            // frame instead of the next frame, so we need to call a double rAF here.
-            // See https://crbug.com/675795 for more.
-            window.requestAnimationFrame(() => {
-                window.requestAnimationFrame(callback);
-            });
-        } else {
-            setTimeout(callback, 0);
-        }
-    }
-    
-    render() {
-        const { "in": inn,appear, ...passThroughProps } = this.props;
-        var transition = <Transition in={this.state.in}  {...passThroughProps}>
-            {(state: TransitionState) => {
-                var style:React.CSSProperties = {} ;
-                switch (state) {
-                    case "entering":
-                        
-                        
-                    case "entered":
-                        style = { ...this.props.enterStyle }
-                        style.transition = this.props.enterTransition;
-                        break;
-                    case "exiting":
-                        
-                    case "exited"://this is the state before in:true 
-                        style = { ...this.props.exitStyle };
-                        style.transition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
-                        break;
-                }
-                //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-                var childElement = this.props.children as React.ReactElement<any>;
-                
-                var childStyle = childElement.props.style;
-                var newStyle = { ...childStyle, ...style };
-                var newProps = {
-                    style: newStyle
-                }
-                var clonedElement = React.cloneElement(childElement, newProps);
-                return clonedElement;
-                
-
-                
-
-            }}
-        </Transition>
-        return transition;
-    }
-}
-
-
-enum ColourChangeType{lighten,darken,saturate,desaturate,fade,opaquer}
-//need to refactor the props interfaces - needs TransitionHelperProps with couple of omits
-interface ColourChangeTransitionProps {
-    change: number,
-    exitColour: string,
-    colourChangeType: ColourChangeType,
-    propName: string,
-
-    enterTransition: string,
-    exitTransition?: string,
-
-    inSignal: any
-
-    mountOnEnter?: boolean;
-    unmountOnExit?: boolean;
-    timeout: number | { enter?: number, exit?: number };
-    addEndListener?: EndHandler;
-    onEnter?: EnterHandler;
-    onEntering?: EnterHandler;
-    onEntered?: EnterHandler;
-    onExit?: ExitHandler;
-    onExiting?: ExitHandler;
-    onExited?: ExitHandler;
-    [prop: string]: any;
-    
-}
-class ColourChangeTransition extends React.Component<ColourChangeTransitionProps, undefined> {
-    render() {
-        var enterStyle = {};
-
-        var exitColor = Color(this.props.exitColour);
-        var enterColor;
-        var change = this.props.change;
-        //note that whiten/blacken is not css3!
-        switch (this.props.colourChangeType) {
-            case ColourChangeType.darken:
-                enterColor = exitColor.darken(change)
-                break;
-            case ColourChangeType.desaturate:
-                enterColor = exitColor.desaturate(change);
-                break;
-            case ColourChangeType.fade:
-                enterColor = exitColor.fade(change);
-                break;
-            case ColourChangeType.lighten:
-                enterColor = exitColor.lighten(change);
-                break;
-            case ColourChangeType.opaquer:
-                enterColor = exitColor.opaquer(change);
-                break;
-            case ColourChangeType.saturate:
-                enterColor = exitColor.saturate(change);
-                break;
-        }
-        var colorString = enterColor.toString();
-        enterStyle[this.props.propName] = colorString;//seems that once change to different model cannot go back
-
-        var exitStyle = {};
-        var exitColourString = exitColor.toString();
-        exitStyle[this.props.propName] = exitColourString;
-        return <AutoOutTransition  enterStyle={enterStyle} exitStyle={exitStyle} {...this.props} />
-    }
-}
-interface AutoOutTransitionProps extends TransitionHelperProps {
-    inSignal:any
-}
-interface AutoOutTransitionState {
-    in: boolean
-}
-class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
-    constructor(props) {
-        super(props);
-        this.state = {in:props.inSignal!==null}
-    }
-    initialRender=true
-    onEntered = (node: HTMLElement, isAppearing: boolean) => {
-        this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
-        this.setState({ in: false });
-    }
-
-
-    componentWillReceiveProps(newProps: TransitionHelperProps) {
-        if (newProps.inSignal !== null) {
-            if (newProps.inSignal !== this.props.inSignal) {
-                this.setState({ in: true });
-            }
-        } else {
-            this.setState({ in: false });
-        }
-    }
-    render() {
-        const {onEntered, inSignal, ...passThroughProps } = this.props;
-        return <TransitionHelper onEntered={this.onEntered} in={this.state.in} {...passThroughProps}/>
-    }
-}
-interface TransitionedState {
-    inSignal: any,
-    exitColour:string
-}
-class Transitioned extends React.Component<undefined, TransitionedState>{
-    constructor(props) {
-        super(props);
-        this.state = { inSignal: 0, exitColour:"yellow" }
-    }
-    setIn = () => {
-        if (this.state.inSignal === null) {
-            this.setState({ inSignal:0 })
-        } else {
-            this.setState({inSignal:this.state.inSignal+1})
-        }
-        
-    }
-    setOut = () => {
-        this.setState({inSignal:null})
-    }
-
-    changeColour = () => {
-        this.setState({ exitColour: "red"})
-    }
-    render() {
-        var duration = 5000;
-        return <div>
-            <button onClick={this.setIn}>In</button>
-            <button onClick={this.setOut}>Out</button>
-            <button onClick={this.changeColour}>Change colour</button>
-
-            <ColourChangeTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" exitColour={this.state.exitColour} colourChangeType={ColourChangeType.desaturate} change={0.6} enterTransition={`background-color ${duration}ms linear`} timeout={duration}>
-                
-                <div style={{
-                    height:300,width:300
-                    }}>
-                </div>
-            </ColourChangeTransition>
-
-            </div>
-    }
-}
-
-
-const duration = 5000;
-
-const defaultStyle = {
-    transition: `background-color ${duration}ms linear`,
-    
-}
-
-const transitionStyles = {
-    entering: { backgroundColor: "hsl(60, 40%, 50%)"},
-    entered: { backgroundColor: "hsl(60, 40%, 50%)" },
-    exiting: { backgroundColor: "rgb(255,255,0)" },
-    exited: { backgroundColor: "rgb(255,255,0)" }
-};
-
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
-    modalShouldOpen=()=> {
+    modalShouldOpen = () => {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
@@ -863,9 +996,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return {
             overlay: getOverlay(testOverlay)
         }
-        
+
     }
-    
+
     render() {
         return <StyleRoot>
             <Style
@@ -894,9 +1027,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
-                        
-                        <div style={{display:"inline-block"}}>
-                            <div style={{ marginTop: 10, marginBottom: 10}}>
+
+                        <div style={{ display: "inline-block" }}>
+                            <div style={{ marginTop: 10, marginBottom: 10 }}>
                                 <ConnectedScoreboard />
                             </div>
                             <ConnectedTicTacToeBoard />
@@ -908,8 +1041,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                             </div>
                         </ModalCover>
 
-                        
-                         
+
+
                     </div>
                 </HorizontalCenter>
             </VerticallyCenteredContainer>
@@ -928,107 +1061,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return message;
     }
 }
-class HorizontalCenter extends React.Component<undefined, undefined>{
-    render() {
-        return <div style={{ display: "table", margin: "0 auto"}}>
-            {this.props.children}
-            </div>
-    }
-}
-//not entirely sure that this typing is correct - https://github.com/reactjs/react-modal
-interface ModalClassNameProps {
-    base?: string,
-    afterOpen?: string,
-    beforeClose?:string
-}
-type classNameProps = string | ModalClassNameProps
-interface ModalStyle {
-    overlay ?: React.CSSProperties,
-    content ?:React.CSSProperties
-}
-interface ModalProps {
-    isOpen: boolean,
-    onAfterOpen?: () => any,
-    onRequestClose?: () => any,
-    closeTimeoutMS?: number,
-    contentLabel?: string,
-    aria?: {
-        [x:string]:string
-    },
-    style?: ModalStyle
-    className?: classNameProps,
-    overlayClassName?: classNameProps,
-    portalClassName?:string
-
-
-}
-interface ModalReadyProps extends ModalProps {
-    getStyle: () => ModalStyle
-}
-interface ModalReadyState {
-    ready:boolean
-}
-//if this works then will want a Modal class that will overlay an element
-class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
-    constructor(props) {
-        super(props)
-        this.state = { ready:false }
-    }
-    componentDidMount() {
-        this.setState({ ready: true })
-    }
-    render() {
-        if (!this.state.ready) {
-            return null;
-        }
-
-        return <Modal style={this.props.getStyle()} {...this.props} />
-    }
-}
-interface ModalCoverProps extends ModalProps {
-    elementSelector: string,
-    coverType?: ElementDimensionsChoice
-    contentStyle?: React.CSSProperties
-}
-class ModalCover extends React.Component<ModalCoverProps, undefined>{
-    static defaultProps = {
-        coverType: ElementDimensionsChoice.PaddingAndBorder
-    }
-    getStyle = ()=>{
-        return {
-            overlay: getOverlay(document.querySelector(this.props.elementSelector) as HTMLElement, this.props.coverType),
-            content: this.props.contentStyle
-        }
-    }
-    render() {
-        return <ModalReady {...this.props} getStyle={this.getStyle} />
-    }
-}
-//do as css properties and merged the two
-interface VerticallyCenteredContainerProps {
-    backgroundColor?:string
-}
-class VerticallyCenteredContainer extends React.Component<VerticallyCenteredContainerProps, undefined>{
-    render() {
-        var containerStyle: React.CSSProperties = {
-            display: "table",
-            position: "absolute",
-            height: "100%",
-            width: " 100%"
-        }
-        if (this.props.backgroundColor) {
-            containerStyle.backgroundColor = this.props.backgroundColor;
-        }
-        return <div style={containerStyle}>
-            <div style={{
-                display: "table-cell",
-                verticalAlign: "middle"}}>
-                {this.props.children}
-            </div>
-        </div>
-    }
-}
-
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
         gameState:state.gameState
@@ -1043,10 +1075,10 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
         }
     }
     })(TicTacToeApp);
+//#endregion
+//#endregion
 
 var store = createLocalStorageStore(reducer);
-
-
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedTicTacToeApp />

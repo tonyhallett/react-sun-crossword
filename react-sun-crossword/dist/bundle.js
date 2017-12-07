@@ -41874,6 +41874,8 @@ var Radium_1 = __webpack_require__(71);
 var Transition_1 = __webpack_require__(75);
 var Color = __webpack_require__(70);
 var componentBackgroundColor = "lightgray";
+//#region redux
+//#region redux state
 var SquareGo;
 (function (SquareGo) {
     SquareGo[SquareGo["X"] = 0] = "X";
@@ -41893,9 +41895,13 @@ var GameState;
     GameState[GameState["Draw"] = 3] = "Draw";
     GameState[GameState["FinishedConfirmed"] = 4] = "FinishedConfirmed";
 })(GameState || (GameState = {}));
+//#endregion
+//#region action types
 var Finished_Confirmed = "FINISHED_CONFIRMED";
 var Play_Again = "PLAY_AGAIN";
 var Take_Go = "TAKE_GO";
+//#endregion
+//#region action creators
 function finishedConfirmed() {
     return {
         type: Finished_Confirmed
@@ -41913,6 +41919,8 @@ function takeGo(row, column) {
         column: column
     };
 }
+//#endregion
+//#region state defaults
 var numRowsAndColumns = 4;
 function getDefaultBoard() {
     var rows = [];
@@ -41926,6 +41934,9 @@ function getDefaultBoard() {
     return rows;
 }
 var firstPlayer = Player.X;
+//#endregion
+//#region reducer 
+//#region check winner
 function checkWinner(board) {
     var winner = checkRowsWinner(board);
     if (winner === SquareGo.None) {
@@ -42039,6 +42050,7 @@ function checkDiagonalWinner(board) {
     }
     return checkSquareGo;
 }
+//#endregion
 function checkDraw(board) {
     var isDraw = true;
     for (var i = 0; i < board.length; i++) {
@@ -42135,6 +42147,430 @@ function reducer(state, action) {
             return state;
     }
 }
+//#endregion
+//#endregion
+//#region Layout Components
+var HorizontalCenter = /** @class */ (function (_super) {
+    __extends(HorizontalCenter, _super);
+    function HorizontalCenter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    HorizontalCenter.prototype.render = function () {
+        return React.createElement("div", { style: { display: "table", margin: "0 auto" } }, this.props.children);
+    };
+    return HorizontalCenter;
+}(React.Component));
+var VerticallyCenteredContainer = /** @class */ (function (_super) {
+    __extends(VerticallyCenteredContainer, _super);
+    function VerticallyCenteredContainer() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    VerticallyCenteredContainer.prototype.render = function () {
+        var containerStyle = {
+            display: "table",
+            position: "absolute",
+            height: "100%",
+            width: " 100%"
+        };
+        if (this.props.backgroundColor) {
+            containerStyle.backgroundColor = this.props.backgroundColor;
+        }
+        return React.createElement("div", { style: containerStyle },
+            React.createElement("div", { style: {
+                    display: "table-cell",
+                    verticalAlign: "middle"
+                } }, this.props.children));
+    };
+    return VerticallyCenteredContainer;
+}(React.Component));
+//#endregion
+//#region Modal
+var ElementDimensionsChoice;
+(function (ElementDimensionsChoice) {
+    ElementDimensionsChoice[ElementDimensionsChoice["Content"] = 0] = "Content";
+    ElementDimensionsChoice[ElementDimensionsChoice["PaddingAndBorder"] = 1] = "PaddingAndBorder";
+    ElementDimensionsChoice[ElementDimensionsChoice["Padding"] = 2] = "Padding";
+    ElementDimensionsChoice[ElementDimensionsChoice["PaddingBorderMargin"] = 3] = "PaddingBorderMargin";
+})(ElementDimensionsChoice || (ElementDimensionsChoice = {}));
+//to consider box sizing - another day !
+//http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
+function getElementWidth(element, dimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerWidth(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerWidth();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerWidth(true);
+        case ElementDimensionsChoice.Content:
+            return $el.width();
+    }
+}
+function getElementHeight(element, dimensionsChoice) {
+    var $el = $(element);
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.PaddingAndBorder:
+            return $el.outerHeight(false);
+        case ElementDimensionsChoice.Padding:
+            return $el.innerHeight();
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            return $el.outerHeight(true);
+        case ElementDimensionsChoice.Content:
+            return $el.height();
+    }
+}
+function getElementEdgeLength(element, lengthType) {
+    var $el = $(element);
+    return parseFloat($el.css(lengthType));
+}
+function getOverlay(element, dimensionsChoice) {
+    if (dimensionsChoice === void 0) { dimensionsChoice = ElementDimensionsChoice.PaddingAndBorder; }
+    var $element = $(element);
+    var offset = $element.offset(); //border-box
+    var left = offset.left;
+    var top = offset.top;
+    switch (dimensionsChoice) {
+        case ElementDimensionsChoice.Content:
+            var paddingLeft = getElementEdgeLength(element, "padding-left");
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var paddingTop = getElementEdgeLength(element, "padding-top");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + paddingTop + borderTop;
+            left = left + paddingLeft + borderLeft;
+            break;
+        case ElementDimensionsChoice.Padding:
+            var borderLeft = getElementEdgeLength(element, "border-left");
+            var borderTop = getElementEdgeLength(element, "border-top");
+            top = top + borderTop;
+            left = left + borderLeft;
+            break;
+        case ElementDimensionsChoice.PaddingAndBorder:
+            //no change
+            break;
+        case ElementDimensionsChoice.PaddingBorderMargin:
+            var marginLeft = getElementEdgeLength(element, "margin-left");
+            var marginTop = getElementEdgeLength(element, "margin-top");
+            top = top - marginTop;
+            left = left - marginLeft;
+            break;
+    }
+    return {
+        left: left,
+        top: top,
+        width: getElementWidth(element, dimensionsChoice),
+        height: getElementHeight(element, dimensionsChoice)
+    };
+}
+//if this works then will want a Modal class that will overlay an element
+var ModalReady = /** @class */ (function (_super) {
+    __extends(ModalReady, _super);
+    function ModalReady(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { ready: false };
+        return _this;
+    }
+    ModalReady.prototype.componentDidMount = function () {
+        this.setState({ ready: true });
+    };
+    ModalReady.prototype.render = function () {
+        if (!this.state.ready) {
+            return null;
+        }
+        return React.createElement(Modal, __assign({ style: this.props.getStyle() }, this.props));
+    };
+    return ModalReady;
+}(React.Component));
+var ModalCover = /** @class */ (function (_super) {
+    __extends(ModalCover, _super);
+    function ModalCover() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.getStyle = function () {
+            return {
+                overlay: getOverlay(document.querySelector(_this.props.elementSelector), _this.props.coverType),
+                content: _this.props.contentStyle
+            };
+        };
+        return _this;
+    }
+    ModalCover.prototype.render = function () {
+        return React.createElement(ModalReady, __assign({}, this.props, { getStyle: this.getStyle }));
+    };
+    ModalCover.defaultProps = {
+        coverType: ElementDimensionsChoice.PaddingAndBorder
+    };
+    return ModalCover;
+}(React.Component));
+function withInOnMount(Component) {
+    var inOnMount = /** @class */ (function (_super) {
+        __extends(InOnMount, _super);
+        function InOnMount(props) {
+            var _this = _super.call(this, props) || this;
+            _this.inOnMount = false;
+            var isIn = false;
+            if (props.in) {
+                if (props.appear) {
+                    _this.inOnMount = true;
+                }
+                else {
+                    isIn = true; //not sure ....
+                }
+            }
+            _this.state = { in: isIn };
+            return _this;
+        }
+        InOnMount.prototype.componentDidMount = function () {
+            var self = this;
+            if (this.inOnMount) {
+                this.requestAnimationStart(function () { return self.setState({ in: true }); });
+            }
+        };
+        InOnMount.prototype.requestAnimationStart = function (callback) {
+            // Feature detect rAF, fallback to setTimeout
+            if (window.requestAnimationFrame) {
+                // Chrome and Safari have a bug where calling rAF once returns the current
+                // frame instead of the next frame, so we need to call a double rAF here.
+                // See https://crbug.com/675795 for more.
+                window.requestAnimationFrame(function () {
+                    window.requestAnimationFrame(callback);
+                });
+            }
+            else {
+                setTimeout(callback, 0);
+            }
+        };
+        InOnMount.prototype.render = function () {
+            var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
+            var transitionProps = __assign({}, passThroughProps, { in: this.state.in });
+            return React.createElement(Component, __assign({}, transitionProps));
+        };
+        InOnMount.prototype.componentWillReceiveProps = function (newProps) {
+            this.setState({ in: newProps.in });
+        };
+        return InOnMount;
+    }(React.Component));
+    return inOnMount;
+}
+function withAutoOut(Component) {
+    var autoOut = /** @class */ (function (_super) {
+        __extends(AutoOutTransition, _super);
+        function AutoOutTransition(props) {
+            var _this = _super.call(this, props) || this;
+            _this.onEntered = function (node, isAppearing) {
+                _this.props.onEntered ? _this.props.onEntered(node, isAppearing) : void 0;
+                _this.setState({ in: false });
+            };
+            _this.state = { in: props.inSignal !== null };
+            return _this;
+        }
+        AutoOutTransition.prototype.componentWillReceiveProps = function (newProps) {
+            if (newProps.inSignal !== null) {
+                if (newProps.inSignal !== this.props.inSignal) {
+                    this.setState({ in: true });
+                }
+            }
+            else {
+                this.setState({ in: false });
+            }
+        };
+        AutoOutTransition.prototype.render = function () {
+            var _a = this.props, onEntered = _a.onEntered, inn = _a["in"], inSignal = _a.inSignal, passThroughProps = __rest(_a, ["onEntered", "in", "inSignal"]);
+            var transitionProps = __assign({}, passThroughProps, { onEntered: this.onEntered, in: this.state.in });
+            return React.createElement(Component, __assign({}, transitionProps));
+        };
+        return AutoOutTransition;
+    }(React.Component));
+    return autoOut;
+}
+var TransitionHelper = /** @class */ (function (_super) {
+    __extends(TransitionHelper, _super);
+    function TransitionHelper() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TransitionHelper.prototype.render = function () {
+        var _this = this;
+        var transition = React.createElement(Transition_1.default, __assign({}, this.props), function (state) {
+            var style = {};
+            switch (state) {
+                case "entering":
+                case "entered":
+                    style = __assign({}, _this.props.enterStyle);
+                    style.transition = _this.props.enterTransition;
+                    break;
+                case "exiting":
+                case "exited"://this is the state before in:true 
+                    style = __assign({}, _this.props.exitStyle);
+                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
+                    break;
+            }
+            //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
+            var childElement = _this.props.children;
+            var childStyle = childElement.props.style;
+            var newStyle = __assign({}, childStyle, style);
+            var newProps = {
+                style: newStyle
+            };
+            var clonedElement = React.cloneElement(childElement, newProps);
+            return clonedElement;
+        });
+        return transition;
+    };
+    return TransitionHelper;
+}(React.Component));
+var TransitionHelperOld = /** @class */ (function (_super) {
+    __extends(TransitionHelperOld, _super);
+    function TransitionHelperOld(props) {
+        var _this = _super.call(this, props) || this;
+        _this.inOnMount = false;
+        var isIn = false;
+        if (props.in) {
+            if (props.appear) {
+                _this.inOnMount = true;
+            }
+            else {
+                isIn = true; //not sure ....
+            }
+        }
+        _this.state = { in: isIn };
+        return _this;
+    }
+    TransitionHelperOld.prototype.componentWillReceiveProps = function (newProps) {
+        this.setState({ in: newProps.in });
+    };
+    TransitionHelperOld.prototype.componentDidMount = function () {
+        var self = this;
+        if (this.inOnMount) {
+            this.requestAnimationStart(function () { return self.setState({ in: true }); });
+        }
+    };
+    TransitionHelperOld.prototype.requestAnimationStart = function (callback) {
+        // Feature detect rAF, fallback to setTimeout
+        if (window.requestAnimationFrame) {
+            // Chrome and Safari have a bug where calling rAF once returns the current
+            // frame instead of the next frame, so we need to call a double rAF here.
+            // See https://crbug.com/675795 for more.
+            window.requestAnimationFrame(function () {
+                window.requestAnimationFrame(callback);
+            });
+        }
+        else {
+            setTimeout(callback, 0);
+        }
+    };
+    TransitionHelperOld.prototype.render = function () {
+        var _this = this;
+        var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
+        var transition = React.createElement(Transition_1.default, __assign({ in: this.state.in }, passThroughProps), function (state) {
+            var style = {};
+            switch (state) {
+                case "entering":
+                case "entered":
+                    style = __assign({}, _this.props.enterStyle);
+                    style.transition = _this.props.enterTransition;
+                    break;
+                case "exiting":
+                case "exited"://this is the state before in:true 
+                    style = __assign({}, _this.props.exitStyle);
+                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
+                    break;
+            }
+            //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
+            var childElement = _this.props.children;
+            var childStyle = childElement.props.style;
+            var newStyle = __assign({}, childStyle, style);
+            var newProps = {
+                style: newStyle
+            };
+            var clonedElement = React.cloneElement(childElement, newProps);
+            return clonedElement;
+        });
+        return transition;
+    };
+    return TransitionHelperOld;
+}(React.Component));
+//#endregion
+//#region ColourChangeTransition
+var ColourChangeType;
+(function (ColourChangeType) {
+    ColourChangeType[ColourChangeType["lighten"] = 0] = "lighten";
+    ColourChangeType[ColourChangeType["darken"] = 1] = "darken";
+    ColourChangeType[ColourChangeType["saturate"] = 2] = "saturate";
+    ColourChangeType[ColourChangeType["desaturate"] = 3] = "desaturate";
+    ColourChangeType[ColourChangeType["fade"] = 4] = "fade";
+    ColourChangeType[ColourChangeType["opaquer"] = 5] = "opaquer";
+})(ColourChangeType || (ColourChangeType = {}));
+var ColourChangeTransition = /** @class */ (function (_super) {
+    __extends(ColourChangeTransition, _super);
+    function ColourChangeTransition() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    ColourChangeTransition.prototype.render = function () {
+        var enterStyle = {};
+        var exitColor = Color(this.props.exitColour);
+        var enterColor;
+        var change = this.props.change;
+        //note that whiten/blacken is not css3!
+        switch (this.props.colourChangeType) {
+            case ColourChangeType.darken:
+                enterColor = exitColor.darken(change);
+                break;
+            case ColourChangeType.desaturate:
+                enterColor = exitColor.desaturate(change);
+                break;
+            case ColourChangeType.fade:
+                enterColor = exitColor.fade(change);
+                break;
+            case ColourChangeType.lighten:
+                enterColor = exitColor.lighten(change);
+                break;
+            case ColourChangeType.opaquer:
+                enterColor = exitColor.opaquer(change);
+                break;
+            case ColourChangeType.saturate:
+                enterColor = exitColor.saturate(change);
+                break;
+        }
+        var colorString = enterColor.toString();
+        enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
+        var exitStyle = {};
+        var exitColourString = exitColor.toString();
+        exitStyle[this.props.propName] = exitColourString;
+        return React.createElement(TransitionHelper, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
+    };
+    return ColourChangeTransition;
+}(React.Component));
+//#endregion
+//#region AutoOutTransition
+//interface AutoOutTransitionProps extends TransitionHelperProps {
+//    inSignal: any
+//}
+//class AutoOutTransition extends React.Component<AutoOutTransitionProps, AutoOutTransitionState>{
+//    constructor(props) {
+//        super(props);
+//        this.state = { in: props.inSignal !== null }
+//    }
+//    onEntered = (node: HTMLElement, isAppearing: boolean) => {
+//        this.props.onEntered ? this.props.onEntered(node, isAppearing) : void 0
+//        this.setState({ in: false });
+//    }
+//    componentWillReceiveProps(newProps: TransitionHelperProps) {
+//        if (newProps.inSignal !== null) {
+//            if (newProps.inSignal !== this.props.inSignal) {
+//                this.setState({ in: true });
+//            }
+//        } else {
+//            this.setState({ in: false });
+//        }
+//    }
+//    render() {
+//        const { onEntered, inSignal, ...passThroughProps } = this.props;
+//        return <TransitionHelper onEntered={this.onEntered} in={this.state.in} {...passThroughProps} />
+//    }
+//}
+//#endregion
+//assume that this is incorrect and should be passing in ColourChangeTransition instead
+var ColourChangeTransitionInOnMount = withInOnMount(ColourChangeTransition);
+var AutoOutColourChangeTransitionInOnMount = withAutoOut(ColourChangeTransitionInOnMount);
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -42167,7 +42603,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     };
     TicTacToeSquare.prototype.render = function () {
         var transitionDuration = 1000;
-        return React.createElement(ColourChangeTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
+        return React.createElement(AutoOutColourChangeTransitionInOnMount, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
             React.createElement("td", { style: {
                     color: this.props.squareGoColour,
                     textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
@@ -42237,42 +42673,6 @@ var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
         board: state.board
     };
 })(TicTacToeBoard);
-var PlayerView = /** @class */ (function (_super) {
-    __extends(PlayerView, _super);
-    function PlayerView() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    PlayerView.prototype.render = function () {
-        return React.createElement("div", { style: { width: 274, padding: 10, borderWidth: "3px", borderStyle: "solid", borderColor: this.props.currentColour, fontWeight: this.props.currentFontWeight, color: this.props.playerColour } },
-            React.createElement("div", null, this.props.playerText),
-            this.props.isWinner && React.createElement("div", null, "Winner !"));
-    };
-    return PlayerView;
-}(React.Component));
-var ConnectedPlayerView = react_redux_1.connect(function (state, ownProps) {
-    var playerColour = state.oColour;
-    if (ownProps.player === Player.X) {
-        playerColour = state.xColour;
-    }
-    var isWinner = false;
-    switch (state.gameState) {
-        case GameState.O:
-            isWinner = ownProps.player === Player.O;
-            break;
-        case GameState.X:
-            isWinner = ownProps.player === Player.X;
-            break;
-    }
-    var isCurrent = state.currentPlayer === ownProps.player;
-    var playerId = ownProps.player === Player.X ? "X" : "O";
-    return {
-        playerColour: playerColour,
-        isWinner: isWinner,
-        currentColour: isCurrent ? "green" : "black",
-        currentFontWeight: isCurrent ? "bolder" : "normal",
-        playerText: "Player " + playerId
-    };
-})(PlayerView);
 function addPaddingToStyle(style) {
     style.paddingTop = 5;
     style.paddingBottom = 5;
@@ -42326,280 +42726,6 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     };
     return ScoreboardPlayer;
 }(React.Component));
-var ElementDimensionsChoice;
-(function (ElementDimensionsChoice) {
-    ElementDimensionsChoice[ElementDimensionsChoice["Content"] = 0] = "Content";
-    ElementDimensionsChoice[ElementDimensionsChoice["PaddingAndBorder"] = 1] = "PaddingAndBorder";
-    ElementDimensionsChoice[ElementDimensionsChoice["Padding"] = 2] = "Padding";
-    ElementDimensionsChoice[ElementDimensionsChoice["PaddingBorderMargin"] = 3] = "PaddingBorderMargin";
-})(ElementDimensionsChoice || (ElementDimensionsChoice = {}));
-//to consider box sizing - another day !
-//http://blog.jquery.com/2012/08/16/jquery-1-8-box-sizing-width-csswidth-and-outerwidth/
-function getElementWidth(element, dimensionsChoice) {
-    var $el = $(element);
-    switch (dimensionsChoice) {
-        case ElementDimensionsChoice.PaddingAndBorder:
-            return $el.outerWidth(false);
-        case ElementDimensionsChoice.Padding:
-            return $el.innerWidth();
-        case ElementDimensionsChoice.PaddingBorderMargin:
-            return $el.outerWidth(true);
-        case ElementDimensionsChoice.Content:
-            return $el.width();
-    }
-}
-function getElementHeight(element, dimensionsChoice) {
-    var $el = $(element);
-    switch (dimensionsChoice) {
-        case ElementDimensionsChoice.PaddingAndBorder:
-            return $el.outerHeight(false);
-        case ElementDimensionsChoice.Padding:
-            return $el.innerHeight();
-        case ElementDimensionsChoice.PaddingBorderMargin:
-            return $el.outerHeight(true);
-        case ElementDimensionsChoice.Content:
-            return $el.height();
-    }
-}
-function getElementEdgeLength(element, lengthType) {
-    var $el = $(element);
-    return parseFloat($el.css(lengthType));
-}
-function getOverlay(element, dimensionsChoice) {
-    if (dimensionsChoice === void 0) { dimensionsChoice = ElementDimensionsChoice.PaddingAndBorder; }
-    var $element = $(element);
-    var offset = $element.offset(); //border-box
-    var left = offset.left;
-    var top = offset.top;
-    switch (dimensionsChoice) {
-        case ElementDimensionsChoice.Content:
-            //need function to remove the pixel
-            var paddingLeft = getElementEdgeLength(element, "padding-left");
-            var borderLeft = getElementEdgeLength(element, "border-left");
-            var paddingTop = getElementEdgeLength(element, "padding-top");
-            var borderTop = getElementEdgeLength(element, "border-top");
-            top = top + paddingTop + borderTop;
-            left = left + paddingLeft + borderLeft;
-            break;
-        case ElementDimensionsChoice.Padding:
-            var borderLeft = getElementEdgeLength(element, "border-left");
-            var borderTop = getElementEdgeLength(element, "border-top");
-            top = top + borderTop;
-            left = left + borderLeft;
-            break;
-        case ElementDimensionsChoice.PaddingAndBorder:
-            //no change
-            break;
-        case ElementDimensionsChoice.PaddingBorderMargin:
-            var marginLeft = getElementEdgeLength(element, "margin-left");
-            var marginTop = getElementEdgeLength(element, "margin-top");
-            top = top - marginTop;
-            left = left - marginLeft;
-            break;
-    }
-    return {
-        left: left,
-        top: top,
-        width: getElementWidth(element, dimensionsChoice),
-        height: getElementHeight(element, dimensionsChoice)
-    };
-}
-function getTime(date) {
-    return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() +
-        ":" + date.getMilliseconds();
-}
-var TransitionHelper = /** @class */ (function (_super) {
-    __extends(TransitionHelper, _super);
-    function TransitionHelper(props) {
-        var _this = _super.call(this, props) || this;
-        _this.inOnMount = false;
-        var isIn = false;
-        if (props.in) {
-            if (props.appear) {
-                _this.inOnMount = true;
-            }
-            else {
-                isIn = true; //not sure ....
-            }
-        }
-        _this.state = { in: isIn };
-        return _this;
-    }
-    TransitionHelper.prototype.componentWillReceiveProps = function (newProps) {
-        this.setState({ in: newProps.in });
-    };
-    TransitionHelper.prototype.componentDidMount = function () {
-        var self = this;
-        if (this.inOnMount) {
-            this.requestAnimationStart(function () { return self.setState({ in: true }); });
-        }
-    };
-    TransitionHelper.prototype.requestAnimationStart = function (callback) {
-        // Feature detect rAF, fallback to setTimeout
-        if (window.requestAnimationFrame) {
-            // Chrome and Safari have a bug where calling rAF once returns the current
-            // frame instead of the next frame, so we need to call a double rAF here.
-            // See https://crbug.com/675795 for more.
-            window.requestAnimationFrame(function () {
-                window.requestAnimationFrame(callback);
-            });
-        }
-        else {
-            setTimeout(callback, 0);
-        }
-    };
-    TransitionHelper.prototype.render = function () {
-        var _this = this;
-        var _a = this.props, inn = _a["in"], appear = _a.appear, passThroughProps = __rest(_a, ["in", "appear"]);
-        var transition = React.createElement(Transition_1.default, __assign({ in: this.state.in }, passThroughProps), function (state) {
-            var style = {};
-            switch (state) {
-                case "entering":
-                case "entered":
-                    style = __assign({}, _this.props.enterStyle);
-                    style.transition = _this.props.enterTransition;
-                    break;
-                case "exiting":
-                case "exited"://this is the state before in:true 
-                    style = __assign({}, _this.props.exitStyle);
-                    style.transition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
-                    break;
-            }
-            //should use the isValidElement guard https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
-            var childElement = _this.props.children;
-            var childStyle = childElement.props.style;
-            var newStyle = __assign({}, childStyle, style);
-            var newProps = {
-                style: newStyle
-            };
-            var clonedElement = React.cloneElement(childElement, newProps);
-            return clonedElement;
-        });
-        return transition;
-    };
-    return TransitionHelper;
-}(React.Component));
-var ColourChangeType;
-(function (ColourChangeType) {
-    ColourChangeType[ColourChangeType["lighten"] = 0] = "lighten";
-    ColourChangeType[ColourChangeType["darken"] = 1] = "darken";
-    ColourChangeType[ColourChangeType["saturate"] = 2] = "saturate";
-    ColourChangeType[ColourChangeType["desaturate"] = 3] = "desaturate";
-    ColourChangeType[ColourChangeType["fade"] = 4] = "fade";
-    ColourChangeType[ColourChangeType["opaquer"] = 5] = "opaquer";
-})(ColourChangeType || (ColourChangeType = {}));
-var ColourChangeTransition = /** @class */ (function (_super) {
-    __extends(ColourChangeTransition, _super);
-    function ColourChangeTransition() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    ColourChangeTransition.prototype.render = function () {
-        var enterStyle = {};
-        var exitColor = Color(this.props.exitColour);
-        var enterColor;
-        var change = this.props.change;
-        //note that whiten/blacken is not css3!
-        switch (this.props.colourChangeType) {
-            case ColourChangeType.darken:
-                enterColor = exitColor.darken(change);
-                break;
-            case ColourChangeType.desaturate:
-                enterColor = exitColor.desaturate(change);
-                break;
-            case ColourChangeType.fade:
-                enterColor = exitColor.fade(change);
-                break;
-            case ColourChangeType.lighten:
-                enterColor = exitColor.lighten(change);
-                break;
-            case ColourChangeType.opaquer:
-                enterColor = exitColor.opaquer(change);
-                break;
-            case ColourChangeType.saturate:
-                enterColor = exitColor.saturate(change);
-                break;
-        }
-        var colorString = enterColor.toString();
-        enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
-        var exitStyle = {};
-        var exitColourString = exitColor.toString();
-        exitStyle[this.props.propName] = exitColourString;
-        return React.createElement(AutoOutTransition, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
-    };
-    return ColourChangeTransition;
-}(React.Component));
-var AutoOutTransition = /** @class */ (function (_super) {
-    __extends(AutoOutTransition, _super);
-    function AutoOutTransition(props) {
-        var _this = _super.call(this, props) || this;
-        _this.initialRender = true;
-        _this.onEntered = function (node, isAppearing) {
-            _this.props.onEntered ? _this.props.onEntered(node, isAppearing) : void 0;
-            _this.setState({ in: false });
-        };
-        _this.state = { in: props.inSignal !== null };
-        return _this;
-    }
-    AutoOutTransition.prototype.componentWillReceiveProps = function (newProps) {
-        if (newProps.inSignal !== null) {
-            if (newProps.inSignal !== this.props.inSignal) {
-                this.setState({ in: true });
-            }
-        }
-        else {
-            this.setState({ in: false });
-        }
-    };
-    AutoOutTransition.prototype.render = function () {
-        var _a = this.props, onEntered = _a.onEntered, inSignal = _a.inSignal, passThroughProps = __rest(_a, ["onEntered", "inSignal"]);
-        return React.createElement(TransitionHelper, __assign({ onEntered: this.onEntered, in: this.state.in }, passThroughProps));
-    };
-    return AutoOutTransition;
-}(React.Component));
-var Transitioned = /** @class */ (function (_super) {
-    __extends(Transitioned, _super);
-    function Transitioned(props) {
-        var _this = _super.call(this, props) || this;
-        _this.setIn = function () {
-            if (_this.state.inSignal === null) {
-                _this.setState({ inSignal: 0 });
-            }
-            else {
-                _this.setState({ inSignal: _this.state.inSignal + 1 });
-            }
-        };
-        _this.setOut = function () {
-            _this.setState({ inSignal: null });
-        };
-        _this.changeColour = function () {
-            _this.setState({ exitColour: "red" });
-        };
-        _this.state = { inSignal: 0, exitColour: "yellow" };
-        return _this;
-    }
-    Transitioned.prototype.render = function () {
-        var duration = 5000;
-        return React.createElement("div", null,
-            React.createElement("button", { onClick: this.setIn }, "In"),
-            React.createElement("button", { onClick: this.setOut }, "Out"),
-            React.createElement("button", { onClick: this.changeColour }, "Change colour"),
-            React.createElement(ColourChangeTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", exitColour: this.state.exitColour, colourChangeType: ColourChangeType.desaturate, change: 0.6, enterTransition: "background-color " + duration + "ms linear", timeout: duration },
-                React.createElement("div", { style: {
-                        height: 300, width: 300
-                    } })));
-    };
-    return Transitioned;
-}(React.Component));
-var duration = 5000;
-var defaultStyle = {
-    transition: "background-color " + duration + "ms linear",
-};
-var transitionStyles = {
-    entering: { backgroundColor: "hsl(60, 40%, 50%)" },
-    entered: { backgroundColor: "hsl(60, 40%, 50%)" },
-    exiting: { backgroundColor: "rgb(255,255,0)" },
-    exited: { backgroundColor: "rgb(255,255,0)" }
-};
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp() {
@@ -42664,78 +42790,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
     };
     return TicTacToeApp;
 }(React.Component));
-var HorizontalCenter = /** @class */ (function (_super) {
-    __extends(HorizontalCenter, _super);
-    function HorizontalCenter() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    HorizontalCenter.prototype.render = function () {
-        return React.createElement("div", { style: { display: "table", margin: "0 auto" } }, this.props.children);
-    };
-    return HorizontalCenter;
-}(React.Component));
-//if this works then will want a Modal class that will overlay an element
-var ModalReady = /** @class */ (function (_super) {
-    __extends(ModalReady, _super);
-    function ModalReady(props) {
-        var _this = _super.call(this, props) || this;
-        _this.state = { ready: false };
-        return _this;
-    }
-    ModalReady.prototype.componentDidMount = function () {
-        this.setState({ ready: true });
-    };
-    ModalReady.prototype.render = function () {
-        if (!this.state.ready) {
-            return null;
-        }
-        return React.createElement(Modal, __assign({ style: this.props.getStyle() }, this.props));
-    };
-    return ModalReady;
-}(React.Component));
-var ModalCover = /** @class */ (function (_super) {
-    __extends(ModalCover, _super);
-    function ModalCover() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.getStyle = function () {
-            return {
-                overlay: getOverlay(document.querySelector(_this.props.elementSelector), _this.props.coverType),
-                content: _this.props.contentStyle
-            };
-        };
-        return _this;
-    }
-    ModalCover.prototype.render = function () {
-        return React.createElement(ModalReady, __assign({}, this.props, { getStyle: this.getStyle }));
-    };
-    ModalCover.defaultProps = {
-        coverType: ElementDimensionsChoice.PaddingAndBorder
-    };
-    return ModalCover;
-}(React.Component));
-var VerticallyCenteredContainer = /** @class */ (function (_super) {
-    __extends(VerticallyCenteredContainer, _super);
-    function VerticallyCenteredContainer() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    VerticallyCenteredContainer.prototype.render = function () {
-        var containerStyle = {
-            display: "table",
-            position: "absolute",
-            height: "100%",
-            width: " 100%"
-        };
-        if (this.props.backgroundColor) {
-            containerStyle.backgroundColor = this.props.backgroundColor;
-        }
-        return React.createElement("div", { style: containerStyle },
-            React.createElement("div", { style: {
-                    display: "table-cell",
-                    verticalAlign: "middle"
-                } }, this.props.children));
-    };
-    return VerticallyCenteredContainer;
-}(React.Component));
 var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         gameState: state.gameState
@@ -42750,6 +42804,8 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
         }
     };
 })(TicTacToeApp);
+//#endregion
+//#endregion
 var store = storage_1.createLocalStorageStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(ConnectedTicTacToeApp, null)), document.getElementById("example"));
