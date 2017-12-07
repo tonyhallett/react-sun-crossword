@@ -42516,6 +42516,17 @@ var demoStyle = {
         backgroundColor: "yellow"
     }
 };
+var TransitionWrapper = /** @class */ (function (_super) {
+    __extends(TransitionWrapper, _super);
+    function TransitionWrapper() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TransitionWrapper.prototype.render = function () {
+        //how do you get the state ?
+        return null;
+    };
+    return TransitionWrapper;
+}(React.Component));
 var Demo = /** @class */ (function (_super) {
     __extends(Demo, _super);
     function Demo(props) {
@@ -42532,11 +42543,15 @@ var Demo = /** @class */ (function (_super) {
     Demo.prototype.onEntering = function (node, appear) {
         console.log("OnEntering, appear : " + appear);
     };
+    /*
+
+    */
     Demo.prototype.render = function () {
         //then autoOut with kill
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
+            React.createElement("div", { style: { transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" } }),
             React.createElement(InOnMountTransition, { onEntering: this.onEntering, appear: true, in: this.state.in, timeout: demoTimeout }, function (state) {
                 return React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
             }));
@@ -42579,7 +42594,6 @@ var TicTacToeSquare = /** @class */ (function (_super) {
         return React.createElement(AutoOutColourChangeTransitionInOnMount, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
             React.createElement("td", { style: {
                     color: this.props.squareGoColour,
-                    transform: "rotate(0deg)",
                     textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
                 }, onClick: this.squareClicked }, this.props.squareText));
     };

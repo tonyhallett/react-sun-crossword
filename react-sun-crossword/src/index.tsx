@@ -726,6 +726,12 @@ const demoStyle = {
 interface DemoState {
     in:boolean
 }
+class TransitionWrapper extends React.Component<TransitionProps, undefined>{
+    render() {
+        //how do you get the state ?
+        return null;
+    }
+}
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
@@ -740,11 +746,15 @@ class Demo extends React.Component<undefined, DemoState>{
     in = () => {
         this.setState({ in: true })
     }
+    /*
+
+    */
     render() {
         //then autoOut with kill
         return <div>
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
+            <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor:"green" }}></div>
             <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
                 {(state: TransitionState) => {
                     return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
@@ -811,7 +821,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         return <AutoOutColourChangeTransitionInOnMount appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
             <td style={{
                 color: this.props.squareGoColour,
-                transform:"rotate(0deg)",
+                
                 textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
             }} onClick={this.squareClicked}>
                 {this.props.squareText}
