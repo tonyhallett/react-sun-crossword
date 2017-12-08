@@ -12,6 +12,14 @@ import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
 
+
+var radiumConfig = {
+    userAgent: "My made up browser"
+}
+function ConfiguredRadium(component) {
+    return Radium(radiumConfig)(component);
+}
+
 var componentBackgroundColor = "lightgray";
 //#region redux
 //#region redux state
@@ -778,12 +786,7 @@ const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(
 //should demonstrate in on mount with regular transition
 //same with autoOut - perhaps will be able to do kill and then to put kill in withAutoOut
 
-var radiumConfig = {
-    userAgent:"My made up browser"
-}
-function ConfiguredRadium(component) {
-    return Radium(radiumConfig)(component);
-}
+
 
 
 //const AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition)));
@@ -821,7 +824,6 @@ class TransitionWrapper extends React.Component<TransitionProps, undefined>{
         return null;
     }
 }
-//const DemoRadiumTransition = ConfiguredRadium(Transition);
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);

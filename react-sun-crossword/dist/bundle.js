@@ -41873,6 +41873,12 @@ var $ = __webpack_require__(72);
 var Radium = __webpack_require__(71);
 var Transition_1 = __webpack_require__(75);
 var Color = __webpack_require__(70);
+var radiumConfig = {
+    userAgent: "My made up browser"
+};
+function ConfiguredRadium(component) {
+    return Radium(radiumConfig)(component);
+}
 var componentBackgroundColor = "lightgray";
 //#region redux
 //#region redux state
@@ -42562,12 +42568,6 @@ function withColourChangeTransition(Component) {
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default))));
 //should demonstrate in on mount with regular transition
 //same with autoOut - perhaps will be able to do kill and then to put kill in withAutoOut
-var radiumConfig = {
-    userAgent: "My made up browser"
-};
-function ConfiguredRadium(component) {
-    return Radium(radiumConfig)(component);
-}
 //const AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition)));
 var demoDefaultStyle = {
     width: 300,
@@ -42604,7 +42604,6 @@ var TransitionWrapper = /** @class */ (function (_super) {
     };
     return TransitionWrapper;
 }(React.Component));
-//const DemoRadiumTransition = ConfiguredRadium(Transition);
 var Demo = /** @class */ (function (_super) {
     __extends(Demo, _super);
     function Demo(props) {
