@@ -741,10 +741,11 @@ class TransitionWrapper extends React.Component<TransitionProps, undefined>{
         return null;
     }
 }
+const DemoRadiumTransition = ConfiguredRadium(Transition);
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
-        this.state = { in: true };
+        this.state = { in: false };
     }
     onEntering(node: HTMLElement,appear:boolean) {
         console.log("OnEntering, appear : " + appear);
@@ -756,26 +757,30 @@ class Demo extends React.Component<undefined, DemoState>{
         this.setState({ in: true })
     }
     /*
-    return <div>
-            <button onClick={this.out}>out</button>
-            <button onClick={this.in}>in</button >
-
-            <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor:"green" }}></div>
-            <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
+    <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
                 {(state: TransitionState) => {
-                    return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
+                    return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }} />
 
                 }}
             </InOnMountTransition>
-            </div>
     */
     render() {
+        return <div>
+            <button onClick={this.out}>out</button>
+            <button onClick={this.in}>in</button >
 
-        return <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" }}></div>
+
+            <DemoRadiumTransition   in={this.state.in} timeout={demoTimeout}>
+                {(state: TransitionState) => {
+                    return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }} />
+
+                }}
+            </DemoRadiumTransition>
+        </div>
+       
     }
 }
-//const DemoRadium = ConfiguredRadium(Demo);
-const DemoRadium = Demo;
+
 //#endregion
 
 //#region App components
@@ -992,31 +997,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
     }
     /*
-    <VerticallyCenteredContainer backgroundColor="orange">
-                <HorizontalCenter>
-                    <div style={{ backgroundColor: "gray", padding: 10 }}>
-                        <DemoRadium/>
-                        <div style={{ display: "inline-block" }}>
-                            <div style={{ marginTop: 10, marginBottom: 10 }}>
-                                <ConnectedScoreboard />
-                            </div>
-                            <ConnectedTicTacToeBoard />
-                            <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
-                        </div>
-                        <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                                {this.getWinDrawMessage()}
-                            </div>
-                        </ModalCover>
+    
 
-
-
-                    </div>
-                </HorizontalCenter>
-            </VerticallyCenteredContainer>
-    */
-    render() {
-        return <StyleRoot radiumConfig={{ userAgent:"Made this one up" }}>
+    <StyleRoot>
             <Style
                 rules={{
                     body: {
@@ -1040,8 +1023,34 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     }
                 }}
             />
-            <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" }}></div>
-        </StyleRoot>
+
+
+    <ConnectedTicTacToeBoard />
+    */
+    render() {
+        return <VerticallyCenteredContainer backgroundColor="orange">
+            <HorizontalCenter>
+                <div style={{ backgroundColor: "gray", padding: 10 }}>
+                    <Demo />
+                    <div style={{ display: "inline-block" }}>
+                        <div style={{ marginTop: 10, marginBottom: 10 }}>
+                            <ConnectedScoreboard />
+                        </div>
+                        
+                        <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                    </div>
+                    <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                        <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                            {this.getWinDrawMessage()}
+                        </div>
+                    </ModalCover>
+
+
+
+                </div>
+            </HorizontalCenter>
+        </VerticallyCenteredContainer>
+            
     }
     getWinDrawMessage() {
         var message = "Game drawn";
