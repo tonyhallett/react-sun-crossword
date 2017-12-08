@@ -1118,7 +1118,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return <VerticallyCenteredContainer backgroundColor="orange">
             <HorizontalCenter>
                 <div style={{ backgroundColor: "gray", padding: 10 }}>
-                    
+                    <Demo/>
                     <div style={{ display: "inline-block" }}>
                         <div style={{ marginTop: 10, marginBottom: 10 }}>
                             <ConnectedScoreboard />
