@@ -714,14 +714,15 @@ function transitionHelperFn(cb: TransitionHelperCallbackFunction, provider?: Tra
     return transitionHelper;
         
 }
+//refactor to method that takes in props ( HOC same code )
 var colourTransitionProvider: TransitionProvider = function (state: TransitionState, props: TransitionHelperProps){
     var enterStyle = {};
 
-    var exitColor = Color(this.props.exitColour);
+    var exitColor = Color(props.exitColour);
     var enterColor;
-    var changeAmount = this.props.change;
+    var changeAmount = props.change;
     //note that whiten/blacken is not css3!
-    switch (this.props.colourChangeType) {
+    switch (props.colourChangeType) {
         case ColourChangeType.darken:
             enterColor = exitColor.darken(changeAmount)
             break;
@@ -742,11 +743,11 @@ var colourTransitionProvider: TransitionProvider = function (state: TransitionSt
             break;
     }
     var colorString = enterColor.toString();
-    enterStyle[this.props.propName] = colorString;//seems that once change to different model cannot go back
+    enterStyle[props.propName] = colorString;//seems that once change to different model cannot go back
 
     var exitStyle = {};
     var exitColourString = exitColor.toString();
-    exitStyle[this.props.propName] = exitColourString;
+    exitStyle[props.propName] = exitColourString;
     return {
         enterStyle: enterStyle,
         exitStyle: exitStyle,
