@@ -42456,11 +42456,14 @@ var ColourChangeType;
 })(ColourChangeType || (ColourChangeType = {}));
 //despite this might want to have as a component that has the function and calls through with the information 
 //to a child function.....
+/*
+THE TRANSITIONPROVIDER KNOWS WHAT ADDITIONAL PROPS ON THE TRANSITION which will be stripped of TRANSITIONPROPS ( Need Omit )
+
+*/
+var defaultProvider = function (state, props) {
+    return props;
+};
 function transitionHelperFn(cb, provider) {
-    var defaultProvider = function (state, props) {
-        return null;
-    };
-    provider = provider ? provider : defaultProvider;
     var transitionHelper = function (state, props) {
         var res = provider(state, props);
         var stateStyle;
@@ -42569,7 +42572,7 @@ var AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.d
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(AutoOutInOnMount);
 var demoTimeout = {
     enter: 1000,
-    exit: 5000
+    exit: 1000
 };
 var demoStyle = {
     entering: {
@@ -42596,12 +42599,12 @@ var Demo = /** @class */ (function (_super) {
     function Demo(props) {
         var _this = _super.call(this, props) || this;
         _this.out = function () {
-            _this.setState({ in: false });
+            _this.setState({ in: null });
         };
         _this.in = function () {
-            _this.setState({ in: true });
+            _this.setState({ in: {} });
         };
-        _this.state = { in: true };
+        _this.state = { in: {} };
         return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {
@@ -42613,7 +42616,7 @@ var Demo = /** @class */ (function (_super) {
             </AutoOutInOnMountColourChangeRadiumTransition>
     */
     Demo.prototype.render = function () {
-        //lose the typing
+        //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),

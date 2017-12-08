@@ -667,33 +667,41 @@ enum ColourChangeType { lighten, darken, saturate, desaturate, fade, opaquer }
     [prop: string]: any;
 
 */
-interface ColourChangeTransitionProps extends TransitionProps, TransitionHelperTransitionProps {
+interface ColourChangeOwnProps {
     change: number,
     exitColour: string,
     colourChangeType: ColourChangeType,
     propName: string,
-
 }
+interface ColourChangeProps extends ColourChangeOwnProps, TransitionHelperTransitionProps { }
+interface ColourChangeTransitionProps extends TransitionProps, ColourChangeProps { }
 
-interface TransitionProvider {
-    (state: TransitionState, props: TransitionHelperProps):TransitionOwnProps
+interface TransitionProvider<P> {
+    (state: TransitionState, props: P):TransitionOwnProps
 }
 //need to type return properly
 
-interface TransitionHelperChildFunction {
-    (state: TransitionState, props: TransitionHelperProps): React.ReactNode
+interface TransitionHelperChildFunction<P> {
+    (state: TransitionState, props: P): React.ReactNode
 }
-interface TransitionHelperCallbackFunction {
-    (state: TransitionState, props: TransitionHelperProps, stateStyle: React.CSSProperties, stateTransition: string): React.ReactNode
+interface TransitionHelperCallbackFunction<P> {
+    (state: TransitionState, props: P, stateStyle: React.CSSProperties, stateTransition: string): React.ReactNode
 }
 //despite this might want to have as a component that has the function and calls through with the information 
 //to a child function.....
-function transitionHelperFn(cb: TransitionHelperCallbackFunction, provider?: TransitionProvider) {
-    var defaultProvider: TransitionProvider = function (state: TransitionState, props: TransitionHelperProps) {
-        return null;
-    }
-    provider = provider ? provider : defaultProvider;
-    var transitionHelper: TransitionHelperChildFunction = function (state: TransitionState, props: TransitionHelperProps) {
+
+/*
+THE TRANSITIONPROVIDER KNOWS WHAT ADDITIONAL PROPS ON THE TRANSITION which will be stripped of TRANSITIONPROPS ( Need Omit )
+
+*/
+var defaultProvider: TransitionProvider<TransitionOwnProps> = function (state: TransitionState, props: TransitionOwnProps) {
+    return props;
+}
+
+function transitionHelperFn<P>(cb: TransitionHelperCallbackFunction<P>, provider: TransitionProvider<P>) {
+    
+    
+    var transitionHelper: TransitionHelperChildFunction<P> = function (state: TransitionState, props: P) {
         var res = provider(state, props);
         var stateStyle: React.CSSProperties;
         var stateTransition: string;
@@ -714,8 +722,9 @@ function transitionHelperFn(cb: TransitionHelperCallbackFunction, provider?: Tra
     return transitionHelper;
         
 }
+
 //refactor to method that takes in props ( HOC same code )
-var colourTransitionProvider: TransitionProvider = function (state: TransitionState, props: TransitionHelperProps){
+var colourTransitionProvider: TransitionProvider<ColourChangeProps> = function (state: TransitionState, props: ColourChangeProps){
     var enterStyle = {};
 
     var exitColor = Color(props.exitColour);
@@ -807,7 +816,7 @@ const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(
 
 const demoTimeout = {
     enter: 1000,
-    exit:5000
+    exit:1000
 };
 const demoStyle = {
     entering: {
@@ -830,22 +839,22 @@ const demoDefaultStyle = {
     height:300
 }
 interface DemoState {
-    in:boolean
+    in:any
 }
 
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
-        this.state = { in: true };
+        this.state = { in: {} };
     }
     onEntering(node: HTMLElement,appear:boolean) {
         console.log("OnEntering, appear : " + appear);
     }
     out = () => {
-        this.setState({in:false})
+        this.setState({in:null})
     }
     in = () => {
-        this.setState({ in: true })
+        this.setState({ in: {} })
     }
     /*
     <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
@@ -853,7 +862,7 @@ class Demo extends React.Component<undefined, DemoState>{
             </AutoOutInOnMountColourChangeRadiumTransition>
     */
     render() {
-        //lose the typing
+        //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
         
         return <div>
             <button onClick={this.out}>out</button>
@@ -861,8 +870,8 @@ class Demo extends React.Component<undefined, DemoState>{
 
             <AutoOutInOnMount appear={true} inSignal={this.state.in} timeout={demoTimeout} propName="backgroundColor" enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
                 {
-                    transitionHelperFn((state: TransitionState, props: TransitionHelperProps, stateStyle: React.CSSProperties, stateTransition: string) => {
-                        return <div style={[demoDefaultStyle, stateStyle, {transition:stateTransition}]}></div>
+                    transitionHelperFn((state: TransitionState, props: ColourChangeProps, stateStyle: React.CSSProperties, stateTransition: string) => {
+                        return <div style={[demoDefaultStyle, stateStyle, { transition: stateTransition }]}></div>
                     }, colourTransitionProvider)
                 }
             </AutoOutInOnMount>
