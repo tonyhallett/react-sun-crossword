@@ -786,7 +786,7 @@ function ConfiguredRadium(component) {
 }
 
 
-const AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition)));
+//const AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition)));
 
 const demoDefaultStyle = {
     width: 300,
@@ -821,7 +821,7 @@ class TransitionWrapper extends React.Component<TransitionProps, undefined>{
         return null;
     }
 }
-const DemoRadiumTransition = ConfiguredRadium(Transition);
+//const DemoRadiumTransition = ConfiguredRadium(Transition);
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
@@ -860,7 +860,7 @@ class Demo extends React.Component<undefined, DemoState>{
             <button onClick={this.in}>in</button >
 
             <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
-                <div style={{width:300,height:300,transfrom:"rotate(10deg)"}}></div>
+                <div style={{width:300,height:300,transform:"rotate(10deg)"}}></div>
             </AutoOutInOnMountColourChangeRadiumTransition>
 
         </div>

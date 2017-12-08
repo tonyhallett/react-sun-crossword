@@ -42568,7 +42568,7 @@ var radiumConfig = {
 function ConfiguredRadium(component) {
     return Radium(radiumConfig)(component);
 }
-var AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default)));
+//const AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition)));
 var demoDefaultStyle = {
     width: 300,
     height: 300
@@ -42604,7 +42604,7 @@ var TransitionWrapper = /** @class */ (function (_super) {
     };
     return TransitionWrapper;
 }(React.Component));
-var DemoRadiumTransition = ConfiguredRadium(Transition_1.default);
+//const DemoRadiumTransition = ConfiguredRadium(Transition);
 var Demo = /** @class */ (function (_super) {
     __extends(Demo, _super);
     function Demo(props) {
@@ -42644,7 +42644,7 @@ var Demo = /** @class */ (function (_super) {
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
             React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.in, propName: "backgroundColor", timeout: demoTimeout, enterTransition: "background-color " + demoTimeout.enter + "ms linear", exitTransition: "background-color " + demoTimeout.exit + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
-                React.createElement("div", { style: { width: 300, height: 300, transfrom: "rotate(10deg)" } })));
+                React.createElement("div", { style: { width: 300, height: 300, transform: "rotate(10deg)" } })));
     };
     return Demo;
 }(React.Component));
