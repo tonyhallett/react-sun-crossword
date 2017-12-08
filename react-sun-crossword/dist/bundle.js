@@ -42643,7 +42643,7 @@ var Demo = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.in, propName: "backgroundColor", timeout: demoTimeout, enterTransition: "background-color " + demoTimeout + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
+            React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.in, propName: "backgroundColor", timeout: demoTimeout, enterTransition: "background-color " + demoTimeout.enter + "ms linear", exitTransition: "background-color " + demoTimeout.exit + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
                 React.createElement("div", { style: { width: 300, height: 300, transfrom: "rotate(10deg)" } })));
     };
     return Demo;

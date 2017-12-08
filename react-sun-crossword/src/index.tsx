@@ -859,7 +859,7 @@ class Demo extends React.Component<undefined, DemoState>{
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
 
-            <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+            <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
                 <div style={{width:300,height:300,transfrom:"rotate(10deg)"}}></div>
             </AutoOutInOnMountColourChangeRadiumTransition>
 
