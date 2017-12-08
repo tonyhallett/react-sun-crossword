@@ -1026,6 +1026,11 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
 
     <ConnectedTicTacToeBoard />
+    <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                        <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                            {this.getWinDrawMessage()}
+                        </div>
+                    </ModalCover>
     */
     render() {
         return <VerticallyCenteredContainer backgroundColor="orange">
@@ -1039,11 +1044,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                         
                         <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
-                    <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                        <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                            {this.getWinDrawMessage()}
-                        </div>
-                    </ModalCover>
+                    
 
 
 
