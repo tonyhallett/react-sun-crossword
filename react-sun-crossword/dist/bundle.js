@@ -42496,8 +42496,7 @@ var radiumConfig = {
 function ConfiguredRadium(component) {
     return Radium(radiumConfig)(component);
 }
-//const InOnMountTransition = withInOnMount(ConfiguredRadium(Transition));
-var InOnMountTransition = withInOnMount(Transition_1.default);
+var AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default)));
 var demoDefaultStyle = {
     width: 300,
     height: 300
@@ -42544,25 +42543,20 @@ var Demo = /** @class */ (function (_super) {
         _this.in = function () {
             _this.setState({ in: true });
         };
-        _this.state = { in: false };
+        _this.state = { in: true };
         return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {
         console.log("OnEntering, appear : " + appear);
     };
     /*
-    <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
-                {(state: TransitionState) => {
-                    return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }} />
-
-                }}
-            </InOnMountTransition>
+    
     */
     Demo.prototype.render = function () {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement(DemoRadiumTransition, { in: this.state.in, timeout: demoTimeout }, function (state) {
+            React.createElement(AutoOutInOnMountTransition, { appear: true, inSignal: this.state.in, timeout: demoTimeout }, function (state) {
                 return React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
             }));
     };

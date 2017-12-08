@@ -706,8 +706,9 @@ function ConfiguredRadium(component) {
     return Radium(radiumConfig)(component);
 }
 
-//const InOnMountTransition = withInOnMount(ConfiguredRadium(Transition));
-const InOnMountTransition = withInOnMount(Transition);
+
+const AutoOutInOnMountTransition = withAutoOut(withInOnMount(ConfiguredRadium(Transition)));
+
 const demoDefaultStyle = {
     width: 300,
     height:300
@@ -745,7 +746,7 @@ const DemoRadiumTransition = ConfiguredRadium(Transition);
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
-        this.state = { in: false };
+        this.state = { in: true };
     }
     onEntering(node: HTMLElement,appear:boolean) {
         console.log("OnEntering, appear : " + appear);
@@ -757,25 +758,20 @@ class Demo extends React.Component<undefined, DemoState>{
         this.setState({ in: true })
     }
     /*
-    <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
-                {(state: TransitionState) => {
-                    return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }} />
-
-                }}
-            </InOnMountTransition>
+    
     */
     render() {
         return <div>
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
-
-
-            <DemoRadiumTransition   in={this.state.in} timeout={demoTimeout}>
+            <AutoOutInOnMountTransition appear={true} inSignal={this.state.in} timeout={demoTimeout}>
                 {(state: TransitionState) => {
                     return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }} />
 
                 }}
-            </DemoRadiumTransition>
+            </AutoOutInOnMountTransition>
+
+
         </div>
        
     }
