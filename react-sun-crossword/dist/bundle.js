@@ -42454,6 +42454,71 @@ var ColourChangeType;
     ColourChangeType[ColourChangeType["fade"] = 4] = "fade";
     ColourChangeType[ColourChangeType["opaquer"] = 5] = "opaquer";
 })(ColourChangeType || (ColourChangeType = {}));
+//despite this might want to have as a component that has the function and calls through with the information 
+//to a child function.....
+function transitionHelperFn(cb, provider) {
+    var defaultProvider = function (state, props) {
+        return null;
+    };
+    provider = provider ? provider : defaultProvider;
+    var transitionHelper = function (state, props) {
+        var res = provider(state, props);
+        var stateStyle;
+        var stateTransition;
+        switch (state) {
+            case "entering":
+            case "entered":
+                stateStyle = res.enterStyle;
+                stateTransition = res.enterTransition;
+                break;
+            case "exiting":
+            case "exited":
+                stateStyle = res.exitStyle;
+                stateTransition = res.exitTransition ? res.exitTransition : res.enterTransition;
+                break;
+        }
+        return cb(state, props, stateStyle, stateTransition);
+    };
+    return transitionHelper;
+}
+var colourTransitionProvider = function (state, props) {
+    var enterStyle = {};
+    var exitColor = Color(this.props.exitColour);
+    var enterColor;
+    var changeAmount = this.props.change;
+    //note that whiten/blacken is not css3!
+    switch (this.props.colourChangeType) {
+        case ColourChangeType.darken:
+            enterColor = exitColor.darken(changeAmount);
+            break;
+        case ColourChangeType.desaturate:
+            enterColor = exitColor.desaturate(changeAmount);
+            break;
+        case ColourChangeType.fade:
+            enterColor = exitColor.fade(changeAmount);
+            break;
+        case ColourChangeType.lighten:
+            enterColor = exitColor.lighten(changeAmount);
+            break;
+        case ColourChangeType.opaquer:
+            enterColor = exitColor.opaquer(changeAmount);
+            break;
+        case ColourChangeType.saturate:
+            enterColor = exitColor.saturate(changeAmount);
+            break;
+    }
+    var colorString = enterColor.toString();
+    enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
+    var exitStyle = {};
+    var exitColourString = exitColor.toString();
+    exitStyle[this.props.propName] = exitColourString;
+    return {
+        enterStyle: enterStyle,
+        exitStyle: exitStyle,
+        enterTransition: props.enterTransition,
+        exitTransition: props.exitTransition
+    };
+};
 function withColourChangeTransition(Component) {
     var TransitionHelper = withTransitionHelper(Component);
     var colourChangeTransition = /** @class */ (function (_super) {
@@ -42499,11 +42564,8 @@ function withColourChangeTransition(Component) {
     }(React.Component));
     return colourChangeTransition;
 }
-var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default))));
-var demoDefaultStyle = {
-    width: 300,
-    height: 300
-};
+var AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default)));
+var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(AutoOutInOnMount);
 var demoTimeout = {
     enter: 1000,
     exit: 5000
@@ -42524,17 +42586,10 @@ var demoStyle = {
         backgroundColor: "yellow"
     }
 };
-var TransitionWrapper = /** @class */ (function (_super) {
-    __extends(TransitionWrapper, _super);
-    function TransitionWrapper() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    TransitionWrapper.prototype.render = function () {
-        //how do you get the state ?
-        return null;
-    };
-    return TransitionWrapper;
-}(React.Component));
+var demoDefaultStyle = {
+    width: 300,
+    height: 300
+};
 var Demo = /** @class */ (function (_super) {
     __extends(Demo, _super);
     function Demo(props) {
@@ -42551,12 +42606,19 @@ var Demo = /** @class */ (function (_super) {
     Demo.prototype.onEntering = function (node, appear) {
         console.log("OnEntering, appear : " + appear);
     };
+    /*
+    <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+                <div style={{width:300,height:300,transform:"rotate(10deg)"}}></div>
+            </AutoOutInOnMountColourChangeRadiumTransition>
+    */
     Demo.prototype.render = function () {
+        //lose the typing
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.in, propName: "backgroundColor", timeout: demoTimeout, enterTransition: "background-color " + demoTimeout.enter + "ms linear", exitTransition: "background-color " + demoTimeout.exit + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
-                React.createElement("div", { style: { width: 300, height: 300, transform: "rotate(10deg)" } })));
+            React.createElement(AutoOutInOnMount, { appear: true, inSignal: this.state.in, timeout: demoTimeout, propName: "backgroundColor", enterTransition: "background-color " + demoTimeout.enter + "ms linear", exitTransition: "background-color " + demoTimeout.exit + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten }, transitionHelperFn(function (state, props, stateStyle, stateTransition) {
+                return React.createElement("div", { style: [demoDefaultStyle, stateStyle, { transition: stateTransition }] });
+            }, colourTransitionProvider)));
     };
     return Demo;
 }(React.Component));

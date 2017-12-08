@@ -599,7 +599,8 @@ interface TransitionHelperStyleProps {
     enterStyle: React.CSSProperties,
     exitStyle: React.CSSProperties
 }
-interface TransitionHelperProps extends TransitionProps, TransitionHelperTransitionProps, TransitionHelperStyleProps { }
+interface TransitionOwnProps extends  TransitionHelperTransitionProps, TransitionHelperStyleProps { }
+interface TransitionHelperProps extends TransitionProps, TransitionOwnProps { }
 interface TransitionHelperState {
     in: boolean
 }
@@ -674,6 +675,87 @@ interface ColourChangeTransitionProps extends TransitionProps, TransitionHelperT
 
 }
 
+interface TransitionProvider {
+    (state: TransitionState, props: TransitionHelperProps):TransitionOwnProps
+}
+//need to type return properly
+
+interface TransitionHelperChildFunction {
+    (state: TransitionState, props: TransitionHelperProps): React.ReactNode
+}
+interface TransitionHelperCallbackFunction {
+    (state: TransitionState, props: TransitionHelperProps, stateStyle: React.CSSProperties, stateTransition: string): React.ReactNode
+}
+//despite this might want to have as a component that has the function and calls through with the information 
+//to a child function.....
+function transitionHelperFn(cb: TransitionHelperCallbackFunction, provider?: TransitionProvider) {
+    var defaultProvider: TransitionProvider = function (state: TransitionState, props: TransitionHelperProps) {
+        return null;
+    }
+    provider = provider ? provider : defaultProvider;
+    var transitionHelper: TransitionHelperChildFunction = function (state: TransitionState, props: TransitionHelperProps) {
+        var res = provider(state, props);
+        var stateStyle: React.CSSProperties;
+        var stateTransition: string;
+        switch (state) {
+            case "entering":
+            case "entered":
+                stateStyle = res.enterStyle;
+                stateTransition = res.enterTransition;
+                break;
+            case "exiting":
+            case "exited":
+                stateStyle = res.exitStyle;
+                stateTransition = res.exitTransition ? res.exitTransition : res.enterTransition;
+                break;
+        }
+        return cb(state, props, stateStyle, stateTransition);
+    }
+    return transitionHelper;
+        
+}
+var colourTransitionProvider: TransitionProvider = function (state: TransitionState, props: TransitionHelperProps){
+    var enterStyle = {};
+
+    var exitColor = Color(this.props.exitColour);
+    var enterColor;
+    var changeAmount = this.props.change;
+    //note that whiten/blacken is not css3!
+    switch (this.props.colourChangeType) {
+        case ColourChangeType.darken:
+            enterColor = exitColor.darken(changeAmount)
+            break;
+        case ColourChangeType.desaturate:
+            enterColor = exitColor.desaturate(changeAmount);
+            break;
+        case ColourChangeType.fade:
+            enterColor = exitColor.fade(changeAmount);
+            break;
+        case ColourChangeType.lighten:
+            enterColor = exitColor.lighten(changeAmount);
+            break;
+        case ColourChangeType.opaquer:
+            enterColor = exitColor.opaquer(changeAmount);
+            break;
+        case ColourChangeType.saturate:
+            enterColor = exitColor.saturate(changeAmount);
+            break;
+    }
+    var colorString = enterColor.toString();
+    enterStyle[this.props.propName] = colorString;//seems that once change to different model cannot go back
+
+    var exitStyle = {};
+    var exitColourString = exitColor.toString();
+    exitStyle[this.props.propName] = exitColourString;
+    return {
+        enterStyle: enterStyle,
+        exitStyle: exitStyle,
+        enterTransition: props.enterTransition,
+        exitTransition: props.exitTransition
+    }
+}
+
+
 function withColourChangeTransition(Component: React.ComponentClass<TransitionProps >) {
 
     var TransitionHelper = withTransitionHelper(Component);
@@ -718,12 +800,10 @@ function withColourChangeTransition(Component: React.ComponentClass<TransitionPr
     return colourChangeTransition;
 }
 
-const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(withAutoOut(withInOnMount(ConfiguredRadium(Transition))));
+const AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition)))
+const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(AutoOutInOnMount);
 
-const demoDefaultStyle = {
-    width: 300,
-    height:300
-}
+
 const demoTimeout = {
     enter: 1000,
     exit:5000
@@ -744,15 +824,14 @@ const demoStyle = {
         backgroundColor:"yellow"
     }
 }
+const demoDefaultStyle = {
+    width: 300,
+    height:300
+}
 interface DemoState {
     in:boolean
 }
-class TransitionWrapper extends React.Component<TransitionProps, undefined>{
-    render() {
-        //how do you get the state ?
-        return null;
-    }
-}
+
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
@@ -767,15 +846,25 @@ class Demo extends React.Component<undefined, DemoState>{
     in = () => {
         this.setState({ in: true })
     }
-
+    /*
+    <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+                <div style={{width:300,height:300,transform:"rotate(10deg)"}}></div>
+            </AutoOutInOnMountColourChangeRadiumTransition>
+    */
     render() {
+        //lose the typing
+        
         return <div>
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
 
-            <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
-                <div style={{width:300,height:300,transform:"rotate(10deg)"}}></div>
-            </AutoOutInOnMountColourChangeRadiumTransition>
+            <AutoOutInOnMount appear={true} inSignal={this.state.in} timeout={demoTimeout} propName="backgroundColor" enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+                {
+                    transitionHelperFn((state: TransitionState, props: TransitionHelperProps, stateStyle: React.CSSProperties, stateTransition: string) => {
+                        return <div style={[demoDefaultStyle, stateStyle, {transition:stateTransition}]}></div>
+                    }, colourTransitionProvider)
+                }
+            </AutoOutInOnMount>
 
         </div>
        
