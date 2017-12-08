@@ -706,7 +706,8 @@ function ConfiguredRadium(component) {
     return Radium(radiumConfig)(component);
 }
 
-const InOnMountTransition = withInOnMount(ConfiguredRadium(Transition));
+//const InOnMountTransition = withInOnMount(ConfiguredRadium(Transition));
+const InOnMountTransition = withInOnMount(Transition);
 const demoDefaultStyle = {
     width: 300,
     height:300
@@ -755,14 +756,10 @@ class Demo extends React.Component<undefined, DemoState>{
         this.setState({ in: true })
     }
     /*
-
-    */
-    render() {
-        //then autoOut with kill
-        return <div>
+    return <div>
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
-            
+
             <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor:"green" }}></div>
             <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
                 {(state: TransitionState) => {
@@ -771,6 +768,10 @@ class Demo extends React.Component<undefined, DemoState>{
                 }}
             </InOnMountTransition>
             </div>
+    */
+    render() {
+
+        return <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" }}></div>
     }
 }
 const DemoRadium = ConfiguredRadium(Demo);
@@ -838,7 +839,8 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         </AutoOutColourChangeTransitionInOnMount>
     }
 }
-const RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
+//const RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
+const RadiumTicTacToeSquare = TicTacToeSquare;
 const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";
@@ -989,13 +991,11 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
 
     }
     addPrefixes = () => {
-        
         var style = (document.querySelector("#addInlinePrefixes") as HTMLElement).style as any;
         var transform = "rotate(30deg)";
         //style.transform = transform;
         style.msTransform = transform;
         style.webkitTransform = transform;
-
     }
     readCount = 0;
     readPrefixes = () => {

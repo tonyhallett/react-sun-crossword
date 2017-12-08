@@ -42497,7 +42497,8 @@ var radiumConfig = {
 function ConfiguredRadium(component) {
     return Radium(radiumConfig)(component);
 }
-var InOnMountTransition = withInOnMount(ConfiguredRadium(Transition_1.default));
+//const InOnMountTransition = withInOnMount(ConfiguredRadium(Transition));
+var InOnMountTransition = withInOnMount(Transition_1.default);
 var demoDefaultStyle = {
     width: 300,
     height: 300
@@ -42550,17 +42551,21 @@ var Demo = /** @class */ (function (_super) {
         console.log("OnEntering, appear : " + appear);
     };
     /*
+    return <div>
+            <button onClick={this.out}>out</button>
+            <button onClick={this.in}>in</button >
 
+            <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor:"green" }}></div>
+            <InOnMountTransition onEntering={this.onEntering} appear={true} in={this.state.in} timeout={demoTimeout}>
+                {(state: TransitionState) => {
+                    return <div style={{ ...demoDefaultStyle, ...demoStyle[state] }}/>
+
+                }}
+            </InOnMountTransition>
+            </div>
     */
     Demo.prototype.render = function () {
-        //then autoOut with kill
-        return React.createElement("div", null,
-            React.createElement("button", { onClick: this.out }, "out"),
-            React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement("div", { style: { transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" } }),
-            React.createElement(InOnMountTransition, { onEntering: this.onEntering, appear: true, in: this.state.in, timeout: demoTimeout }, function (state) {
-                return React.createElement("div", { style: __assign({}, demoDefaultStyle, demoStyle[state]) });
-            }));
+        return React.createElement("div", { style: { transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" } });
     };
     return Demo;
 }(React.Component));
@@ -42605,7 +42610,8 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     };
     return TicTacToeSquare;
 }(React.Component));
-var RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
+//const RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
+var RadiumTicTacToeSquare = TicTacToeSquare;
 var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";
