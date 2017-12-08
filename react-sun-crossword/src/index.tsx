@@ -774,7 +774,8 @@ class Demo extends React.Component<undefined, DemoState>{
         return <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" }}></div>
     }
 }
-const DemoRadium = ConfiguredRadium(Demo);
+//const DemoRadium = ConfiguredRadium(Demo);
+const DemoRadium = Demo;
 //#endregion
 
 //#region App components
@@ -990,9 +991,32 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         }
 
     }
-    
+    /*
+    <VerticallyCenteredContainer backgroundColor="orange">
+                <HorizontalCenter>
+                    <div style={{ backgroundColor: "gray", padding: 10 }}>
+                        <DemoRadium/>
+                        <div style={{ display: "inline-block" }}>
+                            <div style={{ marginTop: 10, marginBottom: 10 }}>
+                                <ConnectedScoreboard />
+                            </div>
+                            <ConnectedTicTacToeBoard />
+                            <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                        </div>
+                        <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                                {this.getWinDrawMessage()}
+                            </div>
+                        </ModalCover>
+
+
+
+                    </div>
+                </HorizontalCenter>
+            </VerticallyCenteredContainer>
+    */
     render() {
-        return <StyleRoot>
+        return <StyleRoot radiumConfig={{ userAgent:"Made this one up" }}>
             <Style
                 rules={{
                     body: {
@@ -1016,28 +1040,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     }
                 }}
             />
-            <VerticallyCenteredContainer backgroundColor="orange">
-                <HorizontalCenter>
-                    <div style={{ backgroundColor: "gray", padding: 10 }}>
-                        <DemoRadium/>
-                        <div style={{ display: "inline-block" }}>
-                            <div style={{ marginTop: 10, marginBottom: 10 }}>
-                                <ConnectedScoreboard />
-                            </div>
-                            <ConnectedTicTacToeBoard />
-                            <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
-                        </div>
-                        <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
-                                {this.getWinDrawMessage()}
-                            </div>
-                        </ModalCover>
-
-
-
-                    </div>
-                </HorizontalCenter>
-            </VerticallyCenteredContainer>
+            <div style={{ transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" }}></div>
         </StyleRoot>
     }
     getWinDrawMessage() {

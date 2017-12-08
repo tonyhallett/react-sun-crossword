@@ -42569,7 +42569,8 @@ var Demo = /** @class */ (function (_super) {
     };
     return Demo;
 }(React.Component));
-var DemoRadium = ConfiguredRadium(Demo);
+//const DemoRadium = ConfiguredRadium(Demo);
+var DemoRadium = Demo;
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -42737,8 +42738,32 @@ var TicTacToeApp = /** @class */ (function (_super) {
         };
         return _this;
     }
+    /*
+    <VerticallyCenteredContainer backgroundColor="orange">
+                <HorizontalCenter>
+                    <div style={{ backgroundColor: "gray", padding: 10 }}>
+                        <DemoRadium/>
+                        <div style={{ display: "inline-block" }}>
+                            <div style={{ marginTop: 10, marginBottom: 10 }}>
+                                <ConnectedScoreboard />
+                            </div>
+                            <ConnectedTicTacToeBoard />
+                            <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                        </div>
+                        <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                            <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                                {this.getWinDrawMessage()}
+                            </div>
+                        </ModalCover>
+
+
+
+                    </div>
+                </HorizontalCenter>
+            </VerticallyCenteredContainer>
+    */
     TicTacToeApp.prototype.render = function () {
-        return React.createElement(Radium_1.StyleRoot, null,
+        return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "Made this one up" } },
             React.createElement(Radium_1.Style, { rules: {
                     body: {
                         margin: 0,
@@ -42760,17 +42785,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         }
                     }
                 } }),
-            React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
-                React.createElement(HorizontalCenter, null,
-                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                        React.createElement(DemoRadium, null),
-                        React.createElement("div", { style: { display: "inline-block" } },
-                            React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
-                                React.createElement(ConnectedScoreboard, null)),
-                            React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
-                        React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                            React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
+            React.createElement("div", { style: { transform: "rotate(10deg)", width: 20, height: 20, backgroundColor: "green" } }));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "Game drawn";
