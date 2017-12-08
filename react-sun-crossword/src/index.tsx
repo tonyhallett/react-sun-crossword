@@ -990,32 +990,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         }
 
     }
-    addPrefixes = () => {
-        var style = (document.querySelector("#addInlinePrefixes") as HTMLElement).style as any;
-        var transform = "rotate(30deg)";
-        //style.transform = transform;
-        style.msTransform = transform;
-        style.webkitTransform = transform;
-    }
-    readCount = 0;
-    readPrefixes = () => {
-        var id
-        switch (this.readCount) {
-            case 0:
-                id ="inlinePrefixed"
-                break;
-            case 1:
-                id ="readInlinePrefixes"
-                break;
-            case 2:
-                id = "addInlinePrefixes";
-                break;
-
-        }
-        this.readCount++;
-        alert("css text for: " + id);
-        alert((document.querySelector("#"+ id) as HTMLElement).style.cssText);
-    }
+    
     render() {
         return <StyleRoot>
             <Style
@@ -1044,12 +1019,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             <VerticallyCenteredContainer backgroundColor="orange">
                 <HorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10 }}>
-                        <button onClick={this.addPrefixes}>add prefixes</button>
-                        <button onClick={this.readPrefixes}>read prefixes</button>
-                        <div id="addInlinePrefixes" style={{
-                            width: 10, height: 10, backgroundColor: "purple"
-                        }}/>
-                        <div id="readInlinePrefixes" style={{ width: 10, height: 10, backgroundColor: "red", transform: "rotate(30deg)", msTransform: "rotate(30deg)", WebkitTransform:"rotate(30deg)" }}></div>
                         <DemoRadium/>
                         <div style={{ display: "inline-block" }}>
                             <div style={{ marginTop: 10, marginBottom: 10 }}>
