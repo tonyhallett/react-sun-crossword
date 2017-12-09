@@ -660,13 +660,15 @@ function withTransitionHelperFn(Component: React.ComponentClass<TransitionProps>
                     var stateTransition = "";
                     switch (state) {
                         case "entering":
-                            stateTransition = this.props.enterTransition;
+                            
                         case "entered":
+                            stateTransition = this.props.enterTransition;
                             stateStyle = { ...this.props.enterStyle }
                             break;
                         case "exiting":
-                            stateTransition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
+                            
                         case "exited"://this is the state before in:true 
+                            stateTransition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
                             stateStyle = { ...this.props.exitStyle };
                             break;
                     }
@@ -868,7 +870,7 @@ var colourTransitionProvider: TransitionProvider<ColourChangeProps> = function (
 }
 //#endregion
 
-const AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition)))
+const AutoOutInOnMount = withAutoOut(withInOnMount(Transition))
 const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 
 //#endregion
@@ -993,11 +995,11 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={exitColour} change={0.3} colourChangeType={ColourChangeType.lighten}>
             {
                 (state, props, stateStyle, stateTransition) => {
-                    var style:React.CSSProperties[];
+                    var style:React.CSSProperties;
                     if (this.state.kill) {
-                        style = [defaultStyle, { backgroundColor: exitColour }];
+                        style = { ...defaultStyle, backgroundColor: exitColour };
                     } else {
-                        style=[defaultStyle, stateStyle, { transition: stateTransition }]
+                        style={...defaultStyle, ...stateStyle, transition: stateTransition }
                     }
                     return <td style={style} onClick={this.squareClicked}>
                         {this.props.squareText}

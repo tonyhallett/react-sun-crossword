@@ -42459,13 +42459,13 @@ function withTransitionHelperFn(Component) {
                 var stateTransition = "";
                 switch (state) {
                     case "entering":
-                        stateTransition = _this.props.enterTransition;
                     case "entered":
+                        stateTransition = _this.props.enterTransition;
                         stateStyle = __assign({}, _this.props.enterStyle);
                         break;
                     case "exiting":
-                        stateTransition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
                     case "exited"://this is the state before in:true 
+                        stateTransition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
                         stateStyle = __assign({}, _this.props.exitStyle);
                         break;
                 }
@@ -42647,7 +42647,7 @@ var colourTransitionProvider = function (state, props) {
     };
 };
 //#endregion
-var AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default)));
+var AutoOutInOnMount = withAutoOut(withInOnMount(Transition_1.default));
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 //#endregion
 //#region demo
@@ -42740,10 +42740,10 @@ var TicTacToeSquare = /** @class */ (function (_super) {
         return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: exitColour, change: 0.3, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
             var style;
             if (_this.state.kill) {
-                style = [defaultStyle, { backgroundColor: exitColour }];
+                style = __assign({}, defaultStyle, { backgroundColor: exitColour });
             }
             else {
-                style = [defaultStyle, stateStyle, { transition: stateTransition }];
+                style = __assign({}, defaultStyle, stateStyle, { transition: stateTransition });
             }
             return React.createElement("td", { style: style, onClick: _this.squareClicked }, _this.props.squareText);
         });
