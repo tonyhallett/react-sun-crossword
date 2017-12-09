@@ -986,15 +986,21 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
     */
     render() {
         var transitionDuration = 1000;
+        var exitColour = componentBackgroundColor;
         var defaultStyle = {
             color: this.props.squareGoColour,
             textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
         }
-        return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+        return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={exitColour} change={0.3} colourChangeType={ColourChangeType.lighten}>
             {
                 (state, props, stateStyle, stateTransition) => {
-                    
-                    return <td style={[defaultStyle, stateStyle, { transition:this.state.kill?"": stateTransition }]} onClick={this.squareClicked}>
+                    var style:React.CSSProperties[];
+                    if (this.state.kill) {
+                        style = [defaultStyle, { backgroundColor: exitColour }];
+                    } else {
+                        style=[defaultStyle, stateStyle, { transition: stateTransition }]
+                    }
+                    return <td style={style} onClick={this.squareClicked}>
                         {this.props.squareText}
                     </td>
                 }
