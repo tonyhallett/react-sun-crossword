@@ -41873,7 +41873,7 @@ var $ = __webpack_require__(72);
 var Radium = __webpack_require__(71);
 var Transition_1 = __webpack_require__(75);
 var Color = __webpack_require__(70);
-//#region radium
+//#region configured radium for testing prefixes applied
 var radiumConfig = {
     userAgent: "My made up browser"
 };
@@ -42647,7 +42647,8 @@ var colourTransitionProvider = function (state, props) {
     };
 };
 //#endregion
-var AutoOutInOnMount = withAutoOut(withInOnMount(Transition_1.default));
+var RadiumTransition = Radium(Transition_1.default);
+var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 //#endregion
 //#region demo
@@ -42750,8 +42751,6 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     };
     return TicTacToeSquare;
 }(React.Component));
-//const RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
-var RadiumTicTacToeSquare = TicTacToeSquare;
 var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";
@@ -42785,7 +42784,7 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
             dispatch(takeGo(ownProps.rowIndex, ownProps.colIndex));
         }
     };
-})(RadiumTicTacToeSquare);
+})(TicTacToeSquare);
 var ticTacToeBoardId = "ticTacToeBoard";
 var TicTacToeBoard = /** @class */ (function (_super) {
     __extends(TicTacToeBoard, _super);

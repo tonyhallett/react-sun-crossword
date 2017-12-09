@@ -12,7 +12,7 @@ import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
 
-//#region radium
+//#region configured radium for testing prefixes applied
 var radiumConfig = {
     userAgent: "My made up browser"
 }
@@ -870,7 +870,8 @@ var colourTransitionProvider: TransitionProvider<ColourChangeProps> = function (
 }
 //#endregion
 
-const AutoOutInOnMount = withAutoOut(withInOnMount(Transition))
+const RadiumTransition = Radium(Transition);
+const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
 const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 
 //#endregion
@@ -1010,8 +1011,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         </AutoOutInOnMountColourChangeRadiumTransition>
     }
 }
-//const RadiumTicTacToeSquare = ConfiguredRadium(TicTacToeSquare);
-const RadiumTicTacToeSquare = TicTacToeSquare;
+
 const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
     var squareGoColour = "white";
@@ -1046,7 +1046,7 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
             dispatch(takeGo(ownProps.rowIndex, ownProps.colIndex))
         }
         }
-    })(RadiumTicTacToeSquare as any);
+    })(TicTacToeSquare as any);
 //#endregion
 //#region TicTacToeBoard
 interface TicTacToeBoardProps {
