@@ -956,12 +956,13 @@ interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSqua
 
 }
 interface TicTacToeSquareState {
-    inSignal:any
+    inSignal: any,
+    kill:boolean
 }
 class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSquareState>{
     constructor(props) {
         super(props);
-        this.state = { inSignal: {}}
+        this.state = { inSignal: {},kill:false}
     }
     squareClicked = () => {
         if (this.props.canGo) {
@@ -972,9 +973,9 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
     componentWillReceiveProps(newProps: TicTacToeSquareProps) {
         if (newProps.canGo !== this.props.canGo) {
             if (!newProps.canGo) {
-                this.setState({ inSignal: {} });
+                this.setState({ inSignal: {},kill:false });
             } else {
-                this.setState({ inSignal: null })
+                this.setState({ kill: true })
             }
             
             
@@ -992,7 +993,8 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
             {
                 (state, props, stateStyle, stateTransition) => {
-                    return <td style={[defaultStyle, stateStyle, { transition: stateTransition }]} onClick={this.squareClicked}>
+                    
+                    return <td style={[defaultStyle, stateStyle, { transition:this.state.kill?"": stateTransition }]} onClick={this.squareClicked}>
                         {this.props.squareText}
                     </td>
                 }

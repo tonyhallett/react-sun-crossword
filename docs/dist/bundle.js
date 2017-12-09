@@ -42712,16 +42712,16 @@ var TicTacToeSquare = /** @class */ (function (_super) {
                 _this.props.takeGo();
             }
         };
-        _this.state = { inSignal: {} };
+        _this.state = { inSignal: {}, kill: false };
         return _this;
     }
     TicTacToeSquare.prototype.componentWillReceiveProps = function (newProps) {
         if (newProps.canGo !== this.props.canGo) {
             if (!newProps.canGo) {
-                this.setState({ inSignal: {} });
+                this.setState({ inSignal: {}, kill: false });
             }
             else {
-                this.setState({ inSignal: null });
+                this.setState({ kill: true });
             }
         }
     };
@@ -42736,7 +42736,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
         };
         return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
-            return React.createElement("td", { style: [defaultStyle, stateStyle, { transition: stateTransition }], onClick: _this.squareClicked }, _this.props.squareText);
+            return React.createElement("td", { style: [defaultStyle, stateStyle, { transition: _this.state.kill ? "" : stateTransition }], onClick: _this.squareClicked }, _this.props.squareText);
         });
     };
     return TicTacToeSquare;
