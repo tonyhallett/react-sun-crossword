@@ -42443,6 +42443,43 @@ function withTransitionHelper(Component) {
     }(React.Component));
     return transitionHelper;
 }
+function withTransitionHelperFn(Component) {
+    var transitionHelper = /** @class */ (function (_super) {
+        __extends(TransitionHelper, _super);
+        function TransitionHelper() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        TransitionHelper.prototype.render = function () {
+            var _this = this;
+            var _a = this.props, enterStyle = _a.enterStyle, exitStyle = _a.exitStyle, enterTransition = _a.enterTransition, exitTransition = _a.exitTransition, passThroughProps = __rest(_a, ["enterStyle", "exitStyle", "enterTransition", "exitTransition"]);
+            var transition = React.createElement(Component, __assign({}, passThroughProps), function (state) {
+                var stateStyle = {};
+                var stateTransition;
+                switch (state) {
+                    case "entering":
+                    case "entered":
+                        stateStyle = __assign({}, _this.props.enterStyle);
+                        stateTransition = _this.props.enterTransition;
+                        break;
+                    case "exiting":
+                    case "exited"://this is the state before in:true 
+                        stateStyle = __assign({}, _this.props.exitStyle);
+                        stateTransition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
+                        break;
+                }
+                if (typeof _this.props.children === 'function') {
+                    return _this.props.children(state, passThroughProps, stateStyle, stateTransition);
+                }
+                else {
+                    throw new Error("withTransitionHelperFn requires child function");
+                }
+            });
+            return transition;
+        };
+        return TransitionHelper;
+    }(React.Component));
+    return transitionHelper;
+}
 //#endregion
 //#region ColourChangeTransition
 var ColourChangeType;
@@ -42454,12 +42491,96 @@ var ColourChangeType;
     ColourChangeType[ColourChangeType["fade"] = 4] = "fade";
     ColourChangeType[ColourChangeType["opaquer"] = 5] = "opaquer";
 })(ColourChangeType || (ColourChangeType = {}));
-//despite this might want to have as a component that has the function and calls through with the information 
-//to a child function.....
-/*
-THE TRANSITIONPROVIDER KNOWS WHAT ADDITIONAL PROPS ON THE TRANSITION which will be stripped of TRANSITIONPROPS ( Need Omit )
-
-*/
+function withColourChangeTransitionFn(Component) {
+    var TransitionHelper = withTransitionHelperFn(Component);
+    var colourChangeTransition = /** @class */ (function (_super) {
+        __extends(ColourChangeTransition, _super);
+        function ColourChangeTransition() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        ColourChangeTransition.prototype.render = function () {
+            var enterStyle = {};
+            var exitColor = Color(this.props.exitColour);
+            var enterColor;
+            var changeAmount = this.props.change;
+            //note that whiten/blacken is not css3!
+            switch (this.props.colourChangeType) {
+                case ColourChangeType.darken:
+                    enterColor = exitColor.darken(changeAmount);
+                    break;
+                case ColourChangeType.desaturate:
+                    enterColor = exitColor.desaturate(changeAmount);
+                    break;
+                case ColourChangeType.fade:
+                    enterColor = exitColor.fade(changeAmount);
+                    break;
+                case ColourChangeType.lighten:
+                    enterColor = exitColor.lighten(changeAmount);
+                    break;
+                case ColourChangeType.opaquer:
+                    enterColor = exitColor.opaquer(changeAmount);
+                    break;
+                case ColourChangeType.saturate:
+                    enterColor = exitColor.saturate(changeAmount);
+                    break;
+            }
+            var colorString = enterColor.toString();
+            enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
+            var exitStyle = {};
+            var exitColourString = exitColor.toString();
+            exitStyle[this.props.propName] = exitColourString;
+            var _a = this.props, change = _a.change, exitColour = _a.exitColour, colourChangeType = _a.colourChangeType, propName = _a.propName, passThroughProps = __rest(_a, ["change", "exitColour", "colourChangeType", "propName"]);
+            return React.createElement(TransitionHelper, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
+        };
+        return ColourChangeTransition;
+    }(React.Component));
+    return colourChangeTransition;
+}
+function withColourChangeTransition(Component) {
+    var TransitionHelper = withTransitionHelper(Component);
+    var colourChangeTransition = /** @class */ (function (_super) {
+        __extends(ColourChangeTransition, _super);
+        function ColourChangeTransition() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        ColourChangeTransition.prototype.render = function () {
+            var enterStyle = {};
+            var exitColor = Color(this.props.exitColour);
+            var enterColor;
+            var changeAmount = this.props.change;
+            //note that whiten/blacken is not css3!
+            switch (this.props.colourChangeType) {
+                case ColourChangeType.darken:
+                    enterColor = exitColor.darken(changeAmount);
+                    break;
+                case ColourChangeType.desaturate:
+                    enterColor = exitColor.desaturate(changeAmount);
+                    break;
+                case ColourChangeType.fade:
+                    enterColor = exitColor.fade(changeAmount);
+                    break;
+                case ColourChangeType.lighten:
+                    enterColor = exitColor.lighten(changeAmount);
+                    break;
+                case ColourChangeType.opaquer:
+                    enterColor = exitColor.opaquer(changeAmount);
+                    break;
+                case ColourChangeType.saturate:
+                    enterColor = exitColor.saturate(changeAmount);
+                    break;
+            }
+            var colorString = enterColor.toString();
+            enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
+            var exitStyle = {};
+            var exitColourString = exitColor.toString();
+            exitStyle[this.props.propName] = exitColourString;
+            var _a = this.props, change = _a.change, exitColour = _a.exitColour, colourChangeType = _a.colourChangeType, propName = _a.propName, passThroughProps = __rest(_a, ["change", "exitColour", "colourChangeType", "propName"]);
+            return React.createElement(TransitionHelper, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
+        };
+        return ColourChangeTransition;
+    }(React.Component));
+    return colourChangeTransition;
+}
 var defaultProvider = function (state, props) {
     return props;
 };
@@ -42523,53 +42644,9 @@ var colourTransitionProvider = function (state, props) {
         exitTransition: props.exitTransition
     };
 };
-function withColourChangeTransition(Component) {
-    var TransitionHelper = withTransitionHelper(Component);
-    var colourChangeTransition = /** @class */ (function (_super) {
-        __extends(ColourChangeTransition, _super);
-        function ColourChangeTransition() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        ColourChangeTransition.prototype.render = function () {
-            var enterStyle = {};
-            var exitColor = Color(this.props.exitColour);
-            var enterColor;
-            var changeAmount = this.props.change;
-            //note that whiten/blacken is not css3!
-            switch (this.props.colourChangeType) {
-                case ColourChangeType.darken:
-                    enterColor = exitColor.darken(changeAmount);
-                    break;
-                case ColourChangeType.desaturate:
-                    enterColor = exitColor.desaturate(changeAmount);
-                    break;
-                case ColourChangeType.fade:
-                    enterColor = exitColor.fade(changeAmount);
-                    break;
-                case ColourChangeType.lighten:
-                    enterColor = exitColor.lighten(changeAmount);
-                    break;
-                case ColourChangeType.opaquer:
-                    enterColor = exitColor.opaquer(changeAmount);
-                    break;
-                case ColourChangeType.saturate:
-                    enterColor = exitColor.saturate(changeAmount);
-                    break;
-            }
-            var colorString = enterColor.toString();
-            enterStyle[this.props.propName] = colorString; //seems that once change to different model cannot go back
-            var exitStyle = {};
-            var exitColourString = exitColor.toString();
-            exitStyle[this.props.propName] = exitColourString;
-            var _a = this.props, change = _a.change, exitColour = _a.exitColour, colourChangeType = _a.colourChangeType, propName = _a.propName, passThroughProps = __rest(_a, ["change", "exitColour", "colourChangeType", "propName"]);
-            return React.createElement(TransitionHelper, __assign({ enterStyle: enterStyle, exitStyle: exitStyle }, this.props));
-        };
-        return ColourChangeTransition;
-    }(React.Component));
-    return colourChangeTransition;
-}
+//#endregion
 var AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default)));
-var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransition(AutoOutInOnMount);
+var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 var demoTimeout = {
     enter: 1000,
     exit: 1000
@@ -42652,12 +42729,15 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     
     */
     TicTacToeSquare.prototype.render = function () {
+        var _this = this;
         var transitionDuration = 1000;
-        return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten },
-            React.createElement("td", { style: {
-                    color: this.props.squareGoColour,
-                    textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
-                }, onClick: this.squareClicked }, this.props.squareText));
+        var defaultStyle = {
+            color: this.props.squareGoColour,
+            textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+        };
+        return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
+            return React.createElement("td", { style: [defaultStyle, stateStyle, { transition: stateTransition }], onClick: _this.squareClicked }, _this.props.squareText);
+        });
     };
     return TicTacToeSquare;
 }(React.Component));
