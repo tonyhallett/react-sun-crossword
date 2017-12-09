@@ -41873,12 +41873,14 @@ var $ = __webpack_require__(72);
 var Radium = __webpack_require__(71);
 var Transition_1 = __webpack_require__(75);
 var Color = __webpack_require__(70);
+//#region radium
 var radiumConfig = {
     userAgent: "My made up browser"
 };
 function ConfiguredRadium(component) {
     return Radium(radiumConfig)(component);
 }
+//#endregion
 var componentBackgroundColor = "lightgray";
 //#region redux
 //#region redux state
@@ -42454,17 +42456,17 @@ function withTransitionHelperFn(Component) {
             var _a = this.props, enterStyle = _a.enterStyle, exitStyle = _a.exitStyle, enterTransition = _a.enterTransition, exitTransition = _a.exitTransition, passThroughProps = __rest(_a, ["enterStyle", "exitStyle", "enterTransition", "exitTransition"]);
             var transition = React.createElement(Component, __assign({}, passThroughProps), function (state) {
                 var stateStyle = {};
-                var stateTransition;
+                var stateTransition = "";
                 switch (state) {
                     case "entering":
+                        stateTransition = _this.props.enterTransition;
                     case "entered":
                         stateStyle = __assign({}, _this.props.enterStyle);
-                        stateTransition = _this.props.enterTransition;
                         break;
                     case "exiting":
+                        stateTransition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
                     case "exited"://this is the state before in:true 
                         stateStyle = __assign({}, _this.props.exitStyle);
-                        stateTransition = _this.props.exitTransition ? _this.props.exitTransition : _this.props.enterTransition;
                         break;
                 }
                 if (typeof _this.props.children === 'function') {
@@ -42647,6 +42649,8 @@ var colourTransitionProvider = function (state, props) {
 //#endregion
 var AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition_1.default)));
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
+//#endregion
+//#region demo
 var demoTimeout = {
     enter: 1000,
     exit: 1000
@@ -42725,9 +42729,6 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             }
         }
     };
-    /*
-    
-    */
     TicTacToeSquare.prototype.render = function () {
         var _this = this;
         var transitionDuration = 1000;
@@ -42912,7 +42913,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
             React.createElement(HorizontalCenter, null,
                 React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                    React.createElement(Demo, null),
                     React.createElement("div", { style: { display: "inline-block" } },
                         React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                             React.createElement(ConnectedScoreboard, null)),

@@ -12,13 +12,14 @@ import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
 
-
+//#region radium
 var radiumConfig = {
     userAgent: "My made up browser"
 }
 function ConfiguredRadium(component) {
     return Radium(radiumConfig)(component);
 }
+//#endregion
 
 var componentBackgroundColor = "lightgray";
 //#region redux
@@ -483,10 +484,10 @@ class ModalCover extends React.Component<ModalCoverProps, undefined>{
 type TransitionState = "exited" | "exiting" | "entered" | "entering";
 //#endregion
 //#region hocs
+//#region inOnMount
 interface InOnMountState {
     in: boolean
 }
-
 function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
     var inOnMount = class InOnMount extends React.Component<TransitionProps, InOnMountState>{
         inOnMount = false
@@ -550,6 +551,8 @@ function withInOnMount(Component: React.ComponentClass<TransitionProps>) {
     }
     return inOnMount;
 }
+//#endregion
+//#region AutoOut
 interface AutoOutTransitionState {
     in: boolean
 }
@@ -589,7 +592,6 @@ function withAutoOut(Component: React.ComponentClass<TransitionProps>) {
     return autoOut;
 }
 //#endregion
-
 //#region TransitionHelper
 interface TransitionHelperTransitionProps {
     enterTransition: string,
@@ -655,17 +657,17 @@ function withTransitionHelperFn(Component: React.ComponentClass<TransitionProps>
             var transition = <Component {...passThroughProps}>
                 {(state: TransitionState) => {
                     var stateStyle: React.CSSProperties = {};
-                    var stateTransition: string;
+                    var stateTransition = "";
                     switch (state) {
                         case "entering":
+                            stateTransition = this.props.enterTransition;
                         case "entered":
                             stateStyle = { ...this.props.enterStyle }
-                            stateTransition = this.props.enterTransition;
                             break;
                         case "exiting":
+                            stateTransition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
                         case "exited"://this is the state before in:true 
                             stateStyle = { ...this.props.exitStyle };
-                            stateTransition = this.props.exitTransition ? this.props.exitTransition : this.props.enterTransition;
                             break;
                     }
                     if (typeof this.props.children === 'function') {
@@ -781,6 +783,7 @@ function withColourChangeTransition(Component: React.ComponentClass<TransitionPr
 }
 
 //#endregion
+//#endregion
 //#region transition helper as a function
 interface TransitionProvider<P> {
     (state: TransitionState, props: P):TransitionOwnProps
@@ -868,7 +871,9 @@ var colourTransitionProvider: TransitionProvider<ColourChangeProps> = function (
 const AutoOutInOnMount = withAutoOut(withInOnMount(ConfiguredRadium(Transition)))
 const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 
+//#endregion
 
+//#region demo
 const demoTimeout = {
     enter: 1000,
     exit:1000
@@ -896,7 +901,6 @@ const demoDefaultStyle = {
 interface DemoState {
     in:any
 }
-
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
@@ -935,8 +939,7 @@ class Demo extends React.Component<undefined, DemoState>{
        
     }
 }
-
-
+//#endregion
 
 //#region App components
 //#region TicTacToeSquare
@@ -977,13 +980,9 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
             } else {
                 this.setState({ kill: true })
             }
-            
-            
         }
     }
-    /*
-    
-    */
+
     render() {
         var transitionDuration = 1000;
         var exitColour = componentBackgroundColor;
@@ -1196,7 +1195,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         return <VerticallyCenteredContainer backgroundColor="orange">
             <HorizontalCenter>
                 <div style={{ backgroundColor: "gray", padding: 10 }}>
-                    <Demo/>
                     <div style={{ display: "inline-block" }}>
                         <div style={{ marginTop: 10, marginBottom: 10 }}>
                             <ConnectedScoreboard />
@@ -1209,9 +1207,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                             {this.getWinDrawMessage()}
                         </div>
                     </ModalCover>
-
-
-
                 </div>
             </HorizontalCenter>
         </VerticallyCenteredContainer>
