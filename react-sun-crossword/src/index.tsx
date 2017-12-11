@@ -11,6 +11,7 @@ import * as Radium from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
+import { flipOutX } from 'react-animations';
 
 //#region configured radium for testing prefixes applied
 var radiumConfig = {
@@ -919,9 +920,13 @@ class Demo extends React.Component<undefined, DemoState>{
         this.setState({ in: {} })
     }
     /*
-    <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
-                <div style={{width:300,height:300,transform:"rotate(10deg)"}}></div>
-            </AutoOutInOnMountColourChangeRadiumTransition>
+   <AutoOutInOnMount appear={true} inSignal={this.state.in} timeout={demoTimeout} propName="backgroundColor" enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+                {
+                    transitionHelperFn((state, props, stateStyle: React.CSSProperties, stateTransition: string) => {
+                        return <div style={[demoDefaultStyle, stateStyle, { transition: stateTransition }]}></div>
+                    }, colourTransitionProvider)
+                }
+            </AutoOutInOnMount>
     */
     render() {
         //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
@@ -930,18 +935,36 @@ class Demo extends React.Component<undefined, DemoState>{
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
 
-            <AutoOutInOnMount appear={true} inSignal={this.state.in} timeout={demoTimeout} propName="backgroundColor" enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+            <RadiumTransition in={this.state.in} timeout={1000}>
                 {
-                    transitionHelperFn((state, props, stateStyle: React.CSSProperties, stateTransition: string) => {
-                        return <div style={[demoDefaultStyle, stateStyle, { transition: stateTransition }]}></div>
-                    }, colourTransitionProvider)
+                    (state: TransitionState) => {
+                        var style = {}
+                        switch (state) {
+                            case "entering":
+                            case "entered":
+                                style = {
+                                    animationName: Radium.keyframes(flipOutX),
+                                    animation:"x 3s"
+                                }
+                                break;
+                            case "exited":
+
+                                break;
+                            case "exiting":
+
+                                break;
+                        }
+                        return <div style={style}>Flipped on in </div>
+                    }
+                   
                 }
-            </AutoOutInOnMount>
+            </RadiumTransition>
 
         </div>
        
     }
 }
+const RadiumDemo = Radium(Demo);
 //#endregion
 
 //#region App components
@@ -1161,10 +1184,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         }
 
     }
-    /*
     
-
-    <StyleRoot>
+    render() {
+        return <StyleRoot>
             <Style
                 rules={{
                     body: {
@@ -1189,14 +1211,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 }}
             />
 
-
-    
-   
-    */
-    render() {
-        return <VerticallyCenteredContainer backgroundColor="orange">
+        <VerticallyCenteredContainer backgroundColor="orange">
             <HorizontalCenter>
                 <div style={{ backgroundColor: "gray", padding: 10 }}>
+                    <RadiumDemo/>
                     <div style={{ display: "inline-block" }}>
                         <div style={{ marginTop: 10, marginBottom: 10 }}>
                             <ConnectedScoreboard />
@@ -1212,6 +1230,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 </div>
             </HorizontalCenter>
         </VerticallyCenteredContainer>
+        </StyleRoot>
             
     }
     getWinDrawMessage() {
