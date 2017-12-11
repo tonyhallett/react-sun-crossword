@@ -45707,12 +45707,12 @@ var Demo = /** @class */ (function (_super) {
     function Demo(props) {
         var _this = _super.call(this, props) || this;
         _this.out = function () {
-            _this.setState({ in: null });
+            _this.setState({ inSignal: null, in: false });
         };
         _this.in = function () {
-            _this.setState({ in: {} });
+            _this.setState({ in: true, inSignal: {} });
         };
-        _this.state = { in: {} };
+        _this.state = { in: false, inSignal: null };
         return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {

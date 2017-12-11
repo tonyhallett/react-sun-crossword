@@ -903,21 +903,22 @@ const demoDefaultStyle = {
     height:300
 }
 interface DemoState {
-    in:any
+    in: boolean,
+    inSignal:object
 }
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
-        this.state = { in: {} };
+        this.state = { in: false,inSignal:null };
     }
     onEntering(node: HTMLElement,appear:boolean) {
         console.log("OnEntering, appear : " + appear);
     }
     out = () => {
-        this.setState({in:null})
+        this.setState({inSignal:null,in:false})
     }
     in = () => {
-        this.setState({ in: {} })
+        this.setState({ in: true, inSignal: {} })
     }
     /*
    <AutoOutInOnMount appear={true} inSignal={this.state.in} timeout={demoTimeout} propName="backgroundColor" enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
