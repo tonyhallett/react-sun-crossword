@@ -45740,7 +45740,7 @@ var Demo = /** @class */ (function (_super) {
                     case "entered":
                         style = {
                             animationName: Radium.keyframes(react_animations_1.flipOutX),
-                            animationDuration: duration
+                            animationDuration: duration + "ms"
                         };
                         break;
                     case "exited":
