@@ -1118,13 +1118,11 @@ var style = {
             fontSize: 12
         },
         rowStyle: {
-            height: style.scoreboard.cellStyle.fontSize * 1.05 + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom,
             borderWidth: "1px", borderColor: "black", borderStyle: "solid"
-        }
+        } as React.CSSProperties
     }
-    
-
 }
+style.scoreboard.rowStyle.height= style.scoreboard.cellStyle.fontSize * 1.05 + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
 
 class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
     render() {
@@ -1135,10 +1133,10 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         return <table style={{ borderCollapse: "collapse", borderWidth: "1px",width:"100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
-                    <th style={style.cellStyle}>Player</th>
-                    <th style={style.cellStyle}>Won</th>
-                    <th style={style.cellStyle}>Lost</th>
-                    <th style={style.cellStyle}>Drawn</th>
+                    <th style={style.scoreboard.cellStyle}>Player</th>
+                    <th style={style.scoreboard.cellStyle}>Won</th>
+                    <th style={style.scoreboard.cellStyle}>Lost</th>
+                    <th style={style.scoreboard.cellStyle}>Drawn</th>
                 </tr>
             </thead>
             <tbody>

@@ -45862,11 +45862,11 @@ var style = {
             fontSize: 12
         },
         rowStyle: {
-            height: style.scoreboard.cellStyle.fontSize * 1.05 + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom,
             borderWidth: "1px", borderColor: "black", borderStyle: "solid"
         }
     }
 };
+style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * 1.05 + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
@@ -45880,10 +45880,10 @@ var Scoreboard = /** @class */ (function (_super) {
         return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-                    React.createElement("th", { style: style.cellStyle }, "Player"),
-                    React.createElement("th", { style: style.cellStyle }, "Won"),
-                    React.createElement("th", { style: style.cellStyle }, "Lost"),
-                    React.createElement("th", { style: style.cellStyle }, "Drawn"))),
+                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Player"),
+                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Won"),
+                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Lost"),
+                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Drawn"))),
             React.createElement("tbody", null,
                 React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
                 React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
