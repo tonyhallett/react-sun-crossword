@@ -1258,7 +1258,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
                 {
                     (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
                         
-                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { transitionTimingFunction:"cubic-bezier(0.23, 1, 0.32, 1)"}]}>{this.props.won}</td>
+                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { animationTimingFunction:"cubic-bezier(0.23, 1, 0.32, 1)"}]}>{this.props.won}</td>
                     }
                 }
             </Pulse>

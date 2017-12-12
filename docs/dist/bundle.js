@@ -45982,11 +45982,11 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     */
     ScoreboardPlayer.prototype.render = function () {
         var _this = this;
-        var pulseTimeout = 1000;
+        var pulseTimeout = 1000; //transition-timing-function obtained from http://easings.net/#easeOutQuint
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
             React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
-                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }] }, _this.props.won);
+                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }] }, _this.props.won);
             }),
             React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.lost),
             React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.drawn));
