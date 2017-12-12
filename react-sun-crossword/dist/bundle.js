@@ -45729,7 +45729,7 @@ var Demo = /** @class */ (function (_super) {
     */
     Demo.prototype.render = function () {
         //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
-        var duration = 3000;
+        var duration = 3000; //need ms or s qualifier
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
@@ -45853,11 +45853,20 @@ var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
         board: state.board
     };
 })(TicTacToeBoard);
-function addPaddingToStyle(style) {
-    style.paddingTop = 5;
-    style.paddingBottom = 5;
-    return style;
-}
+var style = {
+    scoreboard: {
+        cellStyle: {
+            paddingTop: 5,
+            paddingBottom: 5,
+            textAlign: "center",
+            fontSize: 12
+        },
+        rowStyle: {
+            height: style.scoreboard.cellStyle.fontSize * 1.05 + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom,
+            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
+        }
+    }
+};
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
@@ -45871,10 +45880,10 @@ var Scoreboard = /** @class */ (function (_super) {
         return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Player"),
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Won"),
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Lost"),
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Drawn"))),
+                    React.createElement("th", { style: style.cellStyle }, "Player"),
+                    React.createElement("th", { style: style.cellStyle }, "Won"),
+                    React.createElement("th", { style: style.cellStyle }, "Lost"),
+                    React.createElement("th", { style: style.cellStyle }, "Drawn"))),
             React.createElement("tbody", null,
                 React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
                 React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
@@ -45898,11 +45907,12 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     ScoreboardPlayer.prototype.render = function () {
-        return React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.won),
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.lost),
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.drawn));
+        //it is the winning td that needs to animate on each increment
+        return React.createElement("tr", { style: style.scoreboard.rowStyle },
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.won),
+            React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.lost),
+            React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.drawn));
     };
     return ScoreboardPlayer;
 }(React.Component));

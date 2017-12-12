@@ -931,7 +931,7 @@ class Demo extends React.Component<undefined, DemoState>{
     */
     render() {
         //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
-        var duration = 3000;
+        var duration = 3000;//need ms or s qualifier
         return <div>
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
@@ -1109,11 +1109,23 @@ interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
 }
 interface ScoreboardProps { }
 
-function addPaddingToStyle(style) {
-    style.paddingTop = 5;
-    style.paddingBottom = 5;
-    return style;
+var style = {
+    scoreboard: {
+        cellStyle: {
+            paddingTop: 5,
+            paddingBottom: 5,
+            textAlign: "center",
+            fontSize: 12
+        },
+        rowStyle: {
+            height: style.scoreboard.cellStyle.fontSize * 1.05 + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom,
+            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
+        }
+    }
+    
+
 }
+
 class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
     render() {
         var totalWins = this.props.playCount - this.props.drawCount;
@@ -1123,10 +1135,10 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         return <table style={{ borderCollapse: "collapse", borderWidth: "1px",width:"100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
-                    <th style={addPaddingToStyle({})}>Player</th>
-                    <th style={addPaddingToStyle({})}>Won</th>
-                    <th style={addPaddingToStyle({})}>Lost</th>
-                    <th style={addPaddingToStyle({})}>Drawn</th>
+                    <th style={style.cellStyle}>Player</th>
+                    <th style={style.cellStyle}>Won</th>
+                    <th style={style.cellStyle}>Lost</th>
+                    <th style={style.cellStyle}>Drawn</th>
                 </tr>
             </thead>
             <tbody>
@@ -1158,11 +1170,13 @@ interface ScoreboardPlayerProps {
 }
 class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>{
     render() {
-        return <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
-            <td style={addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour })}>{this.props.playerId}</td>
-            <td style={addPaddingToStyle({ textAlign: "center" })}>{this.props.won}</td>
-            <td style={addPaddingToStyle( {textAlign: "center" })}>{this.props.lost}</td>
-            <td style={addPaddingToStyle({ textAlign: "center" })}>{this.props.drawn}</td >
+        //it is the winning td that needs to animate on each increment
+        
+        return <tr style={style.scoreboard.rowStyle}>
+            <td style={{ ...style.scoreboard.cellStyle, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
+            <td style={style.scoreboard.cellStyle}>{this.props.won}</td>
+            <td style={style.scoreboard.cellStyle}>{this.props.lost}</td>
+            <td style={style.scoreboard.cellStyle}>{this.props.drawn}</td >
             </tr>
     }
 }
