@@ -931,12 +931,12 @@ class Demo extends React.Component<undefined, DemoState>{
     */
     render() {
         //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
-        
+        var duration = 3000;
         return <div>
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
-
-            <AutoOutInOnMount appear={true} inSignal={this.state.inSignal} timeout={1000}>
+            
+            <AutoOutInOnMount appear={true} inSignal={this.state.inSignal} timeout={duration}>
                 {
                     (state: TransitionState) => {
                         var style: React.CSSProperties = {}
@@ -945,7 +945,7 @@ class Demo extends React.Component<undefined, DemoState>{
                             case "entered":
                                 style= {
                                     animationName: Radium.keyframes(flipOutX),
-                                    animationDuration:"3s"
+                                    animationDuration:duration
                                     
                                 }
                                 break;

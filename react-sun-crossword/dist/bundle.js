@@ -45729,17 +45729,18 @@ var Demo = /** @class */ (function (_super) {
     */
     Demo.prototype.render = function () {
         //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
+        var duration = 3000;
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement(AutoOutInOnMount, { appear: true, inSignal: this.state.inSignal, timeout: 1000 }, function (state) {
+            React.createElement(AutoOutInOnMount, { appear: true, inSignal: this.state.inSignal, timeout: duration }, function (state) {
                 var style = {};
                 switch (state) {
                     case "entering":
                     case "entered":
                         style = {
                             animationName: Radium.keyframes(react_animations_1.flipOutX),
-                            animationDuration: "3s"
+                            animationDuration: duration
                         };
                         break;
                     case "exited":
