@@ -1191,6 +1191,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
                         var transitionState: React.CSSProperties = {}
                         switch (state) {
                             case "entering":
+                            case "entered":
                                 transitionState = {
                                     animationDuration: pulseTimeout + "ms",
                                     animationName: Radium.keyframes(pulse)

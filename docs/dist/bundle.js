@@ -45924,6 +45924,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
                 var transitionState = {};
                 switch (state) {
                     case "entering":
+                    case "entered":
                         transitionState = {
                             animationDuration: pulseTimeout + "ms",
                             animationName: Radium.keyframes(react_animations_1.pulse)
