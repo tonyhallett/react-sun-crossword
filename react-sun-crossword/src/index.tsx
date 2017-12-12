@@ -11,7 +11,7 @@ import * as Radium from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
-import { flipOutX } from 'react-animations';
+import { flipOutX,pulse } from 'react-animations';
 
 //#region configured radium for testing prefixes applied
 var radiumConfig = {
@@ -1122,7 +1122,8 @@ var style = {
         } as React.CSSProperties
     }
 }
-style.scoreboard.rowStyle.height= style.scoreboard.cellStyle.fontSize * 1.05 + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
+var pulseIncrease = 1.05;
+style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
 
 class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
     render() {
@@ -1166,13 +1167,42 @@ interface ScoreboardPlayerProps {
     lost: number,
     drawn:number
 }
-class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, undefined>{
+interface ScoreboardPlayerState {
+    inSignal:object
+}
+class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, ScoreboardPlayerState>{
+    constructor(props) {
+        super(props);
+        this.state = { inSignal:null }
+    }
+    componentWillReceiveProps(newProps: ScoreboardPlayerProps) {
+        if (newProps.won !== this.props.won) {
+            this.setState({ inSignal: {} });
+        }
+    }
     render() {
         //it is the winning td that needs to animate on each increment
-        
+        var pulseTimeout = 2000;
         return <tr style={style.scoreboard.rowStyle}>
             <td style={{ ...style.scoreboard.cellStyle, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
-            <td style={style.scoreboard.cellStyle}>{this.props.won}</td>
+            <AutoOutInOnMount inSignal={this.state.inSignal} timeout={pulseTimeout}>
+                {
+                    (state: TransitionState) => {
+                        var transitionState: React.CSSProperties = {}
+                        switch (state) {
+                            case "entering":
+                                transitionState = {
+                                    animationDuration: pulseTimeout + "ms",
+                                    animationName: Radium.keyframes(pulse)
+                                }
+                                break;
+                            
+                        }
+                        return <td style={[style.scoreboard.cellStyle,transitionState]}>{this.props.won}</td>
+                    }
+                }
+            </AutoOutInOnMount>
+            
             <td style={style.scoreboard.cellStyle}>{this.props.lost}</td>
             <td style={style.scoreboard.cellStyle}>{this.props.drawn}</td >
             </tr>
