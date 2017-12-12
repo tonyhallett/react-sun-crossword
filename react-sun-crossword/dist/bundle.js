@@ -45859,7 +45859,7 @@ var style = {
             paddingTop: 5,
             paddingBottom: 5,
             textAlign: "center",
-            fontSize: 12
+            fontSize: 20
         },
         rowStyle: {
             borderWidth: "1px", borderColor: "black", borderStyle: "solid"
