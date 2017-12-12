@@ -45985,8 +45985,8 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         var pulseTimeout = 1000;
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
-            React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: 1.5 }, function (state, props, pulseStyle) {
-                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle] }, _this.props.won);
+            React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
+                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { transitionTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)" }] }, _this.props.won);
             }),
             React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.lost),
             React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.drawn));
@@ -46035,7 +46035,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                        React.createElement(Demo, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),
