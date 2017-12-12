@@ -939,13 +939,14 @@ class Demo extends React.Component<undefined, DemoState>{
             <RadiumTransition in={this.state.in} timeout={1000}>
                 {
                     (state: TransitionState) => {
-                        var style = {}
+                        var style: React.CSSProperties = {}
                         switch (state) {
                             case "entering":
                             case "entered":
-                                style = {
+                                style= {
                                     animationName: Radium.keyframes(flipOutX),
-                                    animation:"x 3s"
+                                    animationDuration:"3s"
+                                    
                                 }
                                 break;
                             case "exited":
