@@ -45866,7 +45866,7 @@ var style = {
         }
     }
 };
-var pulseIncrease = 1.05;
+var pulseIncrease = 1.5;
 style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
@@ -45984,8 +45984,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         var _this = this;
         var pulseTimeout = 1000;
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
-        //var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
-        var animationTimingFunction = "ease";
+        var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
             React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {

@@ -1122,7 +1122,7 @@ var style = {
         } as React.CSSProperties
     }
 }
-var pulseIncrease = 1.05;
+var pulseIncrease = 1.5;
 style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
 
 class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
@@ -1253,8 +1253,8 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
     render() {
         var pulseTimeout = 1000;
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
-        //var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
-        var animationTimingFunction = "ease";
+        var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
+        
         return <tr style={style.scoreboard.rowStyle}>
             <td style={{ ...style.scoreboard.cellStyle, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
             <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
