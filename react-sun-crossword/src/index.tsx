@@ -945,7 +945,7 @@ class Demo extends React.Component<undefined, DemoState>{
                             case "entered":
                                 style = {
                                     animationName: Radium.keyframes(flipOutX),
-                                    animation:"x 3s"
+                                    animation:"3s"
                                 }
                                 break;
                             case "exited":
