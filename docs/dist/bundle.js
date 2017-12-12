@@ -45712,7 +45712,7 @@ var Demo = /** @class */ (function (_super) {
         _this.in = function () {
             _this.setState({ in: true, inSignal: {} });
         };
-        _this.state = { in: false, inSignal: null };
+        _this.state = { in: false, inSignal: {} };
         return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {
@@ -45732,7 +45732,7 @@ var Demo = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
             React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement(RadiumTransition, { in: this.state.in, timeout: 1000 }, function (state) {
+            React.createElement(AutoOutInOnMount, { appear: true, inSignal: this.state.inSignal, timeout: 1000 }, function (state) {
                 var style = {};
                 switch (state) {
                     case "entering":

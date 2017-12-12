@@ -909,7 +909,7 @@ interface DemoState {
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
-        this.state = { in: false,inSignal:null };
+        this.state = { in: false, inSignal: {} };
     }
     onEntering(node: HTMLElement,appear:boolean) {
         console.log("OnEntering, appear : " + appear);
@@ -936,7 +936,7 @@ class Demo extends React.Component<undefined, DemoState>{
             <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
 
-            <RadiumTransition in={this.state.in} timeout={1000}>
+            <AutoOutInOnMount appear={true} inSignal={this.state.inSignal} timeout={1000}>
                 {
                     (state: TransitionState) => {
                         var style: React.CSSProperties = {}
@@ -960,7 +960,7 @@ class Demo extends React.Component<undefined, DemoState>{
                     }
                    
                 }
-            </RadiumTransition>
+            </AutoOutInOnMount>
 
         </div>
        
