@@ -1251,14 +1251,17 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
             </AutoOutInOnMount>
     */
     render() {
-        var pulseTimeout = 1000;//transition-timing-function obtained from http://easings.net/#easeOutQuint
+        var pulseTimeout = 1000;
+        //animation-timing-function obtained from http://easings.net/#easeOutQuint
+        //var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
+        var animationTimingFunction = "ease";
         return <tr style={style.scoreboard.rowStyle}>
             <td style={{ ...style.scoreboard.cellStyle, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
             <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                 {
                     (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
-                        
-                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { animationTimingFunction:"cubic-bezier(0.23, 1, 0.32, 1)"}]}>{this.props.won}</td>
+
+                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
                     }
                 }
             </Pulse>
