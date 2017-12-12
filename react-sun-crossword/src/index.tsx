@@ -1170,6 +1170,56 @@ interface ScoreboardPlayerProps {
 interface ScoreboardPlayerState {
     inSignal:object
 }
+//use timeout - although this does affect the typing
+interface PulseProps {
+    pulseAmount: number,//need default to 1.05
+    children: (state: TransitionState, additionalProps: any, pulseStyle: React.CSSProperties)=>void
+}
+//should change to enable not using function and having component to merge transition style with default Style provided as property
+function withPulse(Component: React.ComponentClass<TransitionProps>) {
+    function scale3d(a, b, c) {
+        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+    };
+    var pulse = class extends React.Component < TransitionProps&PulseProps, undefined>{
+        render() {
+            var fromTo = scale3d(1, 1, 1);
+            var pulse = {
+                from: {
+                    transform: fromTo
+                },
+                '50%': {
+                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+                },
+                to: {
+                    transform: fromTo
+                }
+            };
+
+            //passthrough to do
+            return <Component {...this.props}>
+                {
+                    (state: TransitionState,additionalProps:any) => {
+                        var transitionStyle: React.CSSProperties = {}
+                        switch (state) {
+                            case "entering":
+                            case "entered":
+                                transitionStyle = {
+                                    animationDuration: this.props.timeout + "ms",
+                                    animationName: Radium.keyframes(pulse)
+                                }
+                                break;
+
+                        }
+                        return this.props.children(state,additionalProps,transitionStyle)
+                    }
+                }
+                </Component>
+        }
+    }
+    return pulse;
+}
+//did I need to radium the others ?
+const Pulse = withPulse(AutoOutInOnMount);
 class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, ScoreboardPlayerState>{
     constructor(props) {
         super(props);
@@ -1180,12 +1230,8 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
             this.setState({ inSignal: {} });
         }
     }
-    render() {
-        //it is the winning td that needs to animate on each increment
-        var pulseTimeout = 2000;
-        return <tr style={style.scoreboard.rowStyle}>
-            <td style={{ ...style.scoreboard.cellStyle, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
-            <AutoOutInOnMount inSignal={this.state.inSignal} timeout={pulseTimeout}>
+    /*
+    <AutoOutInOnMount inSignal={this.state.inSignal} timeout={pulseTimeout}>
                 {
                     (state: TransitionState) => {
                         var transitionState: React.CSSProperties = {}
@@ -1197,12 +1243,25 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
                                     animationName: Radium.keyframes(pulse)
                                 }
                                 break;
-                            
+
                         }
                         return <td style={[style.scoreboard.cellStyle,transitionState]}>{this.props.won}</td>
                     }
                 }
             </AutoOutInOnMount>
+    */
+    render() {
+        var pulseTimeout = 1000;
+        return <tr style={style.scoreboard.rowStyle}>
+            <td style={{ ...style.scoreboard.cellStyle, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
+            <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={1.5} >
+                {
+                    (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
+                        
+                        return <td style={[style.scoreboard.cellStyle, pulseStyle]}>{this.props.won}</td>
+                    }
+                }
+            </Pulse>
             
             <td style={style.scoreboard.cellStyle}>{this.props.lost}</td>
             <td style={style.scoreboard.cellStyle}>{this.props.drawn}</td >

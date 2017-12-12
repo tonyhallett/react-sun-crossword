@@ -45902,6 +45902,52 @@ var ConnectedScoreboard = react_redux_1.connect(function (state) {
     };
     return scoreboardState;
 })(Scoreboard);
+//should change to enable not using function and having component to merge transition style with default Style provided as property
+function withPulse(Component) {
+    function scale3d(a, b, c) {
+        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+    }
+    ;
+    var pulse = /** @class */ (function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        class_1.prototype.render = function () {
+            var _this = this;
+            var fromTo = scale3d(1, 1, 1);
+            var pulse = {
+                from: {
+                    transform: fromTo
+                },
+                '50%': {
+                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+                },
+                to: {
+                    transform: fromTo
+                }
+            };
+            //passthrough to do
+            return React.createElement(Component, __assign({}, this.props), function (state, additionalProps) {
+                var transitionStyle = {};
+                switch (state) {
+                    case "entering":
+                    case "entered":
+                        transitionStyle = {
+                            animationDuration: _this.props.timeout + "ms",
+                            animationName: Radium.keyframes(pulse)
+                        };
+                        break;
+                }
+                return _this.props.children(state, additionalProps, transitionStyle);
+            });
+        };
+        return class_1;
+    }(React.Component));
+    return pulse;
+}
+//did I need to radium the others ?
+var Pulse = withPulse(AutoOutInOnMount);
 var ScoreboardPlayer = /** @class */ (function (_super) {
     __extends(ScoreboardPlayer, _super);
     function ScoreboardPlayer(props) {
@@ -45914,24 +45960,33 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
             this.setState({ inSignal: {} });
         }
     };
+    /*
+    <AutoOutInOnMount inSignal={this.state.inSignal} timeout={pulseTimeout}>
+                {
+                    (state: TransitionState) => {
+                        var transitionState: React.CSSProperties = {}
+                        switch (state) {
+                            case "entering":
+                            case "entered":
+                                transitionState = {
+                                    animationDuration: pulseTimeout + "ms",
+                                    animationName: Radium.keyframes(pulse)
+                                }
+                                break;
+
+                        }
+                        return <td style={[style.scoreboard.cellStyle,transitionState]}>{this.props.won}</td>
+                    }
+                }
+            </AutoOutInOnMount>
+    */
     ScoreboardPlayer.prototype.render = function () {
         var _this = this;
-        //it is the winning td that needs to animate on each increment
-        var pulseTimeout = 2000;
+        var pulseTimeout = 1000;
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
-            React.createElement(AutoOutInOnMount, { inSignal: this.state.inSignal, timeout: pulseTimeout }, function (state) {
-                var transitionState = {};
-                switch (state) {
-                    case "entering":
-                    case "entered":
-                        transitionState = {
-                            animationDuration: pulseTimeout + "ms",
-                            animationName: Radium.keyframes(react_animations_1.pulse)
-                        };
-                        break;
-                }
-                return React.createElement("td", { style: [style.scoreboard.cellStyle, transitionState] }, _this.props.won);
+            React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: 1.5 }, function (state, props, pulseStyle) {
+                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle] }, _this.props.won);
             }),
             React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.lost),
             React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.drawn));
