@@ -45702,10 +45702,6 @@ var demoDefaultStyle = {
     width: 300,
     height: 300
 };
-var radiumFlipInX = Radium.keyframes(react_animations_1.flipInX);
-var animationNameCss = radiumFlipInX.__process("all");
-var animationName = animationNameCss.animationName;
-var css = animationNameCss.css;
 var Demo = /** @class */ (function (_super) {
     __extends(Demo, _super);
     function Demo(props) {
@@ -45753,7 +45749,7 @@ var Demo = /** @class */ (function (_super) {
             </AutoOutInOnMount>
     */
     Demo.prototype.render = function () {
-        return React.createElement("span", { style: { animationName: radiumFlipInX } });
+        return null;
     };
     return Demo;
 }(React.Component));
@@ -45980,8 +45976,8 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
 }(React.Component));
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
-    function TicTacToeApp() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function TicTacToeApp(props) {
+        var _this = _super.call(this, props) || this;
         _this.modalShouldOpen = function () {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -45992,6 +45988,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 overlay: getOverlay(testOverlay)
             };
         };
+        _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
+        _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
+        _this.keyframesFlipOutX = Radium.keyframes(react_animations_1.flipOutX);
+        _this.flipOutXAnimationName = _this.keyframesFlipOutX.__process("all").animationName;
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
@@ -46017,6 +46017,18 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         }
                     }
                 } }),
+            React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
+            React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
+            React.createElement(Radium_1.Style, { rules: {
+                    ".ReactModal__Overlay": {
+                        animationName: this.flipInXAnimationName,
+                        animationDuration: this.flipDuration + "ms"
+                    },
+                    ".ReactModal__Overlay--before-close": {
+                        animationName: this.flipOutXAnimationName,
+                        animationDuration: this.flipDuration + "ms"
+                    }
+                } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
@@ -46026,7 +46038,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
                             React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
-                        React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+                        React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                             React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {

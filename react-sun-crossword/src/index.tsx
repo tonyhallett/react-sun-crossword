@@ -907,10 +907,7 @@ interface DemoState {
     inSignal:object
 }
 
-var radiumFlipInX = Radium.keyframes(flipInX) as any;
-var animationNameCss = radiumFlipInX.__process("all");
-var animationName = animationNameCss.animationName;
-var css = animationNameCss.css;
+
 
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
@@ -959,7 +956,7 @@ class Demo extends React.Component<undefined, DemoState>{
             </AutoOutInOnMount>
     */
     render() {
-        return <span style={{ animationName: radiumFlipInX}}/>
+        return null;
     }
 }
 const RadiumDemo = Radium(Demo);
@@ -1255,7 +1252,24 @@ interface TicTacToeAppProps {
     playAgain: () => void,
     finishedConfirmed: () => void,
 }
+
+
+
 class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
+    keyframesFlipInX: any
+    keyframesFlipOutX:any
+    flipInXAnimationName: string
+    flipOutXAnimationName: string
+    flipDuration:1000
+    constructor(props) {
+        super(props);
+
+        this.keyframesFlipInX = Radium.keyframes(flipInX) as any;
+        this.flipInXAnimationName = this.keyframesFlipInX.__process("all").animationName;
+        this.keyframesFlipOutX = Radium.keyframes(flipOutX) as any;
+        this.flipOutXAnimationName = this.keyframesFlipOutX.__process("all").animationName;
+        
+    }
     modalShouldOpen = () => {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -1293,7 +1307,18 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                     }
                 }}
             />
-
+            <span style={{ animationName: this.keyframesFlipInX }} />
+            <span style={{ animationName: this.keyframesFlipOutX }} />
+            <Style rules={{
+                ".ReactModal__Overlay": {
+                    animationName: this.flipInXAnimationName,
+                    animationDuration:this.flipDuration+"ms"
+                },
+                ".ReactModal__Overlay--before-close": {
+                    animationName: this.flipOutXAnimationName,
+                    animationDuration: this.flipDuration+"ms"
+                }
+            }}/>
         <VerticallyCenteredContainer backgroundColor="orange">
             <HorizontalCenter>
                 <div style={{ backgroundColor: "gray", padding: 10 }}>
@@ -1305,7 +1330,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                         <ConnectedTicTacToeBoard />
                         <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
-                    <ModalCover elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                    <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                         <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
                             {this.getWinDrawMessage()}
                         </div>
