@@ -1349,8 +1349,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                         <button style={{borderStyle:"none", borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
                     <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                        <div style={{ fontFamily: style.fontFamily, fontWeight:"bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
-                            {this.getWinDrawMessage()}
+                            <div style={{ fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
+                                {this.state.winDrawMessage}
                         </div>
                     </ModalCover>
                 </div>

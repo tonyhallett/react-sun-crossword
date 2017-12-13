@@ -46052,7 +46052,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement(ConnectedTicTacToeBoard, null),
                             React.createElement("button", { style: { borderStyle: "none", borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                            React.createElement("div", { style: { fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
+                            React.createElement("div", { style: { fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.state.winDrawMessage))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "";
