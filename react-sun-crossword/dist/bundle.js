@@ -45789,6 +45789,7 @@ var Demo = /** @class */ (function (_super) {
 var RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
+//borderWidth: "1px", borderColor: "black", borderStyle: "solid"
 var style = {
     fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
     componentBackgroundColor: "lightgray",
@@ -45801,11 +45802,10 @@ var style = {
             fontSize: 20
         },
         tdStyle: {
-            borderTop: "solid 1px"
+            borderTop: "solid 1px",
+            borderColor: "black"
         },
-        rowStyle: {
-            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
-        },
+        rowStyle: {},
         winColour: "green",
         loseColour: "red",
         drawColour: "orange"
@@ -45927,8 +45927,8 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        //borderWidth: "1px",width: "100%", borderColor: "black", borderStyle: "solid",
-        return React.createElement("table", { style: { backgroundColor: style.componentBackgroundColor } },
+        //borderWidth: "1px",, borderColor: "black", borderStyle: "solid",
+        return React.createElement("table", { style: { width: "100%", backgroundColor: style.componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     React.createElement("th", { style: __assign({ borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),

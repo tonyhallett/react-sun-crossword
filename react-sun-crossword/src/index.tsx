@@ -1001,6 +1001,7 @@ class Demo extends React.Component<undefined, DemoState>{
 const RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
+//borderWidth: "1px", borderColor: "black", borderStyle: "solid"
 var style = {
     fontFamily:"Helvetica Neue, Helvetica, Arial, sans-serif",
     componentBackgroundColor: "lightgray",
@@ -1013,10 +1014,11 @@ var style = {
             fontSize: 20
         },
         tdStyle: {
-            borderTop:"solid 1px"
+            borderTop: "solid 1px",
+            borderColor:"black"
         },
         rowStyle: {
-            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
+            
         } as React.CSSProperties,
         winColour: "green",
         loseColour: "red",
@@ -1176,8 +1178,8 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        //borderWidth: "1px",width: "100%", borderColor: "black", borderStyle: "solid",
-        return <table style={{  backgroundColor: style.componentBackgroundColor }}>
+        //borderWidth: "1px",, borderColor: "black", borderStyle: "solid",
+        return <table style={{ width: "100%", backgroundColor: style.componentBackgroundColor }}>
             <thead>
                 <tr>
                     <th style={{ borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
