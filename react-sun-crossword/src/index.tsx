@@ -214,7 +214,7 @@ function checkDraw(board: SquareGo[][]) {
 function reducer(state: TicTacToeState = {
     currentPlayer: firstPlayer,
     board: getDefaultBoard(),
-    oColour: "red",
+    oColour: "yellow",
     xColour: "blue",
     gameState: GameState.Playing,
     playCount:0,
@@ -1112,7 +1112,10 @@ var style = {
         },
         rowStyle: {
             borderWidth: "1px", borderColor: "black", borderStyle: "solid"
-        } as React.CSSProperties
+        } as React.CSSProperties,
+        winColour: "green",
+        loseColour: "red",
+        drawColour:"orange"
     }
 }
 var pulseIncrease = 1.5;
@@ -1234,13 +1237,13 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
                 {
                     (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
 
-                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
+                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
                     }
                 }
             </Pulse>
-            
-            <td style={style.scoreboard.cellStyle}>{this.props.lost}</td>
-            <td style={style.scoreboard.cellStyle}>{this.props.drawn}</td >
+
+            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.loseColour }}>{this.props.lost}</td>
+            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.drawColour } } > { this.props.drawn }</td >
             </tr>
     }
 }

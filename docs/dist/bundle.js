@@ -45102,7 +45102,7 @@ function reducer(state, action) {
     if (state === void 0) { state = {
         currentPlayer: firstPlayer,
         board: getDefaultBoard(),
-        oColour: "red",
+        oColour: "yellow",
         xColour: "blue",
         gameState: GameState.Playing,
         playCount: 0,
@@ -45863,7 +45863,10 @@ var style = {
         },
         rowStyle: {
             borderWidth: "1px", borderColor: "black", borderStyle: "solid"
-        }
+        },
+        winColour: "green",
+        loseColour: "red",
+        drawColour: "orange"
     }
 };
 var pulseIncrease = 1.5;
@@ -45967,10 +45970,12 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
             React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
-                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { animationTimingFunction: animationTimingFunction }] }, _this.props.won);
+                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
             }),
-            React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.lost),
-            React.createElement("td", { style: style.scoreboard.cellStyle }, this.props.drawn));
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.loseColour }) }, this.props.lost),
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.drawColour }) },
+                " ",
+                this.props.drawn));
     };
     return ScoreboardPlayer;
 }(React.Component));
