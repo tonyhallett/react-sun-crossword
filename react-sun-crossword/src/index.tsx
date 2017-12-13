@@ -1186,7 +1186,7 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
 
-        return <table style={{ width: "100%",borderSpacing:0 }}>
+        return <table style={{ width: "100%",borderSpacing:0,borderCollapse:"collapse" }}>
             <thead>
                 <tr>
                     <th style={{ borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
@@ -1248,14 +1248,17 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
         
         return <tr style={style.scoreboard.rowStyle}>
             <td style={{ ...style.scoreboard.cellStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
-            <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
-                {
-                    (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
+            <td style={style.scoreboard.cellStyle}>
+                <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
+                    {
+                        (state: TransitionState, props: any, pulseStyle: React.CSSProperties) => {
 
-                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
+                            return <div style={[pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</div>
+                        }
                     }
-                }
-            </Pulse>
+                </Pulse>
+            </td>
+            
 
             <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.loseColour }}>{this.props.lost}</td>
             <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius } } > { this.props.drawn }</td >

@@ -45934,7 +45934,7 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return React.createElement("table", { style: { width: "100%", borderSpacing: 0 } },
+        return React.createElement("table", { style: { width: "100%", borderSpacing: 0, borderCollapse: "collapse" } },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     React.createElement("th", { style: __assign({ borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),
@@ -45978,9 +45978,10 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
-            React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
-                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
-            }),
+            React.createElement("td", { style: style.scoreboard.cellStyle },
+                React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
+                    return React.createElement("div", { style: [pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
+                })),
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.loseColour }) }, this.props.lost),
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius }) },
                 " ",
