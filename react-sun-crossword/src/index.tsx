@@ -1012,6 +1012,9 @@ var style = {
             textAlign: "center",
             fontSize: 20
         },
+        tdStyle: {
+            borderTop:"solid 1px"
+        },
         rowStyle: {
             borderWidth: "1px", borderColor: "black", borderStyle: "solid"
         } as React.CSSProperties,
@@ -1173,9 +1176,10 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return <table style={{ borderCollapse:"collapse",borderSpacing:0, borderWidth: "1px",width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor }}>
+        //borderWidth: "1px",width: "100%", borderColor: "black", borderStyle: "solid",
+        return <table style={{  backgroundColor: style.componentBackgroundColor }}>
             <thead>
-                <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
+                <tr>
                     <th style={{ borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
                     <th style={style.scoreboard.cellStyle}>Won</th>
                     <th style={style.scoreboard.cellStyle}>Lost</th>
@@ -1234,18 +1238,18 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         
         return <tr style={style.scoreboard.rowStyle}>
-            <td style={{ ...style.scoreboard.cellStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
+            <td style={{ ...style.scoreboard.cellStyle,...style.scoreboard.tdStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
             <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                 {
                     (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
 
-                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
+                        return <td style={[style.scoreboard.cellStyle, style.scoreboard.tdStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
                     }
                 }
             </Pulse>
 
-            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.loseColour }}>{this.props.lost}</td>
-            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius } } > { this.props.drawn }</td >
+            <td style={{ ...style.scoreboard.cellStyle, ...style.scoreboard.tdStyle, color: style.scoreboard.loseColour }}>{this.props.lost}</td>
+            <td style={{ ...style.scoreboard.cellStyle, ...style.scoreboard.tdStyle, color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius } } > { this.props.drawn }</td >
             </tr>
     }
 }

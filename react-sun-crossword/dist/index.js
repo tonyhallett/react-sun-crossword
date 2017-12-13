@@ -33,17 +33,11 @@ var react_redux_1 = require("react-redux");
 var Modal = require("react-modal");
 var storage_1 = require("./helpers/storage");
 var $ = require("jquery");
+var Radium_1 = require("Radium");
 var Radium = require("Radium");
 var Transition_1 = require("react-transition-group/Transition");
 var Color = require("Color");
-//#region configured radium for testing prefixes applied
-var radiumConfig = {
-    userAgent: "My made up browser"
-};
-function ConfiguredRadium(component) {
-    return Radium(radiumConfig)(component);
-}
-//#endregion
+var react_animations_1 = require("react-animations");
 var componentBackgroundColor = "lightgray";
 //#region redux
 //#region redux state
@@ -239,7 +233,7 @@ function reducer(state, action) {
     if (state === void 0) { state = {
         currentPlayer: firstPlayer,
         board: getDefaultBoard(),
-        oColour: "red",
+        oColour: "yellow",
         xColour: "blue",
         gameState: GameState.Playing,
         playCount: 0,
@@ -746,6 +740,50 @@ function withColourChangeTransition(Component) {
     }(React.Component));
     return colourChangeTransition;
 }
+//should change to enable not using function and having component to merge transition style with default Style provided as property
+function withPulse(Component) {
+    function scale3d(a, b, c) {
+        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+    }
+    ;
+    var pulse = (function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        class_1.prototype.render = function () {
+            var _this = this;
+            var fromTo = scale3d(1, 1, 1);
+            var pulse = {
+                from: {
+                    transform: fromTo
+                },
+                '50%': {
+                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+                },
+                to: {
+                    transform: fromTo
+                }
+            };
+            //passthrough to do
+            return React.createElement(Component, __assign({}, this.props), function (state, additionalProps) {
+                var transitionStyle = {};
+                switch (state) {
+                    case "entering":
+                    case "entered":
+                        transitionStyle = {
+                            animationDuration: _this.props.timeout + "ms",
+                            animationName: Radium.keyframes(pulse)
+                        };
+                        break;
+                }
+                return _this.props.children(state, additionalProps, transitionStyle);
+            });
+        };
+        return class_1;
+    }(React.Component));
+    return pulse;
+}
 var defaultProvider = function (state, props) {
     return props;
 };
@@ -810,9 +848,6 @@ var colourTransitionProvider = function (state, props) {
     };
 };
 //#endregion
-var RadiumTransition = Radium(Transition_1.default);
-var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
-var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 //#endregion
 //#region demo
 var demoTimeout = {
@@ -844,33 +879,84 @@ var Demo = (function (_super) {
     function Demo(props) {
         var _this = _super.call(this, props) || this;
         _this.out = function () {
-            _this.setState({ in: null });
+            _this.setState({ inSignal: null, in: false });
         };
         _this.in = function () {
-            _this.setState({ in: {} });
+            _this.setState({ in: true, inSignal: {} });
         };
-        _this.state = { in: {} };
+        _this.state = { in: false, inSignal: {} };
         return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {
         console.log("OnEntering, appear : " + appear);
     };
     /*
-    <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.in} propName="backgroundColor" timeout={demoTimeout} enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
-                <div style={{width:300,height:300,transform:"rotate(10deg)"}}></div>
-            </AutoOutInOnMountColourChangeRadiumTransition>
+    var duration = 3000;//need ms or s qualifier
+    <button onClick={this.out}>out</button>
+            <button onClick={this.in}>in</button >
+    <AutoOutInOnMount appear={true} inSignal={this.state.inSignal} timeout={duration}>
+                {
+                    (state: TransitionState) => {
+                        var style: React.CSSProperties = {}
+                        switch (state) {
+                            case "entering":
+                            case "entered":
+                                style= {
+                                    animationName: Radium.keyframes(flipOutX),
+                                    animationDuration:duration + "ms"
+
+                                }
+                                break;
+                            case "exited":
+
+                                break;
+                            case "exiting":
+
+                                break;
+                        }
+                        return <div style={style}>Flipped on in </div>
+                    }
+
+                }
+            </AutoOutInOnMount>
     */
     Demo.prototype.render = function () {
-        //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
-        return React.createElement("div", null,
-            React.createElement("button", { onClick: this.out }, "out"),
-            React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement(AutoOutInOnMount, { appear: true, inSignal: this.state.in, timeout: demoTimeout, propName: "backgroundColor", enterTransition: "background-color " + demoTimeout.enter + "ms linear", exitTransition: "background-color " + demoTimeout.exit + "ms linear", exitColour: componentBackgroundColor, change: 0.3, colourChangeType: ColourChangeType.lighten }, transitionHelperFn(function (state, props, stateStyle, stateTransition) {
-                return React.createElement("div", { style: [demoDefaultStyle, stateStyle, { transition: stateTransition }] });
-            }, colourTransitionProvider)));
+        return null;
     };
     return Demo;
 }(React.Component));
+var RadiumDemo = Radium(Demo);
+//#endregion
+//#region styling
+var style = {
+    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+    componentBackgroundColor: "lightgray",
+    borderRadius: 5,
+    scoreboard: {
+        cellStyle: {
+            paddingTop: 5,
+            paddingBottom: 5,
+            textAlign: "center",
+            fontSize: 20
+        },
+        tdStyle: {
+            borderTop: "solid 1px"
+        },
+        rowStyle: {
+            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
+        },
+        winColour: "green",
+        loseColour: "red",
+        drawColour: "orange"
+    }
+};
+var pulseIncrease = 1.5;
+style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
+//#endregion
+//#region App components
+var RadiumTransition = Radium(Transition_1.default);
+var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
+var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 var TicTacToeSquare = (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -896,7 +982,7 @@ var TicTacToeSquare = (function (_super) {
     TicTacToeSquare.prototype.render = function () {
         var _this = this;
         var transitionDuration = 1000;
-        var exitColour = componentBackgroundColor;
+        var exitColour = style.componentBackgroundColor;
         var defaultStyle = {
             color: this.props.squareGoColour,
             textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
@@ -955,7 +1041,7 @@ var TicTacToeBoard = (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
-        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
+        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor } },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
@@ -970,11 +1056,6 @@ var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
         board: state.board
     };
 })(TicTacToeBoard);
-function addPaddingToStyle(style) {
-    style.paddingTop = 5;
-    style.paddingBottom = 5;
-    return style;
-}
 var Scoreboard = (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
@@ -985,16 +1066,17 @@ var Scoreboard = (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
+        //borderWidth: "1px",width: "100%", borderColor: "black", borderStyle: "solid",
+        return React.createElement("table", { style: { backgroundColor: style.componentBackgroundColor } },
             React.createElement("thead", null,
-                React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Player"),
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Won"),
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Lost"),
-                    React.createElement("th", { style: addPaddingToStyle({}) }, "Drawn"))),
+                React.createElement("tr", null,
+                    React.createElement("th", { style: __assign({ borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),
+                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Won"),
+                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Lost"),
+                    React.createElement("th", { style: __assign({ borderTopRightRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Drawn"))),
             React.createElement("tbody", null,
                 React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
-                React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
+                React.createElement(ScoreboardPlayer, { borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
     };
     return Scoreboard;
 }(React.Component));
@@ -1009,24 +1091,44 @@ var ConnectedScoreboard = react_redux_1.connect(function (state) {
     };
     return scoreboardState;
 })(Scoreboard);
+var Pulse = withPulse(AutoOutInOnMount);
 var ScoreboardPlayer = (function (_super) {
     __extends(ScoreboardPlayer, _super);
-    function ScoreboardPlayer() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function ScoreboardPlayer(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = { inSignal: null };
+        return _this;
     }
+    ScoreboardPlayer.prototype.componentWillReceiveProps = function (newProps) {
+        if (newProps.won !== this.props.won) {
+            this.setState({ inSignal: {} });
+        }
+    };
     ScoreboardPlayer.prototype.render = function () {
-        return React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center", fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.won),
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.lost),
-            React.createElement("td", { style: addPaddingToStyle({ textAlign: "center" }) }, this.props.drawn));
+        var _this = this;
+        var pulseTimeout = 1000;
+        //animation-timing-function obtained from http://easings.net/#easeOutQuint
+        var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
+        return React.createElement("tr", { style: style.scoreboard.rowStyle },
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.tdStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
+                return React.createElement("td", { style: [style.scoreboard.cellStyle, style.scoreboard.tdStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
+            }),
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.tdStyle, { color: style.scoreboard.loseColour }) }, this.props.lost),
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.tdStyle, { color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius }) },
+                " ",
+                this.props.drawn));
     };
     return ScoreboardPlayer;
 }(React.Component));
+ScoreboardPlayer.defaultProps = {
+    borderRadius: 0
+};
 var TicTacToeApp = (function (_super) {
     __extends(TicTacToeApp, _super);
-    function TicTacToeApp() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function TicTacToeApp(props) {
+        var _this = _super.call(this, props) || this;
+        _this.flipDuration = 1000;
         _this.modalShouldOpen = function () {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -1037,51 +1139,45 @@ var TicTacToeApp = (function (_super) {
                 overlay: getOverlay(testOverlay)
             };
         };
+        _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
+        _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
+        _this.keyframesFlipOutX = Radium.keyframes(react_animations_1.flipOutX);
+        _this.flipOutXAnimationName = _this.keyframesFlipOutX.__process("all").animationName;
         return _this;
     }
-    /*
-    
-
-    <StyleRoot>
-            <Style
-                rules={{
+    TicTacToeApp.prototype.render = function () {
+        return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "all" } },
+            React.createElement(Radium_1.Style, { rules: {
                     body: {
                         margin: 0,
-                        fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'
+                        fontFamily: style.fontFamily
                     },
-                    mediaQueries: {
-                        '(max-width: 600px)': {
-                            body: {
-                                background: 'gray'
-                            }
-                        },
-                        '(max-width: 500px)': {
-                            body: {
-                                background: 'blue'
-                            },
-                            'p, h1': {
-                                color: 'white'
-                            }
-                        }
+                    button: {
+                        fontFamily: style.fontFamily
                     }
-                }}
-            />
-
-
-    
-   
-    */
-    TicTacToeApp.prototype.render = function () {
-        return React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
-            React.createElement(HorizontalCenter, null,
-                React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                    React.createElement("div", { style: { display: "inline-block" } },
-                        React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
-                            React.createElement(ConnectedScoreboard, null)),
-                        React.createElement(ConnectedTicTacToeBoard, null),
-                        React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
-                    React.createElement(ModalCover, { elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                        React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage())))));
+                } }),
+            React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
+            React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
+            React.createElement(Radium_1.Style, { rules: {
+                    ".ReactModal__Overlay": {
+                        animationName: this.flipInXAnimationName,
+                        animationDuration: this.flipDuration + "ms"
+                    },
+                    ".ReactModal__Overlay--before-close": {
+                        animationName: this.flipOutXAnimationName,
+                        animationDuration: this.flipDuration + "ms"
+                    }
+                } }),
+            React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
+                React.createElement(HorizontalCenter, null,
+                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius } },
+                        React.createElement("div", { style: { display: "inline-block" } },
+                            React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
+                                React.createElement(ConnectedScoreboard, null)),
+                            React.createElement(ConnectedTicTacToeBoard, null),
+                            React.createElement("button", { style: { borderStyle: "none", borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
+                        React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
+                            React.createElement("div", { style: { fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "Game drawn";
