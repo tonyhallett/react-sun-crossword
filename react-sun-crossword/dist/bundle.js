@@ -45928,7 +45928,7 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
         //borderWidth: "1px",, borderColor: "black", borderStyle: "solid",
-        return React.createElement("table", { style: { width: "100%", backgroundColor: style.componentBackgroundColor } },
+        return React.createElement("table", { style: { width: "100%", borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     React.createElement("th", { style: __assign({ borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),
