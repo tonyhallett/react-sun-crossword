@@ -45809,7 +45809,11 @@ var style = {
         winColour: "green",
         loseColour: "red",
         drawColour: "orange"
-    }
+    },
+    ticTacToeSquare: {
+        textAlign: "center", width: 100, height: 100, borderColor: "black", borderStyle: "solid", fontSize: "80px"
+    },
+    ticTacToeSquareBorderWidth: 5
 };
 style.scoreboard.cellStyle.backgroundColor = style.componentBackgroundColor;
 var pulseIncrease = 1.5;
@@ -45845,19 +45849,24 @@ var TicTacToeSquare = /** @class */ (function (_super) {
         var _this = this;
         var transitionDuration = 1000;
         var exitColour = style.componentBackgroundColor;
-        var defaultStyle = {
+        var specificStyle = {
             color: this.props.squareGoColour,
-            textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
         };
+        if (this.props.rowIndex !== 0) {
+            specificStyle.borderTopWidth = style.ticTacToeSquareBorderWidth;
+        }
+        if (this.props.colIndex !== 0) {
+            specificStyle.borderLeftWidth = style.ticTacToeSquareBorderWidth;
+        }
         return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: exitColour, change: 0.3, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
-            var style;
+            var transitionStyle;
             if (_this.state.kill) {
-                style = __assign({}, defaultStyle, { backgroundColor: exitColour });
+                transitionStyle = { backgroundColor: exitColour };
             }
             else {
-                style = __assign({}, defaultStyle, stateStyle, { transition: stateTransition });
+                transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { style: style, onClick: _this.squareClicked }, _this.props.squareText);
+            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onClick: _this.squareClicked }, _this.props.squareText);
         });
     };
     return TicTacToeSquare;

@@ -928,6 +928,7 @@ var Demo = (function (_super) {
 var RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
+//borderWidth: "1px", borderColor: "black", borderStyle: "solid"
 var style = {
     fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
     componentBackgroundColor: "lightgray",
@@ -937,19 +938,19 @@ var style = {
             paddingTop: 5,
             paddingBottom: 5,
             textAlign: "center",
-            fontSize: 20
+            fontSize: 20,
         },
         tdStyle: {
-            borderTop: "solid 1px"
+            borderTop: "solid 1px",
+            borderColor: "black"
         },
-        rowStyle: {
-            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
-        },
+        rowStyle: {},
         winColour: "green",
         loseColour: "red",
         drawColour: "orange"
     }
 };
+style.scoreboard.cellStyle.backgroundColor = style.componentBackgroundColor;
 var pulseIncrease = 1.5;
 style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
 //#endregion
@@ -1066,8 +1067,7 @@ var Scoreboard = (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        //borderWidth: "1px",width: "100%", borderColor: "black", borderStyle: "solid",
-        return React.createElement("table", { style: { backgroundColor: style.componentBackgroundColor } },
+        return React.createElement("table", { style: { width: "100%", borderSpacing: 0 } },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     React.createElement("th", { style: __assign({ borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),

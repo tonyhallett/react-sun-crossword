@@ -1024,7 +1024,11 @@ var style = {
         winColour: "green",
         loseColour: "red",
         drawColour: "orange"
-    }
+    },
+    ticTacToeSquare: {
+        textAlign: "center", width: 100, height: 100, borderColor: "black", borderStyle: "solid", fontSize: "80px"
+    },
+    ticTacToeSquareBorderWidth:5
 }
 style.scoreboard.cellStyle.backgroundColor = style.componentBackgroundColor
 var pulseIncrease = 1.5;
@@ -1080,20 +1084,25 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
     render() {
         var transitionDuration = 1000;
         var exitColour = style.componentBackgroundColor;
-        var defaultStyle = {
+        var specificStyle: React.CSSProperties = {
             color: this.props.squareGoColour,
-            textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
+        }
+        if (this.props.rowIndex !== 0) {
+            specificStyle.borderTopWidth = style.ticTacToeSquareBorderWidth;
+        }
+        if (this.props.colIndex !== 0) {
+            specificStyle.borderLeftWidth = style.ticTacToeSquareBorderWidth;
         }
         return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={exitColour} change={0.3} colourChangeType={ColourChangeType.lighten}>
             {
                 (state, props, stateStyle, stateTransition) => {
-                    var style:React.CSSProperties;
+                    var transitionStyle:React.CSSProperties;
                     if (this.state.kill) {
-                        style = { ...defaultStyle, backgroundColor: exitColour };
+                        transitionStyle = {backgroundColor: exitColour };
                     } else {
-                        style={...defaultStyle, ...stateStyle, transition: stateTransition }
+                        transitionStyle={...stateStyle, transition: stateTransition }
                     }
-                    return <td style={style} onClick={this.squareClicked}>
+                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onClick={this.squareClicked}>
                         {this.props.squareText}
                     </td>
                 }
