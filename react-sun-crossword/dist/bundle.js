@@ -46007,12 +46007,18 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 overlay: getOverlay(testOverlay)
             };
         };
+        _this.state = { winDrawMessage: _this.getWinDrawMessage() };
         _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
         _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
         _this.keyframesFlipOutX = Radium.keyframes(react_animations_1.flipOutX);
         _this.flipOutXAnimationName = _this.keyframesFlipOutX.__process("all").animationName;
         return _this;
     }
+    TicTacToeApp.prototype.componentWillReceiveProps = function (props) {
+        if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
+            this.setState({ winDrawMessage: this.getWinDrawMessage() });
+        }
+    };
     TicTacToeApp.prototype.render = function () {
         return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "all" } },
             React.createElement(Radium_1.Style, { rules: {
@@ -46049,7 +46055,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
-        var message = "Game drawn";
+        var message = "";
         switch (this.props.gameState) {
             case GameState.X:
                 message = "Player X Won !";
@@ -46057,6 +46063,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
             case GameState.O:
                 message = "Player O Won !";
                 break;
+            case GameState.Draw:
+                message = "Game drawn";
         }
         return message;
     };

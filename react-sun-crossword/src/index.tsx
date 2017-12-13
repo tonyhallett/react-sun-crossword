@@ -1272,11 +1272,13 @@ interface TicTacToeAppProps {
     gameState: GameState,
     playAgain: () => void,
     finishedConfirmed: () => void,
+}   
+
+interface TicTacToeAppState {
+    winDrawMessage:string
 }
 
-
-
-class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
+class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     keyframesFlipInX: any
     keyframesFlipOutX:any
     flipInXAnimationName: string
@@ -1284,12 +1286,17 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     flipDuration=1000
     constructor(props) {
         super(props);
-
+        this.state = { winDrawMessage: this.getWinDrawMessage() }
         this.keyframesFlipInX = Radium.keyframes(flipInX) as any;
         this.flipInXAnimationName = this.keyframesFlipInX.__process("all").animationName;
         this.keyframesFlipOutX = Radium.keyframes(flipOutX) as any;
         this.flipOutXAnimationName = this.keyframesFlipOutX.__process("all").animationName;
         
+    }
+    componentWillReceiveProps(props: TicTacToeAppProps) {
+        if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
+            this.setState({ winDrawMessage: this.getWinDrawMessage() })
+        }
     }
     modalShouldOpen = () => {
         var gameState = this.props.gameState;
@@ -1353,7 +1360,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             
     }
     getWinDrawMessage() {
-        var message = "Game drawn";
+        var message = "";
         switch (this.props.gameState) {
             case GameState.X:
                 message = "Player X Won !";
@@ -1361,6 +1368,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
             case GameState.O:
                 message = "Player O Won !";
                 break;
+            case GameState.Draw:
+                message = "Game drawn";
         }
         return message;
     }
