@@ -958,6 +958,7 @@ const RadiumDemo = Radium(Demo);
 var style = {
     fontFamily:"Helvetica Neue, Helvetica, Arial, sans-serif",
     componentBackgroundColor: "lightgray",
+    borderRadius:10,
     scoreboard: {
         cellStyle: {
             paddingTop: 5,
@@ -1310,17 +1311,17 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 }
             }}/>
         <VerticallyCenteredContainer backgroundColor="orange">
-            <HorizontalCenter>
-                <div style={{ backgroundColor: "gray", padding: 10 }}>
+                <HorizontalCenter>
+                    <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius }}>
                     <div style={{ display: "inline-block" }}>
                         <div style={{ marginTop: 10, marginBottom: 10 }}>
                             <ConnectedScoreboard />
                         </div>
                         <ConnectedTicTacToeBoard />
-                        <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                        <button style={{ borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
                     <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                        <div style={{ fontFamily: style.fontFamily, margin: "0 auto", width: "80%", textAlign: "center" }}>
+                        <div style={{ fontFamily: style.fontFamily, fontWeight:"bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
                             {this.getWinDrawMessage()}
                         </div>
                     </ModalCover>
