@@ -208,7 +208,7 @@ function reducer(state: TicTacToeState = {
     currentPlayer: firstPlayer,
     board: getDefaultBoard(),
     oColour: "yellow",
-    xColour: "pink",
+    xColour: "rgb(255, 51, 153)",
     gameState: GameState.Playing,
     playCount:0,
     drawCount: 0,
@@ -1015,7 +1015,7 @@ var style = {
 
         } as React.CSSProperties,
         rowStyle: {
-            borderTopWidth: "1px", borderColor: "black", borderStyle: "solid"
+            borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid"
         } as React.CSSProperties,
         winColour: "green",
         loseColour: "red",
