@@ -1011,7 +1011,8 @@ var style = {
             paddingTop: 5,
             paddingBottom: 5,
             textAlign: "center",
-            fontSize: 20
+            fontSize: 20,
+            backgroundColor:"red"
         },
         tdStyle: {
             borderTop: "solid 1px",
