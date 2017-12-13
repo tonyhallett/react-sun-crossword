@@ -1026,7 +1026,7 @@ var style = {
         drawColour: "orange"
     },
     ticTacToeSquare: {
-        textAlign: "center", width: 100, height: 100, borderColor: "black", borderStyle: "solid", fontSize: "80px"
+        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid",borderWidth:0, fontSize: "80px"
     },
     ticTacToeSquareBorderWidth:5
 }
