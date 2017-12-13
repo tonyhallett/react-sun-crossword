@@ -45978,6 +45978,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp(props) {
         var _this = _super.call(this, props) || this;
+        _this.flipDuration = 1000;
         _this.modalShouldOpen = function () {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -45995,7 +45996,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.render = function () {
-        return React.createElement(Radium_1.StyleRoot, null,
+        return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "all" } },
             React.createElement(Radium_1.Style, { rules: {
                     body: {
                         margin: 0,
@@ -46032,7 +46033,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                        React.createElement(RadiumDemo, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),

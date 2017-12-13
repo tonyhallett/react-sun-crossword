@@ -1260,7 +1260,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     keyframesFlipOutX:any
     flipInXAnimationName: string
     flipOutXAnimationName: string
-    flipDuration:1000
+    flipDuration=1000
     constructor(props) {
         super(props);
 
@@ -1283,7 +1283,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
     
     render() {
-        return <StyleRoot>
+        return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
                 rules={{
                     body: {
@@ -1322,7 +1322,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         <VerticallyCenteredContainer backgroundColor="orange">
             <HorizontalCenter>
                 <div style={{ backgroundColor: "gray", padding: 10 }}>
-                    <RadiumDemo/>
                     <div style={{ display: "inline-block" }}>
                         <div style={{ marginTop: 10, marginBottom: 10 }}>
                             <ConnectedScoreboard />
