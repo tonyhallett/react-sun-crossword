@@ -1012,8 +1012,8 @@ var style = {
             paddingBottom: 5,
             textAlign: "center",
             fontSize: 20,
-            backgroundColor:"red"
-        },
+
+        } as React.CSSProperties,
         tdStyle: {
             borderTop: "solid 1px",
             borderColor:"black"
@@ -1026,8 +1026,9 @@ var style = {
         drawColour: "orange"
     }
 }
+style.scoreboard.cellStyle.backgroundColor = style.componentBackgroundColor
 var pulseIncrease = 1.5;
-style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
+style.scoreboard.rowStyle.height = (style.scoreboard.cellStyle.fontSize as number) * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
 //#endregion
 
 //#region App components
@@ -1180,7 +1181,7 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
 
-        return <table style={{ width: "100%",borderSpacing:0, backgroundColor: style.componentBackgroundColor }}>
+        return <table style={{ width: "100%",borderSpacing:0 }}>
             <thead>
                 <tr>
                     <th style={{ borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>

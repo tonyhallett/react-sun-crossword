@@ -45800,7 +45800,6 @@ var style = {
             paddingBottom: 5,
             textAlign: "center",
             fontSize: 20,
-            backgroundColor: "red"
         },
         tdStyle: {
             borderTop: "solid 1px",
@@ -45812,6 +45811,7 @@ var style = {
         drawColour: "orange"
     }
 };
+style.scoreboard.cellStyle.backgroundColor = style.componentBackgroundColor;
 var pulseIncrease = 1.5;
 style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
 //#endregion
@@ -45928,7 +45928,7 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return React.createElement("table", { style: { width: "100%", borderSpacing: 0, backgroundColor: style.componentBackgroundColor } },
+        return React.createElement("table", { style: { width: "100%", borderSpacing: 0 } },
             React.createElement("thead", null,
                 React.createElement("tr", null,
                     React.createElement("th", { style: __assign({ borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),
