@@ -1361,7 +1361,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     getWinDrawMessage(props: TicTacToeAppProps) {
         var message = "";
-        switch (this.props.gameState) {
+        switch (props.gameState) {
             case GameState.X:
                 message = "Player X Won !";
                 break;

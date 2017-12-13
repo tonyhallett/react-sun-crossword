@@ -46056,7 +46056,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
     };
     TicTacToeApp.prototype.getWinDrawMessage = function (props) {
         var message = "";
-        switch (this.props.gameState) {
+        switch (props.gameState) {
             case GameState.X:
                 message = "Player X Won !";
                 break;
