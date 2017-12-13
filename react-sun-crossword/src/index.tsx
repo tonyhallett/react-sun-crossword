@@ -1327,7 +1327,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                 },
                 ".ReactModal__Overlay--before-close": {
                     animationName: this.flipOutXAnimationName,
-                    animationDuration: this.flipDuration+"ms"
+                    animationDuration: this.flipDuration + "ms",
+                    animationFillMode:"forwards"
                 }
             }}/>
         <VerticallyCenteredContainer backgroundColor="orange">

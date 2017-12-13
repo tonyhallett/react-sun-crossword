@@ -46033,7 +46033,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     },
                     ".ReactModal__Overlay--before-close": {
                         animationName: this.flipOutXAnimationName,
-                        animationDuration: this.flipDuration + "ms"
+                        animationDuration: this.flipDuration + "ms",
+                        animationFillMode: "forwards"
                     }
                 } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
