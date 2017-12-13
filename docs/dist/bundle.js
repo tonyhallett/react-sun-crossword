@@ -45702,6 +45702,10 @@ var demoDefaultStyle = {
     width: 300,
     height: 300
 };
+var radiumFlipInX = Radium.keyframes(react_animations_1.flipInX);
+var animationNameCss = radiumFlipInX.__process("all");
+var animationName = animationNameCss.animationName;
+var css = animationNameCss.css;
 var Demo = /** @class */ (function (_super) {
     __extends(Demo, _super);
     function Demo(props) {
@@ -45713,46 +45717,43 @@ var Demo = /** @class */ (function (_super) {
             _this.setState({ in: true, inSignal: {} });
         };
         _this.state = { in: false, inSignal: {} };
-        var radiumFlipInX = Radium.keyframes(react_animations_1.flipInX);
-        var animationNameCss = radiumFlipInX.__process("all");
-        var animationName = animationNameCss.animationName;
-        var css = animationNameCss.css;
         return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {
         console.log("OnEntering, appear : " + appear);
     };
     /*
-   <AutoOutInOnMount appear={true} inSignal={this.state.in} timeout={demoTimeout} propName="backgroundColor" enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
+    var duration = 3000;//need ms or s qualifier
+    <button onClick={this.out}>out</button>
+            <button onClick={this.in}>in</button >
+    <AutoOutInOnMount appear={true} inSignal={this.state.inSignal} timeout={duration}>
                 {
-                    transitionHelperFn((state, props, stateStyle: React.CSSProperties, stateTransition: string) => {
-                        return <div style={[demoDefaultStyle, stateStyle, { transition: stateTransition }]}></div>
-                    }, colourTransitionProvider)
+                    (state: TransitionState) => {
+                        var style: React.CSSProperties = {}
+                        switch (state) {
+                            case "entering":
+                            case "entered":
+                                style= {
+                                    animationName: Radium.keyframes(flipOutX),
+                                    animationDuration:duration + "ms"
+
+                                }
+                                break;
+                            case "exited":
+
+                                break;
+                            case "exiting":
+
+                                break;
+                        }
+                        return <div style={style}>Flipped on in </div>
+                    }
+
                 }
             </AutoOutInOnMount>
     */
     Demo.prototype.render = function () {
-        var duration = 3000; //need ms or s qualifier
-        return React.createElement("div", null,
-            React.createElement("button", { onClick: this.out }, "out"),
-            React.createElement("button", { onClick: this.in }, "in"),
-            React.createElement(AutoOutInOnMount, { appear: true, inSignal: this.state.inSignal, timeout: duration }, function (state) {
-                var style = {};
-                switch (state) {
-                    case "entering":
-                    case "entered":
-                        style = {
-                            animationName: Radium.keyframes(react_animations_1.flipOutX),
-                            animationDuration: duration + "ms"
-                        };
-                        break;
-                    case "exited":
-                        break;
-                    case "exiting":
-                        break;
-                }
-                return React.createElement("div", { style: style }, "Flipped on in ");
-            }));
+        return React.createElement("span", { style: { animationName: radiumFlipInX } });
     };
     return Demo;
 }(React.Component));
@@ -46019,7 +46020,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10 } },
-                        React.createElement(Demo, null),
+                        React.createElement(RadiumDemo, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
                                 React.createElement(ConnectedScoreboard, null)),

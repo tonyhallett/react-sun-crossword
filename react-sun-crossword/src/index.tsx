@@ -906,14 +906,17 @@ interface DemoState {
     in: boolean,
     inSignal:object
 }
+
+var radiumFlipInX = Radium.keyframes(flipInX) as any;
+var animationNameCss = radiumFlipInX.__process("all");
+var animationName = animationNameCss.animationName;
+var css = animationNameCss.css;
+
 class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
         this.state = { in: false, inSignal: {} };
-        var radiumFlipInX = Radium.keyframes(flipInX) as any;
-        var animationNameCss = radiumFlipInX.__process("all");
-        var animationName = animationNameCss.animationName;
-        var css = animationNameCss.css;
+        
 
     }
     onEntering(node: HTMLElement,appear:boolean) {
@@ -926,22 +929,10 @@ class Demo extends React.Component<undefined, DemoState>{
         this.setState({ in: true, inSignal: {} })
     }
     /*
-   <AutoOutInOnMount appear={true} inSignal={this.state.in} timeout={demoTimeout} propName="backgroundColor" enterTransition={`background-color ${demoTimeout.enter}ms linear`} exitTransition={`background-color ${demoTimeout.exit}ms linear`} exitColour={componentBackgroundColor} change={0.3} colourChangeType={ColourChangeType.lighten}>
-                {
-                    transitionHelperFn((state, props, stateStyle: React.CSSProperties, stateTransition: string) => {
-                        return <div style={[demoDefaultStyle, stateStyle, { transition: stateTransition }]}></div>
-                    }, colourTransitionProvider)
-                }
-            </AutoOutInOnMount>
-    */
-    render() {
-        
-        var duration = 3000;//need ms or s qualifier
-        return <div>
-            <button onClick={this.out}>out</button>
+    var duration = 3000;//need ms or s qualifier
+    <button onClick={this.out}>out</button>
             <button onClick={this.in}>in</button >
-            
-            <AutoOutInOnMount appear={true} inSignal={this.state.inSignal} timeout={duration}>
+    <AutoOutInOnMount appear={true} inSignal={this.state.inSignal} timeout={duration}>
                 {
                     (state: TransitionState) => {
                         var style: React.CSSProperties = {}
@@ -951,7 +942,7 @@ class Demo extends React.Component<undefined, DemoState>{
                                 style= {
                                     animationName: Radium.keyframes(flipOutX),
                                     animationDuration:duration + "ms"
-                                    
+
                                 }
                                 break;
                             case "exited":
@@ -963,12 +954,12 @@ class Demo extends React.Component<undefined, DemoState>{
                         }
                         return <div style={style}>Flipped on in </div>
                     }
-                   
+
                 }
             </AutoOutInOnMount>
-
-        </div>
-       
+    */
+    render() {
+        return <span style={{ animationName: radiumFlipInX}}/>
     }
 }
 const RadiumDemo = Radium(Demo);
@@ -1306,7 +1297,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
         <VerticallyCenteredContainer backgroundColor="orange">
             <HorizontalCenter>
                 <div style={{ backgroundColor: "gray", padding: 10 }}>
-                    <Demo/>
+                    <RadiumDemo/>
                     <div style={{ display: "inline-block" }}>
                         <div style={{ marginTop: 10, marginBottom: 10 }}>
                             <ConnectedScoreboard />
