@@ -44899,14 +44899,6 @@ var Radium = __webpack_require__(9);
 var Transition_1 = __webpack_require__(77);
 var Color = __webpack_require__(72);
 var react_animations_1 = __webpack_require__(74);
-//#region configured radium for testing prefixes applied
-var radiumConfig = {
-    userAgent: "My made up browser"
-};
-function ConfiguredRadium(component) {
-    return Radium(radiumConfig)(component);
-}
-//#endregion
 var componentBackgroundColor = "lightgray";
 //#region redux
 //#region redux state
@@ -45754,6 +45746,28 @@ var Demo = /** @class */ (function (_super) {
     return Demo;
 }(React.Component));
 var RadiumDemo = Radium(Demo);
+//#endregion
+//#region styling
+var style = {
+    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+    componentBackgroundColor: "lightgray",
+    scoreboard: {
+        cellStyle: {
+            paddingTop: 5,
+            paddingBottom: 5,
+            textAlign: "center",
+            fontSize: 20
+        },
+        rowStyle: {
+            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
+        },
+        winColour: "green",
+        loseColour: "red",
+        drawColour: "orange"
+    }
+};
+var pulseIncrease = 1.5;
+style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -45779,7 +45793,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     TicTacToeSquare.prototype.render = function () {
         var _this = this;
         var transitionDuration = 1000;
-        var exitColour = componentBackgroundColor;
+        var exitColour = style.componentBackgroundColor;
         var defaultStyle = {
             color: this.props.squareGoColour,
             textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
@@ -45838,7 +45852,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
-        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
+        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor } },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
@@ -45853,24 +45867,6 @@ var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
         board: state.board
     };
 })(TicTacToeBoard);
-var style = {
-    scoreboard: {
-        cellStyle: {
-            paddingTop: 5,
-            paddingBottom: 5,
-            textAlign: "center",
-            fontSize: 20
-        },
-        rowStyle: {
-            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
-        },
-        winColour: "green",
-        loseColour: "red",
-        drawColour: "orange"
-    }
-};
-var pulseIncrease = 1.5;
-style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
@@ -45881,7 +45877,7 @@ var Scoreboard = /** @class */ (function (_super) {
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor } },
+        return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
                     React.createElement("th", { style: style.scoreboard.cellStyle }, "Player"),
@@ -46005,22 +46001,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(Radium_1.Style, { rules: {
                     body: {
                         margin: 0,
-                        fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'
+                        fontFamily: style.fontFamily
                     },
-                    mediaQueries: {
-                        '(max-width: 600px)': {
-                            body: {
-                                background: 'gray'
-                            }
-                        },
-                        '(max-width: 500px)': {
-                            body: {
-                                background: 'blue'
-                            },
-                            'p, h1': {
-                                color: 'white'
-                            }
-                        }
+                    button: {
+                        fontFamily: style.fontFamily
                     }
                 } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
@@ -46044,7 +46028,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement(ConnectedTicTacToeBoard, null),
                             React.createElement("button", { style: { marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                            React.createElement("div", { style: { margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
+                            React.createElement("div", { style: { fontFamily: style.fontFamily, margin: "0 auto", width: "80%", textAlign: "center" } }, this.getWinDrawMessage()))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function () {
         var message = "Game drawn";

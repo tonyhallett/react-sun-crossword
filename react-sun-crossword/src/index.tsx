@@ -13,14 +13,7 @@ import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-tr
 import * as Color from 'Color'
 import { flipOutX,flipInX,pulse } from 'react-animations';
 
-//#region configured radium for testing prefixes applied
-var radiumConfig = {
-    userAgent: "My made up browser"
-}
-function ConfiguredRadium(component) {
-    return Radium(radiumConfig)(component);
-}
-//#endregion
+
 
 var componentBackgroundColor = "lightgray";
 //#region redux
@@ -961,6 +954,28 @@ class Demo extends React.Component<undefined, DemoState>{
 }
 const RadiumDemo = Radium(Demo);
 //#endregion
+//#region styling
+var style = {
+    fontFamily:"Helvetica Neue, Helvetica, Arial, sans-serif",
+    componentBackgroundColor: "lightgray",
+    scoreboard: {
+        cellStyle: {
+            paddingTop: 5,
+            paddingBottom: 5,
+            textAlign: "center",
+            fontSize: 20
+        },
+        rowStyle: {
+            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
+        } as React.CSSProperties,
+        winColour: "green",
+        loseColour: "red",
+        drawColour: "orange"
+    }
+}
+var pulseIncrease = 1.5;
+style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
+//#endregion
 
 //#region App components
 //#region TicTacToeSquare
@@ -1006,7 +1021,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
 
     render() {
         var transitionDuration = 1000;
-        var exitColour = componentBackgroundColor;
+        var exitColour = style.componentBackgroundColor;
         var defaultStyle = {
             color: this.props.squareGoColour,
             textAlign: "center", width: 100, height: 100, borderWidth: "1px", borderColor: "black", borderStyle: "solid", fontSize: "80px"
@@ -1073,7 +1088,7 @@ interface TicTacToeBoardProps {
 const ticTacToeBoardId ="ticTacToeBoard"
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
-        return <table id={ticTacToeBoardId} style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
+        return <table id={ticTacToeBoardId} style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor }}>
             <tbody>
             {   this.props.board.map((rowSquares, rowIndex) => {
                 return <tr key={rowIndex}>
@@ -1102,24 +1117,6 @@ interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
 }
 interface ScoreboardProps { }
 
-var style = {
-    scoreboard: {
-        cellStyle: {
-            paddingTop: 5,
-            paddingBottom: 5,
-            textAlign: "center",
-            fontSize: 20
-        },
-        rowStyle: {
-            borderWidth: "1px", borderColor: "black", borderStyle: "solid"
-        } as React.CSSProperties,
-        winColour: "green",
-        loseColour: "red",
-        drawColour:"orange"
-    }
-}
-var pulseIncrease = 1.5;
-style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
 
 class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
     render() {
@@ -1127,7 +1124,7 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerXLossCount = totalWins - this.props.playerXWinCount;
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
-        return <table style={{ borderCollapse: "collapse", borderWidth: "1px",width:"100%", borderColor: "black", borderStyle: "solid", backgroundColor: componentBackgroundColor }}>
+        return <table style={{ borderCollapse: "collapse", borderWidth: "1px",width:"100%", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
                     <th style={style.scoreboard.cellStyle}>Player</th>
@@ -1286,28 +1283,18 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
     }
     
     render() {
+        
         return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
                 rules={{
                     body: {
                         margin: 0,
-                        fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'
+                        fontFamily: style.fontFamily
                     },
-                    mediaQueries: {
-                        '(max-width: 600px)': {
-                            body: {
-                                background: 'gray'
-                            }
-                        },
-                        '(max-width: 500px)': {
-                            body: {
-                                background: 'blue'
-                            },
-                            'p, h1': {
-                                color: 'white'
-                            }
-                        }
+                    button: {
+                        fontFamily: style.fontFamily
                     }
+                   
                 }}
             />
             <span style={{ animationName: this.keyframesFlipInX }} />
@@ -1333,7 +1320,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                         <button style={{ marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
                     <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                        <div style={{ margin: "0 auto", width: "80%", textAlign: "center" }}>
+                        <div style={{ fontFamily: style.fontFamily, margin: "0 auto", width: "80%", textAlign: "center" }}>
                             {this.getWinDrawMessage()}
                         </div>
                     </ModalCover>
