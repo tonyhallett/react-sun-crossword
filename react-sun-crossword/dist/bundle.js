@@ -45601,6 +45601,50 @@ function withColourChangeTransition(Component) {
     }(React.Component));
     return colourChangeTransition;
 }
+//should change to enable not using function and having component to merge transition style with default Style provided as property
+function withPulse(Component) {
+    function scale3d(a, b, c) {
+        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+    }
+    ;
+    var pulse = /** @class */ (function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        class_1.prototype.render = function () {
+            var _this = this;
+            var fromTo = scale3d(1, 1, 1);
+            var pulse = {
+                from: {
+                    transform: fromTo
+                },
+                '50%': {
+                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+                },
+                to: {
+                    transform: fromTo
+                }
+            };
+            //passthrough to do
+            return React.createElement(Component, __assign({}, this.props), function (state, additionalProps) {
+                var transitionStyle = {};
+                switch (state) {
+                    case "entering":
+                    case "entered":
+                        transitionStyle = {
+                            animationDuration: _this.props.timeout + "ms",
+                            animationName: Radium.keyframes(pulse)
+                        };
+                        break;
+                }
+                return _this.props.children(state, additionalProps, transitionStyle);
+            });
+        };
+        return class_1;
+    }(React.Component));
+    return pulse;
+}
 var defaultProvider = function (state, props) {
     return props;
 };
@@ -45665,9 +45709,6 @@ var colourTransitionProvider = function (state, props) {
     };
 };
 //#endregion
-var RadiumTransition = Radium(Transition_1.default);
-var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
-var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 //#endregion
 //#region demo
 var demoTimeout = {
@@ -45769,6 +45810,11 @@ var style = {
 };
 var pulseIncrease = 1.5;
 style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
+//#endregion
+//#region App components
+var RadiumTransition = Radium(Transition_1.default);
+var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
+var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -45881,13 +45927,13 @@ var Scoreboard = /** @class */ (function (_super) {
         return React.createElement("table", { style: { borderCollapse: "collapse", borderWidth: "1px", width: "100%", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor } },
             React.createElement("thead", null,
                 React.createElement("tr", { style: { borderWidth: "1px", borderColor: "black", borderStyle: "solid" } },
-                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Player"),
+                    React.createElement("th", { style: __assign({ borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),
                     React.createElement("th", { style: style.scoreboard.cellStyle }, "Won"),
                     React.createElement("th", { style: style.scoreboard.cellStyle }, "Lost"),
-                    React.createElement("th", { style: style.scoreboard.cellStyle }, "Drawn"))),
+                    React.createElement("th", { style: __assign({ borderTopRightRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Drawn"))),
             React.createElement("tbody", null,
                 React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
-                React.createElement(ScoreboardPlayer, { playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
+                React.createElement(ScoreboardPlayer, { borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
     };
     return Scoreboard;
 }(React.Component));
@@ -45902,50 +45948,6 @@ var ConnectedScoreboard = react_redux_1.connect(function (state) {
     };
     return scoreboardState;
 })(Scoreboard);
-//should change to enable not using function and having component to merge transition style with default Style provided as property
-function withPulse(Component) {
-    function scale3d(a, b, c) {
-        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
-    }
-    ;
-    var pulse = /** @class */ (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        class_1.prototype.render = function () {
-            var _this = this;
-            var fromTo = scale3d(1, 1, 1);
-            var pulse = {
-                from: {
-                    transform: fromTo
-                },
-                '50%': {
-                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
-                },
-                to: {
-                    transform: fromTo
-                }
-            };
-            //passthrough to do
-            return React.createElement(Component, __assign({}, this.props), function (state, additionalProps) {
-                var transitionStyle = {};
-                switch (state) {
-                    case "entering":
-                    case "entered":
-                        transitionStyle = {
-                            animationDuration: _this.props.timeout + "ms",
-                            animationName: Radium.keyframes(pulse)
-                        };
-                        break;
-                }
-                return _this.props.children(state, additionalProps, transitionStyle);
-            });
-        };
-        return class_1;
-    }(React.Component));
-    return pulse;
-}
 var Pulse = withPulse(AutoOutInOnMount);
 var ScoreboardPlayer = /** @class */ (function (_super) {
     __extends(ScoreboardPlayer, _super);
@@ -45965,14 +45967,17 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
-            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
             React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
                 return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
             }),
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.loseColour }) }, this.props.lost),
-            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.drawColour }) },
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius }) },
                 " ",
                 this.props.drawn));
+    };
+    ScoreboardPlayer.defaultProps = {
+        borderRadius: 0
     };
     return ScoreboardPlayer;
 }(React.Component));

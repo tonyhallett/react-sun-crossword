@@ -779,6 +779,55 @@ function withColourChangeTransition(Component: React.ComponentClass<TransitionPr
 }
 
 //#endregion
+//#region PulseAnimation
+interface PulseProps {
+    pulseAmount: number,//need default to 1.05
+    children: (state: TransitionState, additionalProps: any, pulseStyle: React.CSSProperties) => void
+}
+//should change to enable not using function and having component to merge transition style with default Style provided as property
+function withPulse(Component: React.ComponentClass<TransitionProps>) {
+    function scale3d(a, b, c) {
+        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+    };
+    var pulse = class extends React.Component<TransitionProps & PulseProps, undefined>{
+        render() {
+            var fromTo = scale3d(1, 1, 1);
+            var pulse = {
+                from: {
+                    transform: fromTo
+                },
+                '50%': {
+                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+                },
+                to: {
+                    transform: fromTo
+                }
+            };
+
+            //passthrough to do
+            return <Component {...this.props}>
+                {
+                    (state: TransitionState, additionalProps: any) => {
+                        var transitionStyle: React.CSSProperties = {}
+                        switch (state) {
+                            case "entering":
+                            case "entered":
+                                transitionStyle = {
+                                    animationDuration: this.props.timeout + "ms",
+                                    animationName: Radium.keyframes(pulse)
+                                }
+                                break;
+
+                        }
+                        return this.props.children(state, additionalProps, transitionStyle)
+                    }
+                }
+            </Component>
+        }
+    }
+    return pulse;
+}
+//#endregion
 //#endregion
 //#region transition helper as a function
 interface TransitionProvider<P> {
@@ -864,9 +913,6 @@ var colourTransitionProvider: TransitionProvider<ColourChangeProps> = function (
 }
 //#endregion
 
-const RadiumTransition = Radium(Transition);
-const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
-const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
 
 //#endregion
 
@@ -979,6 +1025,10 @@ style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIn
 //#endregion
 
 //#region App components
+const RadiumTransition = Radium(Transition);
+const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
+const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
+
 //#region TicTacToeSquare
 interface TicTacToeSquareRowColProps {
     rowIndex: number,
@@ -1117,8 +1167,6 @@ interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
     currentPlayer:Player
 }
 interface ScoreboardProps { }
-
-
 class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, undefined>{
     render() {
         var totalWins = this.props.playCount - this.props.drawCount;
@@ -1128,15 +1176,15 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         return <table style={{ borderCollapse: "collapse", borderWidth: "1px",width:"100%", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor }}>
             <thead>
                 <tr style={{ borderWidth: "1px", borderColor: "black", borderStyle: "solid" }}>
-                    <th style={style.scoreboard.cellStyle}>Player</th>
+                    <th style={{ borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
                     <th style={style.scoreboard.cellStyle}>Won</th>
                     <th style={style.scoreboard.cellStyle}>Lost</th>
-                    <th style={style.scoreboard.cellStyle}>Drawn</th>
+                    <th style={{ borderTopRightRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Drawn</th>
                 </tr>
             </thead>
             <tbody>
                 <ScoreboardPlayer playerColour={this.props.xColour} playerId="X" playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
-                <ScoreboardPlayer playerColour={this.props.oColour} playerId="O" playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount}/>
+                <ScoreboardPlayer borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId="O" playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
             </tbody>
             </table>
     }
@@ -1159,62 +1207,18 @@ interface ScoreboardPlayerProps {
     playerColour: string,
     won: number,
     lost: number,
-    drawn:number
+    drawn: number,
+    borderRadius?:number
 }
 interface ScoreboardPlayerState {
     inSignal:object
 }
-//use timeout - although this does affect the typing
-interface PulseProps {
-    pulseAmount: number,//need default to 1.05
-    children: (state: TransitionState, additionalProps: any, pulseStyle: React.CSSProperties)=>void
-}
-//should change to enable not using function and having component to merge transition style with default Style provided as property
-function withPulse(Component: React.ComponentClass<TransitionProps>) {
-    function scale3d(a, b, c) {
-        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
-    };
-    var pulse = class extends React.Component < TransitionProps&PulseProps, undefined>{
-        render() {
-            var fromTo = scale3d(1, 1, 1);
-            var pulse = {
-                from: {
-                    transform: fromTo
-                },
-                '50%': {
-                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
-                },
-                to: {
-                    transform: fromTo
-                }
-            };
-
-            //passthrough to do
-            return <Component {...this.props}>
-                {
-                    (state: TransitionState,additionalProps:any) => {
-                        var transitionStyle: React.CSSProperties = {}
-                        switch (state) {
-                            case "entering":
-                            case "entered":
-                                transitionStyle = {
-                                    animationDuration: this.props.timeout + "ms",
-                                    animationName: Radium.keyframes(pulse)
-                                }
-                                break;
-
-                        }
-                        return this.props.children(state,additionalProps,transitionStyle)
-                    }
-                }
-                </Component>
-        }
-    }
-    return pulse;
-}
 
 const Pulse = withPulse(AutoOutInOnMount);
 class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, ScoreboardPlayerState>{
+    static defaultProps = {
+        borderRadius: 0
+    }
     constructor(props) {
         super(props);
         this.state = { inSignal:null }
@@ -1230,7 +1234,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         
         return <tr style={style.scoreboard.rowStyle}>
-            <td style={{ ...style.scoreboard.cellStyle, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
+            <td style={{ ...style.scoreboard.cellStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
             <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                 {
                     (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
@@ -1241,7 +1245,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
             </Pulse>
 
             <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.loseColour }}>{this.props.lost}</td>
-            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.drawColour } } > { this.props.drawn }</td >
+            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius } } > { this.props.drawn }</td >
             </tr>
     }
 }
