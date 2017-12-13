@@ -45912,7 +45912,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
-        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor } },
+        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor } },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });

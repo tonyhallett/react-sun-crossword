@@ -1155,7 +1155,7 @@ interface TicTacToeBoardProps {
 const ticTacToeBoardId ="ticTacToeBoard"
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
-        return <table id={ticTacToeBoardId} style={{ borderCollapse: "collapse", borderWidth: "1px", borderColor: "black", borderStyle: "solid", backgroundColor: style.componentBackgroundColor }}>
+        return <table id={ticTacToeBoardId} style={{ borderCollapse: "collapse",backgroundColor: style.componentBackgroundColor }}>
             <tbody>
             {   this.props.board.map((rowSquares, rowIndex) => {
                 return <tr key={rowIndex}>
