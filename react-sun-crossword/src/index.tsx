@@ -11,7 +11,7 @@ import * as Radium from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
-import { flipOutX,pulse } from 'react-animations';
+import { flipOutX,flipInX,pulse } from 'react-animations';
 
 //#region configured radium for testing prefixes applied
 var radiumConfig = {
@@ -910,6 +910,11 @@ class Demo extends React.Component<undefined, DemoState>{
     constructor(props) {
         super(props);
         this.state = { in: false, inSignal: {} };
+        var radiumFlipInX = Radium.keyframes(flipInX) as any;
+        var animationNameCss = radiumFlipInX.__process("all");
+        var animationName = animationNameCss.animationName;
+        var css = animationNameCss.css;
+
     }
     onEntering(node: HTMLElement,appear:boolean) {
         console.log("OnEntering, appear : " + appear);
@@ -930,7 +935,7 @@ class Demo extends React.Component<undefined, DemoState>{
             </AutoOutInOnMount>
     */
     render() {
-        //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
+        
         var duration = 3000;//need ms or s qualifier
         return <div>
             <button onClick={this.out}>out</button>
@@ -1218,7 +1223,7 @@ function withPulse(Component: React.ComponentClass<TransitionProps>) {
     }
     return pulse;
 }
-//did I need to radium the others ?
+
 const Pulse = withPulse(AutoOutInOnMount);
 class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, ScoreboardPlayerState>{
     constructor(props) {
@@ -1230,26 +1235,6 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
             this.setState({ inSignal: {} });
         }
     }
-    /*
-    <AutoOutInOnMount inSignal={this.state.inSignal} timeout={pulseTimeout}>
-                {
-                    (state: TransitionState) => {
-                        var transitionState: React.CSSProperties = {}
-                        switch (state) {
-                            case "entering":
-                            case "entered":
-                                transitionState = {
-                                    animationDuration: pulseTimeout + "ms",
-                                    animationName: Radium.keyframes(pulse)
-                                }
-                                break;
-
-                        }
-                        return <td style={[style.scoreboard.cellStyle,transitionState]}>{this.props.won}</td>
-                    }
-                }
-            </AutoOutInOnMount>
-    */
     render() {
         var pulseTimeout = 1000;
         //animation-timing-function obtained from http://easings.net/#easeOutQuint

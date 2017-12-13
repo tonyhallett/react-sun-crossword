@@ -45713,6 +45713,10 @@ var Demo = /** @class */ (function (_super) {
             _this.setState({ in: true, inSignal: {} });
         };
         _this.state = { in: false, inSignal: {} };
+        var radiumFlipInX = Radium.keyframes(react_animations_1.flipInX);
+        var animationNameCss = radiumFlipInX.__process("all");
+        var animationName = animationNameCss.animationName;
+        var css = animationNameCss.css;
         return _this;
     }
     Demo.prototype.onEntering = function (node, appear) {
@@ -45728,7 +45732,6 @@ var Demo = /** @class */ (function (_super) {
             </AutoOutInOnMount>
     */
     Demo.prototype.render = function () {
-        //lose the typing - perhaps need a HOC function to relate the Transition to the callback ???
         var duration = 3000; //need ms or s qualifier
         return React.createElement("div", null,
             React.createElement("button", { onClick: this.out }, "out"),
@@ -45946,7 +45949,6 @@ function withPulse(Component) {
     }(React.Component));
     return pulse;
 }
-//did I need to radium the others ?
 var Pulse = withPulse(AutoOutInOnMount);
 var ScoreboardPlayer = /** @class */ (function (_super) {
     __extends(ScoreboardPlayer, _super);
@@ -45960,26 +45962,6 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
             this.setState({ inSignal: {} });
         }
     };
-    /*
-    <AutoOutInOnMount inSignal={this.state.inSignal} timeout={pulseTimeout}>
-                {
-                    (state: TransitionState) => {
-                        var transitionState: React.CSSProperties = {}
-                        switch (state) {
-                            case "entering":
-                            case "entered":
-                                transitionState = {
-                                    animationDuration: pulseTimeout + "ms",
-                                    animationName: Radium.keyframes(pulse)
-                                }
-                                break;
-
-                        }
-                        return <td style={[style.scoreboard.cellStyle,transitionState]}>{this.props.won}</td>
-                    }
-                }
-            </AutoOutInOnMount>
-    */
     ScoreboardPlayer.prototype.render = function () {
         var _this = this;
         var pulseTimeout = 1000;
