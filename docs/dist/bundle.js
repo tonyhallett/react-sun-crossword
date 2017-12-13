@@ -46007,7 +46007,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 overlay: getOverlay(testOverlay)
             };
         };
-        _this.state = { winDrawMessage: _this.getWinDrawMessage() };
+        _this.state = { winDrawMessage: _this.getWinDrawMessage(props) };
         _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
         _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
         _this.keyframesFlipOutX = Radium.keyframes(react_animations_1.flipOutX);
@@ -46016,7 +46016,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
     }
     TicTacToeApp.prototype.componentWillReceiveProps = function (props) {
         if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
-            this.setState({ winDrawMessage: this.getWinDrawMessage() });
+            this.setState({ winDrawMessage: this.getWinDrawMessage(props) });
         }
     };
     TicTacToeApp.prototype.render = function () {
@@ -46054,7 +46054,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                             React.createElement("div", { style: { fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.state.winDrawMessage))))));
     };
-    TicTacToeApp.prototype.getWinDrawMessage = function () {
+    TicTacToeApp.prototype.getWinDrawMessage = function (props) {
         var message = "";
         switch (this.props.gameState) {
             case GameState.X:

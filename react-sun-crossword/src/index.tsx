@@ -1286,7 +1286,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     flipDuration=1000
     constructor(props) {
         super(props);
-        this.state = { winDrawMessage: this.getWinDrawMessage() }
+        this.state = { winDrawMessage: this.getWinDrawMessage(props) }
         this.keyframesFlipInX = Radium.keyframes(flipInX) as any;
         this.flipInXAnimationName = this.keyframesFlipInX.__process("all").animationName;
         this.keyframesFlipOutX = Radium.keyframes(flipOutX) as any;
@@ -1295,7 +1295,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     componentWillReceiveProps(props: TicTacToeAppProps) {
         if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
-            this.setState({ winDrawMessage: this.getWinDrawMessage() })
+            this.setState({ winDrawMessage: this.getWinDrawMessage(props) })
         }
     }
     modalShouldOpen = () => {
@@ -1339,8 +1339,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 }
             }}/>
         <VerticallyCenteredContainer backgroundColor="orange">
-                <HorizontalCenter>
-                    <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius }}>
+            <HorizontalCenter>
+                <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius }}>
                     <div style={{ display: "inline-block" }}>
                         <div style={{ marginTop: 10, marginBottom: 10 }}>
                             <ConnectedScoreboard />
@@ -1349,8 +1349,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                         <button style={{borderStyle:"none", borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
                     <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            <div style={{ fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
-                                {this.state.winDrawMessage}
+                        <div style={{ fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
+                            {this.state.winDrawMessage}
                         </div>
                     </ModalCover>
                 </div>
@@ -1359,7 +1359,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         </StyleRoot>
             
     }
-    getWinDrawMessage() {
+    getWinDrawMessage(props: TicTacToeAppProps) {
         var message = "";
         switch (this.props.gameState) {
             case GameState.X:
