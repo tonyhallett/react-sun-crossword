@@ -1179,7 +1179,7 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         var playerOWinCount = playerXLossCount;
         var playerOLossCount = this.props.playerXWinCount;
 
-        return <table style={{ width: "100%", borderCollapse: "collapse", borderSpacing:0, backgroundColor: style.componentBackgroundColor }}>
+        return <table style={{ width: "100%",borderSpacing:0, backgroundColor: style.componentBackgroundColor }}>
             <thead>
                 <tr>
                     <th style={{ borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
