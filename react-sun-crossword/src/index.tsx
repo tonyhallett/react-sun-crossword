@@ -958,7 +958,7 @@ const RadiumDemo = Radium(Demo);
 var style = {
     fontFamily:"Helvetica Neue, Helvetica, Arial, sans-serif",
     componentBackgroundColor: "lightgray",
-    borderRadius:10,
+    borderRadius:5,
     scoreboard: {
         cellStyle: {
             paddingTop: 5,
@@ -1318,7 +1318,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, undefined>{
                             <ConnectedScoreboard />
                         </div>
                         <ConnectedTicTacToeBoard />
-                        <button style={{ borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                        <button style={{borderStyle:"none", borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
                     <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                         <div style={{ fontFamily: style.fontFamily, fontWeight:"bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
