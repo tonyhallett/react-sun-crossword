@@ -208,7 +208,7 @@ function reducer(state: TicTacToeState = {
     currentPlayer: firstPlayer,
     board: getDefaultBoard(),
     oColour: "yellow",
-    xColour: "blue",
+    xColour: "pink",
     gameState: GameState.Playing,
     playCount:0,
     drawCount: 0,
@@ -1001,7 +1001,7 @@ class Demo extends React.Component<undefined, DemoState>{
 const RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
-//borderWidth: "1px", borderColor: "black", borderStyle: "solid"
+
 var style = {
     fontFamily:"Helvetica Neue, Helvetica, Arial, sans-serif",
     componentBackgroundColor: "lightgray",
@@ -1014,12 +1014,8 @@ var style = {
             fontSize: 20,
 
         } as React.CSSProperties,
-        tdStyle: {
-            borderTop: "solid 1px",
-            borderColor:"black"
-        },
         rowStyle: {
-            
+            borderTopWidth: "1px", borderColor: "black", borderStyle: "solid"
         } as React.CSSProperties,
         winColour: "green",
         loseColour: "red",
@@ -1251,18 +1247,18 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         
         return <tr style={style.scoreboard.rowStyle}>
-            <td style={{ ...style.scoreboard.cellStyle,...style.scoreboard.tdStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
+            <td style={{ ...style.scoreboard.cellStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
             <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                 {
                     (state: TransitionState,props:any,pulseStyle:React.CSSProperties) => {
 
-                        return <td style={[style.scoreboard.cellStyle, style.scoreboard.tdStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
+                        return <td style={[style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</td>
                     }
                 }
             </Pulse>
 
-            <td style={{ ...style.scoreboard.cellStyle, ...style.scoreboard.tdStyle, color: style.scoreboard.loseColour }}>{this.props.lost}</td>
-            <td style={{ ...style.scoreboard.cellStyle, ...style.scoreboard.tdStyle, color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius } } > { this.props.drawn }</td >
+            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.loseColour }}>{this.props.lost}</td>
+            <td style={{ ...style.scoreboard.cellStyle, color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius } } > { this.props.drawn }</td >
             </tr>
     }
 }

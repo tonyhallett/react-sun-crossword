@@ -45095,7 +45095,7 @@ function reducer(state, action) {
         currentPlayer: firstPlayer,
         board: getDefaultBoard(),
         oColour: "yellow",
-        xColour: "blue",
+        xColour: "pink",
         gameState: GameState.Playing,
         playCount: 0,
         drawCount: 0,
@@ -45789,7 +45789,6 @@ var Demo = /** @class */ (function (_super) {
 var RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
-//borderWidth: "1px", borderColor: "black", borderStyle: "solid"
 var style = {
     fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
     componentBackgroundColor: "lightgray",
@@ -45801,11 +45800,9 @@ var style = {
             textAlign: "center",
             fontSize: 20,
         },
-        tdStyle: {
-            borderTop: "solid 1px",
-            borderColor: "black"
+        rowStyle: {
+            borderTopWidth: "1px", borderColor: "black", borderStyle: "solid"
         },
-        rowStyle: {},
         winColour: "green",
         loseColour: "red",
         drawColour: "orange"
@@ -45980,12 +45977,12 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
-            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.tdStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
             React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
-                return React.createElement("td", { style: [style.scoreboard.cellStyle, style.scoreboard.tdStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
+                return React.createElement("td", { style: [style.scoreboard.cellStyle, pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
             }),
-            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.tdStyle, { color: style.scoreboard.loseColour }) }, this.props.lost),
-            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.tdStyle, { color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius }) },
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.loseColour }) }, this.props.lost),
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { color: style.scoreboard.drawColour, borderBottomRightRadius: this.props.borderRadius }) },
                 " ",
                 this.props.drawn));
     };
