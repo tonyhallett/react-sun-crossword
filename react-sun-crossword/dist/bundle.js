@@ -45834,7 +45834,7 @@ var RadiumDemo = Radium(Demo);
 var thButtonFontWeight = "bold";
 //these have been taken from https://www.w3schools.com/colors/colors_picker.asp
 var scoreboardBackgroundColor = "rgb(226, 220, 207)";
-var buttonBackgroundColor = "rgb(245, 243, 239)"; //95% light
+var buttonBackgroundColor = "rgb(226, 220, 207)";
 var componentBackgroundColor = "rgb(207, 197, 175)"; //75% light
 var fontSize = 20;
 var pulseIncrease = 1.5;
@@ -45980,7 +45980,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
         if (this.props.colIndex !== 0) {
             specificStyle.borderLeftWidth = style.ticTacToeSquareBorderWidth;
         }
-        return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: exitColour, change: 0.1, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
+        return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: exitColour, change: 0.3, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
             var transitionStyle;
             if (_this.state.kill) {
                 transitionStyle = { backgroundColor: exitColour };
