@@ -1002,7 +1002,7 @@ const RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
 
-var thButtonFontWeight: "bold";
+var thButtonFontWeight = "bold" as any;
 var componentBackgroundColor = "lightgray";
 var fontSize = 20;
 var pulseIncrease = 1.5;

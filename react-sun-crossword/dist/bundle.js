@@ -45789,7 +45789,7 @@ var Demo = /** @class */ (function (_super) {
 var RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
-var thButtonFontWeight;
+var thButtonFontWeight = "bold";
 var componentBackgroundColor = "lightgray";
 var fontSize = 20;
 var pulseIncrease = 1.5;
