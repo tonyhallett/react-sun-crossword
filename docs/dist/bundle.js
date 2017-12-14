@@ -44973,9 +44973,7 @@ var ConnectedWebFontLoader = react_redux_1.connect(null, function (dispatch) {
     };
 }, function (stateProps, dispatchProps, ownProps) {
     //for own use not concerned with overriding callbacks
-    var mergedProps = {
-        config: __assign({}, ownProps, dispatchProps)
-    };
+    var mergedProps = __assign({}, ownProps, { config: __assign({}, ownProps.config, dispatchProps) });
     return mergedProps;
 })(WebFontLoader);
 var componentBackgroundColor = "lightgray";

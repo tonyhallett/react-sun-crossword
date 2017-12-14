@@ -61,11 +61,12 @@ const ConnectedWebFontLoader = connect(null, (dispatch) => {
             dispatch(fontLoading(FontLoadingState.Inactive))
         },
     }
-}, (stateProps, dispatchProps, ownProps) => {
+}, (stateProps, dispatchProps, ownProps: WebFontLoaderProps) => {
     //for own use not concerned with overriding callbacks
-    var mergedProps: WebFontLoaderProps= {
+    var mergedProps: WebFontLoaderProps = {
+        ...ownProps,
         config: {
-            ...ownProps,
+            ...ownProps.config,
             ...dispatchProps
         }
     }
