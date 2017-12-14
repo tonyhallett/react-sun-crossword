@@ -300,6 +300,7 @@ class HorizontalCenter extends React.Component<undefined, undefined>{
         </div>
     }
 }
+
 //do as css properties and merged the two
 interface VerticallyCenteredContainerProps {
     backgroundColor?: string
@@ -1041,7 +1042,7 @@ var style = {
 const RadiumTransition = Radium(Transition);
 const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
 const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
-
+const RadiumHorizontalCenter = Radium(HorizontalCenter)
 //#region TicTacToeSquare
 interface TicTacToeSquareRowColProps {
     rowIndex: number,
@@ -1345,8 +1346,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 }
             }}/>
         <VerticallyCenteredContainer backgroundColor="orange">
-            <HorizontalCenter>
-                <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius }}>
+            <RadiumHorizontalCenter>
+                    <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow:" 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
                         <div style={{ display: "inline-block" }}>
                             <div style={{ marginBottom: style.componentMargin }}>
                             <ConnectedScoreboard />
@@ -1360,7 +1361,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                         </div>
                     </ModalCover>
                 </div>
-            </HorizontalCenter>
+            </RadiumHorizontalCenter>
         </VerticallyCenteredContainer>
         </StyleRoot>
             

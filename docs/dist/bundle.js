@@ -45826,6 +45826,7 @@ var style = {
 var RadiumTransition = Radium(Transition_1.default);
 var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
+var RadiumHorizontalCenter = Radium(HorizontalCenter);
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -46050,8 +46051,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     }
                 } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
-                React.createElement(HorizontalCenter, null,
-                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius } },
+                React.createElement(RadiumHorizontalCenter, null,
+                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } },
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
