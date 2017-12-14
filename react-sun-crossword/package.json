@@ -48,11 +48,13 @@
     "react-transition-group": "^2.2.1",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
-    "ssml": "0.0.4"
+    "ssml": "0.0.4",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@types/jquery": "^3.2.16",
     "@types/react-transition-group": "^2.0.6",
+    "@types/webfontloader": "^1.6.29",
     "enzyme": "^3.1.1",
     "jest": "^19.0.2",
     "jestextensions": "^1.0.1",

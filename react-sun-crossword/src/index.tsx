@@ -12,8 +12,56 @@ import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
 import { flipOutX,flipInX,pulse } from 'react-animations';
+import * as WebFont  from "webfontloader";
 
 
+interface WebFontLoaderProps {
+    config: WebFont.Config
+}
+class WebFontLoader extends React.Component<WebFontLoaderProps, undefined>{
+    loadFonts() {
+        WebFont.load(
+            this.props.config
+        )
+    }
+    componentDidMount() {
+        this.loadFonts();
+    }
+    shouldComponentUpdate() {
+        return false;
+    }
+    render() {
+        return this.props.children;
+    }
+}
+
+
+
+
+
+//this is not for all circumstances, just for what is appropriate for me - a single font
+enum FontLoadingState { NotStarted, Loading, Active, Inactive }
+const FONT_LOADING = "FONT_LOADING";
+function fontLoading(state: FontLoadingState) {
+    return {
+        type: FONT_LOADING,
+        state:state
+    }
+}
+//preloadedState going to be an issue - will need to override or not save 
+const ConnectedWebFontLoader = connect(null, (dispatch) => {
+    return {
+        loading: () => {
+            dispatch(fontLoading(FontLoadingState.Loading))
+        },
+        active: () => {
+            dispatch(fontLoading(FontLoadingState.Inactive))
+        },
+        inactive: () => {
+            dispatch(fontLoading(FontLoadingState.Inactive))
+        },
+    }
+})(WebFontLoader as any) as any;
 
 var componentBackgroundColor = "lightgray";
 //#region redux
@@ -35,6 +83,7 @@ interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     board: SquareGo[][],
     currentPlayer: Player,
     gameState: GameState,
+    fontLoadingState: FontLoadingState
     
 }
 //#endregion
@@ -212,9 +261,15 @@ function reducer(state: TicTacToeState = {
     gameState: GameState.Playing,
     playCount:0,
     drawCount: 0,
-    playerXWinCount: 0
+    playerXWinCount: 0,
+    fontLoadingState: FontLoadingState.NotStarted
 }, action: AnyAction) {
     switch (action.type) {
+        case FONT_LOADING:
+            return {
+                ...state,
+                fontLoadingState:action.state
+            }
         case Finished_Confirmed:
             return {
                 ...state,
@@ -1008,8 +1063,9 @@ var componentBackgroundColor = "lightgray";
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
+var fontFamily: "Sedgwick Ave Display,Helvetica Neue, Helvetica, Arial, sans-serif";
 var style = {
-    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+    fontFamily:fontFamily,
     componentBackgroundColor: componentBackgroundColor,
     componentMargin:10,
     borderRadius:5,
@@ -1019,7 +1075,8 @@ var style = {
             paddingBottom: scoreboardPadding,
             textAlign: "center",
             fontSize: fontSize,
-            backgroundColor: componentBackgroundColor
+            backgroundColor: componentBackgroundColor,
+            fontFamily:fontFamily
         } as React.CSSProperties,
         rowStyle: {
             borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid",
@@ -1284,6 +1341,7 @@ interface TicTacToeAppProps {
     gameState: GameState,
     playAgain: () => void,
     finishedConfirmed: () => void,
+    fontLoadingState: FontLoadingState
 }   
 
 interface TicTacToeAppState {
@@ -1323,18 +1381,15 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     
     render() {
-        
+        if (this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading) {
+            return <div>Loading !!!!</div>
+        }
         return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
                 rules={{
                     body: {
-                        margin: 0,
-                        fontFamily: style.fontFamily
-                    },
-                    button: {
-                        fontFamily: style.fontFamily
+                        margin: 0   
                     }
-                   
                 }}
             />
             <span style={{ animationName: this.keyframesFlipInX }} />
@@ -1349,7 +1404,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                     animationDuration: this.flipDuration + "ms",
                     animationFillMode:"forwards"
                 }
-            }}/>
+            }} />
+            <div style={{width:"100%",height:"100%",backgroundColor:"blue"}}>
+
+            </div>
         <VerticallyCenteredContainer backgroundColor="orange">
             <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow:" 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
@@ -1358,7 +1416,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                             <ConnectedScoreboard />
                         </div>
                             <ConnectedTicTacToeBoard />
-                            <button style={{ fontWeight: thButtonFontWeight, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: style.fontFamily, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
                     <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                         <div style={{ fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
@@ -1388,7 +1446,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
 }
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
-        gameState:state.gameState
+        gameState: state.gameState,
+        fontLoadingState:state.fontLoadingState
     }
 }, (dispatch) => {
     return {
@@ -1406,7 +1465,16 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
 var store = createLocalStorageStore(reducer);
 ReactDOM.render(
     <Provider store={store}>
-        <ConnectedTicTacToeApp />
+        <ConnectedWebFontLoader config={
+            {
+                google: {
+                    families: ['Sedgwick Ave Display']
+                }
+            }
+
+        }>
+            <ConnectedTicTacToeApp />
+        </ConnectedWebFontLoader>
     </Provider>,
 
     document.getElementById("example")
