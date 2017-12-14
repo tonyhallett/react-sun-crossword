@@ -1433,7 +1433,14 @@ interface TicTacToeAppProps {
 interface TicTacToeAppState {
     winDrawElement:React.ReactElement<any>
 }
-const SpinningDiv:any=withSpinAxes("div", { style: { width: 100, height: 100, animationDuration: "3000ms", animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)", animationIterationCount: "infinite" } }, "X") }
+const SpinningDiv: any = withSpinAxes("div", {
+    style:
+    {
+        width: 100, height: 100, animationDuration: "3000ms",
+        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
+        animationIterationCount: "infinite"
+    }
+}, "X");
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     keyframesFlipInX: any
     keyframesFlipOutX:any

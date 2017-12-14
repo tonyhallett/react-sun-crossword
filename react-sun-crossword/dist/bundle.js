@@ -46150,7 +46150,13 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     };
     return ScoreboardPlayer;
 }(React.Component));
-var SpinningDiv = withSpinAxes("div", { style: { width: 100, height: 100, animationDuration: "3000ms", animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)", animationIterationCount: "infinite" } }, "X");
+var SpinningDiv = withSpinAxes("div", {
+    style: {
+        width: 100, height: 100, animationDuration: "3000ms",
+        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
+        animationIterationCount: "infinite"
+    }
+}, "X");
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp(props) {

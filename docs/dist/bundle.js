@@ -46150,6 +46150,13 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     };
     return ScoreboardPlayer;
 }(React.Component));
+var SpinningDiv = withSpinAxes("div", {
+    style: {
+        width: 100, height: 100, animationDuration: "3000ms",
+        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
+        animationIterationCount: "infinite"
+    }
+}, "X");
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp(props) {
@@ -46204,7 +46211,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } },
-                        withSpinAxes("div", { style: { width: 100, height: 100, animationDuration: "3000ms", animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)", animationIterationCount: "infinite" } }, "X"),
+                        React.createElement(SpinningDiv, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
