@@ -1021,9 +1021,9 @@ const RadiumDemo = Radium(Demo);
 
 var thButtonFontWeight = "bold" as any;
 //these have been taken from https://www.w3schools.com/colors/colors_picker.asp
-var componentBackgroundColor = "rgb(226, 220, 207)";
+var scoreboardBackgroundColor = "rgb(226, 220, 207)";
 var buttonBackgroundColor = "rgb(245, 243, 239)"//95% light
-var scoreboardBackgroundColor = "rgb(207, 197, 175)"//75% light
+var componentBackgroundColor = "rgb(207, 197, 175)"//75% light
 
 var fontSize = 20;
 var pulseIncrease = 1.5;
