@@ -1076,10 +1076,10 @@ const nought = "O";
 const cross = "X";
 const numbers=["0","1","2","3","4","5","6","7","8","9"]
 const gameDrawn = "Game drawn";
-const playerNoughtWon = player + " " + nought + " " + won + " !";
-const playerCrossWon = player + " " + cross + " " + won + " !";
+const wonMessage = won + " !";
 
-var toOptimise = [player, won, lost, drawn, playAgainText, nought, cross, gameDrawn, playerNoughtWon, playerCrossWon].concat(numbers);
+
+var toOptimise = [player, won, lost, drawn, playAgainText, nought, cross, gameDrawn].concat(numbers);
 var letters = "";
 toOptimise.forEach(word => {
     for (var i = 0; i < word.length; i++) {
@@ -1092,7 +1092,7 @@ toOptimise.forEach(word => {
         
     }
 })
-letters = "l";
+
 //#endregion
 //#region WebFontLoader
 interface WebFontLoaderProps {
@@ -1389,7 +1389,7 @@ interface TicTacToeAppProps {
 }   
 
 interface TicTacToeAppState {
-    winDrawMessage:string
+    winDrawElement:React.ReactElement<any>
 }
 
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
@@ -1400,7 +1400,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     flipDuration=1000
     constructor(props) {
         super(props);
-        this.state = { winDrawMessage: this.getWinDrawMessage(props) }
+        this.state = { winDrawElement: this.getWinDrawElement(props) }
         this.keyframesFlipInX = Radium.keyframes(flipInX) as any;
         this.flipInXAnimationName = this.keyframesFlipInX.__process("all").animationName;
         this.keyframesFlipOutX = Radium.keyframes(flipOutX) as any;
@@ -1409,7 +1409,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     componentWillReceiveProps(props: TicTacToeAppProps) {
         if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
-            this.setState({ winDrawMessage: this.getWinDrawMessage(props) })
+            this.setState({ winDrawElement: this.getWinDrawElement(props) })
         }
     }
     modalShouldOpen = () => {
@@ -1463,9 +1463,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                             <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>{playAgainText}</button>
                     </div>
                         <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            <div style={{ fontFamily: textFontFamilyWithDefault, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
-                            {this.state.winDrawMessage}
-                        </div>
+                            {this.state.winDrawElement}
                     </ModalCover>
                 </div>
             </RadiumHorizontalCenter>
@@ -1473,19 +1471,25 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         </StyleRoot>
             
     }
-    getWinDrawMessage(props: TicTacToeAppProps) {
-        var message = "";
+    getWinDrawElement(props: TicTacToeAppProps) {
+        function getWinner(isCross: boolean) {
+            return <div><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily }}>{(isCross ? cross : nought) + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
+        }
+        var style =  { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }
+        var messageElement=<div/>
+        var child;
         switch (props.gameState) {
             case GameState.X:
-                message = playerCrossWon
+                messageElement = getWinner(true);
                 break;
             case GameState.O:
-                message = playerNoughtWon
+                messageElement = getWinner(false);
                 break;
             case GameState.Draw:
-                message = gameDrawn;
+                messageElement = <div style={{ fontFamily: textFontFamilyWithDefault}}>{gameDrawn}</div>;
+                break;
         }
-        return message;
+        return React.cloneElement(messageElement, {style:style});
     }
 }
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
