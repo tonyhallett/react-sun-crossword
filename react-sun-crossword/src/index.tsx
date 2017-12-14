@@ -1020,7 +1020,7 @@ const RadiumDemo = Radium(Demo);
 //#region styling
 
 var thButtonFontWeight = "bold" as any;
-var componentBackgroundColor = "lightgray";
+var componentBackgroundColor = "rgb(255, 246, 230)";
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
