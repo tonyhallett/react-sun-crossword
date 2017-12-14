@@ -46159,8 +46159,8 @@ var spinningDivProps = {
         animationIterationCount: "infinite"
     }
 };
-var SpinningDivX = withSpinAxes("div", spinningDivProps, "X");
-var SpinningDivO = withSpinAxes("div", spinningDivProps, "X");
+var SpinningDivX = withSpinAxes("div", spinningDivProps, cross);
+var SpinningDivO = withSpinAxes("div", spinningDivProps, nought);
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp(props) {
@@ -46211,36 +46211,36 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 } }),
             React.createElement("div", { style: { width: "100%", height: "100%", backgroundColor: "blue" } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
-                React.createElement(RadiumHorizontalCenter, null, showLoading ? React.createElement("table", null,
-                    React.createElement("tbody", null,
-                        React.createElement("tr", null,
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivX, null)),
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivO, null)),
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivX, null))),
-                        React.createElement("tr", null,
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivO, null)),
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivX, null)),
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivO, null))),
-                        React.createElement("tr", null,
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivO, null)),
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivX, null)),
-                            React.createElement("td", null,
-                                React.createElement(SpinningDivX, null))))) :
-                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } },
+                React.createElement(RadiumHorizontalCenter, null,
+                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement("table", null,
+                        React.createElement("tbody", null,
+                            React.createElement("tr", null,
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivX, null)),
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivO, null)),
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivX, null))),
+                            React.createElement("tr", null,
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivO, null)),
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivX, null)),
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivO, null))),
+                            React.createElement("tr", null,
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivO, null)),
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivX, null)),
+                                React.createElement("td", null,
+                                    React.createElement(SpinningDivX, null))))) : React.createElement("div", null,
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
                             React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, onClick: this.props.playAgain }, playAgainText)),
-                        React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement)))));
+                        React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement))))));
     };
     TicTacToeApp.prototype.getWinDrawElement = function (props) {
         function getWinner(playerId, playerColour) {

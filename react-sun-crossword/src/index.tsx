@@ -1443,8 +1443,8 @@ var spinningDivProps = {
         animationIterationCount: "infinite"
     } as React.CSSProperties
 }
-const SpinningDivX: any = withSpinAxes("div", spinningDivProps, "X");
-const SpinningDivO: any = withSpinAxes("div", spinningDivProps, "X");
+const SpinningDivX: any = withSpinAxes("div", spinningDivProps, cross);
+const SpinningDivO: any = withSpinAxes("div", spinningDivProps, nought);
 
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     keyframesFlipInX: any
@@ -1508,27 +1508,29 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
             </div>
         <VerticallyCenteredContainer backgroundColor="orange">
                 <RadiumHorizontalCenter>
-                    {
-                        showLoading ? <table>
-                            <tbody>
-                                <tr><td><SpinningDivX /></td><td><SpinningDivO /></td><td><SpinningDivX /></td></tr>
-                                <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivO /></td></tr>
-                                <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivX /></td></tr>
-                            </tbody>
-                        </table> :
-                            <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
-                                <div style={{ display: "inline-block" }}>
-                                    <div style={{ marginBottom: style.componentMargin }}>
-                                        <ConnectedScoreboard />
+                    <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
+                        {
+                            showLoading ? <table>
+                                <tbody>
+                                    <tr><td><SpinningDivX /></td><td><SpinningDivO /></td><td><SpinningDivX /></td></tr>
+                                    <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivO /></td></tr>
+                                    <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivX /></td></tr>
+                                </tbody>
+                            </table> : <div>
+                                    <div style={{ display: "inline-block" }}>
+                                        <div style={{ marginBottom: style.componentMargin }}>
+                                            <ConnectedScoreboard />
+                                        </div>
+                                        <ConnectedTicTacToeBoard />
+                                        <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
                                     </div>
-                                    <ConnectedTicTacToeBoard />
-                                    <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
-                                </div>
-                                <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                                    {this.state.winDrawElement}
-                                </ModalCover>
+                                    <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                                        {this.state.winDrawElement}
+                                    </ModalCover>
                             </div>
-                    }
+                        }
+                    </div>
+                    
                     
             </RadiumHorizontalCenter>
         </VerticallyCenteredContainer>
