@@ -1475,9 +1475,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         </StyleRoot>
             
     }
+    //style.winDrawContainerStyle
     getWinDrawElement(props: TicTacToeAppProps) {
         function getWinner(playerId: string, playerColour: string) {
-            return <div style={style.winDrawContainerStyle}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily, color: playerColour }}>{playerId + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
+            return <div style={{}}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily, color: playerColour }}>{playerId + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
         }
         
         var messageElement=<div/>
@@ -1490,10 +1491,16 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 messageElement = getWinner(nought,this.props.oColour);
                 break;
             case GameState.Draw:
-                messageElement = <div style={{ ...style.winDrawContainerStyle, fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
+                //...style.winDrawContainerStyle, 
+                messageElement = <div style={{ fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
                 break;
         }
-        return messageElement;
+        return <VerticallyCenteredContainer>
+            <HorizontalCenter>
+                messageElement
+            </HorizontalCenter>
+        </VerticallyCenteredContainer>
+            
     }
 }
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {

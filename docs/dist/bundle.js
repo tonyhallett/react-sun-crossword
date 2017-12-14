@@ -46179,9 +46179,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, playAgainText)),
                         React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement)))));
     };
+    //style.winDrawContainerStyle
     TicTacToeApp.prototype.getWinDrawElement = function (props) {
         function getWinner(playerId, playerColour) {
-            return React.createElement("div", { style: style.winDrawContainerStyle },
+            return React.createElement("div", { style: {} },
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, player + " "),
                 React.createElement("span", { style: { fontFamily: noughtCrossFontFamily, color: playerColour } }, playerId + " "),
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, wonMessage));
@@ -46195,10 +46196,12 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 messageElement = getWinner(nought, this.props.oColour);
                 break;
             case GameState.Draw:
-                messageElement = React.createElement("div", { style: __assign({}, style.winDrawContainerStyle, { fontFamily: textFontFamilyWithDefault }) }, gameDrawn);
+                //...style.winDrawContainerStyle, 
+                messageElement = React.createElement("div", { style: { fontFamily: textFontFamilyWithDefault } }, gameDrawn);
                 break;
         }
-        return messageElement;
+        return React.createElement(VerticallyCenteredContainer, null,
+            React.createElement(HorizontalCenter, null, "messageElement"));
     };
     return TicTacToeApp;
 }(React.Component));
