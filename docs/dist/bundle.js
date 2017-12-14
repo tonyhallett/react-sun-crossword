@@ -45832,7 +45832,10 @@ var RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
 var thButtonFontWeight = "bold";
+//these have been taken from https://www.w3schools.com/colors/colors_picker.asp
 var componentBackgroundColor = "rgb(226, 220, 207)";
+var buttonBackgroundColor = "rgb(245, 243, 239)"; //95% light
+var scoreboardBackgroundColor = "rgb(245, 243, 239)"; //95% light
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
@@ -45853,7 +45856,7 @@ var style = {
             paddingBottom: scoreboardPadding,
             textAlign: "center",
             fontSize: fontSize,
-            backgroundColor: componentBackgroundColor,
+            backgroundColor: scoreboardBackgroundColor,
             fontFamily: textFontFamilyWithDefault
         },
         noughtCrossStyle: {
@@ -46176,7 +46179,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, playAgainText)),
+                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, onClick: this.props.playAgain }, playAgainText)),
                         React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement)))));
     };
     TicTacToeApp.prototype.getWinDrawElement = function (props) {

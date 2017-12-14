@@ -1020,7 +1020,11 @@ const RadiumDemo = Radium(Demo);
 //#region styling
 
 var thButtonFontWeight = "bold" as any;
+//these have been taken from https://www.w3schools.com/colors/colors_picker.asp
 var componentBackgroundColor = "rgb(226, 220, 207)";
+var buttonBackgroundColor = "rgb(245, 243, 239)"//95% light
+var scoreboardBackgroundColor = "rgb(245, 243, 239)"//95% light
+
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
@@ -1041,7 +1045,7 @@ var style = {
             paddingBottom: scoreboardPadding,
             textAlign: "center",
             fontSize: fontSize,
-            backgroundColor: componentBackgroundColor,
+            backgroundColor: scoreboardBackgroundColor,
             fontFamily: textFontFamilyWithDefault
             
         } as React.CSSProperties,
@@ -1464,7 +1468,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                             <ConnectedScoreboard />
                         </div>
                             <ConnectedTicTacToeBoard />
-                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>{playAgainText}</button>
+                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
                         </div>
                         <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor } } closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                             {this.state.winDrawElement}
