@@ -1073,12 +1073,13 @@ var componentBackgroundColor = "lightgray";
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
-var scoreboardFontFamily = "Pacifico";
-var squareFontFamily = "Short Stack";
+var textFontFamily = "Pacifico";
+var noughtCrossFontFamily = "Short Stack";
 var defaultFontFamily = ",Helvetica Neue, Helvetica, Arial, sans-serif";
-var fontFamily= "Sedgwick Ave Display,Helvetica Neue, Helvetica, Arial, sans-serif";
+var noughtCrossFontFamilyWithDefault = noughtCrossFontFamily + defaultFontFamily;
+var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
+//override scoreboard.cellStyle with noughtCrossStyle for the player cells
 var style = {
-    fontFamily:fontFamily,
     componentBackgroundColor: componentBackgroundColor,
     componentMargin:10,
     borderRadius:5,
@@ -1089,8 +1090,13 @@ var style = {
             textAlign: "center",
             fontSize: fontSize,
             backgroundColor: componentBackgroundColor,
-            fontFamily: scoreboardFontFamily + defaultFontFamily
+            fontFamily: textFontFamilyWithDefault
+            
         } as React.CSSProperties,
+        
+        noughtCrossStyle: {
+            fontFamily: noughtCrossFontFamilyWithDefault
+        },
         rowStyle: {
             borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid",
             height: fontSize * pulseIncrease + 2 * scoreboardPadding
@@ -1102,7 +1108,7 @@ var style = {
     },
     ticTacToeSquare: {
         verticalAlign: "center",
-        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: squareFontFamily + defaultFontFamily
+        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault
     } as React.CSSProperties,
     ticTacToeSquareBorderWidth:5
 }
@@ -1330,7 +1336,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         
         return <tr style={style.scoreboard.rowStyle}>
-            <td style={{ ...style.scoreboard.cellStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
+            <td style={{ ...style.scoreboard.cellStyle, ...style.scoreboard.noughtCrossStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
             <td style={style.scoreboard.cellStyle}>
                 <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                     {
@@ -1430,10 +1436,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                             <ConnectedScoreboard />
                         </div>
                             <ConnectedTicTacToeBoard />
-                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: style.fontFamily, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
-                    <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                        <div style={{ fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
+                        <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                            <div style={{ fontFamily: textFontFamilyWithDefault, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
                             {this.state.winDrawMessage}
                         </div>
                     </ModalCover>
@@ -1482,7 +1488,7 @@ ReactDOM.render(
         <ConnectedWebFontLoader config={
             {
                 google: {
-                    families: [squareFontFamily, scoreboardFontFamily]
+                    families: [textFontFamily, noughtCrossFontFamily]
                 }
             }
 

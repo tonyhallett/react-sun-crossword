@@ -45874,12 +45874,13 @@ var componentBackgroundColor = "lightgray";
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
-var scoreboardFontFamily = "Pacifico";
-var squareFontFamily = "Short Stack";
+var textFontFamily = "Pacifico";
+var noughtCrossFontFamily = "Short Stack";
 var defaultFontFamily = ",Helvetica Neue, Helvetica, Arial, sans-serif";
-var fontFamily = "Sedgwick Ave Display,Helvetica Neue, Helvetica, Arial, sans-serif";
+var noughtCrossFontFamilyWithDefault = noughtCrossFontFamily + defaultFontFamily;
+var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
+//override scoreboard.cellStyle with noughtCrossStyle for the player cells
 var style = {
-    fontFamily: fontFamily,
     componentBackgroundColor: componentBackgroundColor,
     componentMargin: 10,
     borderRadius: 5,
@@ -45890,7 +45891,10 @@ var style = {
             textAlign: "center",
             fontSize: fontSize,
             backgroundColor: componentBackgroundColor,
-            fontFamily: scoreboardFontFamily + defaultFontFamily
+            fontFamily: textFontFamilyWithDefault
+        },
+        noughtCrossStyle: {
+            fontFamily: noughtCrossFontFamilyWithDefault
         },
         rowStyle: {
             borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid",
@@ -45903,7 +45907,7 @@ var style = {
     },
     ticTacToeSquare: {
         verticalAlign: "center",
-        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: squareFontFamily + defaultFontFamily
+        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault
     },
     ticTacToeSquareBorderWidth: 5
 };
@@ -46074,7 +46078,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
-            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
             React.createElement("td", { style: style.scoreboard.cellStyle },
                 React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
                     return React.createElement("div", { style: [pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);
@@ -46147,9 +46151,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: style.fontFamily, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
+                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
-                            React.createElement("div", { style: { fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.state.winDrawMessage))))));
+                            React.createElement("div", { style: { fontFamily: textFontFamilyWithDefault, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.state.winDrawMessage))))));
     };
     TicTacToeApp.prototype.getWinDrawMessage = function (props) {
         var message = "";
@@ -46188,7 +46192,7 @@ var store = storage_1.createLocalStorageStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(ConnectedWebFontLoader, { config: {
             google: {
-                families: [squareFontFamily, scoreboardFontFamily]
+                families: [textFontFamily, noughtCrossFontFamily]
             }
         } },
         React.createElement(ConnectedTicTacToeApp, null))), document.getElementById("example"));
