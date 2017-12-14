@@ -1433,16 +1433,19 @@ interface TicTacToeAppProps {
 interface TicTacToeAppState {
     winDrawElement:React.ReactElement<any>
 }
-const SpinningDiv: any = withSpinAxes("div", {
+var spinningDivProps = {
     style:
     {
-        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign:"center",
+        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
         animationDuration: "3000ms",
-        fontSize:90,padding:5,
+        fontSize: 90, padding: 5,
         animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
         animationIterationCount: "infinite"
     } as React.CSSProperties
-}, "X");
+}
+const SpinningDivX: any = withSpinAxes("div", spinningDivProps, "X");
+const SpinningDivO: any = withSpinAxes("div", spinningDivProps, "X");
+
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     keyframesFlipInX: any
     keyframesFlipOutX:any
@@ -1477,9 +1480,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     
     render() {
-        if (this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading) {
-            return <div>Loading !!!!</div>
-        }
+        var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
+        
         return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
                 rules={{
@@ -1505,20 +1507,29 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
 
             </div>
         <VerticallyCenteredContainer backgroundColor="orange">
-            <RadiumHorizontalCenter>
-                    <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
-                        <SpinningDiv/>
-                        <div style={{ display: "inline-block" }}>
-                            <div style={{ marginBottom: style.componentMargin }}>
-                            <ConnectedScoreboard />
-                        </div>
-                            <ConnectedTicTacToeBoard />
-                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
-                        </div>
-                        <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor } } closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                            {this.state.winDrawElement}
-                    </ModalCover>
-                </div>
+                <RadiumHorizontalCenter>
+                    {
+                        showLoading ? <table>
+                            <tbody>
+                                <tr><td><SpinningDivX /></td><td><SpinningDivO /></td><td><SpinningDivX /></td></tr>
+                                <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivO /></td></tr>
+                                <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivX /></td></tr>
+                            </tbody>
+                        </table> :
+                            <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
+                                <div style={{ display: "inline-block" }}>
+                                    <div style={{ marginBottom: style.componentMargin }}>
+                                        <ConnectedScoreboard />
+                                    </div>
+                                    <ConnectedTicTacToeBoard />
+                                    <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
+                                </div>
+                                <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                                    {this.state.winDrawElement}
+                                </ModalCover>
+                            </div>
+                    }
+                    
             </RadiumHorizontalCenter>
         </VerticallyCenteredContainer>
         </StyleRoot>

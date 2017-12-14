@@ -46150,7 +46150,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     };
     return ScoreboardPlayer;
 }(React.Component));
-var SpinningDiv = withSpinAxes("div", {
+var spinningDivProps = {
     style: {
         width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
         animationDuration: "3000ms",
@@ -46158,7 +46158,9 @@ var SpinningDiv = withSpinAxes("div", {
         animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
         animationIterationCount: "infinite"
     }
-}, "X");
+};
+var SpinningDivX = withSpinAxes("div", spinningDivProps, "X");
+var SpinningDivO = withSpinAxes("div", spinningDivProps, "X");
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp(props) {
@@ -46187,9 +46189,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
         }
     };
     TicTacToeApp.prototype.render = function () {
-        if (this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading) {
-            return React.createElement("div", null, "Loading !!!!");
-        }
+        var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
         return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "all" } },
             React.createElement(Radium_1.Style, { rules: {
                     body: {
@@ -46211,9 +46211,30 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 } }),
             React.createElement("div", { style: { width: "100%", height: "100%", backgroundColor: "blue" } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
-                React.createElement(RadiumHorizontalCenter, null,
+                React.createElement(RadiumHorizontalCenter, null, showLoading ? React.createElement("table", null,
+                    React.createElement("tbody", null,
+                        React.createElement("tr", null,
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivX, null)),
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivO, null)),
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivX, null))),
+                        React.createElement("tr", null,
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivO, null)),
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivX, null)),
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivO, null))),
+                        React.createElement("tr", null,
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivO, null)),
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivX, null)),
+                            React.createElement("td", null,
+                                React.createElement(SpinningDivX, null))))) :
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } },
-                        React.createElement(SpinningDiv, null),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
