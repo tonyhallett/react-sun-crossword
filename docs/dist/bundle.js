@@ -45916,7 +45916,11 @@ var TicTacToeBoard = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
-        return React.createElement("table", { id: ticTacToeBoardId, style: { borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor } },
+        return React.createElement("table", { id: ticTacToeBoardId, style: [{
+                    borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor,
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
+                    transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
+                }, { ":hover": { boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)" } }] },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
@@ -45930,7 +45934,7 @@ var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
     return {
         board: state.board
     };
-})(TicTacToeBoard);
+})(Radium(TicTacToeBoard));
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
