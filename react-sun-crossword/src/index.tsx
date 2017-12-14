@@ -1436,10 +1436,11 @@ interface TicTacToeAppState {
 const SpinningDiv: any = withSpinAxes("div", {
     style:
     {
-        width: 100, height: 100, animationDuration: "3000ms",
+        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign:"center",
+        animationDuration: "3000ms",
         animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
         animationIterationCount: "infinite"
-    }
+    } as React.CSSProperties
 }, "X");
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     keyframesFlipInX: any
