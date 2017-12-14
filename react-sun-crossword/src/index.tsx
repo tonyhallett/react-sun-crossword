@@ -61,6 +61,15 @@ const ConnectedWebFontLoader = connect(null, (dispatch) => {
             dispatch(fontLoading(FontLoadingState.Inactive))
         },
     }
+}, (stateProps, dispatchProps, ownProps) => {
+    //for own use not concerned with overriding callbacks
+    var mergedProps: WebFontLoaderProps= {
+        config: {
+            ...ownProps,
+            ...dispatchProps
+        }
+    }
+    return mergedProps;
 })(WebFontLoader as any) as any;
 
 var componentBackgroundColor = "lightgray";
