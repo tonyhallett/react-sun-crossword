@@ -1002,33 +1002,39 @@ const RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
 
+var thButtonFontWeight: "bold";
+var componentBackgroundColor = "lightgray";
+var fontSize = 20;
+var pulseIncrease = 1.5;
+var scoreboardPadding = 5;
 var style = {
-    fontFamily:"Helvetica Neue, Helvetica, Arial, sans-serif",
-    componentBackgroundColor: "lightgray",
+    fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+    componentBackgroundColor: componentBackgroundColor,
+    componentMargin:10,
     borderRadius:5,
     scoreboard: {
         cellStyle: {
-            paddingTop: 5,
-            paddingBottom: 5,
+            paddingTop: scoreboardPadding,
+            paddingBottom: scoreboardPadding,
             textAlign: "center",
-            fontSize: 20,
-
+            fontSize: fontSize,
+            backgroundColor: componentBackgroundColor
         } as React.CSSProperties,
         rowStyle: {
-            borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid"
+            borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid",
+            height: fontSize * pulseIncrease + 2 * scoreboardPadding
         } as React.CSSProperties,
         winColour: "green",
         loseColour: "red",
-        drawColour: "orange"
+        drawColour: "orange",
+        thFontWeight: thButtonFontWeight
     },
     ticTacToeSquare: {
         textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid",borderWidth:0, fontSize: "80px"
     },
     ticTacToeSquareBorderWidth:5
 }
-style.scoreboard.cellStyle.backgroundColor = style.componentBackgroundColor
-var pulseIncrease = 1.5;
-style.scoreboard.rowStyle.height = (style.scoreboard.cellStyle.fontSize as number) * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom
+
 //#endregion
 
 //#region App components
@@ -1341,12 +1347,12 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         <VerticallyCenteredContainer backgroundColor="orange">
             <HorizontalCenter>
                 <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius }}>
-                    <div style={{ display: "inline-block" }}>
-                        <div style={{ marginTop: 10, marginBottom: 10 }}>
+                        <div style={{ display: "inline-block" }}>
+                            <div style={{ marginBottom: style.componentMargin }}>
                             <ConnectedScoreboard />
                         </div>
-                        <ConnectedTicTacToeBoard />
-                        <button style={{borderStyle:"none", borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                            <ConnectedTicTacToeBoard />
+                            <button style={{ fontWeight: thButtonFontWeight, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
                     </div>
                     <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                         <div style={{ fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>

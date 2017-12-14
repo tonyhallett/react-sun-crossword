@@ -45789,32 +45789,38 @@ var Demo = /** @class */ (function (_super) {
 var RadiumDemo = Radium(Demo);
 //#endregion
 //#region styling
+var thButtonFontWeight;
+var componentBackgroundColor = "lightgray";
+var fontSize = 20;
+var pulseIncrease = 1.5;
+var scoreboardPadding = 5;
 var style = {
     fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-    componentBackgroundColor: "lightgray",
+    componentBackgroundColor: componentBackgroundColor,
+    componentMargin: 10,
     borderRadius: 5,
     scoreboard: {
         cellStyle: {
-            paddingTop: 5,
-            paddingBottom: 5,
+            paddingTop: scoreboardPadding,
+            paddingBottom: scoreboardPadding,
             textAlign: "center",
-            fontSize: 20,
+            fontSize: fontSize,
+            backgroundColor: componentBackgroundColor
         },
         rowStyle: {
-            borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid"
+            borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid",
+            height: fontSize * pulseIncrease + 2 * scoreboardPadding
         },
         winColour: "green",
         loseColour: "red",
-        drawColour: "orange"
+        drawColour: "orange",
+        thFontWeight: thButtonFontWeight
     },
     ticTacToeSquare: {
         textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px"
     },
     ticTacToeSquareBorderWidth: 5
 };
-style.scoreboard.cellStyle.backgroundColor = style.componentBackgroundColor;
-var pulseIncrease = 1.5;
-style.scoreboard.rowStyle.height = style.scoreboard.cellStyle.fontSize * pulseIncrease + style.scoreboard.cellStyle.paddingTop + style.scoreboard.cellStyle.paddingBottom;
 //#endregion
 //#region App components
 var RadiumTransition = Radium(Transition_1.default);
@@ -46047,10 +46053,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 React.createElement(HorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius } },
                         React.createElement("div", { style: { display: "inline-block" } },
-                            React.createElement("div", { style: { marginTop: 10, marginBottom: 10 } },
+                            React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { style: { borderStyle: "none", borderRadius: style.borderRadius, marginTop: 10, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
+                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                             React.createElement("div", { style: { fontFamily: style.fontFamily, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.state.winDrawMessage))))));
     };
