@@ -45643,6 +45643,35 @@ function withColourChangeTransition(Component) {
     }(React.Component));
     return colourChangeTransition;
 }
+function withSpinAxes(type, props, children) {
+    var squareSpin = {
+        '25%': {
+            transform: "perspective(100px) rotateX(180deg) rotateY(0)"
+        },
+        '50%': {
+            transform: "perspective(100px) rotateX(180deg) rotateY(180deg)"
+        },
+        '75%': {
+            transform: "perspective(100px) rotateX(0) rotateY(180deg)"
+        },
+        '100%': {
+            transform: "perspective(100px) rotateX(0) rotateY(0)"
+        }
+    };
+    var spinAxes = /** @class */ (function (_super) {
+        __extends(class_1, _super);
+        function class_1() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        class_1.prototype.render = function () {
+            var existingStyle = props.style;
+            props.style = [existingStyle, { animationName: Radium.keyframes(squareSpin) }];
+            return React.createElement(type, props, children);
+        };
+        return class_1;
+    }(React.Component));
+    return Radium(spinAxes);
+}
 //should change to enable not using function and having component to merge transition style with default Style provided as property
 function withPulse(Component) {
     function scale3d(a, b, c) {
@@ -45650,11 +45679,11 @@ function withPulse(Component) {
     }
     ;
     var pulse = /** @class */ (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
+        __extends(class_2, _super);
+        function class_2() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        class_1.prototype.render = function () {
+        class_2.prototype.render = function () {
             var _this = this;
             var fromTo = scale3d(1, 1, 1);
             var pulse = {
@@ -45683,7 +45712,7 @@ function withPulse(Component) {
                 return _this.props.children(state, additionalProps, transitionStyle);
             });
         };
-        return class_1;
+        return class_2;
     }(React.Component));
     return pulse;
 }
@@ -46175,6 +46204,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } },
+                        withSpinAxes("div", { style: { width: 100, height: 100, animationDuration: "3000ms", animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)", animationIterationCount: "infinite" } }, "X"),
                         React.createElement("div", { style: { display: "inline-block" } },
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
