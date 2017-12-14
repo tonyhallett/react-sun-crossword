@@ -1031,7 +1031,7 @@ var noughtCrossFontFamilyWithDefault = noughtCrossFontFamily + defaultFontFamily
 var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
 //override scoreboard.cellStyle with noughtCrossStyle for the player cells
 var style = {
-    winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } as React.CSSProperties,
+    winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center",fontSize:fontSize } as React.CSSProperties,
     componentBackgroundColor: componentBackgroundColor,
     componentMargin:10,
     borderRadius:5,
@@ -1475,10 +1475,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         </StyleRoot>
             
     }
-    //style.winDrawContainerStyle
+    
     getWinDrawElement(props: TicTacToeAppProps) {
         function getWinner(playerId: string, playerColour: string) {
-            return <div style={{}}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily, color: playerColour }}>{playerId + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
+            return <div style={style.winDrawContainerStyle}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily, color: playerColour }}>{playerId + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
         }
         
         var messageElement=<div/>
@@ -1491,15 +1491,10 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 messageElement = getWinner(nought,this.props.oColour);
                 break;
             case GameState.Draw:
-                //...style.winDrawContainerStyle, 
-                messageElement = <div style={{ fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
+                messageElement = <div style={{ ...style.winDrawContainerStyle, fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
                 break;
         }
-        return <VerticallyCenteredContainer>
-            <HorizontalCenter>
-                {messageElement}
-            </HorizontalCenter>
-        </VerticallyCenteredContainer>
+        return messageElement;
             
     }
 }

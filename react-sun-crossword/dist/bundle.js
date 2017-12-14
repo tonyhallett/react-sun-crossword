@@ -45843,7 +45843,7 @@ var noughtCrossFontFamilyWithDefault = noughtCrossFontFamily + defaultFontFamily
 var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
 //override scoreboard.cellStyle with noughtCrossStyle for the player cells
 var style = {
-    winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" },
+    winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center", fontSize: fontSize },
     componentBackgroundColor: componentBackgroundColor,
     componentMargin: 10,
     borderRadius: 5,
@@ -46179,10 +46179,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, playAgainText)),
                         React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement)))));
     };
-    //style.winDrawContainerStyle
     TicTacToeApp.prototype.getWinDrawElement = function (props) {
         function getWinner(playerId, playerColour) {
-            return React.createElement("div", { style: {} },
+            return React.createElement("div", { style: style.winDrawContainerStyle },
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, player + " "),
                 React.createElement("span", { style: { fontFamily: noughtCrossFontFamily, color: playerColour } }, playerId + " "),
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, wonMessage));
@@ -46196,12 +46195,10 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 messageElement = getWinner(nought, this.props.oColour);
                 break;
             case GameState.Draw:
-                //...style.winDrawContainerStyle, 
-                messageElement = React.createElement("div", { style: { fontFamily: textFontFamilyWithDefault } }, gameDrawn);
+                messageElement = React.createElement("div", { style: __assign({}, style.winDrawContainerStyle, { fontFamily: textFontFamilyWithDefault }) }, gameDrawn);
                 break;
         }
-        return React.createElement(VerticallyCenteredContainer, null,
-            React.createElement(HorizontalCenter, null, messageElement));
+        return messageElement;
     };
     return TicTacToeApp;
 }(React.Component));
