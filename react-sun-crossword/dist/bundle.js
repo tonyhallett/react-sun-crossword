@@ -45899,7 +45899,7 @@ var style = {
         thFontWeight: thButtonFontWeight
     },
     ticTacToeSquare: {
-        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px"
+        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: fontFamily
     },
     ticTacToeSquareBorderWidth: 5
 };
