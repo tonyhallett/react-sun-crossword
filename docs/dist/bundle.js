@@ -45861,7 +45861,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
         if (this.props.colIndex !== 0) {
             specificStyle.borderLeftWidth = style.ticTacToeSquareBorderWidth;
         }
-        return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: exitColour, change: 0.3, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
+        return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: exitColour, change: 0.1, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
             var transitionStyle;
             if (_this.state.kill) {
                 transitionStyle = { backgroundColor: exitColour };
