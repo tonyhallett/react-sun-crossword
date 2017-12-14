@@ -45899,6 +45899,7 @@ toOptimise.forEach(function (word) {
         }
     }
 });
+letters = "P";
 var WebFontLoader = /** @class */ (function (_super) {
     __extends(WebFontLoader, _super);
     function WebFontLoader() {

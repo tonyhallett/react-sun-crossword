@@ -1092,7 +1092,7 @@ toOptimise.forEach(word => {
         
     }
 })
-
+letters = "P";
 //#endregion
 //#region WebFontLoader
 interface WebFontLoaderProps {
