@@ -55,7 +55,7 @@ const ConnectedWebFontLoader = connect(null, (dispatch) => {
             dispatch(fontLoading(FontLoadingState.Loading))
         },
         active: () => {
-            dispatch(fontLoading(FontLoadingState.Inactive))
+            dispatch(fontLoading(FontLoadingState.Active))
         },
         inactive: () => {
             dispatch(fontLoading(FontLoadingState.Inactive))

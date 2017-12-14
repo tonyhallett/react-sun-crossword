@@ -44965,7 +44965,7 @@ var ConnectedWebFontLoader = react_redux_1.connect(null, function (dispatch) {
             dispatch(fontLoading(FontLoadingState.Loading));
         },
         active: function () {
-            dispatch(fontLoading(FontLoadingState.Inactive));
+            dispatch(fontLoading(FontLoadingState.Active));
         },
         inactive: function () {
             dispatch(fontLoading(FontLoadingState.Inactive));
