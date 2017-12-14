@@ -46180,26 +46180,25 @@ var TicTacToeApp = /** @class */ (function (_super) {
     };
     TicTacToeApp.prototype.getWinDrawElement = function (props) {
         function getWinner(isCross) {
-            return React.createElement("div", null,
+            return React.createElement("div", { style: containerStyle },
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, player + " "),
                 React.createElement("span", { style: { fontFamily: noughtCrossFontFamily } }, (isCross ? cross : nought) + " "),
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, wonMessage));
         }
-        var style = { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" };
+        var containerStyle = { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" };
         var messageElement = React.createElement("div", null);
-        var child;
         switch (props.gameState) {
             case GameState.X:
-                messageElement = getWinner(true);
+                messageElement = getWinner(true).props.children;
                 break;
             case GameState.O:
-                messageElement = getWinner(false);
+                messageElement = getWinner(false).props.children;
                 break;
             case GameState.Draw:
-                messageElement = React.createElement("div", { style: { fontFamily: textFontFamilyWithDefault } }, gameDrawn);
+                messageElement = React.createElement("div", { style: __assign({}, containerStyle, { fontFamily: textFontFamilyWithDefault }) }, gameDrawn);
                 break;
         }
-        return React.cloneElement(messageElement, { style: style });
+        return messageElement;
     };
     return TicTacToeApp;
 }(React.Component));

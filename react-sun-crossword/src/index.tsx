@@ -1473,23 +1473,23 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     }
     getWinDrawElement(props: TicTacToeAppProps) {
         function getWinner(isCross: boolean) {
-            return <div><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily }}>{(isCross ? cross : nought) + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
+            return <div style={containerStyle}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily }}>{(isCross ? cross : nought) + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
         }
-        var style =  { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }
+        var containerStyle: React.CSSProperties = { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }
         var messageElement=<div/>
-        var child;
+        
         switch (props.gameState) {
             case GameState.X:
-                messageElement = getWinner(true);
+                messageElement = getWinner(true).props.children;
                 break;
             case GameState.O:
-                messageElement = getWinner(false);
+                messageElement = getWinner(false).props.children;
                 break;
             case GameState.Draw:
-                messageElement = <div style={{ fontFamily: textFontFamilyWithDefault}}>{gameDrawn}</div>;
+                messageElement = <div style={{ ...containerStyle, fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
                 break;
         }
-        return React.cloneElement(messageElement, {style:style});
+        return messageElement;
     }
 }
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
