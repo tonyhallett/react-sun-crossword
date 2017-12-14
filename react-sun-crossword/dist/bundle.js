@@ -46201,7 +46201,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 break;
         }
         return React.createElement(VerticallyCenteredContainer, null,
-            React.createElement(HorizontalCenter, null, "messageElement"));
+            React.createElement(HorizontalCenter, null, messageElement));
     };
     return TicTacToeApp;
 }(React.Component));

@@ -1497,7 +1497,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         }
         return <VerticallyCenteredContainer>
             <HorizontalCenter>
-                messageElement
+                {messageElement}
             </HorizontalCenter>
         </VerticallyCenteredContainer>
             
