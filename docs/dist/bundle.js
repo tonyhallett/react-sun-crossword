@@ -45874,7 +45874,7 @@ var componentBackgroundColor = "lightgray";
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
-var fontFamily;
+var fontFamily = "Sedgwick Ave Display,Helvetica Neue, Helvetica, Arial, sans-serif";
 var style = {
     fontFamily: fontFamily,
     componentBackgroundColor: componentBackgroundColor,
