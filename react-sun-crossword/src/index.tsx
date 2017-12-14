@@ -15,67 +15,18 @@ import { flipOutX,flipInX,pulse } from 'react-animations';
 import * as WebFont  from "webfontloader";
 
 
-interface WebFontLoaderProps {
-    config: WebFont.Config
-}
-class WebFontLoader extends React.Component<WebFontLoaderProps, undefined>{
-    loadFonts() {
-        WebFont.load(
-            this.props.config
-        )
-    }
-    componentDidMount() {
-        this.loadFonts();
-    }
-    shouldComponentUpdate() {
-        return false;
-    }
-    render() {
-        return this.props.children;
-    }
-}
 
-
-
-
-
+//#region redux
+//#region redux state
 //this is not for all circumstances, just for what is appropriate for me - a single font
 enum FontLoadingState { NotStarted, Loading, Active, Inactive }
 const FONT_LOADING = "FONT_LOADING";
 function fontLoading(state: FontLoadingState) {
     return {
         type: FONT_LOADING,
-        state:state
+        state: state
     }
 }
-//preloadedState going to be an issue - will need to override or not save 
-const ConnectedWebFontLoader = connect(null, (dispatch) => {
-    return {
-        loading: () => {
-            dispatch(fontLoading(FontLoadingState.Loading))
-        },
-        active: () => {
-            dispatch(fontLoading(FontLoadingState.Active))
-        },
-        inactive: () => {
-            dispatch(fontLoading(FontLoadingState.Inactive))
-        },
-    }
-}, (stateProps, dispatchProps, ownProps: WebFontLoaderProps) => {
-    //for own use not concerned with overriding callbacks
-    var mergedProps: WebFontLoaderProps = {
-        ...ownProps,
-        config: {
-            ...ownProps.config,
-            ...dispatchProps
-        }
-    }
-    return mergedProps;
-})(WebFontLoader as any) as any;
-
-var componentBackgroundColor = "lightgray";
-//#region redux
-//#region redux state
 enum SquareGo { X, O, None }
 enum Player { X, O }
 enum GameState {X,O,Playing,Draw,FinishedConfirmed}
@@ -1114,7 +1065,77 @@ var style = {
 }
 
 //#endregion
+//#region text strings
+//a) ensure that these are all used
+const player = "Player";
+const won = "Won";
+const lost = "Lost";
+const drawn = "Drawn";
+const playAgainText = "Play again"
+const nought = "O";
+const cross = "X";
+const numbers=["0","1","2","3","4","5","6","7","8","9"]
+const gameDrawn = "Game drawn";
+const playerNoughtWon = player + " " + nought + " " + won + " !";
+const playerCrossWon = player + " " + cross + " " + won + " !";
 
+var toOptimise = [player, won, lost, drawn, playAgainText, nought, cross, gameDrawn, playerNoughtWon, playerCrossWon].concat(numbers);
+var letters = "";
+toOptimise.forEach(word => {
+    for (var i = 0; i < word.length; i++) {
+        var letter = word[i];
+        if (letters.indexOf(letter) === -1) {
+            letters+=letter;
+        }
+    }
+})
+
+//#endregion
+//#region WebFontLoader
+interface WebFontLoaderProps {
+    config: WebFont.Config
+}
+class WebFontLoader extends React.Component<WebFontLoaderProps, undefined>{
+    loadFonts() {
+        WebFont.load(
+            this.props.config
+        )
+    }
+    componentDidMount() {
+        this.loadFonts();
+    }
+    shouldComponentUpdate() {
+        return false;
+    }
+    render() {
+        return this.props.children;
+    }
+}
+//preloadedState going to be an issue - will need to override or not save 
+const ConnectedWebFontLoader = connect(null, (dispatch) => {
+    return {
+        loading: () => {
+            dispatch(fontLoading(FontLoadingState.Loading))
+        },
+        active: () => {
+            dispatch(fontLoading(FontLoadingState.Active))
+        },
+        inactive: () => {
+            dispatch(fontLoading(FontLoadingState.Inactive))
+        },
+    }
+}, (stateProps, dispatchProps, ownProps: WebFontLoaderProps) => {
+    //for own use not concerned with overriding callbacks
+    var mergedProps: WebFontLoaderProps = {
+        ...ownProps,
+        config: {
+            ...ownProps.config,
+            ...dispatchProps
+        }
+    }
+    return mergedProps;
+})(WebFontLoader as any) as any;
+//#endregion
 //#region App components
 const RadiumTransition = Radium(Transition);
 const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
@@ -1278,15 +1299,15 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         return <table style={{ width: "100%",borderSpacing:0,borderCollapse:"collapse" }}>
             <thead>
                 <tr>
-                    <th style={{ fontWeight: thButtonFontWeight , borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
-                    <th style={{ ...style.scoreboard.cellStyle, fontWeight: thButtonFontWeight }}>Won</th>
-                    <th style={{ ...style.scoreboard.cellStyle, fontWeight: thButtonFontWeight }}>Lost</th>
-                    <th style={{ fontWeight: thButtonFontWeight,borderTopRightRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Drawn</th>
+                    <th style={{ fontWeight: thButtonFontWeight, borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>{player}</th>
+                    <th style={{ ...style.scoreboard.cellStyle, fontWeight: thButtonFontWeight }}>{won}</th>
+                    <th style={{ ...style.scoreboard.cellStyle, fontWeight: thButtonFontWeight }}>{lost}</th>
+                    <th style={{ fontWeight: thButtonFontWeight, borderTopRightRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>{drawn}</th>
                 </tr>
             </thead>
             <tbody>
-                <ScoreboardPlayer playerColour={this.props.xColour} playerId="X" playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
-                <ScoreboardPlayer borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId="O" playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
+                <ScoreboardPlayer playerColour={this.props.xColour} playerId={cross} playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
+                <ScoreboardPlayer borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId={nought} playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
             </tbody>
             </table>
     }
@@ -1436,7 +1457,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                             <ConnectedScoreboard />
                         </div>
                             <ConnectedTicTacToeBoard />
-                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>Play again</button>
+                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>{playAgain}</button>
                     </div>
                         <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                             <div style={{ fontFamily: textFontFamilyWithDefault, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
@@ -1453,13 +1474,13 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         var message = "";
         switch (props.gameState) {
             case GameState.X:
-                message = "Player X Won !";
+                message = playerCrossWon
                 break;
             case GameState.O:
-                message = "Player O Won !";
+                message = playerNoughtWon
                 break;
             case GameState.Draw:
-                message = "Game drawn";
+                message = gameDrawn;
         }
         return message;
     }
@@ -1488,7 +1509,8 @@ ReactDOM.render(
         <ConnectedWebFontLoader config={
             {
                 google: {
-                    families: [textFontFamily, noughtCrossFontFamily]
+                    families: [textFontFamily, noughtCrossFontFamily],
+                    text:letters
                 }
             }
 

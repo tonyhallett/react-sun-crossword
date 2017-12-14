@@ -44924,25 +44924,8 @@ var Transition_1 = __webpack_require__(77);
 var Color = __webpack_require__(72);
 var react_animations_1 = __webpack_require__(74);
 var WebFont = __webpack_require__(79);
-var WebFontLoader = /** @class */ (function (_super) {
-    __extends(WebFontLoader, _super);
-    function WebFontLoader() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    WebFontLoader.prototype.loadFonts = function () {
-        WebFont.load(this.props.config);
-    };
-    WebFontLoader.prototype.componentDidMount = function () {
-        this.loadFonts();
-    };
-    WebFontLoader.prototype.shouldComponentUpdate = function () {
-        return false;
-    };
-    WebFontLoader.prototype.render = function () {
-        return this.props.children;
-    };
-    return WebFontLoader;
-}(React.Component));
+//#region redux
+//#region redux state
 //this is not for all circumstances, just for what is appropriate for me - a single font
 var FontLoadingState;
 (function (FontLoadingState) {
@@ -44958,27 +44941,6 @@ function fontLoading(state) {
         state: state
     };
 }
-//preloadedState going to be an issue - will need to override or not save 
-var ConnectedWebFontLoader = react_redux_1.connect(null, function (dispatch) {
-    return {
-        loading: function () {
-            dispatch(fontLoading(FontLoadingState.Loading));
-        },
-        active: function () {
-            dispatch(fontLoading(FontLoadingState.Active));
-        },
-        inactive: function () {
-            dispatch(fontLoading(FontLoadingState.Inactive));
-        },
-    };
-}, function (stateProps, dispatchProps, ownProps) {
-    //for own use not concerned with overriding callbacks
-    var mergedProps = __assign({}, ownProps, { config: __assign({}, ownProps.config, dispatchProps) });
-    return mergedProps;
-})(WebFontLoader);
-var componentBackgroundColor = "lightgray";
-//#region redux
-//#region redux state
 var SquareGo;
 (function (SquareGo) {
     SquareGo[SquareGo["X"] = 0] = "X";
@@ -45912,6 +45874,67 @@ var style = {
     ticTacToeSquareBorderWidth: 5
 };
 //#endregion
+//#region text strings
+//a) ensure that these are all used
+var player = "Player";
+var won = "Won";
+var lost = "Lost";
+var drawn = "Drawn";
+var playAgainText = "Play again";
+var nought = "O";
+var cross = "X";
+var numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+var gameDrawn = "Game drawn";
+var playerNoughtWon = player + " " + nought + " " + won + " !";
+var playerCrossWon = player + " " + cross + " " + won + " !";
+var toOptimise = [player, won, lost, drawn, playAgainText, nought, cross, gameDrawn, playerNoughtWon, playerCrossWon].concat(numbers);
+var letters = "";
+toOptimise.forEach(function (word) {
+    for (var i = 0; i < word.length; i++) {
+        var letter = word[i];
+        if (letters.indexOf(letter) === -1) {
+            letters += letter;
+        }
+    }
+});
+var WebFontLoader = /** @class */ (function (_super) {
+    __extends(WebFontLoader, _super);
+    function WebFontLoader() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    WebFontLoader.prototype.loadFonts = function () {
+        WebFont.load(this.props.config);
+    };
+    WebFontLoader.prototype.componentDidMount = function () {
+        this.loadFonts();
+    };
+    WebFontLoader.prototype.shouldComponentUpdate = function () {
+        return false;
+    };
+    WebFontLoader.prototype.render = function () {
+        return this.props.children;
+    };
+    return WebFontLoader;
+}(React.Component));
+//preloadedState going to be an issue - will need to override or not save 
+var ConnectedWebFontLoader = react_redux_1.connect(null, function (dispatch) {
+    return {
+        loading: function () {
+            dispatch(fontLoading(FontLoadingState.Loading));
+        },
+        active: function () {
+            dispatch(fontLoading(FontLoadingState.Active));
+        },
+        inactive: function () {
+            dispatch(fontLoading(FontLoadingState.Inactive));
+        },
+    };
+}, function (stateProps, dispatchProps, ownProps) {
+    //for own use not concerned with overriding callbacks
+    var mergedProps = __assign({}, ownProps, { config: __assign({}, ownProps.config, dispatchProps) });
+    return mergedProps;
+})(WebFontLoader);
+//#endregion
 //#region App components
 var RadiumTransition = Radium(Transition_1.default);
 var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
@@ -46038,13 +46061,13 @@ var Scoreboard = /** @class */ (function (_super) {
         return React.createElement("table", { style: { width: "100%", borderSpacing: 0, borderCollapse: "collapse" } },
             React.createElement("thead", null,
                 React.createElement("tr", null,
-                    React.createElement("th", { style: __assign({ fontWeight: thButtonFontWeight, borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Player"),
-                    React.createElement("th", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: thButtonFontWeight }) }, "Won"),
-                    React.createElement("th", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: thButtonFontWeight }) }, "Lost"),
-                    React.createElement("th", { style: __assign({ fontWeight: thButtonFontWeight, borderTopRightRadius: style.borderRadius }, style.scoreboard.cellStyle) }, "Drawn"))),
+                    React.createElement("th", { style: __assign({ fontWeight: thButtonFontWeight, borderTopLeftRadius: style.borderRadius }, style.scoreboard.cellStyle) }, player),
+                    React.createElement("th", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: thButtonFontWeight }) }, won),
+                    React.createElement("th", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: thButtonFontWeight }) }, lost),
+                    React.createElement("th", { style: __assign({ fontWeight: thButtonFontWeight, borderTopRightRadius: style.borderRadius }, style.scoreboard.cellStyle) }, drawn))),
             React.createElement("tbody", null,
-                React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: "X", playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
-                React.createElement(ScoreboardPlayer, { borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: "O", playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
+                React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: cross, playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
+                React.createElement(ScoreboardPlayer, { borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: nought, playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
     };
     return Scoreboard;
 }(React.Component));
@@ -46151,7 +46174,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, "Play again")),
+                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, playAgain)),
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                             React.createElement("div", { style: { fontFamily: textFontFamilyWithDefault, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.state.winDrawMessage))))));
     };
@@ -46159,13 +46182,13 @@ var TicTacToeApp = /** @class */ (function (_super) {
         var message = "";
         switch (props.gameState) {
             case GameState.X:
-                message = "Player X Won !";
+                message = playerCrossWon;
                 break;
             case GameState.O:
-                message = "Player O Won !";
+                message = playerNoughtWon;
                 break;
             case GameState.Draw:
-                message = "Game drawn";
+                message = gameDrawn;
         }
         return message;
     };
@@ -46192,7 +46215,8 @@ var store = storage_1.createLocalStorageStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(ConnectedWebFontLoader, { config: {
             google: {
-                families: [textFontFamily, noughtCrossFontFamily]
+                families: [textFontFamily, noughtCrossFontFamily],
+                text: letters
             }
         } },
         React.createElement(ConnectedTicTacToeApp, null))), document.getElementById("example"));
