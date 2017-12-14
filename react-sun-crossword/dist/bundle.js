@@ -45843,6 +45843,7 @@ var noughtCrossFontFamilyWithDefault = noughtCrossFontFamily + defaultFontFamily
 var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
 //override scoreboard.cellStyle with noughtCrossStyle for the player cells
 var style = {
+    winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" },
     componentBackgroundColor: componentBackgroundColor,
     componentMargin: 10,
     borderRadius: 5,
@@ -46179,23 +46180,22 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement)))));
     };
     TicTacToeApp.prototype.getWinDrawElement = function (props) {
-        function getWinner(isCross) {
-            return React.createElement("div", { style: containerStyle },
+        function getWinner(playerId, playerColour) {
+            return React.createElement("div", { style: style.winDrawContainerStyle },
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, player + " "),
-                React.createElement("span", { style: { fontFamily: noughtCrossFontFamily } }, (isCross ? cross : nought) + " "),
+                React.createElement("span", { style: { fontFamily: noughtCrossFontFamily, color: playerColour } }, playerId + " "),
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, wonMessage));
         }
-        var containerStyle = { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" };
         var messageElement = React.createElement("div", null);
         switch (props.gameState) {
             case GameState.X:
-                messageElement = getWinner(true).props.children;
+                messageElement = getWinner(cross, this.props.xColour);
                 break;
             case GameState.O:
-                messageElement = getWinner(false).props.children;
+                messageElement = getWinner(nought, this.props.oColour);
                 break;
             case GameState.Draw:
-                messageElement = React.createElement("div", { style: __assign({}, containerStyle, { fontFamily: textFontFamilyWithDefault }) }, gameDrawn);
+                messageElement = React.createElement("div", { style: __assign({}, style.winDrawContainerStyle, { fontFamily: textFontFamilyWithDefault }) }, gameDrawn);
                 break;
         }
         return messageElement;
@@ -46205,7 +46205,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
 var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         gameState: state.gameState,
-        fontLoadingState: state.fontLoadingState
+        fontLoadingState: state.fontLoadingState,
+        oColour: state.oColour,
+        xColour: state.xColour
     };
 }, function (dispatch) {
     return {
