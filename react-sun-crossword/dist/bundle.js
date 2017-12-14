@@ -45899,7 +45899,7 @@ toOptimise.forEach(function (word) {
         }
     }
 });
-letters = "P";
+letters = "l";
 var WebFontLoader = /** @class */ (function (_super) {
     __extends(WebFontLoader, _super);
     function WebFontLoader() {
