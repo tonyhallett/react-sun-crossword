@@ -45892,8 +45892,10 @@ var letters = "";
 toOptimise.forEach(function (word) {
     for (var i = 0; i < word.length; i++) {
         var letter = word[i];
-        if (letters.indexOf(letter) === -1) {
-            letters += letter;
+        if (letter !== " ") {
+            if (letters.indexOf(letter) === -1) {
+                letters += letter;
+            }
         }
     }
 });
@@ -46174,7 +46176,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, playAgain)),
+                            React.createElement("button", { style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }, onClick: this.props.playAgain }, playAgainText)),
                         React.createElement(ModalCover, { closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed },
                             React.createElement("div", { style: { fontFamily: textFontFamilyWithDefault, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" } }, this.state.winDrawMessage))))));
     };

@@ -1084,9 +1084,12 @@ var letters = "";
 toOptimise.forEach(word => {
     for (var i = 0; i < word.length; i++) {
         var letter = word[i];
-        if (letters.indexOf(letter) === -1) {
-            letters+=letter;
+        if (letter !== " ") {
+            if (letters.indexOf(letter) === -1) {
+                letters += letter;
+            }
         }
+        
     }
 })
 
@@ -1457,7 +1460,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                             <ConnectedScoreboard />
                         </div>
                             <ConnectedTicTacToeBoard />
-                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>{playAgain}</button>
+                            <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%" }} onClick={this.props.playAgain}>{playAgainText}</button>
                     </div>
                         <ModalCover closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                             <div style={{ fontFamily: textFontFamilyWithDefault, fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center" }}>
