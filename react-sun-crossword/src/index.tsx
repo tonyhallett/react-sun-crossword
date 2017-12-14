@@ -1195,10 +1195,10 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
         return <table style={{ width: "100%",borderSpacing:0,borderCollapse:"collapse" }}>
             <thead>
                 <tr>
-                    <th style={{ borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
-                    <th style={style.scoreboard.cellStyle}>Won</th>
-                    <th style={style.scoreboard.cellStyle}>Lost</th>
-                    <th style={{ borderTopRightRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Drawn</th>
+                    <th style={{ fontWeight: thButtonFontWeight , borderTopLeftRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Player</th>
+                    <th style={{ ...style.scoreboard.cellStyle, fontWeight: thButtonFontWeight }}>Won</th>
+                    <th style={{ ...style.scoreboard.cellStyle, fontWeight: thButtonFontWeight }}>Lost</th>
+                    <th style={{ fontWeight: thButtonFontWeight,borderTopRightRadius: style.borderRadius, ...style.scoreboard.cellStyle }}>Drawn</th>
                 </tr>
             </thead>
             <tbody>
