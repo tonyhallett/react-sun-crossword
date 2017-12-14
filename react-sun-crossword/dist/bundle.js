@@ -45874,6 +45874,9 @@ var componentBackgroundColor = "lightgray";
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
+var scoreboardFontFamily = "Pacifico";
+var squareFontFamily = "Short stack";
+var defaultFontFamily = ",Helvetica Neue, Helvetica, Arial, sans-serif";
 var fontFamily = "Sedgwick Ave Display,Helvetica Neue, Helvetica, Arial, sans-serif";
 var style = {
     fontFamily: fontFamily,
@@ -45887,7 +45890,7 @@ var style = {
             textAlign: "center",
             fontSize: fontSize,
             backgroundColor: componentBackgroundColor,
-            fontFamily: fontFamily
+            fontFamily: scoreboardFontFamily + defaultFontFamily
         },
         rowStyle: {
             borderTopWidth: 1, borderTopColor: "black", borderTopStyle: "solid",
@@ -45900,7 +45903,7 @@ var style = {
     },
     ticTacToeSquare: {
         verticalAlign: "center",
-        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: fontFamily
+        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: squareFontFamily + defaultFontFamily
     },
     ticTacToeSquareBorderWidth: 5
 };
@@ -46185,7 +46188,7 @@ var store = storage_1.createLocalStorageStore(reducer);
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(ConnectedWebFontLoader, { config: {
             google: {
-                families: ['Sedgwick Ave Display']
+                families: [squareFontFamily, scoreboardFontFamily]
             }
         } },
         React.createElement(ConnectedTicTacToeApp, null))), document.getElementById("example"));
