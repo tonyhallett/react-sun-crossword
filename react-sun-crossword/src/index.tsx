@@ -1438,6 +1438,7 @@ const SpinningDiv: any = withSpinAxes("div", {
     {
         width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign:"center",
         animationDuration: "3000ms",
+        fontSize:90,padding:5,
         animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
         animationIterationCount: "infinite"
     } as React.CSSProperties
