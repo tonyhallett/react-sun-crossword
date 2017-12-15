@@ -1058,7 +1058,8 @@ var thButtonFontWeight = "bold" as any;
 //these have been taken from https://www.w3schools.com/colors/colors_picker.asp
 var scoreboardBackgroundColor = "rgb(226, 220, 207)";
 var buttonBackgroundColor = "rgb(226, 220, 207)"
-var componentBackgroundColor = "rgb(207, 197, 175)"//75% light
+var componentBackgroundColor = "rgb(207, 197, 175)"
+var indicatorWinningSquareColor = Color(componentBackgroundColor).lighten(0.1);
 
 var ticTacToeSquareBorderWidth = 5;
 var backgroundColor = "orange";
@@ -1122,12 +1123,14 @@ var style = {
             width: 20,
             height: 20,
             fontSize: 10,
-            textAlign:"center"
+            textAlign: "center",
+            fontWeight:"bold"
         } as React.CSSProperties,
         winningCellStyle: {
             animationName: Radium.keyframes({
                 '100%': {
-                    fontSize:18
+                    fontSize: 18,
+                    backgroundColor: indicatorWinningSquareColor
                 }
             }),
             animationDuration: "1s",
