@@ -46186,8 +46186,8 @@ var Scoreboard = /** @class */ (function (_super) {
                     React.createElement("th", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: thButtonFontWeight }) }, lost),
                     React.createElement("th", { style: __assign({ fontWeight: thButtonFontWeight, borderTopRightRadius: style.borderRadius }, style.scoreboard.cellStyle) }, drawn))),
             React.createElement("tbody", null,
-                React.createElement(ScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.X, playerColour: this.props.xColour, playerId: cross, playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
-                React.createElement(ScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.O, borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: nought, playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
+                React.createElement(RadiumScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.X, playerColour: this.props.xColour, playerId: cross, playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
+                React.createElement(RadiumScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.O, borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: nought, playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
     };
     return Scoreboard;
 }(React.Component));
@@ -46243,6 +46243,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     };
     return ScoreboardPlayer;
 }(React.Component));
+var RadiumScoreboardPlayer = Radium(ScoreboardPlayer);
 var spinningDivProps = {
     style: {
         width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",

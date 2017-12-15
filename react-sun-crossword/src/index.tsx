@@ -1439,8 +1439,8 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
                 </tr>
             </thead>
             <tbody>
-                <ScoreboardPlayer isCurrent={this.props.currentPlayer === Player.X} playerColour={this.props.xColour} playerId={cross} playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
-                <ScoreboardPlayer isCurrent={this.props.currentPlayer === Player.O} borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId={nought} playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
+                <RadiumScoreboardPlayer isCurrent={this.props.currentPlayer === Player.X} playerColour={this.props.xColour} playerId={cross} playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
+                <RadiumScoreboardPlayer isCurrent={this.props.currentPlayer === Player.O} borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId={nought} playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
             </tbody>
             </table>
     }
@@ -1520,6 +1520,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
             </tr>
     }
 }
+const RadiumScoreboardPlayer=Radium(ScoreboardPlayer)
 //#endregion
 //#region TicTacToeApp
 
