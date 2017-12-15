@@ -46366,7 +46366,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 text: letters
             }
         } },
-        React.createElement(ConnectedTicTacToeApp, { minimumLoadingIndicator: 50000 }))), document.getElementById("example"));
+        React.createElement(ConnectedTicTacToeApp, { minimumLoadingIndicator: 2000 }))), document.getElementById("example"));
 
 
 /***/ })

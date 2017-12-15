@@ -1686,7 +1686,7 @@ ReactDOM.render(
             }
 
         }>
-            <ConnectedTicTacToeApp minimumLoadingIndicator={50000} />
+            <ConnectedTicTacToeApp minimumLoadingIndicator={2000} />
         </ConnectedWebFontLoader>
     </Provider>,
 
