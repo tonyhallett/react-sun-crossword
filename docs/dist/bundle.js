@@ -45869,12 +45869,12 @@ var ticTacToeSquareBorderWidth = 5;
 var backgroundColor = "orange";
 var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
-        '50%': {
-            backgroundColor: Color(componentBackgroundColor).darken(0.1)
-        },
         '100%': {
-            backgroundColor: componentBackgroundColor
-        }
+            borderTopColor: backgroundColor,
+            borderBottomColor: backgroundColor,
+            borderLeftColor: backgroundColor,
+            borderRightColor: backgroundColor,
+        },
     }),
     animationDuration: "2000ms",
     animationDirection: "reverse",
@@ -45919,7 +45919,7 @@ var style = {
     ticTacToeSquare: {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
-        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        borderColor: componentBackgroundColor, borderStyle: "solid", borderWidth: 5, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
         ":focus": ticTacToeSquareFocus
     },
     ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth
@@ -46022,10 +46022,10 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             color: this.props.squareGoColour,
         };
         if (this.props.rowIndex !== 0) {
-            specificStyle.borderTopWidth = style.ticTacToeSquareBorderWidth;
+            specificStyle.borderTopColor = "white";
         }
         if (this.props.colIndex !== 0) {
-            specificStyle.borderLeftWidth = style.ticTacToeSquareBorderWidth;
+            specificStyle.borderLeftColor = "white";
         }
         return React.createElement(AutoOutInOnMountColourChangeRadiumTransition, { appear: true, inSignal: this.state.inSignal, propName: "backgroundColor", timeout: transitionDuration, enterTransition: "background-color " + transitionDuration + "ms linear", exitColour: exitColour, change: 0.1, colourChangeType: ColourChangeType.lighten }, function (state, props, stateStyle, stateTransition) {
             var transitionStyle;
