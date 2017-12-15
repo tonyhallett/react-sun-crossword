@@ -1716,7 +1716,7 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
             dispatch(finishedConfirmed());
         }
     }
-    })(TicTacToeApp);
+    })(Radium(TicTacToeApp));
 //#endregion
 //#endregion
 

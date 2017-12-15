@@ -46387,7 +46387,7 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
             dispatch(finishedConfirmed());
         }
     };
-})(TicTacToeApp);
+})(Radium(TicTacToeApp));
 //#endregion
 //#endregion
 var store = storage_1.createLocalStorageStore(reducer);
