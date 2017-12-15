@@ -1622,7 +1622,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                                             <ConnectedScoreboard />
                                         </div>
                                         <ConnectedTicTacToeBoard />
-                                        <button tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, style.componentBoxShadow, style.componentBoxShadowHover,focus]} onClick={this.props.playAgain}>{playAgainText}</button>
+                                        <button tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor,":focus":focus }, style.componentBoxShadow, style.componentBoxShadowHover]} onClick={this.props.playAgain}>{playAgainText}</button>
                                     </div>
                                     <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                                         {this.state.winDrawElement}

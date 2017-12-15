@@ -46318,7 +46318,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, style.componentBoxShadow, style.componentBoxShadowHover, focus], onClick: this.props.playAgain }, playAgainText)),
+                            React.createElement("button", { tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focus }, style.componentBoxShadow, style.componentBoxShadowHover], onClick: this.props.playAgain }, playAgainText)),
                         React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement))))));
     };
     TicTacToeApp.prototype.getWinDrawElement = function (props) {
