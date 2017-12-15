@@ -1065,11 +1065,7 @@ var backgroundColor = "orange";
 var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
         '100%': {
-            borderTopColor: backgroundColor,
-            borderBottomColor: backgroundColor,
-            borderLeftColor: backgroundColor,
-            borderRightColor: backgroundColor,
-
+            borderColor: backgroundColor
         },
     }),
     animationDuration: "2000ms",
@@ -1117,7 +1113,7 @@ var style = {
     ticTacToeSquare: {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
-        borderColor: componentBackgroundColor, borderStyle: "solid", borderWidth: 5, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
         ":focus": ticTacToeSquareFocus
     } as React.CSSProperties,
     ticTacToeSquareBorderWidth:ticTacToeSquareBorderWidth
@@ -1251,10 +1247,10 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
             color: this.props.squareGoColour,
         }
         if (this.props.rowIndex !== 0) {
-            specificStyle.borderTopColor = "white";
+            specificStyle.borderTopWidth = ticTacToeSquareBorderWidth
         }
         if (this.props.colIndex !== 0) {
-            specificStyle.borderLeftColor = "white";
+            specificStyle.borderLeftWidth = ticTacToeSquareBorderWidth
         }
         return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={exitColour} change={0.1} colourChangeType={ColourChangeType.lighten}>
             {
@@ -1265,8 +1261,8 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                     } else {
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
-                    return <td tabIndex={this.props.tabIndex} style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        {this.props.squareText}
+                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
+                        <div tabIndex={this.props.tabIndex} style={{ borderColor: style.componentBackgroundColor, borderWidth: 5, ":focus": ticTacToeSquareFocus }} className="ticTacToeSquare">{this.props.squareText}</div>
                     </td>
                 }
                 
@@ -1320,7 +1316,7 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
     render() {
         var boardDimensions = this.props.board.length;
         return <table id={ticTacToeBoardId} style={[{
-             backgroundColor: style.componentBackgroundColor,
+            borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor,
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
             transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
             
