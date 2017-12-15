@@ -45865,8 +45865,12 @@ var thButtonFontWeight = "bold";
 var scoreboardBackgroundColor = "rgb(226, 220, 207)";
 var buttonBackgroundColor = "rgb(226, 220, 207)";
 var componentBackgroundColor = "rgb(207, 197, 175)"; //75% light
+var ticTacToeSquareBorderWidth = 5;
 var ticTacToeSquareHoverFocus = {
     animationName: Radium.keyframes({
+        '50': {
+            borderWidth: ticTacToeSquareBorderWidth
+        },
         '100%': {
             borderColor: "orange"
         }
@@ -45911,11 +45915,12 @@ var style = {
     },
     ticTacToeSquare: {
         verticalAlign: "center",
-        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        textAlign: "center", width: 100, height: 100,
+        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
         ":hover": ticTacToeSquareHoverFocus,
         ":focus": ticTacToeSquareHoverFocus
     },
-    ticTacToeSquareBorderWidth: 5
+    ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth
 };
 //#endregion
 //#region text strings
@@ -46206,7 +46211,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
             React.createElement(Radium_1.Style, { rules: {
                     body: {
                         margin: 0
-                    }
+                    },
+                    ":focus": {}
                 } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
@@ -46221,7 +46227,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         animationFillMode: "forwards"
                     }
                 } }),
-            React.createElement("div", { style: { width: "100%", height: "100%", backgroundColor: "blue" } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement("table", null,

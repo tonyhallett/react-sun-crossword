@@ -1059,8 +1059,14 @@ var thButtonFontWeight = "bold" as any;
 var scoreboardBackgroundColor = "rgb(226, 220, 207)";
 var buttonBackgroundColor = "rgb(226, 220, 207)"
 var componentBackgroundColor = "rgb(207, 197, 175)"//75% light
+
+var ticTacToeSquareBorderWidth = 5;
+
 var ticTacToeSquareHoverFocus = {
-    animationName: Radium.keyframes( {
+    animationName: Radium.keyframes({
+        '50': {
+            borderWidth: ticTacToeSquareBorderWidth
+        },
         '100%': {
             borderColor: "orange"
         }
@@ -1107,11 +1113,12 @@ var style = {
     },
     ticTacToeSquare: {
         verticalAlign: "center",
-        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        textAlign: "center", width: 100, height: 100,
+        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
         ":hover": ticTacToeSquareHoverFocus,
         ":focus": ticTacToeSquareHoverFocus
     } as React.CSSProperties,
-    ticTacToeSquareBorderWidth:5
+    ticTacToeSquareBorderWidth:ticTacToeSquareBorderWidth
 }
 
 //#endregion
@@ -1499,6 +1506,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 rules={{
                     body: {
                         margin: 0   
+                    },
+                    ":focus": {
+
                     }
                 }}
             />
@@ -1515,9 +1525,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                     animationFillMode:"forwards"
                 }
             }} />
-            <div style={{width:"100%",height:"100%",backgroundColor:"blue"}}>
-
-            </div>
         <VerticallyCenteredContainer backgroundColor="orange">
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
