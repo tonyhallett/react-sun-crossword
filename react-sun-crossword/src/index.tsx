@@ -1067,9 +1067,12 @@ var ticTacToeSquareFocus = {
         '0%': {
             boxShadow: "0 0 0 0 " + backgroundColor +  " inset"
         },
-        '100%': {
-            boxShadow: "0 0 10px 0 " + backgroundColor + " inset"
+        '50%': {
+            boxShadow: "0 0 10px 5px " + backgroundColor + " inset"
         },
+        '100%': {
+            boxShadow: "0 0 0 0 " + backgroundColor + " inset"
+        }
     }),
     animationDuration: "2000ms",
     animationDirection: "reverse",
