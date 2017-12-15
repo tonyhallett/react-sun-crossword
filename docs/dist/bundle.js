@@ -46221,14 +46221,14 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
-            React.createElement("td", { style: [__assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }), this.props.isCurrent ? {
+            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) },
+                " ",
+                React.createElement("div", { style: this.props.isCurrent ? {
                         animationDuration: pulseTimeout,
                         animationTimingFunction: animationTimingFunction,
                         animationIterationCount: "infinite",
                         animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
-                    } : {}] },
-                " ",
-                this.props.playerId),
+                    } : {} }, this.props.playerId)),
             React.createElement("td", { style: style.scoreboard.cellStyle },
                 React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
                     return React.createElement("div", { style: [pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);

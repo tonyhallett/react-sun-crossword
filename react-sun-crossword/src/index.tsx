@@ -1491,18 +1491,18 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         
         return <tr style={style.scoreboard.rowStyle}>
-            <td style={[{
+            <td style={{
                 ...style.scoreboard.cellStyle,
                 ...style.scoreboard.noughtCrossStyle,
                 borderBottomLeftRadius: this.props.borderRadius,
                 fontWeight: this.props.playerBoldStyle,
                 color: this.props.playerColour
-            }, this.props.isCurrent ? {
-                animationDuration: pulseTimeout,
+            }} > <div style={this.props.isCurrent ? {
+                    animationDuration: pulseTimeout,
                 animationTimingFunction: animationTimingFunction,
                 animationIterationCount: "infinite",
                 animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
-            } : {}]} > {this.props.playerId}</td>
+            } : {}}>{this.props.playerId}</div></td>
             <td style={style.scoreboard.cellStyle}>
                 <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                     {
