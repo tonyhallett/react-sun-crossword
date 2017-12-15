@@ -45866,13 +45866,15 @@ var scoreboardBackgroundColor = "rgb(226, 220, 207)";
 var buttonBackgroundColor = "rgb(226, 220, 207)";
 var componentBackgroundColor = "rgb(207, 197, 175)"; //75% light
 var ticTacToeSquareBorderWidth = 5;
+var backgroundColor = "orange";
 var ticTacToeSquareHoverFocus = {
     animationName: Radium.keyframes({
-        '50': {
-            borderWidth: ticTacToeSquareBorderWidth
-        },
         '100%': {
-            borderColor: "orange"
+            borderColor: backgroundColor,
+            borderTopWidth: ticTacToeSquareBorderWidth,
+            borderLeftWidth: ticTacToeSquareBorderWidth,
+            borderRightWidth: ticTacToeSquareBorderWidth,
+            borderBottomWidth: ticTacToeSquareBorderWidth,
         }
     }),
     animationDuration: "1000ms",
@@ -46212,7 +46214,9 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     body: {
                         margin: 0
                     },
-                    ":focus": {}
+                    ":focus": {
+                        outlineStyle: "none"
+                    }
                 } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
@@ -46227,7 +46231,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         animationFillMode: "forwards"
                     }
                 } }),
-            React.createElement(VerticallyCenteredContainer, { backgroundColor: "orange" },
+            React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement("table", null,
                         React.createElement("tbody", null,
