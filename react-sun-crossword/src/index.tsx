@@ -1065,11 +1065,12 @@ var backgroundColor = "orange";
 var ticTacToeSquareHoverFocus = {
     animationName: Radium.keyframes({
         '100%': {
-            backgroundColor: Color(componentBackgroundColor).darken(0.3)
+            backgroundColor: Color(componentBackgroundColor).darken(0.1)
         }
     }),
     animationDuration: "1000ms",
-    animationDirection:"reverse"
+    animationDirection: "reverse",
+    animationIterationCount:"infinite"
 }
 var fontSize = 20;
 var pulseIncrease = 1.5;
@@ -1251,7 +1252,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         if (this.props.colIndex !== 0) {
             specificStyle.borderLeftWidth = style.ticTacToeSquareBorderWidth;
         }
-        return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={exitColour} change={0.3} colourChangeType={ColourChangeType.lighten}>
+        return <AutoOutInOnMountColourChangeRadiumTransition appear={true} inSignal={this.state.inSignal} propName="backgroundColor" timeout={transitionDuration} enterTransition={`background-color ${transitionDuration}ms linear`} exitColour={exitColour} change={0.1} colourChangeType={ColourChangeType.lighten}>
             {
                 (state, props, stateStyle, stateTransition) => {
                     var transitionStyle:React.CSSProperties;
