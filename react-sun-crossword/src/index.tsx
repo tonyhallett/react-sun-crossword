@@ -1086,7 +1086,15 @@ function animationSupported() {
     return animation;
 }
 var animationIsSupported = animationSupported();
-var focus = {
+//want button focus to receive focus animation and hover/focus animation of colour change and the componentShadow hover
+/*
+will need button hover to have below and animation
+componentBoxShadowHover: {
+        ":hover": { boxShadow: boxShadowHover }
+    },
+*/
+//will need a function to merge or know how to apply multiple animations through animation name
+var focusAnimationStyle = {
     animationName: Radium.keyframes({
         '0%': {
             boxShadow: "0 0 0 0 " + backgroundColor +  " inset"
@@ -1103,6 +1111,7 @@ var focus = {
     animationIterationCount: "infinite",
     animationTimingFunction:"ease-in-out"
 }
+var boxShadowHover = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)"
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
@@ -1119,8 +1128,8 @@ var style = {
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
         transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
     },
-    componentBoxShadowHover:{
-        ":hover": { boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)" }
+    componentBoxShadowHover: {
+        ":hover": { boxShadow: boxShadowHover }
     },
     componentMargin:10,
     borderRadius: 5,
@@ -1319,7 +1328,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
                     return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        <div tabIndex={this.props.tabIndex} style={{ width: "100%", height: "100%", ":focus": focus }}> {this.props.squareText}</div>
+                        <div tabIndex={this.props.tabIndex} style={{ width: "100%", height: "100%", ":focus": focusAnimationStyle }}> {this.props.squareText}</div>
                     </td>
                 }
                 
@@ -1622,7 +1631,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                                             <ConnectedScoreboard />
                                         </div>
                                         <ConnectedTicTacToeBoard />
-                                        <button tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor,":focus":focus }, style.componentBoxShadow, style.componentBoxShadowHover]} onClick={this.props.playAgain}>{playAgainText}</button>
+                                        <button tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": { ...focusAnimationStyle, boxShadow: boxShadowHover } }, style.componentBoxShadow, style.componentBoxShadowHover]} onClick={this.props.playAgain}>{playAgainText}</button>
                                     </div>
                                     <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                                         {this.state.winDrawElement}
