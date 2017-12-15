@@ -1130,7 +1130,9 @@ var style = {
                     fontSize:18
                 }
             }),
-            animationDuration: "4000s",
+            animationDuration: "1s",
+            animationIterationCount: "infinite",
+            animationDirection:"alternate"
         } as React.CSSProperties
     },
     scoreboard: {
