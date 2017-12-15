@@ -46224,7 +46224,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
             React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) },
                 " ",
                 React.createElement("div", { style: this.props.isCurrent ? {
-                        animationDuration: pulseTimeout,
+                        animationDuration: pulseTimeout + "ms",
                         animationTimingFunction: animationTimingFunction,
                         animationIterationCount: "infinite",
                         animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))

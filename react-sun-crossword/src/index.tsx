@@ -1498,11 +1498,12 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
                 fontWeight: this.props.playerBoldStyle,
                 color: this.props.playerColour
             }} > <div style={this.props.isCurrent ? {
-                    animationDuration: pulseTimeout,
+                    animationDuration: pulseTimeout + "ms",
                 animationTimingFunction: animationTimingFunction,
                 animationIterationCount: "infinite",
                 animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
-            } : {}}>{this.props.playerId}</div></td>
+            } : {}}>{this.props.playerId}</div>
+            </td>
             <td style={style.scoreboard.cellStyle}>
                 <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                     {
