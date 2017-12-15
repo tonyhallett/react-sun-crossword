@@ -1114,7 +1114,7 @@ var style = {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
         borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
-        ":focus": ticTacToeSquareFocus
+       
     } as React.CSSProperties,
     ticTacToeSquareBorderWidth:ticTacToeSquareBorderWidth
 }
