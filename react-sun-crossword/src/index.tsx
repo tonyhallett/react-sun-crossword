@@ -1090,23 +1090,28 @@ function animationSupported() {
     return animation;
 }
 var animationIsSupported = animationSupported();
-//refactor to var for 0, 100
+
+var startEndBoxShadow = "0 0 5px 2px " + backgroundColor + " inset"
+var focusKeyframes = {
+    '0%': {
+        boxShadow: startEndBoxShadow
+    },
+    '50%': {
+        boxShadow: "0 0 10px 5px " + backgroundColor + " inset"
+    },
+    '100%': {
+        boxShadow: startEndBoxShadow
+    }
+}
+
 var focusAnimationStyle = {
-    animationName: Radium.keyframes({
-        '0%': {
-            boxShadow: "0 0 5px 2px " + backgroundColor +  " inset"
-        },
-        '50%': {
-            boxShadow: "0 0 10px 5px " + backgroundColor + " inset"
-        },
-        '100%': {
-            boxShadow: "0 0 5px 2px " + backgroundColor + " inset"
-        }
-    }),
+    animationName: Radium.keyframes(focusKeyframes),
     animationDuration: "2000ms",
     animationIterationCount: "infinite",
     animationTimingFunction:"cubic-bezier(0.23, 1, 0.32, 1)"
 }
+
+var buttonFocusAnimationStyle
 var boxShadowHover = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)"
 var buttonHoverStyle = {
     ":hover": {
@@ -1600,6 +1605,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         if (!showLoading) {
             showLoading = this.state.showLoadingIndicator;
         }
+        var buttonHasFocus= Radium.getState(this.state, 'button', ':focus')
+
         return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
                 rules={{
@@ -1653,7 +1660,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                                             <ConnectedScoreboard />
                                         </div>
                                         <ConnectedTicTacToeBoard />
-                                        <button tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, style.componentBoxShadow, buttonHoverStyle]} onClick={this.props.playAgain}>{playAgainText}</button>
+                                        <div style={[style.componentBoxShadow, buttonHasFocus?buttonHoverStyle:null]}>
+                                            <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }]} onClick={this.props.playAgain}>{playAgainText}</button>
+                                        </div>
                                     </div>
                                     <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                                         {this.state.winDrawElement}
