@@ -1262,7 +1262,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
                     return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        <div tabIndex={this.props.tabIndex} key={this.props.tabIndex} style={{ borderColor: style.componentBackgroundColor, borderWidth: 5, ":focus": ticTacToeSquareFocus }} className="ticTacToeSquare">{this.props.squareText}</div>
+                        <div tabIndex={this.props.tabIndex} key={this.props.tabIndex} style={{ borderColor: style.componentBackgroundColor, borderCollapse:"separate", borderWidth: 5, ":focus": ticTacToeSquareFocus }} className="ticTacToeSquare">{this.props.squareText}</div>
                     </td>
                 }
                 
