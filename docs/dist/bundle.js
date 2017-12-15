@@ -45867,15 +45867,16 @@ var buttonBackgroundColor = "rgb(226, 220, 207)";
 var componentBackgroundColor = "rgb(207, 197, 175)"; //75% light
 var ticTacToeSquareBorderWidth = 5;
 var backgroundColor = "orange";
-var ticTacToeSquareHoverFocus = {
+var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
         '100%': {
             backgroundColor: Color(componentBackgroundColor).darken(0.1)
         }
     }),
-    animationDuration: "1000ms",
+    animationDuration: "2000ms",
     animationDirection: "reverse",
-    animationIterationCount: "infinite"
+    animationIterationCount: "infinite",
+    animationTimingFunction: "ease-in-out"
 };
 var fontSize = 20;
 var pulseIncrease = 1.5;
@@ -45916,8 +45917,7 @@ var style = {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
         borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
-        ":hover": ticTacToeSquareHoverFocus,
-        ":focus": ticTacToeSquareHoverFocus
+        ":focus": ticTacToeSquareFocus
     },
     ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth
 };
