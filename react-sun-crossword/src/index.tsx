@@ -1064,8 +1064,11 @@ var ticTacToeSquareBorderWidth = 5;
 var backgroundColor = "orange";
 var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
+        '0%': {
+            boxShadow: "0 0 0 0px " + componentBackgroundColor
+        },
         '100%': {
-            borderColor: backgroundColor
+            boxShadow: "0 0 0 6px " + componentBackgroundColor
         },
     }),
     animationDuration: "2000ms",
@@ -1262,7 +1265,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
                     return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        <div tabIndex={this.props.tabIndex} key={this.props.tabIndex} style={{ borderColor: style.componentBackgroundColor, borderCollapse:"separate", borderWidth: 5, ":focus": ticTacToeSquareFocus }} className="ticTacToeSquare">{this.props.squareText}</div>
+                        <div tabIndex={this.props.tabIndex} key={this.props.tabIndex} style={{ ":focus": ticTacToeSquareFocus }} className="ticTacToeSquare">{this.props.squareText}</div>
                     </td>
                 }
                 
