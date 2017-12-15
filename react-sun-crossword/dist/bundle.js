@@ -46017,7 +46017,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             else {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle, { tabIndex: _this.props.tabIndex }], onClick: _this.squareClicked }, _this.props.squareText);
+            return React.createElement("td", { tabIndex: _this.props.tabIndex, style: [style.ticTacToeSquare, specificStyle, transitionStyle], onClick: _this.squareClicked }, _this.props.squareText);
         });
     };
     return TicTacToeSquare;

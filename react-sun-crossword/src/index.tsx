@@ -1246,7 +1246,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                     } else {
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
-                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle, { tabIndex: this.props.tabIndex }]} onClick={this.squareClicked}>
+                    return <td tabIndex={this.props.tabIndex } style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onClick={this.squareClicked}>
                         {this.props.squareText}
                     </td>
                 }
