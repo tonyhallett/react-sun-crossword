@@ -1312,7 +1312,7 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
                 return <tr key={rowIndex}>
                     {
                         rowSquares.map((square, colIndex) => {
-                            return <ConnectedTicTacToeSquare tabIndex={(rowIndex * boardDimensions)+colIndex} key={colIndex} rowIndex={rowIndex} colIndex={colIndex} />
+                            return <ConnectedTicTacToeSquare tabIndex={(rowIndex * boardDimensions)+colIndex+1} key={colIndex} rowIndex={rowIndex} colIndex={colIndex} />
 
                         })
                     }
@@ -1524,7 +1524,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                                             <ConnectedScoreboard />
                                         </div>
                                         <ConnectedTicTacToeBoard />
-                                        <button style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
+                                        <button tabIndex={0} style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
                                     </div>
                                     <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                                         {this.state.winDrawElement}
