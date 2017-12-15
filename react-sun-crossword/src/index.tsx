@@ -1061,14 +1061,15 @@ var buttonBackgroundColor = "rgb(226, 220, 207)"
 var componentBackgroundColor = "rgb(207, 197, 175)"//75% light
 
 var ticTacToeSquareBorderWidth = 5;
-
+var backgroundColor = "orange";
 var ticTacToeSquareHoverFocus = {
     animationName: Radium.keyframes({
-        '50': {
-            borderWidth: ticTacToeSquareBorderWidth
-        },
         '100%': {
-            borderColor: "orange"
+            borderColor: backgroundColor,
+            borderTopWidth: ticTacToeSquareBorderWidth,
+            borderLeftWidth: ticTacToeSquareBorderWidth,
+            borderRightWidth: ticTacToeSquareBorderWidth,
+            borderBottomWidth: ticTacToeSquareBorderWidth,
         }
     }),
     animationDuration: "1000ms",
@@ -1508,7 +1509,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                         margin: 0   
                     },
                     ":focus": {
-
+                        outlineStyle:"none"
                     }
                 }}
             />
@@ -1525,7 +1526,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                     animationFillMode:"forwards"
                 }
             }} />
-        <VerticallyCenteredContainer backgroundColor="orange">
+            <VerticallyCenteredContainer backgroundColor={backgroundColor}>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
                         {
