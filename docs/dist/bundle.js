@@ -45887,7 +45887,7 @@ function animationSupported() {
     return animation;
 }
 var animationIsSupported = animationSupported();
-var ticTacToeSquareFocus = {
+var focus = {
     animationName: Radium.keyframes({
         '0%': {
             boxShadow: "0 0 0 0 " + backgroundColor + " inset"
@@ -45916,6 +45916,13 @@ var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
 var style = {
     winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center", fontSize: fontSize },
     componentBackgroundColor: componentBackgroundColor,
+    componentBoxShadow: {
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
+        transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
+    },
+    componentBoxShadowHover: {
+        ":hover": { boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)" }
+    },
     componentMargin: 10,
     borderRadius: 5,
     loadingIndicator: {
@@ -46079,7 +46086,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
             return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected },
-                React.createElement("div", { tabIndex: _this.props.tabIndex, style: { width: "100%", height: "100%", ":focus": ticTacToeSquareFocus } },
+                React.createElement("div", { tabIndex: _this.props.tabIndex, style: { width: "100%", height: "100%", ":focus": focus } },
                     " ",
                     _this.props.squareText));
         });
@@ -46129,10 +46136,8 @@ var TicTacToeBoard = /** @class */ (function (_super) {
     TicTacToeBoard.prototype.render = function () {
         var boardDimensions = this.props.board.length;
         return React.createElement("table", { id: ticTacToeBoardId, style: [{
-                    borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor,
-                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-                    transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
-                }, { ":hover": { boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)" } }] },
+                    borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor
+                }, style.componentBoxShadow, style.componentBoxShadowHover] },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
                     return React.createElement(ConnectedTicTacToeSquare, { tabIndex: (rowIndex * boardDimensions) + colIndex + 1, key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
@@ -46313,7 +46318,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { tabIndex: 0, style: { fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, onClick: this.props.playAgain }, playAgainText)),
+                            React.createElement("button", { tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, style.componentBoxShadow, style.componentBoxShadowHover, focus], onClick: this.props.playAgain }, playAgainText)),
                         React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement))))));
     };
     TicTacToeApp.prototype.getWinDrawElement = function (props) {

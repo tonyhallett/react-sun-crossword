@@ -1086,7 +1086,7 @@ function animationSupported() {
     return animation;
 }
 var animationIsSupported = animationSupported();
-var ticTacToeSquareFocus = {
+var focus = {
     animationName: Radium.keyframes({
         '0%': {
             boxShadow: "0 0 0 0 " + backgroundColor +  " inset"
@@ -1115,6 +1115,13 @@ var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
 var style = {
     winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center",fontSize:fontSize } as React.CSSProperties,
     componentBackgroundColor: componentBackgroundColor,
+    componentBoxShadow: {
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
+        transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
+    },
+    componentBoxShadowHover:{
+        ":hover": { boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)" }
+    },
     componentMargin:10,
     borderRadius: 5,
     loadingIndicator: {
@@ -1312,7 +1319,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
                     return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        <div tabIndex={this.props.tabIndex} style={{ width: "100%", height: "100%", ":focus": ticTacToeSquareFocus }}> {this.props.squareText}</div>
+                        <div tabIndex={this.props.tabIndex} style={{ width: "100%", height: "100%", ":focus": focus }}> {this.props.squareText}</div>
                     </td>
                 }
                 
@@ -1361,16 +1368,15 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
 interface TicTacToeBoardProps {
     board: SquareGo[][]
 }
-const ticTacToeBoardId ="ticTacToeBoard"
+const ticTacToeBoardId = "ticTacToeBoard"
+
+
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
         var boardDimensions = this.props.board.length;
         return <table id={ticTacToeBoardId} style={[{
-            borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor,
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
-            transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
-            
-        }, { ":hover": { boxShadow:"0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)"}}]}>
+            borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor
+        }, style.componentBoxShadow, style.componentBoxShadowHover]}>
             <tbody>
                 {   
                     this.props.board.map((rowSquares, rowIndex) => {
@@ -1616,7 +1622,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                                             <ConnectedScoreboard />
                                         </div>
                                         <ConnectedTicTacToeBoard />
-                                        <button tabIndex={0} style={{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }} onClick={this.props.playAgain}>{playAgainText}</button>
+                                        <button tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, style.componentBoxShadow, style.componentBoxShadowHover,focus]} onClick={this.props.playAgain}>{playAgainText}</button>
                                     </div>
                                     <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                                         {this.state.winDrawElement}
