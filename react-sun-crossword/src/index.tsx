@@ -1440,7 +1440,7 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
             </thead>
             <tbody>
                 <ScoreboardPlayer isCurrent={this.props.currentPlayer === Player.X} playerColour={this.props.xColour} playerId={cross} playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
-                <ScoreboardPlayer isCurrent={this.props.currentPlayer === Player.X} borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId={nought} playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
+                <ScoreboardPlayer isCurrent={this.props.currentPlayer === Player.O} borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId={nought} playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
             </tbody>
             </table>
     }
@@ -1497,12 +1497,12 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
                 borderBottomLeftRadius: this.props.borderRadius,
                 fontWeight: this.props.playerBoldStyle,
                 color: this.props.playerColour
-            }, this.props.isCurrent && {
-                    animationDuration: pulseTimeout,
-                    animationTimingFunction: animationTimingFunction,
-                    animationIterationCount: "infinite",
-                    animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
-                }]} > {this.props.playerId}</td>
+            }, this.props.isCurrent ? {
+                animationDuration: pulseTimeout,
+                animationTimingFunction: animationTimingFunction,
+                animationIterationCount: "infinite",
+                animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
+            } : {}]} > {this.props.playerId}</td>
             <td style={style.scoreboard.cellStyle}>
                 <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                     {

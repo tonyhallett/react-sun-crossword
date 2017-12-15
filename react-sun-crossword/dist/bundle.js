@@ -46187,7 +46187,7 @@ var Scoreboard = /** @class */ (function (_super) {
                     React.createElement("th", { style: __assign({ fontWeight: thButtonFontWeight, borderTopRightRadius: style.borderRadius }, style.scoreboard.cellStyle) }, drawn))),
             React.createElement("tbody", null,
                 React.createElement(ScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.X, playerColour: this.props.xColour, playerId: cross, playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
-                React.createElement(ScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.X, borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: nought, playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
+                React.createElement(ScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.O, borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: nought, playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
     };
     return Scoreboard;
 }(React.Component));
@@ -46221,12 +46221,12 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
-            React.createElement("td", { style: [__assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }), this.props.isCurrent && {
+            React.createElement("td", { style: [__assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }), this.props.isCurrent ? {
                         animationDuration: pulseTimeout,
                         animationTimingFunction: animationTimingFunction,
                         animationIterationCount: "infinite",
                         animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
-                    }] },
+                    } : {}] },
                 " ",
                 this.props.playerId),
             React.createElement("td", { style: style.scoreboard.cellStyle },
