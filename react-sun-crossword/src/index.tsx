@@ -1198,7 +1198,7 @@ interface TicTacToeSquareDispatchProps {
     takeGo: () => void
 }
 interface TicTacToeSquareProps extends TicTacToeSquareRowColProps, TicTacToeSquareConnectStateProps, TicTacToeSquareDispatchProps {
-
+    tabIndex:number
 }
 interface TicTacToeSquareState {
     inSignal: any,
@@ -1246,7 +1246,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                     } else {
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
-                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onClick={this.squareClicked}>
+                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle, { tabIndex: this.props.tabIndex }]} onClick={this.squareClicked}>
                         {this.props.squareText}
                     </td>
                 }
@@ -1299,6 +1299,7 @@ interface TicTacToeBoardProps {
 const ticTacToeBoardId ="ticTacToeBoard"
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
     render() {
+        var boardDimensions = this.props.board.length;
         return <table id={ticTacToeBoardId} style={[{
             borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor,
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
@@ -1306,11 +1307,12 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
             
         }, { ":hover": { boxShadow:"0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)"}}]}>
             <tbody>
-            {   this.props.board.map((rowSquares, rowIndex) => {
+                {   
+                    this.props.board.map((rowSquares, rowIndex) => {
                 return <tr key={rowIndex}>
                     {
                         rowSquares.map((square, colIndex) => {
-                            return <ConnectedTicTacToeSquare key={colIndex} rowIndex={rowIndex} colIndex={colIndex}/>
+                            return <ConnectedTicTacToeSquare tabIndex={(rowIndex * boardDimensions)+colIndex} key={colIndex} rowIndex={rowIndex} colIndex={colIndex} />
 
                         })
                     }

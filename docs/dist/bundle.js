@@ -46017,7 +46017,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             else {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onClick: _this.squareClicked }, _this.props.squareText);
+            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle, { tabIndex: _this.props.tabIndex }], onClick: _this.squareClicked }, _this.props.squareText);
         });
     };
     return TicTacToeSquare;
@@ -46063,6 +46063,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     TicTacToeBoard.prototype.render = function () {
+        var boardDimensions = this.props.board.length;
         return React.createElement("table", { id: ticTacToeBoardId, style: [{
                     borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor,
                     boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
@@ -46070,7 +46071,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
                 }, { ":hover": { boxShadow: "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)" } }] },
             React.createElement("tbody", null, this.props.board.map(function (rowSquares, rowIndex) {
                 return React.createElement("tr", { key: rowIndex }, rowSquares.map(function (square, colIndex) {
-                    return React.createElement(ConnectedTicTacToeSquare, { key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
+                    return React.createElement(ConnectedTicTacToeSquare, { tabIndex: (rowIndex * boardDimensions) + colIndex, key: colIndex, rowIndex: rowIndex, colIndex: colIndex });
                 }));
             })));
     };
