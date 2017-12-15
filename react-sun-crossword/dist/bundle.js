@@ -45683,7 +45683,7 @@ function createPulseKeyframes(pulseAmount) {
             transform: fromTo
         },
         '50%': {
-            transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+            transform: scale3d(pulseAmount, pulseAmount, pulseAmount)
         },
         to: {
             transform: fromTo
