@@ -46032,7 +46032,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             else {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { tabIndex: _this.props.tabIndex, style: [style.ticTacToeSquare, specificStyle, transitionStyle], onKeyPress: _this.squareSelected, onClick: _this.squareSelected }, _this.props.squareText);
+            return React.createElement("td", { tabIndex: _this.props.tabIndex, style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected }, _this.props.squareText);
         });
     };
     return TicTacToeSquare;
