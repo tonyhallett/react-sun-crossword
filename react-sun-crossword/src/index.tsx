@@ -1059,7 +1059,15 @@ var thButtonFontWeight = "bold" as any;
 var scoreboardBackgroundColor = "rgb(226, 220, 207)";
 var buttonBackgroundColor = "rgb(226, 220, 207)"
 var componentBackgroundColor = "rgb(207, 197, 175)"//75% light
-
+var ticTacToeSquareHoverFocus = {
+    animationName: Radium.keyframes( {
+        '100%': {
+            borderColor: "orange"
+        }
+    }),
+    animationDuration: "1000ms",
+    animationDirection:"reverse"
+}
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
@@ -1099,7 +1107,9 @@ var style = {
     },
     ticTacToeSquare: {
         verticalAlign: "center",
-        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault
+        textAlign: "center", width: 100, height: 100, borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        ":hover": ticTacToeSquareHoverFocus,
+        ":focus": ticTacToeSquareHoverFocus
     } as React.CSSProperties,
     ticTacToeSquareBorderWidth:5
 }
@@ -1209,7 +1219,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         super(props);
         this.state = { inSignal: {},kill:false}
     }
-    squareClicked = () => {
+    squareSelected = () => {
         if (this.props.canGo) {
             this.props.takeGo();
         }
@@ -1246,7 +1256,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                     } else {
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
-                    return <td tabIndex={this.props.tabIndex } style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onClick={this.squareClicked}>
+                    return <td tabIndex={this.props.tabIndex} style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
                         {this.props.squareText}
                     </td>
                 }
