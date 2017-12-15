@@ -1064,8 +1064,11 @@ var ticTacToeSquareBorderWidth = 5;
 var backgroundColor = "orange";
 var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
-        '100%': {
+        '50%': {
             backgroundColor: Color(componentBackgroundColor).darken(0.1)
+        },
+        '100%': {
+            backgroundColor: componentBackgroundColor
         }
     }),
     animationDuration: "2000ms",
