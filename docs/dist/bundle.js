@@ -45922,7 +45922,8 @@ var style = {
             backgroundColor: componentBackgroundColor,
             width: 20,
             height: 20,
-            fontSize: 10
+            fontSize: 10,
+            textAlign: "center"
         },
         winningCellStyle: {
             animationName: Radium.keyframes({
@@ -46237,7 +46238,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 overlay: getOverlay(testOverlay)
             };
         };
-        _this.state = { winDrawElement: _this.getWinDrawElement(props) };
+        _this.hasLoaded = false;
+        _this.state = { winDrawElement: _this.getWinDrawElement(props), showLoadingIndicator: true };
         _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
         _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
         _this.keyframesFlipOutX = Radium.keyframes(react_animations_1.flipOutX);
@@ -46245,12 +46247,26 @@ var TicTacToeApp = /** @class */ (function (_super) {
         return _this;
     }
     TicTacToeApp.prototype.componentWillReceiveProps = function (props) {
+        var self = this;
         if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
+        }
+        if (this.props.fontLoadingState !== props.fontLoadingState && props.fontLoadingState === FontLoadingState.Loading) {
+            if (this.props.minimumLoadingIndicator) {
+                window.setTimeout(function () {
+                    self.setState({ showLoadingIndicator: false });
+                }, this.props.minimumLoadingIndicator);
+            }
+            else {
+                self.setState({ showLoadingIndicator: false });
+            }
         }
     };
     TicTacToeApp.prototype.render = function () {
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
+        if (!showLoading) {
+            showLoading = this.state.showLoadingIndicator;
+        }
         return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "all" } },
             React.createElement(Radium_1.Style, { rules: {
                     body: {
@@ -46347,7 +46363,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 text: letters
             }
         } },
-        React.createElement(ConnectedTicTacToeApp, null))), document.getElementById("example"));
+        React.createElement(ConnectedTicTacToeApp, { minimumLoadingIndicator: 5000 }))), document.getElementById("example"));
 
 
 /***/ })

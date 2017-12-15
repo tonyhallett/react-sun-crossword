@@ -1121,8 +1121,9 @@ var style = {
             backgroundColor: componentBackgroundColor,
             width: 20,
             height: 20,
-            fontSize:10
-        },
+            fontSize: 10,
+            textAlign:"center"
+        } as React.CSSProperties,
         winningCellStyle: {
             animationName: Radium.keyframes({
                 
@@ -1493,11 +1494,13 @@ interface TicTacToeAppProps {
     finishedConfirmed: () => void,
     fontLoadingState: FontLoadingState,
     xColour: string,
-    oColour:string
+    oColour: string,
+    minimumLoadingIndicator?:number
 }   
 
 interface TicTacToeAppState {
-    winDrawElement:React.ReactElement<any>
+    winDrawElement: React.ReactElement<any>,
+    showLoadingIndicator:boolean
 }
 var spinningDivProps = {
     style:
@@ -1521,7 +1524,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     
     constructor(props) {
         super(props);
-        this.state = { winDrawElement: this.getWinDrawElement(props) }
+        this.state = { winDrawElement: this.getWinDrawElement(props), showLoadingIndicator:true }
         this.keyframesFlipInX = Radium.keyframes(flipInX) as any;
         this.flipInXAnimationName = this.keyframesFlipInX.__process("all").animationName;
         this.keyframesFlipOutX = Radium.keyframes(flipOutX) as any;
@@ -1529,8 +1532,18 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         
     }
     componentWillReceiveProps(props: TicTacToeAppProps) {
+        var self = this;
         if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) })
+        }
+        if (this.props.fontLoadingState !== props.fontLoadingState && props.fontLoadingState === FontLoadingState.Loading) {
+            if (this.props.minimumLoadingIndicator) {
+                window.setTimeout(() => {
+                    self.setState({ showLoadingIndicator: false });
+                }, this.props.minimumLoadingIndicator)
+            } else {
+                self.setState({ showLoadingIndicator: false });
+            }
         }
     }
     modalShouldOpen = () => {
@@ -1544,10 +1557,12 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         }
 
     }
-    
+    hasLoaded = false;
     render() {
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
-        
+        if (!showLoading) {
+            showLoading = this.state.showLoadingIndicator;
+        }
         return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
                 rules={{
@@ -1671,7 +1686,7 @@ ReactDOM.render(
             }
 
         }>
-            <ConnectedTicTacToeApp />
+            <ConnectedTicTacToeApp minimumLoadingIndicator={5000} />
         </ConnectedWebFontLoader>
     </Provider>,
 
