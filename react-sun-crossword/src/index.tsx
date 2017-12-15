@@ -1062,6 +1062,29 @@ var componentBackgroundColor = "rgb(207, 197, 175)"//75% light
 
 var ticTacToeSquareBorderWidth = 5;
 var backgroundColor = "orange";
+
+function animationSupported() {
+    var animation = false,
+        animationstring = 'animation',
+        keyframeprefix = '',
+        domPrefixes = 'Webkit Moz O ms Khtml'.split(' '),
+        pfx = '',
+        elem = document.createElement('div');
+    if (elem.style.animationName !== undefined) { animation = true; }
+    if (animation === false) {
+        for (var i = 0; i < domPrefixes.length; i++) {
+            if (elem.style[domPrefixes[i] + 'AnimationName'] !== undefined) {
+                pfx = domPrefixes[i];
+                animationstring = pfx + 'Animation';
+                keyframeprefix = '-' + pfx.toLowerCase() + '-';
+                animation = true;
+                break;
+            }
+        }
+    }
+    return animation;
+}
+var animationIsSupported = animationSupported();
 var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
         '0%': {
@@ -1092,7 +1115,28 @@ var style = {
     winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center",fontSize:fontSize } as React.CSSProperties,
     componentBackgroundColor: componentBackgroundColor,
     componentMargin:10,
-    borderRadius:5,
+    borderRadius: 5,
+    loadingIndicator: {
+        cellStyle: {
+            backgroundColor: componentBackgroundColor,
+            width: 20,
+            height: 20,
+            fontSize:10
+        },
+        winningCellStyle: {
+            animationName: Radium.keyframes({
+                
+                '100%': {
+                    fontSize:18
+                }
+                
+            }),
+            animationDuration: "1000s",
+            animationIterationCount: "infinite",
+            animationDirection:"alternate-reverse"
+
+        } as React.CSSProperties
+    },
     scoreboard: {
         cellStyle: {
             paddingTop: scoreboardPadding,
@@ -1511,7 +1555,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                         margin: 0   
                     },
                     ":focus": {
-                        outlineStyle:"none"
+                        outlineStyle: animationIsSupported ? "none" : "solid",
+                        outlineColor:backgroundColor
                     }
                 }}
             />
@@ -1532,11 +1577,23 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
                         {
-                            showLoading ? <table>
+                            showLoading ? <table style={{ borderSpacing: 2 }}>
                                 <tbody>
-                                    <tr><td><SpinningDivX /></td><td><SpinningDivO /></td><td><SpinningDivX /></td></tr>
-                                    <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivO /></td></tr>
-                                    <tr><td><SpinningDivO /></td><td><SpinningDivX /></td><td><SpinningDivX /></td></tr>
+                                    <tr>
+                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.xColour }]}>X</td>
+                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
+                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.xColour }]}>X</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.xColour }]}>X</td>
+                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, {animationDelay:"0.1s", color: this.props.xColour }]}>X</td>
+                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.oColour }]}>O</td>
+                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
+                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay:"0.2s", color: this.props.xColour }]}>X</td>
+                                    </tr>
                                 </tbody>
                             </table> : <div>
                                     <div style={{ display: "inline-block" }}>
