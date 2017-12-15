@@ -45891,7 +45891,7 @@ var animationIsSupported = animationSupported();
 var focusAnimationStyle = {
     animationName: Radium.keyframes({
         '0%': {
-            boxShadow: "0 0 0 0 " + backgroundColor + " inset"
+            boxShadow: "0 0 5px 2px " + backgroundColor + " inset"
         },
         '50%': {
             boxShadow: "0 0 10px 5px " + backgroundColor + " inset"
