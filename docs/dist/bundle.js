@@ -45870,10 +45870,10 @@ var backgroundColor = "orange";
 var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
         '0%': {
-            boxShadow: "0 0 0 0px inset" + backgroundColor
+            boxShadow: "0 0 0 0 " + backgroundColor + " inset"
         },
         '100%': {
-            boxShadow: "0 0 10px 0px inset " + backgroundColor
+            boxShadow: "0 0 10px 0 " + backgroundColor + " inset"
         },
     }),
     animationDuration: "2000ms",
