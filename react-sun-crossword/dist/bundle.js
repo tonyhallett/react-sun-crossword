@@ -45931,8 +45931,7 @@ var style = {
                     fontSize: 18
                 }
             }),
-            animationDuration: "1000s",
-            animationIterationCount: "infinite",
+            animationDuration: "4000s",
         }
     },
     scoreboard: {
