@@ -45888,6 +45888,7 @@ function animationSupported() {
     return animation;
 }
 var animationIsSupported = animationSupported();
+//refactor to var for 0, 100
 var focusAnimationStyle = {
     animationName: Radium.keyframes({
         '0%': {
@@ -45897,11 +45898,10 @@ var focusAnimationStyle = {
             boxShadow: "0 0 10px 5px " + backgroundColor + " inset"
         },
         '100%': {
-            boxShadow: "0 0 0 0 " + backgroundColor + " inset"
+            boxShadow: "0 0 5px 2px " + backgroundColor + " inset"
         }
     }),
     animationDuration: "2000ms",
-    animationDirection: "reverse",
     animationIterationCount: "infinite",
     animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)"
 };
