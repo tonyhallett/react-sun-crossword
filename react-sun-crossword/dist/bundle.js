@@ -45933,7 +45933,6 @@ var style = {
             }),
             animationDuration: "1000s",
             animationIterationCount: "infinite",
-            animationDirection: "alternate-reverse"
         }
     },
     scoreboard: {
@@ -46303,7 +46302,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                                 React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.1s", color: this.props.xColour }] }, "X"),
                                 React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O")),
                             React.createElement("tr", null,
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.oColour }] }, "O"),
+                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
                                 React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
                                 React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.2s", color: this.props.xColour }] }, "X")))) : React.createElement("div", null,
                         React.createElement("div", { style: { display: "inline-block" } },
@@ -46363,7 +46362,7 @@ ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
                 text: letters
             }
         } },
-        React.createElement(ConnectedTicTacToeApp, { minimumLoadingIndicator: 5000 }))), document.getElementById("example"));
+        React.createElement(ConnectedTicTacToeApp, { minimumLoadingIndicator: 50000 }))), document.getElementById("example"));
 
 
 /***/ })

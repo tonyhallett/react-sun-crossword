@@ -1126,15 +1126,13 @@ var style = {
         } as React.CSSProperties,
         winningCellStyle: {
             animationName: Radium.keyframes({
-                
                 '100%': {
                     fontSize:18
                 }
-                
             }),
             animationDuration: "1000s",
             animationIterationCount: "infinite",
-            animationDirection:"alternate-reverse"
+
 
         } as React.CSSProperties
     },
@@ -1605,7 +1603,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                                         <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
                                     </tr>
                                     <tr>
-                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.oColour }]}>O</td>
+                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
                                         <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
                                         <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay:"0.2s", color: this.props.xColour }]}>X</td>
                                     </tr>
@@ -1686,7 +1684,7 @@ ReactDOM.render(
             }
 
         }>
-            <ConnectedTicTacToeApp minimumLoadingIndicator={5000} />
+            <ConnectedTicTacToeApp minimumLoadingIndicator={50000} />
         </ConnectedWebFontLoader>
     </Provider>,
 
