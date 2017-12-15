@@ -45864,6 +45864,7 @@ var thButtonFontWeight = "bold";
 //these have been taken from https://www.w3schools.com/colors/colors_picker.asp
 var scoreboardBackgroundColor = "rgb(226, 220, 207)";
 var buttonBackgroundColor = "rgb(226, 220, 207)";
+var hoverButtonBackground = Color(buttonBackgroundColor).lighten(0.1);
 var componentBackgroundColor = "rgb(207, 197, 175)";
 var indicatorWinningSquareColor = Color(componentBackgroundColor).lighten(0.1);
 var ticTacToeSquareBorderWidth = 5;
@@ -45887,14 +45888,6 @@ function animationSupported() {
     return animation;
 }
 var animationIsSupported = animationSupported();
-//want button focus to receive focus animation and hover/focus animation of colour change and the componentShadow hover
-/*
-will need button hover to have below and animation
-componentBoxShadowHover: {
-        ":hover": { boxShadow: boxShadowHover }
-    },
-*/
-//will need a function to merge or know how to apply multiple animations through animation name
 var focusAnimationStyle = {
     animationName: Radium.keyframes({
         '0%': {
@@ -45910,9 +45903,21 @@ var focusAnimationStyle = {
     animationDuration: "2000ms",
     animationDirection: "reverse",
     animationIterationCount: "infinite",
-    animationTimingFunction: "ease-in-out"
+    animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)"
 };
 var boxShadowHover = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)";
+var buttonHoverStyle = {
+    ":hover": {
+        boxShadow: boxShadowHover,
+        animationName: Radium.keyframes({
+            "100%": {
+                backgroundColor: hoverButtonBackground
+            }
+        }),
+        animationDuration: "1s",
+        animationFillMode: "forwards"
+    }
+};
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
@@ -46327,7 +46332,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("button", { tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": __assign({}, focusAnimationStyle, { boxShadow: boxShadowHover }) }, style.componentBoxShadow, style.componentBoxShadowHover], onClick: this.props.playAgain }, playAgainText)),
+                            React.createElement("button", { tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, style.componentBoxShadow, buttonHoverStyle], onClick: this.props.playAgain }, playAgainText)),
                         React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement))))));
     };
     TicTacToeApp.prototype.getWinDrawElement = function (props) {
