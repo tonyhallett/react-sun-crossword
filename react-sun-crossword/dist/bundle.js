@@ -45870,10 +45870,10 @@ var backgroundColor = "orange";
 var ticTacToeSquareFocus = {
     animationName: Radium.keyframes({
         '0%': {
-            boxShadow: "0 0 0 0px " + componentBackgroundColor
+            boxShadow: "0 0 0 0px " + backgroundColor
         },
         '100%': {
-            boxShadow: "0 0 0 6px " + componentBackgroundColor
+            boxShadow: "0 0 0 6px " + backgroundColor
         },
     }),
     animationDuration: "2000ms",
@@ -45920,6 +45920,7 @@ var style = {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
         borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        ":focus": ticTacToeSquareFocus
     },
     ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth
 };
@@ -46034,8 +46035,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             else {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected },
-                React.createElement("div", { tabIndex: _this.props.tabIndex, key: _this.props.tabIndex, style: { ":focus": ticTacToeSquareFocus }, className: "ticTacToeSquare" }, _this.props.squareText));
+            return React.createElement("td", { tabIndex: _this.props.tabIndex, style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected }, _this.props.squareText);
         });
     };
     return TicTacToeSquare;
