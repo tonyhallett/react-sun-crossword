@@ -1117,7 +1117,6 @@ var style = {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
         borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
-        ":focus": ticTacToeSquareFocus
     } as React.CSSProperties,
     ticTacToeSquareBorderWidth:ticTacToeSquareBorderWidth
 }
@@ -1264,8 +1263,8 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                     } else {
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
-                    return <td tabIndex={this.props.tabIndex}  style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        {this.props.squareText}
+                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
+                        <div tabIndex={this.props.tabIndex} style={{ width: "100%", height: "100%", ":focus": ticTacToeSquareFocus }}> {this.props.squareText}</div>
                     </td>
                 }
                 

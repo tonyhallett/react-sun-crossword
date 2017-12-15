@@ -45920,7 +45920,6 @@ var style = {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
         borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
-        ":focus": ticTacToeSquareFocus
     },
     ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth
 };
@@ -46035,7 +46034,10 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             else {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { tabIndex: _this.props.tabIndex, style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected }, _this.props.squareText);
+            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected },
+                React.createElement("div", { tabIndex: _this.props.tabIndex, style: { width: "100%", height: "100%", ":focus": ticTacToeSquareFocus } },
+                    " ",
+                    _this.props.squareText));
         });
     };
     return TicTacToeSquare;
