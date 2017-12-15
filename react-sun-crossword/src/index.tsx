@@ -1320,7 +1320,7 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
     render() {
         var boardDimensions = this.props.board.length;
         return <table id={ticTacToeBoardId} style={[{
-            borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor,
+             backgroundColor: style.componentBackgroundColor,
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)",
             transition: "all 0.3s cubic-bezier(.25, .8, .25, 1)"
             
