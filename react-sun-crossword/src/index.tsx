@@ -1606,6 +1606,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
             showLoading = this.state.showLoadingIndicator;
         }
         var buttonHasFocus= Radium.getState(this.state, 'button', ':focus')
+        var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
 
         return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
@@ -1660,7 +1661,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                                             <ConnectedScoreboard />
                                         </div>
                                         <ConnectedTicTacToeBoard />
-                                        <div style={[style.componentBoxShadow, buttonHasFocus?buttonHoverStyle:null]}>
+                                        <div style={[style.componentBoxShadow, buttonHasFocus||buttonHasHover?buttonHoverStyle:null]}>
                                             <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }]} onClick={this.props.playAgain}>{playAgainText}</button>
                                         </div>
                                     </div>

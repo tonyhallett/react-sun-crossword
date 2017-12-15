@@ -46302,6 +46302,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
             showLoading = this.state.showLoadingIndicator;
         }
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
+        var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "all" } },
             React.createElement(Radium_1.Style, { rules: {
                     body: {
@@ -46345,7 +46346,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                             React.createElement("div", { style: { marginBottom: style.componentMargin } },
                                 React.createElement(ConnectedScoreboard, null)),
                             React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("div", { style: [style.componentBoxShadow, buttonHasFocus ? buttonHoverStyle : null] },
+                            React.createElement("div", { style: [style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null] },
                                 React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }], onClick: this.props.playAgain }, playAgainText))),
                         React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement))))));
     };
