@@ -45672,12 +45672,25 @@ function withSpinAxes(type, props, children) {
     }(React.Component));
     return Radium(spinAxes);
 }
-//should change to enable not using function and having component to merge transition style with default Style provided as property
+function scale3d(a, b, c) {
+    return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+}
+;
+function createPulseKeyframes(pulseAmount) {
+    var fromTo = scale3d(1, 1, 1);
+    return {
+        from: {
+            transform: fromTo
+        },
+        '50%': {
+            transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+        },
+        to: {
+            transform: fromTo
+        }
+    };
+}
 function withPulse(Component) {
-    function scale3d(a, b, c) {
-        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
-    }
-    ;
     var pulse = /** @class */ (function (_super) {
         __extends(class_2, _super);
         function class_2() {
@@ -45685,18 +45698,7 @@ function withPulse(Component) {
         }
         class_2.prototype.render = function () {
             var _this = this;
-            var fromTo = scale3d(1, 1, 1);
-            var pulse = {
-                from: {
-                    transform: fromTo
-                },
-                '50%': {
-                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
-                },
-                to: {
-                    transform: fromTo
-                }
-            };
+            var pulse = createPulseKeyframes(this.props.pulseAmount);
             //passthrough to do
             return React.createElement(Component, __assign({}, this.props), function (state, additionalProps) {
                 var transitionStyle = {};
@@ -46184,8 +46186,8 @@ var Scoreboard = /** @class */ (function (_super) {
                     React.createElement("th", { style: __assign({}, style.scoreboard.cellStyle, { fontWeight: thButtonFontWeight }) }, lost),
                     React.createElement("th", { style: __assign({ fontWeight: thButtonFontWeight, borderTopRightRadius: style.borderRadius }, style.scoreboard.cellStyle) }, drawn))),
             React.createElement("tbody", null,
-                React.createElement(ScoreboardPlayer, { playerColour: this.props.xColour, playerId: cross, playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
-                React.createElement(ScoreboardPlayer, { borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: nought, playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
+                React.createElement(ScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.X, playerColour: this.props.xColour, playerId: cross, playerBoldStyle: this.props.currentPlayer === Player.X ? "bolder" : "normal", drawn: this.props.drawCount, won: this.props.playerXWinCount, lost: playerXLossCount }),
+                React.createElement(ScoreboardPlayer, { isCurrent: this.props.currentPlayer === Player.X, borderRadius: style.borderRadius, playerColour: this.props.oColour, playerId: nought, playerBoldStyle: this.props.currentPlayer === Player.O ? "bolder" : "normal", drawn: this.props.drawCount, won: playerOWinCount, lost: playerOLossCount })));
     };
     return Scoreboard;
 }(React.Component));
@@ -46219,7 +46221,14 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
         //animation-timing-function obtained from http://easings.net/#easeOutQuint
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         return React.createElement("tr", { style: style.scoreboard.rowStyle },
-            React.createElement("td", { style: __assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }) }, this.props.playerId),
+            React.createElement("td", { style: [__assign({}, style.scoreboard.cellStyle, style.scoreboard.noughtCrossStyle, { borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }), this.props.isCurrent && {
+                        animationDuration: pulseTimeout,
+                        animationTimingFunction: animationTimingFunction,
+                        animationIterationCount: "infinite",
+                        animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
+                    }] },
+                " ",
+                this.props.playerId),
             React.createElement("td", { style: style.scoreboard.cellStyle },
                 React.createElement(Pulse, { inSignal: this.state.inSignal, timeout: pulseTimeout, pulseAmount: pulseIncrease }, function (state, props, pulseStyle) {
                     return React.createElement("div", { style: [pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }] }, _this.props.won);

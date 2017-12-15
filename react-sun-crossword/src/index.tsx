@@ -836,26 +836,29 @@ interface PulseProps {
     pulseAmount: number,//need default to 1.05
     children: (state: TransitionState, additionalProps: any, pulseStyle: React.CSSProperties) => void
 }
-//should change to enable not using function and having component to merge transition style with default Style provided as property
-function withPulse(Component: React.ComponentClass<TransitionProps>) {
-    function scale3d(a, b, c) {
-        return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+function scale3d(a, b, c) {
+    return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
+};
+function createPulseKeyframes(pulseAmount:number) {
+    var fromTo = scale3d(1, 1, 1);
+    return {
+        from: {
+            transform: fromTo
+        },
+        '50%': {
+            transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
+        },
+        to: {
+            transform: fromTo
+        }
     };
+}
+function withPulse(Component: React.ComponentClass<TransitionProps>) {
+    
     var pulse = class extends React.Component<TransitionProps & PulseProps, undefined>{
         render() {
-            var fromTo = scale3d(1, 1, 1);
-            var pulse = {
-                from: {
-                    transform: fromTo
-                },
-                '50%': {
-                    transform: scale3d(this.props.pulseAmount, this.props.pulseAmount, this.props.pulseAmount)
-                },
-                to: {
-                    transform: fromTo
-                }
-            };
 
+            var pulse = createPulseKeyframes(this.props.pulseAmount);
             //passthrough to do
             return <Component {...this.props}>
                 {
@@ -1436,8 +1439,8 @@ class Scoreboard extends React.Component<ScoreboardProps&ScoreboardStateProps, u
                 </tr>
             </thead>
             <tbody>
-                <ScoreboardPlayer playerColour={this.props.xColour} playerId={cross} playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
-                <ScoreboardPlayer borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId={nought} playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
+                <ScoreboardPlayer isCurrent={this.props.currentPlayer === Player.X} playerColour={this.props.xColour} playerId={cross} playerBoldStyle={this.props.currentPlayer === Player.X ? "bolder" : "normal"} drawn={this.props.drawCount} won={this.props.playerXWinCount} lost={playerXLossCount} />
+                <ScoreboardPlayer isCurrent={this.props.currentPlayer === Player.X} borderRadius={style.borderRadius} playerColour={this.props.oColour} playerId={nought} playerBoldStyle={this.props.currentPlayer === Player.O ? "bolder" : "normal"} drawn={this.props.drawCount} won={playerOWinCount} lost={playerOLossCount} />
             </tbody>
             </table>
     }
@@ -1461,6 +1464,7 @@ interface ScoreboardPlayerProps {
     won: number,
     lost: number,
     drawn: number,
+    isCurrent:boolean,
     borderRadius?:number
 }
 interface ScoreboardPlayerState {
@@ -1487,7 +1491,18 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
         var animationTimingFunction = "cubic-bezier(0.23, 1, 0.32, 1)";
         
         return <tr style={style.scoreboard.rowStyle}>
-            <td style={{ ...style.scoreboard.cellStyle, ...style.scoreboard.noughtCrossStyle, borderBottomLeftRadius: this.props.borderRadius, fontWeight: this.props.playerBoldStyle, color: this.props.playerColour }}>{this.props.playerId}</td>
+            <td style={[{
+                ...style.scoreboard.cellStyle,
+                ...style.scoreboard.noughtCrossStyle,
+                borderBottomLeftRadius: this.props.borderRadius,
+                fontWeight: this.props.playerBoldStyle,
+                color: this.props.playerColour
+            }, this.props.isCurrent && {
+                    animationDuration: pulseTimeout,
+                    animationTimingFunction: animationTimingFunction,
+                    animationIterationCount: "infinite",
+                    animationName: Radium.keyframes(createPulseKeyframes(pulseIncrease))
+                }]} > {this.props.playerId}</td>
             <td style={style.scoreboard.cellStyle}>
                 <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                     {
