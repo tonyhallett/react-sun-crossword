@@ -45672,6 +45672,16 @@ function withSpinAxes(type, props, children) {
     }(React.Component));
     return Radium(spinAxes);
 }
+//#region Spinning div
+var spinningDivProps = {
+    style: {
+        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
+        animationDuration: "3000ms",
+        fontSize: 90, padding: 5,
+        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
+        animationIterationCount: "infinite"
+    }
+};
 function scale3d(a, b, c) {
     return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
 }
@@ -46244,45 +46254,17 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     return ScoreboardPlayer;
 }(React.Component));
 var RadiumScoreboardPlayer = Radium(ScoreboardPlayer);
-var spinningDivProps = {
-    style: {
-        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
-        animationDuration: "3000ms",
-        fontSize: 90, padding: 5,
-        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
-        animationIterationCount: "infinite"
-    }
-};
-var SpinningDivX = withSpinAxes("div", spinningDivProps, cross);
-var SpinningDivO = withSpinAxes("div", spinningDivProps, nought);
+//refactor to a loader ?
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
     function TicTacToeApp(props) {
         var _this = _super.call(this, props) || this;
-        _this.flipDuration = 1000;
-        _this.modalShouldOpen = function () {
-            var gameState = _this.props.gameState;
-            return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
-        };
-        _this.getModalStyle = function () {
-            var testOverlay = document.querySelector("#" + ticTacToeBoardId);
-            return {
-                overlay: getOverlay(testOverlay)
-            };
-        };
         _this.hasLoaded = false;
-        _this.state = { winDrawElement: _this.getWinDrawElement(props), showLoadingIndicator: true };
-        _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
-        _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
-        _this.keyframesFlipOutX = Radium.keyframes(react_animations_1.flipOutX);
-        _this.flipOutXAnimationName = _this.keyframesFlipOutX.__process("all").animationName;
+        _this.state = { showLoadingIndicator: true };
         return _this;
     }
     TicTacToeApp.prototype.componentWillReceiveProps = function (props) {
         var self = this;
-        if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
-            this.setState({ winDrawElement: this.getWinDrawElement(props) });
-        }
         if (this.props.fontLoadingState !== props.fontLoadingState && props.fontLoadingState === FontLoadingState.Loading) {
             if (this.props.minimumLoadingIndicator) {
                 window.setTimeout(function () {
@@ -46294,13 +46276,27 @@ var TicTacToeApp = /** @class */ (function (_super) {
             }
         }
     };
+    TicTacToeApp.prototype.getLoader = function () {
+        return React.createElement("table", { style: { borderSpacing: 2 } },
+            React.createElement("tbody", null,
+                React.createElement("tr", null,
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.xColour }] }, "X"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X")),
+                React.createElement("tr", null,
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.1s", color: this.props.xColour }] }, "X"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O")),
+                React.createElement("tr", null,
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.2s", color: this.props.xColour }] }, "X"))));
+    };
     TicTacToeApp.prototype.render = function () {
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
         if (!showLoading) {
             showLoading = this.state.showLoadingIndicator;
         }
-        var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
-        var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         return React.createElement(Radium_1.StyleRoot, { radiumConfig: { userAgent: "all" } },
             React.createElement(Radium_1.Style, { rules: {
                     body: {
@@ -46311,44 +46307,29 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         outlineColor: backgroundColor
                     }
                 } }),
-            React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
-            React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
-            React.createElement(Radium_1.Style, { rules: {
-                    ".ReactModal__Overlay": {
-                        animationName: this.flipInXAnimationName,
-                        animationDuration: this.flipDuration + "ms"
-                    },
-                    ".ReactModal__Overlay--before-close": {
-                        animationName: this.flipOutXAnimationName,
-                        animationDuration: this.flipDuration + "ms",
-                        animationFillMode: "forwards"
-                    }
-                } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
-                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement("table", { style: { borderSpacing: 2 } },
-                        React.createElement("tbody", null,
-                            React.createElement("tr", null,
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.xColour }] }, "X"),
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X")),
-                            React.createElement("tr", null,
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X"),
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.1s", color: this.props.xColour }] }, "X"),
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O")),
-                            React.createElement("tr", null,
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
-                                React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.2s", color: this.props.xColour }] }, "X")))) : React.createElement("div", null,
-                        React.createElement("div", { style: { display: "inline-block" } },
-                            React.createElement("div", { style: { marginBottom: style.componentMargin } },
-                                React.createElement(ConnectedScoreboard, null)),
-                            React.createElement(ConnectedTicTacToeBoard, null),
-                            React.createElement("div", { style: [style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null] },
-                                React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }], onClick: this.props.playAgain }, playAgainText))),
-                        React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement))))));
+                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? this.getLoader() : React.createElement(ConnectedTicTacToeScreen, null)))));
     };
-    TicTacToeApp.prototype.getWinDrawElement = function (props) {
+    return TicTacToeApp;
+}(React.Component));
+var TicTacToeScreen = /** @class */ (function (_super) {
+    __extends(TicTacToeScreen, _super);
+    function TicTacToeScreen(props) {
+        var _this = _super.call(this, props) || this;
+        _this.flipDuration = 1000;
+        _this.modalShouldOpen = function () {
+            var gameState = _this.props.gameState;
+            return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
+        };
+        _this.state = { winDrawElement: _this.getWinDrawElement(props) };
+        _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
+        _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
+        _this.keyframesFlipOutX = Radium.keyframes(react_animations_1.flipOutX);
+        _this.flipOutXAnimationName = _this.keyframesFlipOutX.__process("all").animationName;
+        return _this;
+    }
+    TicTacToeScreen.prototype.getWinDrawElement = function (props) {
         function getWinner(playerId, playerColour) {
             return React.createElement("div", { style: style.winDrawContainerStyle },
                 React.createElement("span", { style: { fontFamily: textFontFamilyWithDefault } }, player + " "),
@@ -46369,12 +46350,36 @@ var TicTacToeApp = /** @class */ (function (_super) {
         }
         return messageElement;
     };
-    return TicTacToeApp;
+    TicTacToeScreen.prototype.render = function () {
+        var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
+        var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
+        return React.createElement("div", null,
+            React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
+            React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
+            React.createElement(Radium_1.Style, { rules: {
+                    ".ReactModal__Overlay": {
+                        animationName: this.flipInXAnimationName,
+                        animationDuration: this.flipDuration + "ms"
+                    },
+                    ".ReactModal__Overlay--before-close": {
+                        animationName: this.flipOutXAnimationName,
+                        animationDuration: this.flipDuration + "ms",
+                        animationFillMode: "forwards"
+                    }
+                } }),
+            React.createElement("div", { style: { display: "inline-block" } },
+                React.createElement("div", { style: { marginBottom: style.componentMargin } },
+                    React.createElement(ConnectedScoreboard, null)),
+                React.createElement(ConnectedTicTacToeBoard, null),
+                React.createElement("div", { style: [style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null] },
+                    React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }], onClick: this.props.playAgain }, playAgainText))),
+            React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
+    };
+    return TicTacToeScreen;
 }(React.Component));
-var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
+var ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
     return {
         gameState: state.gameState,
-        fontLoadingState: state.fontLoadingState,
         oColour: state.oColour,
         xColour: state.xColour
     };
@@ -46387,7 +46392,14 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
             dispatch(finishedConfirmed());
         }
     };
-})(Radium(TicTacToeApp));
+})(Radium(TicTacToeScreen));
+var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
+    return {
+        fontLoadingState: state.fontLoadingState,
+        oColour: state.oColour,
+        xColour: state.xColour
+    };
+})(TicTacToeApp);
 //#endregion
 //#endregion
 var store = storage_1.createLocalStorageStore(reducer);

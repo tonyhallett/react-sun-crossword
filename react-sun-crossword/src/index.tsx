@@ -829,6 +829,21 @@ function withSpinAxes(type: string, props: any,children:any) {
     return Radium(spinAxes);
 }
 
+//#region Spinning div
+var spinningDivProps = {
+    style:
+    {
+        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
+        animationDuration: "3000ms",
+        fontSize: 90, padding: 5,
+        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
+        animationIterationCount: "infinite"
+    } as React.CSSProperties
+}
+//const SpinningDivX: any = withSpinAxes("div", spinningDivProps, cross);
+//const SpinningDivO: any = withSpinAxes("div", spinningDivProps, nought);
+//#endregion
+
 
 
 //#region PulseAnimation
@@ -1529,54 +1544,26 @@ const RadiumScoreboardPlayer=Radium(ScoreboardPlayer)
 //#endregion
 //#region TicTacToeApp
 
-interface TicTacToeAppProps {
-    gameState: GameState,
-    playAgain: () => void,
-    finishedConfirmed: () => void,
+interface TicTacToeAppProps {  
     fontLoadingState: FontLoadingState,
-    xColour: string,
+    minimumLoadingIndicator?: number,
     oColour: string,
-    minimumLoadingIndicator?:number
+    xColour:string
+
 }   
 
 interface TicTacToeAppState {
-    winDrawElement: React.ReactElement<any>,
     showLoadingIndicator:boolean
 }
-var spinningDivProps = {
-    style:
-    {
-        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
-        animationDuration: "3000ms",
-        fontSize: 90, padding: 5,
-        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
-        animationIterationCount: "infinite"
-    } as React.CSSProperties
-}
-const SpinningDivX: any = withSpinAxes("div", spinningDivProps, cross);
-const SpinningDivO: any = withSpinAxes("div", spinningDivProps, nought);
-
+//refactor to a loader ?
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
-    keyframesFlipInX: any
-    keyframesFlipOutX:any
-    flipInXAnimationName: string
-    flipOutXAnimationName: string
-    flipDuration = 1000
     
     constructor(props) {
         super(props);
-        this.state = { winDrawElement: this.getWinDrawElement(props), showLoadingIndicator:true }
-        this.keyframesFlipInX = Radium.keyframes(flipInX) as any;
-        this.flipInXAnimationName = this.keyframesFlipInX.__process("all").animationName;
-        this.keyframesFlipOutX = Radium.keyframes(flipOutX) as any;
-        this.flipOutXAnimationName = this.keyframesFlipOutX.__process("all").animationName;
-        
+        this.state = { showLoadingIndicator:true }
     }
     componentWillReceiveProps(props: TicTacToeAppProps) {
         var self = this;
-        if (!(props.gameState === GameState.Playing || props.gameState === GameState.FinishedConfirmed)) {
-            this.setState({ winDrawElement: this.getWinDrawElement(props) })
-        }
         if (this.props.fontLoadingState !== props.fontLoadingState && props.fontLoadingState === FontLoadingState.Loading) {
             if (this.props.minimumLoadingIndicator) {
                 window.setTimeout(() => {
@@ -1587,87 +1574,50 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
             }
         }
     }
-    modalShouldOpen = () => {
-        var gameState = this.props.gameState;
-        return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
-    }
-    getModalStyle = () => {
-        var testOverlay = document.querySelector("#" + ticTacToeBoardId) as HTMLElement;
-        return {
-            overlay: getOverlay(testOverlay)
-        }
-
-    }
     hasLoaded = false;
+    getLoader() {
+        return <table style={{ borderSpacing: 2 }}>
+            <tbody>
+                <tr>
+                    <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.xColour }]}>X</td>
+                    <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
+                    <td style={[style.loadingIndicator.cellStyle, { color: this.props.xColour }]}>X</td>
+                </tr>
+                <tr>
+                    <td style={[style.loadingIndicator.cellStyle, { color: this.props.xColour }]}>X</td>
+                    <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.1s", color: this.props.xColour }]}>X</td>
+                    <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
+                </tr>
+                <tr>
+                    <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
+                    <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
+                    <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.2s", color: this.props.xColour }]}>X</td>
+                </tr>
+            </tbody>
+        </table> 
+    }
     render() {
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
         if (!showLoading) {
             showLoading = this.state.showLoadingIndicator;
         }
-        var buttonHasFocus= Radium.getState(this.state, 'button', ':focus')
-        var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
-
         return <StyleRoot radiumConfig={{ userAgent:"all" }}>
             <Style
                 rules={{
                     body: {
-                        margin: 0   
+                        margin: 0
                     },
                     ":focus": {
                         outlineStyle: animationIsSupported ? "none" : "solid",
-                        outlineColor:backgroundColor
+                        outlineColor: backgroundColor
                     }
                 }}
             />
-            <span style={{ animationName: this.keyframesFlipInX }} />
-            <span style={{ animationName: this.keyframesFlipOutX }} />
-            <Style rules={{
-                ".ReactModal__Overlay": {
-                    animationName: this.flipInXAnimationName,
-                    animationDuration:this.flipDuration+"ms"
-                },
-                ".ReactModal__Overlay--before-close": {
-                    animationName: this.flipOutXAnimationName,
-                    animationDuration: this.flipDuration + "ms",
-                    animationFillMode:"forwards"
-                }
-            }} />
             <VerticallyCenteredContainer backgroundColor={backgroundColor}>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
                         {
-                            showLoading ? <table style={{ borderSpacing: 2 }}>
-                                <tbody>
-                                    <tr>
-                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.xColour }]}>X</td>
-                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
-                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.xColour }]}>X</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.xColour }]}>X</td>
-                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, {animationDelay:"0.1s", color: this.props.xColour }]}>X</td>
-                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
-                                    </tr>
-                                    <tr>
-                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
-                                        <td style={[style.loadingIndicator.cellStyle, { color: this.props.oColour }]}>O</td>
-                                        <td style={[style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay:"0.2s", color: this.props.xColour }]}>X</td>
-                                    </tr>
-                                </tbody>
-                            </table> : <div>
-                                    <div style={{ display: "inline-block" }}>
-                                        <div style={{ marginBottom: style.componentMargin }}>
-                                            <ConnectedScoreboard />
-                                        </div>
-                                        <ConnectedTicTacToeBoard />
-                                        <div style={[style.componentBoxShadow, buttonHasFocus||buttonHasHover?buttonHoverStyle:null]}>
-                                            <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }]} onClick={this.props.playAgain}>{playAgainText}</button>
-                                        </div>
-                                    </div>
-                                    <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
-                                        {this.state.winDrawElement}
-                                    </ModalCover>
-                            </div>
+                            showLoading ? this.getLoader() : <ConnectedTicTacToeScreen/>
                         }
                     </div>
                     
@@ -1677,35 +1627,95 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
         </StyleRoot>
             
     }
-    
-    getWinDrawElement(props: TicTacToeAppProps) {
+}
+interface TicTacToeScreenProps {
+    gameState: GameState,
+    playAgain: () => void,
+    finishedConfirmed: () => void,
+    xColour: string,
+    oColour: string,
+}
+interface TicTacToeScreenState {
+    winDrawElement: any
+}
+class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScreenState>{
+    keyframesFlipInX: any
+    keyframesFlipOutX: any
+    flipInXAnimationName: string
+    flipOutXAnimationName: string
+    flipDuration = 1000
+    constructor(props) {
+        super(props);
+        this.state = { winDrawElement: this.getWinDrawElement(props) }
+        this.keyframesFlipInX = Radium.keyframes(flipInX) as any;
+        this.flipInXAnimationName = this.keyframesFlipInX.__process("all").animationName;
+        this.keyframesFlipOutX = Radium.keyframes(flipOutX) as any;
+        this.flipOutXAnimationName = this.keyframesFlipOutX.__process("all").animationName;
+
+    }
+    getWinDrawElement(props: TicTacToeScreenProps) {
         function getWinner(playerId: string, playerColour: string) {
             return <div style={style.winDrawContainerStyle}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily, color: playerColour }}>{playerId + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
         }
-        
-        var messageElement=<div/>
-        
+
+        var messageElement = <div />
+
         switch (props.gameState) {
             case GameState.X:
                 messageElement = getWinner(cross, this.props.xColour);
                 break;
             case GameState.O:
-                messageElement = getWinner(nought,this.props.oColour);
+                messageElement = getWinner(nought, this.props.oColour);
                 break;
             case GameState.Draw:
                 messageElement = <div style={{ ...style.winDrawContainerStyle, fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
                 break;
         }
         return messageElement;
+
+    }
+    modalShouldOpen = () => {
+        var gameState = this.props.gameState;
+        return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
+    }
+    render() {
+        var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
+        var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
+        return <div>
             
+            <span style={{ animationName: this.keyframesFlipInX }} />
+            <span style={{ animationName: this.keyframesFlipOutX }} />
+            <Style rules={{
+                ".ReactModal__Overlay": {
+                    animationName: this.flipInXAnimationName,
+                    animationDuration: this.flipDuration + "ms"
+                },
+                ".ReactModal__Overlay--before-close": {
+                    animationName: this.flipOutXAnimationName,
+                    animationDuration: this.flipDuration + "ms",
+                    animationFillMode: "forwards"
+                }
+            }} />
+            <div style={{ display: "inline-block" }}>
+                <div style={{ marginBottom: style.componentMargin }}>
+                    <ConnectedScoreboard />
+                </div>
+                <ConnectedTicTacToeBoard />
+                <div style={[style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null]}>
+                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }]} onClick={this.props.playAgain}>{playAgainText}</button>
+                </div>
+            </div>
+            <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+                {this.state.winDrawElement}
+            </ModalCover>
+        </div>
     }
 }
-const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
+const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
     return {
         gameState: state.gameState,
-        fontLoadingState: state.fontLoadingState,
         oColour: state.oColour,
-        xColour:state.xColour
+        xColour: state.xColour
     }
 }, (dispatch) => {
     return {
@@ -1716,7 +1726,14 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
             dispatch(finishedConfirmed());
         }
     }
-    })(Radium(TicTacToeApp));
+})(Radium(TicTacToeScreen));
+const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
+    return {
+        fontLoadingState: state.fontLoadingState,
+        oColour: state.oColour,
+        xColour: state.xColour
+    }
+})(TicTacToeApp);
 //#endregion
 //#endregion
 
