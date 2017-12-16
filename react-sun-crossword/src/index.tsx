@@ -1674,6 +1674,11 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         return messageElement;
 
     }
+    componentWillReceiveProps(props: TicTacToeScreenProps) {
+        if (props.gameState !==this.props.gameState){
+            this.setState({ winDrawElement: this.getWinDrawElement(props) })
+        }
+    }
     modalShouldOpen = () => {
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
@@ -1701,8 +1706,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div style={[style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null]}>
-                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }]} onClick={this.props.playAgain}>{playAgainText}</button>
+                <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin},style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null]}>
+                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }]} onClick={this.props.playAgain}>{playAgainText}</button>
                 </div>
             </div>
             <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>

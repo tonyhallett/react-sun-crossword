@@ -46350,6 +46350,11 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         }
         return messageElement;
     };
+    TicTacToeScreen.prototype.componentWillReceiveProps = function (props) {
+        if (props.gameState !== this.props.gameState) {
+            this.setState({ winDrawElement: this.getWinDrawElement(props) });
+        }
+    };
     TicTacToeScreen.prototype.render = function () {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
@@ -46371,8 +46376,8 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 React.createElement("div", { style: { marginBottom: style.componentMargin } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
-                React.createElement("div", { style: [style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null] },
-                    React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", borderRadius: style.borderRadius, marginTop: style.componentMargin, paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }], onClick: this.props.playAgain }, playAgainText))),
+                React.createElement("div", { style: [{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonHasFocus || buttonHasHover ? buttonHoverStyle : null] },
+                    React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }], onClick: this.props.playAgain }, playAgainText))),
             React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
     };
     return TicTacToeScreen;
