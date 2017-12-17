@@ -97,7 +97,21 @@ function fontLoading(state: FontLoadingState) {
 }
 enum SquareGo { X, O, None }
 enum Player { X, O }
-enum GameState {X,O,Playing,Draw,FinishedConfirmed}
+enum GameState { X, O, Playing, Draw, FinishedConfirmed }
+function gameStateString(gameState: GameState) {
+    switch (gameState) {
+        case GameState.Draw:
+            return "Draw";
+        case GameState.FinishedConfirmed:
+            return "Finished Confirmed";
+        case GameState.O:
+            return "O Winner";
+        case GameState.X:
+            return "X Winner";
+        case GameState.Playing:
+            return "Playing"
+    }
+}
 //probably is a way to type a colour css property
 interface ScoreboardCountState {
     playCount: number,
@@ -1929,6 +1943,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 
     }
     componentWillReceiveProps(props: TicTacToeScreenProps) {
+        console.log("TicTacToeScreen receive props, current gameState: " + gameStateString(this.props.gameState) + ", new gameState: " + gameStateString(props.gameState));
         if (props.gameState !== this.props.gameState && props.gameState !== GameState.FinishedConfirmed) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) })
         }
@@ -1939,7 +1954,6 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     }
 
     keyDown = (event: any) => {
-        console.log(event.key);
         var key = event.key;
         var modalOpen = this.modalShouldOpen();
         if (modalOpen) {
@@ -2023,7 +2037,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 </div>
                 <ConnectedTicTacToeBoard />
                 <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
-                    <button key="button" style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} >{playAgainText}</button>
+                    <button tabIndex={-1} key="button" style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} >{playAgainText}</button>
                 </div>
             </div>
             <ModalCover parentSelector={this.getModalParent}  contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>

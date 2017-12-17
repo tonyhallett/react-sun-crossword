@@ -45011,6 +45011,20 @@ var GameState;
     GameState[GameState["Draw"] = 3] = "Draw";
     GameState[GameState["FinishedConfirmed"] = 4] = "FinishedConfirmed";
 })(GameState || (GameState = {}));
+function gameStateString(gameState) {
+    switch (gameState) {
+        case GameState.Draw:
+            return "Draw";
+        case GameState.FinishedConfirmed:
+            return "Finished Confirmed";
+        case GameState.O:
+            return "O Winner";
+        case GameState.X:
+            return "X Winner";
+        case GameState.Playing:
+            return "Playing";
+    }
+}
 //#endregion
 //#region action types
 var Finished_Confirmed = "FINISHED_CONFIRMED";
@@ -46477,7 +46491,6 @@ var TicTacToeScreen = /** @class */ (function (_super) {
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
         };
         _this.keyDown = function (event) {
-            console.log(event.key);
             var key = event.key;
             var modalOpen = _this.modalShouldOpen();
             if (modalOpen) {
@@ -46559,6 +46572,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         return messageElement;
     };
     TicTacToeScreen.prototype.componentWillReceiveProps = function (props) {
+        console.log("TicTacToeScreen receive props, current gameState: " + gameStateString(this.props.gameState) + ", new gameState: " + gameStateString(props.gameState));
         if (props.gameState !== this.props.gameState && props.gameState !== GameState.FinishedConfirmed) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
         }
@@ -46588,7 +46602,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
                 React.createElement("div", { style: [{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null] },
-                    React.createElement("button", { key: "button", style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation], onClick: this.props.playAgain }, playAgainText))),
+                    React.createElement("button", { tabIndex: -1, key: "button", style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation], onClick: this.props.playAgain }, playAgainText))),
             React.createElement(ModalCover, { parentSelector: this.getModalParent, contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
     };
     return TicTacToeScreen;
