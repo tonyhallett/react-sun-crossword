@@ -511,7 +511,8 @@ interface ModalProps {
     style?: ModalStyle
     className?: classNameProps,
     overlayClassName?: classNameProps,
-    portalClassName?: string
+    portalClassName?: string,
+    shouldFocusAfterRender?:boolean
 
 
 }
@@ -1877,7 +1878,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
                 </div>
             </div>
-            <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalCover shouldFocusAfterRender={false} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 {this.state.winDrawElement}
             </ModalCover>
         </div>
