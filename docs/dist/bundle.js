@@ -45318,16 +45318,7 @@ function reducer(state, action) {
                     playCount++;
                     break;
             }
-            return {
-                board: newBoard,
-                currentPlayer: nextPlayer,
-                oColour: state.oColour,
-                xColour: state.xColour,
-                gameState: gameState,
-                drawCount: drawCount,
-                playCount: playCount,
-                playerXWinCount: playerXWinCount
-            };
+            return __assign({}, state, { board: newBoard, currentPlayer: nextPlayer, oColour: state.oColour, xColour: state.xColour, gameState: gameState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
         default:
             return state;
     }
@@ -46524,7 +46515,6 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         _this.flipOutXAnimationName = _this.keyframesFlipOutX.__process("all").animationName;
         return _this;
     }
-    //<div>{messageElement}<div style={style.winDrawContainerStyle}>(Esc to close )</div></div>;
     TicTacToeScreen.prototype.getWinDrawElement = function (props) {
         function getWinner(playerId, playerColour) {
             return React.createElement("div", { style: style.winDrawContainerStyle },
@@ -46557,7 +46547,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
-        return React.createElement("div", { ref: function (mp) { _this.modalParent = mp; }, onKeyDown: this.keyDown },
+        return React.createElement("div", { tabIndex: 0, ref: function (mp) { _this.modalParent = mp; }, onKeyDown: this.keyDown },
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
             React.createElement(Radium_1.Style, { rules: {

@@ -424,6 +424,7 @@ function reducer(state: TicTacToeState = {
                     break;
             }
             return {
+                ...state,
                 board: newBoard,
                 currentPlayer: nextPlayer,
                 oColour: state.oColour,
@@ -1901,7 +1902,6 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         this.flipOutXAnimationName = this.keyframesFlipOutX.__process("all").animationName;
 
     }
-    //<div>{messageElement}<div style={style.winDrawContainerStyle}>(Esc to close )</div></div>;
     getWinDrawElement(props: TicTacToeScreenProps) {
         function getWinner(playerId: string, playerColour: string) {
             return <div style={style.winDrawContainerStyle}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily, color: playerColour }}>{playerId + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
@@ -1975,7 +1975,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
 
-        return <div ref={(mp) => { this.modalParent=mp }} onKeyDown={this.keyDown}>
+        return <div tabIndex={0} ref={(mp) => { this.modalParent = mp }} onKeyDown={this.keyDown}>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
             <span style={{ animationName: this.keyframesFlipOutX }} />
