@@ -44924,6 +44924,57 @@ var Transition_1 = __webpack_require__(77);
 var Color = __webpack_require__(72);
 var react_animations_1 = __webpack_require__(74);
 var WebFont = __webpack_require__(79);
+//will not be necessary if the placeholder worked 
+function mergeAnimations(animationStyles) {
+    var animationProperties = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "none" }, { name: "animationPlayState", default: "running" }];
+    var mergedAnimationStyle = {
+        animationName: [],
+        animationDuration: "",
+        animationTimingFunction: "",
+        animationDelay: "",
+        animationIterationCount: "",
+        animationDirection: "",
+        animationFillMode: "",
+        animationPlayState: ""
+    };
+    var hadFirst = false;
+    for (var i = 0; i < animationStyles.length; i++) {
+        var animationStyle = animationStyles[i];
+        if (animationStyle && animationStyle.animationName) {
+            mergedAnimationStyle.animationName.push(animationStyle.animationName);
+            for (var j = 0; j < animationProperties.length; j++) {
+                var animationProperty = animationProperties[j];
+                var animationPropertyName = animationProperty.name;
+                var animationValue = animationStyle.hasOwnProperty(animationPropertyName) ? animationStyle[animationPropertyName] : animationProperty.default;
+                if (hadFirst) {
+                    animationValue = "," + animationValue;
+                }
+                mergedAnimationStyle[animationPropertyName] = mergedAnimationStyle[animationPropertyName] + animationValue;
+            }
+            hadFirst = true;
+        }
+    }
+    return mergedAnimationStyle;
+}
+function animationSupported() {
+    var animation = false, animationstring = 'animation', keyframeprefix = '', domPrefixes = 'Webkit Moz O ms Khtml'.split(' '), pfx = '', elem = document.createElement('div');
+    if (elem.style.animationName !== undefined) {
+        animation = true;
+    }
+    if (animation === false) {
+        for (var i = 0; i < domPrefixes.length; i++) {
+            if (elem.style[domPrefixes[i] + 'AnimationName'] !== undefined) {
+                pfx = domPrefixes[i];
+                animationstring = pfx + 'Animation';
+                keyframeprefix = '-' + pfx.toLowerCase() + '-';
+                animation = true;
+                break;
+            }
+        }
+    }
+    return animation;
+}
+//#endregion
 //#region redux
 //#region redux state
 //this is not for all circumstances, just for what is appropriate for me - a single font
@@ -45842,24 +45893,6 @@ var componentBackgroundColor = "rgb(207, 197, 175)";
 var indicatorWinningSquareColor = Color(componentBackgroundColor).lighten(0.1);
 var ticTacToeSquareBorderWidth = 5;
 var backgroundColor = "orange";
-function animationSupported() {
-    var animation = false, animationstring = 'animation', keyframeprefix = '', domPrefixes = 'Webkit Moz O ms Khtml'.split(' '), pfx = '', elem = document.createElement('div');
-    if (elem.style.animationName !== undefined) {
-        animation = true;
-    }
-    if (animation === false) {
-        for (var i = 0; i < domPrefixes.length; i++) {
-            if (elem.style[domPrefixes[i] + 'AnimationName'] !== undefined) {
-                pfx = domPrefixes[i];
-                animationstring = pfx + 'Animation';
-                keyframeprefix = '-' + pfx.toLowerCase() + '-';
-                animation = true;
-                break;
-            }
-        }
-    }
-    return animation;
-}
 var animationIsSupported = animationSupported();
 var startEndBoxShadow = "0 0 5px 2px " + backgroundColor + " inset";
 var focusKeyframes = {
@@ -46277,22 +46310,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
             }
         }
     };
-    TicTacToeApp.prototype.getLoader = function () {
-        return React.createElement("table", { style: { borderSpacing: 2 } },
-            React.createElement("tbody", null,
-                React.createElement("tr", null,
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.xColour }] }, "X"),
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X")),
-                React.createElement("tr", null,
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X"),
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.1s", color: this.props.xColour }] }, "X"),
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O")),
-                React.createElement("tr", null,
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
-                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.2s", color: this.props.xColour }] }, "X"))));
-    };
     TicTacToeApp.prototype.render = function () {
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
         if (!showLoading) {
@@ -46310,44 +46327,39 @@ var TicTacToeApp = /** @class */ (function (_super) {
                 } }),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
-                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? this.getLoader() : React.createElement(ConnectedTicTacToeScreen, null)))));
+                    React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement(ConnectedTicTacToeLoader, null) : React.createElement(ConnectedTicTacToeScreen, null)))));
     };
     return TicTacToeApp;
 }(React.Component));
-//will not be necessary if the placeholder worked 
-function mergeAnimations(animationStyles) {
-    var animationProperties = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "none" }, { name: "animationPlayState", default: "running" }];
-    var mergedAnimationStyle = {
-        animationName: [],
-        animationDuration: "",
-        animationTimingFunction: "",
-        animationDelay: "",
-        animationIterationCount: "",
-        animationDirection: "",
-        animationFillMode: "",
-        animationPlayState: ""
-    };
-    var hadFirst = false;
-    for (var i = 0; i < animationStyles.length; i++) {
-        var animationStyle = animationStyles[i];
-        if (animationStyle && animationStyle.animationName) {
-            mergedAnimationStyle.animationName.push(animationStyle.animationName);
-            for (var j = 0; j < animationProperties.length; j++) {
-                var animationProperty = animationProperties[j];
-                var animationPropertyName = animationProperty.name;
-                var animationValue = animationStyle.hasOwnProperty(animationPropertyName) ? animationStyle[animationPropertyName] : animationProperty.default;
-                if (hadFirst) {
-                    animationValue = "," + animationValue;
-                }
-                mergedAnimationStyle[animationPropertyName] = mergedAnimationStyle[animationPropertyName] + animationValue;
-            }
-            hadFirst = true;
-        }
+var TicTacToeLoader = /** @class */ (function (_super) {
+    __extends(TicTacToeLoader, _super);
+    function TicTacToeLoader() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    return mergedAnimationStyle;
-}
-//then need to create and replace plugins
-//thank charlie for cards
+    TicTacToeLoader.prototype.render = function () {
+        return React.createElement("table", { style: { borderSpacing: 2 } },
+            React.createElement("tbody", null,
+                React.createElement("tr", null,
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { color: this.props.xColour }] }, "X"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X")),
+                React.createElement("tr", null,
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.xColour }] }, "X"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.1s", color: this.props.xColour }] }, "X"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O")),
+                React.createElement("tr", null,
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, { color: this.props.oColour }] }, "O"),
+                    React.createElement("td", { style: [style.loadingIndicator.cellStyle, style.loadingIndicator.winningCellStyle, { animationDelay: "0.2s", color: this.props.xColour }] }, "X"))));
+    };
+    return TicTacToeLoader;
+}(React.Component));
+var ConnectedTicTacToeLoader = react_redux_1.connect(function (state) {
+    return {
+        oColour: state.oColour,
+        xColour: state.xColour
+    };
+})(ConfiguredRadium(TicTacToeLoader));
 var TicTacToeScreen = /** @class */ (function (_super) {
     __extends(TicTacToeScreen, _super);
     function TicTacToeScreen(props) {
@@ -46390,15 +46402,9 @@ var TicTacToeScreen = /** @class */ (function (_super) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
         }
     };
-    /*
-    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle:null]} onClick={this.props.playAgain}>{playAgainText}</button>
-
-    */
     TicTacToeScreen.prototype.render = function () {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
-        console.log("Button has focus: " + buttonHasFocus);
-        console.log("Button has hover: " + buttonHasFocus);
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         return React.createElement("div", null,
