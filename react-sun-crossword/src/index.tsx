@@ -1707,7 +1707,7 @@ interface AnimationStyle extends Object {
 }
 //will not be necessary if the placeholder worked 
 function mergeAnimations(animationStyles: AnimationStyle[]) {
-    var animationProperties: {name:string,default:string}[] = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "normal" }, { name:"animationPlayState",default:"running" }];
+    var animationProperties: {name:string,default:string}[] = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "none" }, { name:"animationPlayState",default:"running" }];
     var mergedAnimationStyle = {
         animationName: [],
         animationDuration: "",

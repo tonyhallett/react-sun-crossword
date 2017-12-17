@@ -46316,7 +46316,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
 }(React.Component));
 //will not be necessary if the placeholder worked 
 function mergeAnimations(animationStyles) {
-    var animationProperties = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "normal" }, { name: "animationPlayState", default: "running" }];
+    var animationProperties = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "none" }, { name: "animationPlayState", default: "running" }];
     var mergedAnimationStyle = {
         animationName: [],
         animationDuration: "",
