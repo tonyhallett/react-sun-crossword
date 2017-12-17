@@ -11,7 +11,7 @@ import * as Radium from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
-import { flipOutX,flipInX,pulse,bounce } from 'react-animations';
+import { flipOutX,flipInX,pulse,shake } from 'react-animations';
 import * as WebFont  from "webfontloader";
 
 //#region css animation helpers
@@ -1172,8 +1172,8 @@ var focusAnimationStyle = {
     animationIterationCount: "infinite",
     animationTimingFunction:"cubic-bezier(0.23, 1, 0.32, 1)"
 }
-var bounceAnimationStyle = {
-    animationName: Radium.keyframes(bounce),
+var shakeAnimationStyle = {
+    animationName: Radium.keyframes(shake),
     animationDuration: "2000ms",
     animationIterationCount: "infinite",
 }
@@ -1811,7 +1811,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
 
-        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null, this.props.gameState !== GameState.Playing ? bounceAnimationStyle:null]);
+        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
         
         return <div>
@@ -1834,8 +1834,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null]}>
-                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} },buttonAnimation]} onClick={this.props.playAgain}>{playAgainText}</button>
+                <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
+                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
                 </div>
             </div>
             <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
