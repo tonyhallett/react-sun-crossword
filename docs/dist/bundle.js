@@ -45694,6 +45694,31 @@ function withColourChangeTransition(Component) {
     }(React.Component));
     return colourChangeTransition;
 }
+exports.translate3d = function (a, b, c) { return "translate3d(" + a + ", " + b + ", " + c + ")"; };
+function createShakeKeyframes(shakeDistance) {
+    var noShake = {
+        transform: exports.translate3d(0, 0, 0)
+    };
+    var downShake = {
+        transform: exports.translate3d(-shakeDistance, 0, 0)
+    };
+    var upShake = {
+        transform: exports.translate3d(shakeDistance, 0, 0)
+    };
+    return {
+        from: noShake,
+        '10%': downShake,
+        '20%': upShake,
+        '30%': downShake,
+        '40%': upShake,
+        '50%': downShake,
+        '60%': upShake,
+        '70%': downShake,
+        '80%': upShake,
+        '90%': downShake,
+        to: noShake
+    };
+}
 function scale3d(a, b, c) {
     return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
 }
@@ -45912,8 +45937,9 @@ var focusAnimationStyle = {
     animationIterationCount: "infinite",
     animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)"
 };
+var shakeKeyframes = createShakeKeyframes(5);
 var shakeAnimationStyle = {
-    animationName: Radium.keyframes(react_animations_1.shake),
+    animationName: Radium.keyframes(shakeKeyframes),
     animationDuration: "2000ms",
     animationIterationCount: "infinite",
 };

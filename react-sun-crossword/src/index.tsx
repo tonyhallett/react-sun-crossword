@@ -913,7 +913,44 @@ function withColourChangeTransition(Component: React.ComponentClass<TransitionPr
 //#endregion
 //#endregion
 
+//#region ShakeAnimation
+type StringOrNumber=string|number
+export const translate3d = (
+    a: StringOrNumber,
+    b: StringOrNumber,
+    c: StringOrNumber
+): string => `translate3d(${a}, ${b}, ${c})`;
 
+
+
+function createShakeKeyframes(shakeDistance: number) {
+    const noShake = {
+        transform: translate3d(0, 0, 0)
+    };
+
+    const downShake = {
+        transform: translate3d(-shakeDistance, 0, 0)
+    };
+
+    const upShake = {
+        transform: translate3d(shakeDistance, 0, 0)
+    };
+    return {
+        from: noShake,
+        '10%': downShake,
+        '20%': upShake,
+        '30%': downShake,
+        '40%': upShake,
+        '50%': downShake,
+        '60%': upShake,
+        '70%': downShake,
+        '80%': upShake,
+        '90%': downShake,
+        to: noShake
+    };
+}
+
+//#endregion
 //#region PulseAnimation
 interface PulseProps {
     pulseAmount: number,//need default to 1.05
@@ -1172,8 +1209,9 @@ var focusAnimationStyle = {
     animationIterationCount: "infinite",
     animationTimingFunction:"cubic-bezier(0.23, 1, 0.32, 1)"
 }
+var shakeKeyframes = createShakeKeyframes(5);
 var shakeAnimationStyle = {
-    animationName: Radium.keyframes(shake),
+    animationName: Radium.keyframes(shakeKeyframes),
     animationDuration: "2000ms",
     animationIterationCount: "infinite",
 }
@@ -1193,6 +1231,7 @@ var buttonHoverFocusShadowStyle = {
     boxShadow: boxShadowHover,
     
 }
+
 var fontSize = 20;
 var pulseIncrease = 1.5;
 var scoreboardPadding = 5;
