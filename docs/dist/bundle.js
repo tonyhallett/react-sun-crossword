@@ -46470,7 +46470,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
-        return React.createElement("div", { onKeyDown: this.keyDown },
+        return React.createElement("div", { ref: function (mp) { _this.modalParent = mp; }, onKeyDown: this.keyDown },
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
             React.createElement(Radium_1.Style, { rules: {

@@ -1889,7 +1889,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
 
-        return <div onKeyDown={this.keyDown}>
+        return <div ref={(mp) => { this.modalParent=mp }} onKeyDown={this.keyDown}>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
             <span style={{ animationName: this.keyframesFlipOutX }} />
