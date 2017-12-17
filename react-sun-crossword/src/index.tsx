@@ -512,8 +512,8 @@ interface ModalProps {
     className?: classNameProps,
     overlayClassName?: classNameProps,
     portalClassName?: string,
-    shouldFocusAfterRender?:boolean
-
+    shouldFocusAfterRender?: boolean
+    parentSelector: () => HTMLElement
 
 }
 interface ModalReadyProps extends ModalProps {
@@ -1880,6 +1880,10 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     keyDown = () => {
         console.log("key down!")
     }
+    getModalParent() {
+        return this.modalParent;
+    }
+    modalParent
     render() {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
@@ -1887,8 +1891,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
-        
-        return <div>
+
+        return <div ref={(mp) => { this.modalParent=mp }} onKeyDown={this.keyDown}>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
             <span style={{ animationName: this.keyframesFlipOutX }} />
@@ -1903,7 +1907,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     animationFillMode: "forwards"
                 }
             }} />
-            <div onKeyDown={this.keyDown} style={{ display: "inline-block" }}>
+            <div  style={{ display: "inline-block" }}>
                 <div style={{ marginBottom: style.componentMargin }}>
                     <ConnectedScoreboard />
                 </div>
@@ -1912,7 +1916,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <button ref={(b)=>this.playAgainButton=b} key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
                 </div>
             </div>
-            <ModalCover onAfterOpen={this.fixModal} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalCover parentSelector={this.getModalParent} onAfterOpen={this.fixModal} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 {this.state.winDrawElement}
             </ModalCover>
         </div>
