@@ -558,6 +558,7 @@ class ModalCover extends React.Component<ModalCoverProps, undefined>{
         return <ModalReady {...this.props} getStyle={this.getStyle} />
     }
 }
+
 //#endregion
 //#region Transitions
 //#region additional typing
@@ -1858,7 +1859,9 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
-
+    fixModal = (modal) => {
+        var st = "";
+    }
     render() {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
@@ -1891,7 +1894,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
                 </div>
             </div>
-            <ModalCover shouldFocusAfterRender={false} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalCover ref={(m)=>this.fixModal} shouldFocusAfterRender={false} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 {this.state.winDrawElement}
             </ModalCover>
         </div>

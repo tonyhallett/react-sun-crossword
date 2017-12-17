@@ -45706,7 +45706,7 @@ function createShakeKeyframes(shakeDistance) {
         transform: exports.translate3d(shakeDistance, 0, 0)
     };
     /*
-    without pause
+    without pause ( easy enough to calculate based upon a pause percent)
     return {
         from: noShake,
         '10%': downShake,
@@ -46413,6 +46413,9 @@ var TicTacToeScreen = /** @class */ (function (_super) {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
         };
+        _this.fixModal = function (modal) {
+            var st = "";
+        };
         _this.state = { winDrawElement: _this.getWinDrawElement(props) };
         _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
         _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
@@ -46449,6 +46452,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         }
     };
     TicTacToeScreen.prototype.render = function () {
+        var _this = this;
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
@@ -46473,7 +46477,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 React.createElement(ConnectedTicTacToeBoard, null),
                 React.createElement("div", { style: [{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null] },
                     React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation], onClick: this.props.playAgain, onMouseDown: function (e) { e.preventDefault(); } }, playAgainText))),
-            React.createElement(ModalCover, { shouldFocusAfterRender: false, contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
+            React.createElement(ModalCover, { ref: function (m) { return _this.fixModal; }, shouldFocusAfterRender: false, contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
     };
     return TicTacToeScreen;
 }(React.Component));
