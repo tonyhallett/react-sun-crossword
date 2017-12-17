@@ -45694,7 +45694,7 @@ function withColourChangeTransition(Component) {
     }(React.Component));
     return colourChangeTransition;
 }
-exports.translate3d = function (a, b, c) { return "translate3d(" + a + ", " + b + ", " + c + ")"; };
+exports.translate3d = function (a, b, c) { return "translate3d(" + a + "px, " + b + "px, " + c + "px)"; };
 function createShakeKeyframes(shakeDistance) {
     var noShake = {
         transform: exports.translate3d(0, 0, 0)

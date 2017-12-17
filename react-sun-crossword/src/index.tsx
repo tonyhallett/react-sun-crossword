@@ -916,10 +916,10 @@ function withColourChangeTransition(Component: React.ComponentClass<TransitionPr
 //#region ShakeAnimation
 type StringOrNumber=string|number
 export const translate3d = (
-    a: StringOrNumber,
-    b: StringOrNumber,
-    c: StringOrNumber
-): string => `translate3d(${a}, ${b}, ${c})`;
+    a: number,
+    b: number,
+    c: number
+): string => `translate3d(${a}px, ${b}px, ${c}px)`;
 
 
 
