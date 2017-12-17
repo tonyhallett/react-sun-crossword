@@ -46412,23 +46412,20 @@ var TicTacToeScreen = /** @class */ (function (_super) {
             var gameState = _this.props.gameState;
             return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
         };
-        _this.fixModal = function () {
-            var modalContent = document.querySelector(".ReactModal__Content");
-            modalContent.onkeydown = _this.modalKeyDown;
-        };
-        _this.modalKeyDown = function (event) {
+        _this.keyDown = function (event) {
             console.log(event.key);
-            switch (event.key) {
-                case " ":
-                case "Enter":
-                    event.srcElement.parentElement.click();
-                    break;
-                case "Tab":
-                    _this.playAgainButton.focus();
+            var key = event.key;
+            var modalOpen = _this.modalShouldOpen();
+            if (modalOpen) {
+                //arrow down, tab to the button ?
+                switch (key) {
+                    case "Enter":
+                    case "Tab":
+                    case "Esc":
+                        _this.props.finishedConfirmed();
+                        break;
+                }
             }
-        };
-        _this.keyDown = function () {
-            console.log("key down!");
         };
         _this.getModalParent = function () {
             return _this.modalParent;
@@ -46473,7 +46470,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
-        return React.createElement("div", { ref: function (mp) { _this.modalParent = mp; }, onKeyDown: this.keyDown },
+        return React.createElement("div", { onKeyDown: this.keyDown },
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
             React.createElement(Radium_1.Style, { rules: {
@@ -46493,7 +46490,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 React.createElement(ConnectedTicTacToeBoard, null),
                 React.createElement("div", { style: [{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null] },
                     React.createElement("button", { ref: function (b) { return _this.playAgainButton = b; }, key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation], onClick: this.props.playAgain, onMouseDown: function (e) { e.preventDefault(); } }, playAgainText))),
-            React.createElement(ModalCover, { parentSelector: this.getModalParent, onAfterOpen: this.fixModal, contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
+            React.createElement(ModalCover, { parentSelector: this.getModalParent, contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
     };
     return TicTacToeScreen;
 }(React.Component));

@@ -1861,24 +1861,21 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
-    fixModal = () => {
-        var modalContent = document.querySelector(".ReactModal__Content") as HTMLElement;
-        modalContent.onkeydown = this.modalKeyDown
-    }
-    modalKeyDown = (event: KeyboardEvent) => {
+
+    keyDown = (event: any) => {
         console.log(event.key);
-        switch (event.key) {
-            case " ":
-            case "Enter":
-                event.srcElement.parentElement.click();
-                break;
-            case "Tab":
-                this.playAgainButton.focus();
+        var key = event.key;
+        var modalOpen = this.modalShouldOpen();
+        if (modalOpen) {
+            //arrow down, tab to the button ?
+            switch (key) {
+                case "Enter":
+                case "Tab":
+                case "Esc":
+                    this.props.finishedConfirmed();
+                    break;
+            }
         }
-       
-    }
-    keyDown = () => {
-        console.log("key down!")
     }
     getModalParent=()=> {
         return this.modalParent;
@@ -1892,7 +1889,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
 
-        return <div ref={(mp) => { this.modalParent=mp }} onKeyDown={this.keyDown}>
+        return <div onKeyDown={this.keyDown}>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
             <span style={{ animationName: this.keyframesFlipOutX }} />
@@ -1916,7 +1913,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <button ref={(b)=>this.playAgainButton=b} key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
                 </div>
             </div>
-            <ModalCover parentSelector={this.getModalParent} onAfterOpen={this.fixModal} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalCover parentSelector={this.getModalParent}  contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 {this.state.winDrawElement}
             </ModalCover>
         </div>
