@@ -45912,6 +45912,11 @@ var focusAnimationStyle = {
     animationIterationCount: "infinite",
     animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)"
 };
+var bounceAnimationStyle = {
+    animationName: Radium.keyframes(react_animations_1.bounce),
+    animationDuration: "2000ms",
+    animationIterationCount: "infinite",
+};
 var boxShadowHover = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)";
 var buttonHoverFocusBrightnessAnimationStyle = {
     animationName: Radium.keyframes({
@@ -46406,7 +46411,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
-        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null, this.props.gameState !== GameState.Playing ? bounceAnimationStyle : null]);
         return React.createElement("div", null,
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),

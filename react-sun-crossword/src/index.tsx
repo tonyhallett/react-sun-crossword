@@ -11,7 +11,7 @@ import * as Radium from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
 import * as Color from 'Color'
-import { flipOutX,flipInX,pulse } from 'react-animations';
+import { flipOutX,flipInX,pulse,bounce } from 'react-animations';
 import * as WebFont  from "webfontloader";
 
 //#region css animation helpers
@@ -1172,7 +1172,11 @@ var focusAnimationStyle = {
     animationIterationCount: "infinite",
     animationTimingFunction:"cubic-bezier(0.23, 1, 0.32, 1)"
 }
-
+var bounceAnimationStyle = {
+    animationName: Radium.keyframes(bounce),
+    animationDuration: "2000ms",
+    animationIterationCount: "infinite",
+}
 
 var boxShadowHover = "0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)"
 var buttonHoverFocusBrightnessAnimationStyle = {
@@ -1807,7 +1811,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
 
-        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null, this.props.gameState !== GameState.Playing ? bounceAnimationStyle:null]);
         
         
         return <div>
