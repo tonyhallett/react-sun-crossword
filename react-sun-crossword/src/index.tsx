@@ -522,7 +522,7 @@ interface ModalReadyProps extends ModalProps {
 interface ModalReadyState {
     ready: boolean
 }
-//if this works then will want a Modal class that will overlay an element
+
 class ModalReady extends React.Component<ModalReadyProps, ModalReadyState>{
     constructor(props) {
         super(props)
@@ -1880,7 +1880,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     keyDown = () => {
         console.log("key down!")
     }
-    getModalParent() {
+    getModalParent=()=> {
         return this.modalParent;
     }
     modalParent

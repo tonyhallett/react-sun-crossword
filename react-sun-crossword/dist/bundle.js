@@ -45381,7 +45381,6 @@ function getOverlay(element, dimensionsChoice) {
         height: getElementHeight(element, dimensionsChoice)
     };
 }
-//if this works then will want a Modal class that will overlay an element
 var ModalReady = /** @class */ (function (_super) {
     __extends(ModalReady, _super);
     function ModalReady(props) {
@@ -46431,6 +46430,9 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         _this.keyDown = function () {
             console.log("key down!");
         };
+        _this.getModalParent = function () {
+            return _this.modalParent;
+        };
         _this.state = { winDrawElement: _this.getWinDrawElement(props) };
         _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
         _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
@@ -46464,9 +46466,6 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         if (props.gameState !== this.props.gameState && props.gameState !== GameState.FinishedConfirmed) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
         }
-    };
-    TicTacToeScreen.prototype.getModalParent = function () {
-        return this.modalParent;
     };
     TicTacToeScreen.prototype.render = function () {
         var _this = this;
