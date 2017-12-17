@@ -45016,8 +45016,22 @@ var GameState;
 var Finished_Confirmed = "FINISHED_CONFIRMED";
 var Play_Again = "PLAY_AGAIN";
 var Take_Go = "TAKE_GO";
+var Arrow_Press = "ARROW_PRESS";
 //#endregion
 //#region action creators
+var ArrowDirection;
+(function (ArrowDirection) {
+    ArrowDirection[ArrowDirection["Up"] = 0] = "Up";
+    ArrowDirection[ArrowDirection["Down"] = 1] = "Down";
+    ArrowDirection[ArrowDirection["Left"] = 2] = "Left";
+    ArrowDirection[ArrowDirection["Right"] = 3] = "Right";
+})(ArrowDirection || (ArrowDirection = {}));
+function arrowPressed(direction) {
+    return {
+        type: Arrow_Press,
+        direction: direction
+    };
+}
 function finishedConfirmed() {
     return {
         type: Finished_Confirmed
@@ -45180,6 +45194,54 @@ function checkDraw(board) {
     }
     return isDraw;
 }
+function getSelectedSquare(currentSelectedSquare, numSquares, direction) {
+    if (currentSelectedSquare === null) {
+        return { column: 0, row: 0 };
+    }
+    var newColumn;
+    var newRow;
+    var currentColumn = currentSelectedSquare.column;
+    var currentRow = currentSelectedSquare.row;
+    switch (direction) {
+        case ArrowDirection.Left:
+            newRow = currentRow;
+            if (currentColumn === 0) {
+                newColumn = numSquares - 1;
+            }
+            else {
+                newColumn = currentColumn - 1;
+            }
+            break;
+        case ArrowDirection.Right:
+            newRow = currentRow;
+            if (currentColumn === numSquares - 1) {
+                newColumn = 0;
+            }
+            else {
+                newColumn = currentColumn + 1;
+            }
+            break;
+        case ArrowDirection.Up:
+            newColumn = currentColumn;
+            if (currentRow === 0) {
+                newRow = numSquares - 1;
+            }
+            else {
+                newRow = currentRow - 1;
+            }
+            break;
+        case ArrowDirection.Down:
+            newColumn = currentColumn;
+            if (currentRow === numSquares - 1) {
+                newRow = 0;
+            }
+            else {
+                newRow = currentRow + 1;
+            }
+            break;
+    }
+    return { column: newColumn, row: newRow };
+}
 function reducer(state, action) {
     if (state === void 0) { state = {
         currentPlayer: firstPlayer,
@@ -45190,9 +45252,12 @@ function reducer(state, action) {
         playCount: 0,
         drawCount: 0,
         playerXWinCount: 0,
-        fontLoadingState: FontLoadingState.NotStarted
+        fontLoadingState: FontLoadingState.NotStarted,
+        selectedSquare: null
     }; }
     switch (action.type) {
+        case Arrow_Press:
+            return __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
         case FONT_LOADING:
             return __assign({}, state, { fontLoadingState: action.state });
         case Finished_Confirmed:
@@ -45207,7 +45272,8 @@ function reducer(state, action) {
                 gameState: GameState.Playing,
                 drawCount: state.drawCount,
                 playCount: state.playCount,
-                playerXWinCount: state.playerXWinCount
+                playerXWinCount: state.playerXWinCount,
+                currentSquare: null
             };
         case Take_Go:
             var row = action.row;
@@ -46189,7 +46255,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
             return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected },
-                React.createElement("div", { tabIndex: _this.props.tabIndex, style: { width: "100%", height: "100%", ":focus": focusAnimationStyle } },
+                React.createElement("div", { tabIndex: _this.props.tabIndex, style: [{ width: "100%", height: "100%" }, _this.props.isSelected ? focusAnimationStyle : null] },
                     " ",
                     _this.props.squareText));
         });
@@ -46217,10 +46283,15 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
     if (state.gameState !== GameState.Playing) {
         canGo = false;
     }
+    var isSelected = false;
+    if (state.selectedSquare) {
+        isSelected = state.selectedSquare.column === ownProps.colIndex && state.selectedSquare.row == ownProps.rowIndex;
+    }
     var connectState = {
         squareGoColour: squareGoColour,
         squareText: squareText,
-        canGo: canGo
+        canGo: canGo,
+        isSelected: isSelected
     };
     return connectState;
 }, function (dispatch, ownProps) {
@@ -46420,9 +46491,25 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 //arrow down, tab to the button ?
                 switch (key) {
                     case "Enter":
-                    case "Tab":
+                    case " ":
                     case "Esc":
                         _this.props.finishedConfirmed();
+                        break;
+                }
+            }
+            else {
+                switch (key) {
+                    case "ArrowDown":
+                        _this.props.arrowPressed(ArrowDirection.Down);
+                        break;
+                    case "ArrowUp":
+                        _this.props.arrowPressed(ArrowDirection.Up);
+                        break;
+                    case "ArrowLeft":
+                        _this.props.arrowPressed(ArrowDirection.Left);
+                        break;
+                    case "ArrowRight":
+                        _this.props.arrowPressed(ArrowDirection.Right);
                         break;
                 }
             }
@@ -46507,6 +46594,9 @@ var ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
         },
         finishedConfirmed: function () {
             dispatch(finishedConfirmed());
+        },
+        arrowPressed: function (direction) {
+            dispatch(arrowPressed(direction));
         }
     };
 })(ConfiguredRadium(TicTacToeScreen));

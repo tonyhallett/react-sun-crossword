@@ -108,20 +108,32 @@ interface PlayerColourState {
     xColour: string
     oColour: string
 }
+interface RowColumnIndices {
+    row: number,
+    column:number
+}
 interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     board: SquareGo[][],
     currentPlayer: Player,
     gameState: GameState,
     fontLoadingState: FontLoadingState
-    
+    selectedSquare: RowColumnIndices
 }
 //#endregion
 //#region action types
 const Finished_Confirmed="FINISHED_CONFIRMED"
 const Play_Again = "PLAY_AGAIN";
 const Take_Go = "TAKE_GO"
+const Arrow_Press="ARROW_PRESS"
 //#endregion
 //#region action creators
+enum ArrowDirection { Up, Down, Left, Right }
+function arrowPressed(direction: ArrowDirection) {
+    return {
+        type: Arrow_Press,
+        direction:direction
+    }
+}
 function finishedConfirmed() {
     return {
         type: Finished_Confirmed
@@ -282,6 +294,50 @@ function checkDraw(board: SquareGo[][]) {
     }
     return isDraw;
 }
+function getSelectedSquare(currentSelectedSquare: RowColumnIndices, numSquares,direction:ArrowDirection): RowColumnIndices {
+    if (currentSelectedSquare === null) {
+        return { column: 0, row:0 }
+    }
+    var newColumn
+    var newRow
+    var currentColumn = currentSelectedSquare.column
+    var currentRow = currentSelectedSquare.row
+    switch (direction) {
+        case ArrowDirection.Left:
+            newRow = currentRow;
+            if (currentColumn === 0) {
+                newColumn = numSquares - 1;
+            } else {
+                newColumn = currentColumn - 1;
+            }
+            break;
+        case ArrowDirection.Right:
+            newRow = currentRow;
+            if (currentColumn === numSquares - 1) {
+                newColumn = 0;
+            } else {
+                newColumn = currentColumn + 1;
+            }
+            break;
+        case ArrowDirection.Up:
+            newColumn = currentColumn;
+            if (currentRow === 0) {
+                newRow = numSquares - 1;
+            } else {
+                newRow = currentRow - 1;
+            }
+            break;
+        case ArrowDirection.Down:
+            newColumn = currentColumn;
+            if (currentRow === numSquares-1) {
+                newRow = 0
+            } else {
+                newRow = currentRow + 1;
+            }
+            break;
+    }
+    return { column: newColumn, row: newRow };
+}
 function reducer(state: TicTacToeState = {
     currentPlayer: firstPlayer,
     board: getDefaultBoard(),
@@ -291,9 +347,16 @@ function reducer(state: TicTacToeState = {
     playCount:0,
     drawCount: 0,
     playerXWinCount: 0,
-    fontLoadingState: FontLoadingState.NotStarted
+    fontLoadingState: FontLoadingState.NotStarted,
+    selectedSquare:null
+
 }, action: AnyAction) {
     switch (action.type) {
+        case Arrow_Press:
+            return {
+                ...state,
+                selectedSquare: getSelectedSquare(state.selectedSquare,state.board.length,action.direction)
+            }
         case FONT_LOADING:
             return {
                 ...state,
@@ -314,7 +377,8 @@ function reducer(state: TicTacToeState = {
                 gameState: GameState.Playing,
                 drawCount: state.drawCount,
                 playCount: state.playCount,
-                playerXWinCount: state.playerXWinCount
+                playerXWinCount: state.playerXWinCount,
+                currentSquare:null
             }
         case Take_Go:
             var row = action.row;
@@ -1462,7 +1526,8 @@ interface TicTacToeSquareRowColProps {
 interface TicTacToeSquareConnectStateProps {
     squareGoColour: string,
     squareText: string,
-    canGo:boolean
+    canGo: boolean,
+    isSelected:boolean
 }
 interface TicTacToeSquareDispatchProps {
     takeGo: () => void
@@ -1517,7 +1582,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
                     return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        <div tabIndex={this.props.tabIndex} style={{ width: "100%", height: "100%", ":focus": focusAnimationStyle }}> {this.props.squareText}</div>
+                        <div tabIndex={this.props.tabIndex} style={[{ width: "100%", height: "100%" }, this.props.isSelected?focusAnimationStyle:null]}> {this.props.squareText}</div>
                     </td>
                 }
                 
@@ -1548,10 +1613,15 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
     if (state.gameState !== GameState.Playing) {
         canGo = false;
     }
+    var isSelected = false;
+    if (state.selectedSquare) {
+        isSelected = state.selectedSquare.column === ownProps.colIndex && state.selectedSquare.row == ownProps.rowIndex
+    }
     var connectState = {
         squareGoColour: squareGoColour,
         squareText: squareText,
-        canGo: canGo
+        canGo: canGo,
+        isSelected:isSelected
     }
     return connectState;
 }, (dispatch, ownProps: TicTacToeSquareRowColProps) => {
@@ -1807,6 +1877,7 @@ interface TicTacToeScreenProps {
     gameState: GameState,
     playAgain: () => void,
     finishedConfirmed: () => void,
+    arrowPressed: (direction: ArrowDirection) => void,
     xColour: string,
     oColour: string,
 }
@@ -1870,9 +1941,24 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
             //arrow down, tab to the button ?
             switch (key) {
                 case "Enter":
-                case "Tab":
+                case " ":
                 case "Esc":
                     this.props.finishedConfirmed();
+                    break;
+            }
+        } else {
+            switch (key) {
+                case "ArrowDown":
+                    this.props.arrowPressed(ArrowDirection.Down);
+                    break;
+                case "ArrowUp":
+                    this.props.arrowPressed(ArrowDirection.Up);
+                    break;
+                case "ArrowLeft":
+                    this.props.arrowPressed(ArrowDirection.Left);
+                    break;
+                case "ArrowRight":
+                    this.props.arrowPressed(ArrowDirection.Right);
                     break;
             }
         }
@@ -1932,6 +2018,9 @@ const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
         },
         finishedConfirmed: function () {
             dispatch(finishedConfirmed());
+        },
+        arrowPressed: function (direction: ArrowDirection) {
+            dispatch(arrowPressed(direction));
         }
     }
 })(ConfiguredRadium(TicTacToeScreen));
