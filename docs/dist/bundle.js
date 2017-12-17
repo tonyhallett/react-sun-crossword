@@ -45195,52 +45195,54 @@ function checkDraw(board) {
     return isDraw;
 }
 function getSelectedSquare(currentSelectedSquare, numSquares, direction) {
-    if (currentSelectedSquare === null) {
+    if (currentSelectedSquare) {
+        var newColumn;
+        var newRow;
+        var currentColumn = currentSelectedSquare.column;
+        var currentRow = currentSelectedSquare.row;
+        switch (direction) {
+            case ArrowDirection.Left:
+                newRow = currentRow;
+                if (currentColumn === 0) {
+                    newColumn = numSquares - 1;
+                }
+                else {
+                    newColumn = currentColumn - 1;
+                }
+                break;
+            case ArrowDirection.Right:
+                newRow = currentRow;
+                if (currentColumn === numSquares - 1) {
+                    newColumn = 0;
+                }
+                else {
+                    newColumn = currentColumn + 1;
+                }
+                break;
+            case ArrowDirection.Up:
+                newColumn = currentColumn;
+                if (currentRow === 0) {
+                    newRow = numSquares - 1;
+                }
+                else {
+                    newRow = currentRow - 1;
+                }
+                break;
+            case ArrowDirection.Down:
+                newColumn = currentColumn;
+                if (currentRow === numSquares - 1) {
+                    newRow = 0;
+                }
+                else {
+                    newRow = currentRow + 1;
+                }
+                break;
+        }
+        return { column: newColumn, row: newRow };
+    }
+    else {
         return { column: 0, row: 0 };
     }
-    var newColumn;
-    var newRow;
-    var currentColumn = currentSelectedSquare.column;
-    var currentRow = currentSelectedSquare.row;
-    switch (direction) {
-        case ArrowDirection.Left:
-            newRow = currentRow;
-            if (currentColumn === 0) {
-                newColumn = numSquares - 1;
-            }
-            else {
-                newColumn = currentColumn - 1;
-            }
-            break;
-        case ArrowDirection.Right:
-            newRow = currentRow;
-            if (currentColumn === numSquares - 1) {
-                newColumn = 0;
-            }
-            else {
-                newColumn = currentColumn + 1;
-            }
-            break;
-        case ArrowDirection.Up:
-            newColumn = currentColumn;
-            if (currentRow === 0) {
-                newRow = numSquares - 1;
-            }
-            else {
-                newRow = currentRow - 1;
-            }
-            break;
-        case ArrowDirection.Down:
-            newColumn = currentColumn;
-            if (currentRow === numSquares - 1) {
-                newRow = 0;
-            }
-            else {
-                newRow = currentRow + 1;
-            }
-            break;
-    }
-    return { column: newColumn, row: newRow };
 }
 function reducer(state, action) {
     if (state === void 0) { state = {
