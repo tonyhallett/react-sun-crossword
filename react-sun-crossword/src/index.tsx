@@ -1943,12 +1943,15 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var key = event.key;
         var modalOpen = this.modalShouldOpen();
         if (modalOpen) {
-            //arrow down, tab to the button ?
             switch (key) {
                 case "Enter":
                 case " ":
                 case "Esc":
                     this.props.finishedConfirmed();
+                    break;
+                case "p":
+                case "P":
+                    this.props.playAgain();
                     break;
             }
         } else {
@@ -2019,8 +2022,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
-                    <button key="button" style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
+                <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
+                    <button key="button" style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} >{playAgainText}</button>
                 </div>
             </div>
             <ModalCover parentSelector={this.getModalParent}  contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
