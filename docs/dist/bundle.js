@@ -46245,8 +46245,8 @@ var TicTacToeSquare = /** @class */ (function (_super) {
             else {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onKeyPress: _this.squareSelected, onClick: _this.squareSelected },
-                React.createElement("div", { tabIndex: _this.props.tabIndex, style: [{ width: "100%", height: "100%" }, _this.props.isSelected ? focusAnimationStyle : null] },
+            return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onClick: _this.squareSelected },
+                React.createElement("div", { style: [{ width: "100%", height: "100%" }, _this.props.isSelected ? focusAnimationStyle : null] },
                     " ",
                     _this.props.squareText));
         });
@@ -46502,11 +46502,24 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                     case "ArrowRight":
                         _this.props.arrowPressed(ArrowDirection.Right);
                         break;
+                    default:
+                        var selectedSquare = _this.props.selectedSquare;
+                        if (selectedSquare) {
+                            var squareGo = _this.props.board[selectedSquare.row][selectedSquare.column];
+                            if (squareGo === SquareGo.None) {
+                                _this.props.takeGo(selectedSquare.row, selectedSquare.column);
+                            }
+                        }
+                        break;
                 }
             }
         };
         _this.getModalParent = function () {
             return _this.modalParent;
+        };
+        _this.keyContainerRef = function (keyContainer) {
+            keyContainer.focus();
+            _this.modalParent = keyContainer;
         };
         _this.state = { winDrawElement: _this.getWinDrawElement(props) };
         _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
@@ -46547,7 +46560,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
-        return React.createElement("div", { tabIndex: 0, ref: function (mp) { _this.modalParent = mp; }, onKeyDown: this.keyDown },
+        return React.createElement("div", { tabIndex: 0, ref: this.keyContainerRef, onKeyDown: this.keyDown },
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
             React.createElement(Radium_1.Style, { rules: {
@@ -46575,7 +46588,9 @@ var ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
     return {
         gameState: state.gameState,
         oColour: state.oColour,
-        xColour: state.xColour
+        xColour: state.xColour,
+        selectedSquare: state.selectedSquare,
+        board: state.board
     };
 }, function (dispatch) {
     return {
@@ -46587,6 +46602,9 @@ var ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
         },
         arrowPressed: function (direction) {
             dispatch(arrowPressed(direction));
+        },
+        takeGo: function (row, column) {
+            dispatch(takeGo(row, column));
         }
     };
 })(ConfiguredRadium(TicTacToeScreen));

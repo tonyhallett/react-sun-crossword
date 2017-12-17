@@ -144,7 +144,7 @@ function playAgain() {
         type: Play_Again
     }
 }
-function takeGo(row, column) {
+function takeGo(row:number, column:number) {
     return {
         type: Take_Go,
         row: row,
@@ -1582,8 +1582,8 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                     } else {
                         transitionStyle={...stateStyle, transition: stateTransition }
                     }
-                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onKeyPress={this.squareSelected} onClick={this.squareSelected}>
-                        <div tabIndex={this.props.tabIndex} style={[{ width: "100%", height: "100%" }, this.props.isSelected?focusAnimationStyle:null]}> {this.props.squareText}</div>
+                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onClick={this.squareSelected}>
+                        <div style={[{ width: "100%", height: "100%" }, this.props.isSelected?focusAnimationStyle:null]}> {this.props.squareText}</div>
                     </td>
                 }
                 
@@ -1879,8 +1879,11 @@ interface TicTacToeScreenProps {
     playAgain: () => void,
     finishedConfirmed: () => void,
     arrowPressed: (direction: ArrowDirection) => void,
+    takeGo: (row: number, column: number)=>void,
     xColour: string,
     oColour: string,
+    selectedSquare: RowColumnIndices,
+    board:SquareGo[][]
 }
 interface TicTacToeScreenState {
     winDrawElement: any
@@ -1960,6 +1963,16 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 case "ArrowRight":
                     this.props.arrowPressed(ArrowDirection.Right);
                     break;
+                default:
+                    var selectedSquare = this.props.selectedSquare;
+                    if (selectedSquare) {
+                        var squareGo = this.props.board[selectedSquare.row][selectedSquare.column];
+                        if (squareGo === SquareGo.None) {
+                            this.props.takeGo(selectedSquare.row, selectedSquare.column);
+                        }
+                    }
+
+                    break;
             }
         }
     }
@@ -1967,6 +1980,10 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         return this.modalParent;
     }
     modalParent
+    keyContainerRef = (keyContainer: HTMLDivElement) => {
+        keyContainer.focus();
+        this.modalParent = keyContainer;
+    }
     render() {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
@@ -1975,7 +1992,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
 
-        return <div tabIndex={0} ref={(mp) => { this.modalParent = mp }} onKeyDown={this.keyDown}>
+        return <div tabIndex={0} ref={this.keyContainerRef} onKeyDown={this.keyDown}>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
             <span style={{ animationName: this.keyframesFlipOutX }} />
@@ -2009,7 +2026,9 @@ const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
     return {
         gameState: state.gameState,
         oColour: state.oColour,
-        xColour: state.xColour
+        xColour: state.xColour,
+        selectedSquare: state.selectedSquare,
+        board:state.board
     }
 }, (dispatch) => {
     return {
@@ -2021,6 +2040,9 @@ const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
         },
         arrowPressed: function (direction: ArrowDirection) {
             dispatch(arrowPressed(direction));
+        },
+        takeGo: function (row:number,column:number) {
+            dispatch(takeGo(row,column))
         }
     }
 })(ConfiguredRadium(TicTacToeScreen));
