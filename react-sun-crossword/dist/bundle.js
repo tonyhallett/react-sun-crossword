@@ -46426,7 +46426,9 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 messageElement = React.createElement("div", { style: __assign({}, style.winDrawContainerStyle, { fontFamily: textFontFamilyWithDefault }) }, gameDrawn);
                 break;
         }
-        return messageElement;
+        return React.createElement("div", null,
+            messageElement,
+            React.createElement("div", { style: style.winDrawContainerStyle }, "(Esc to close )"));
     };
     TicTacToeScreen.prototype.componentWillReceiveProps = function (props) {
         if (props.gameState !== this.props.gameState) {

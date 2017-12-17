@@ -1832,7 +1832,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 messageElement = <div style={{ ...style.winDrawContainerStyle, fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
                 break;
         }
-        return messageElement;
+        return <div>{messageElement}<div style={style.winDrawContainerStyle}>(Esc to close )</div></div>;
 
     }
     componentWillReceiveProps(props: TicTacToeScreenProps) {
