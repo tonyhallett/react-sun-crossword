@@ -6,7 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import * as Modal from 'react-modal';
 import { isStorageAvailable, stringifySetStorageItem, parseGetStorageItem, createLocalStorageStore} from "./helpers/storage"
 import * as $ from 'jquery';
-import { Style, StyleRoot } from "Radium";
+import { Style, StyleRoot, RadiumConfig } from "Radium";
 import * as Radium from "Radium";
 import Transition from 'react-transition-group/Transition';
 import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-transition-group/Transition';
@@ -797,53 +797,53 @@ function withColourChangeTransition(Component: React.ComponentClass<TransitionPr
 
 //#endregion
 
-//immediate
-interface WithStyleProps {
-    props: {
-        style: React.CSSProperties
-    }
-}
-function withSpinAxes(type: string, props: any,children:any) {
+//#region hoc code for wrapping an html element
+//interface WithStyleProps {
+//    props: {
+//        style: React.CSSProperties
+//    }
+//}
+//function withSpinAxes(type: string, props: any,children:any) {
    
-    var squareSpin={
-        '25%': {
-            transform: "perspective(100px) rotateX(180deg) rotateY(0)"
-        },
-        '50%': {
-            transform: "perspective(100px) rotateX(180deg) rotateY(180deg)"
-        },
-        '75%': {
-            transform: "perspective(100px) rotateX(0) rotateY(180deg)"
-        },
-        '100%': {
-            transform: "perspective(100px) rotateX(0) rotateY(0)"
-        }
-    }
-    var spinAxes = class extends React.Component<WithStyleProps, undefined>{
-        render() {
-            var existingStyle = props.style;
-            props.style = [existingStyle, { animationName: Radium.keyframes(squareSpin) }]
-            return React.createElement(type,props,children)
-        }
-    }
-    return Radium(spinAxes);
-}
+//    var squareSpin={
+//        '25%': {
+//            transform: "perspective(100px) rotateX(180deg) rotateY(0)"
+//        },
+//        '50%': {
+//            transform: "perspective(100px) rotateX(180deg) rotateY(180deg)"
+//        },
+//        '75%': {
+//            transform: "perspective(100px) rotateX(0) rotateY(180deg)"
+//        },
+//        '100%': {
+//            transform: "perspective(100px) rotateX(0) rotateY(0)"
+//        }
+//    }
+//    var spinAxes = class extends React.Component<WithStyleProps, undefined>{
+//        render() {
+//            var existingStyle = props.style;
+//            props.style = [existingStyle, { animationName: Radium.keyframes(squareSpin) }]
+//            return React.createElement(type,props,children)
+//        }
+//    }
+//    return Radium(spinAxes);
+//}
 
 //#region Spinning div
-var spinningDivProps = {
-    style:
-    {
-        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
-        animationDuration: "3000ms",
-        fontSize: 90, padding: 5,
-        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
-        animationIterationCount: "infinite"
-    } as React.CSSProperties
-}
+//var spinningDivProps = {
+//    style:
+//    {
+//        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
+//        animationDuration: "3000ms",
+//        fontSize: 90, padding: 5,
+//        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
+//        animationIterationCount: "infinite"
+//    } as React.CSSProperties
+//}
 //const SpinningDivX: any = withSpinAxes("div", spinningDivProps, cross);
 //const SpinningDivO: any = withSpinAxes("div", spinningDivProps, nought);
 //#endregion
-
+//#endregion
 
 
 //#region PulseAnimation
@@ -1068,7 +1068,7 @@ class Demo extends React.Component<undefined, DemoState>{
         return null;
     }
 }
-const RadiumDemo = Radium(Demo);
+const RadiumDemo = ConfiguredRadium(Demo);
 //#endregion
 //#region styling
 
@@ -1217,7 +1217,6 @@ var style = {
 
 //#endregion
 //#region text strings
-//a) ensure that these are all used
 const player = "Player";
 const won = "Won";
 const lost = "Lost";
@@ -1290,11 +1289,66 @@ const ConnectedWebFontLoader = connect(null, (dispatch) => {
     return mergedProps;
 })(WebFontLoader as any) as any;
 //#endregion
+//#region Radium setup
+declare module "Radium" {
+    export var Plugins: any
+    //note that the @types does not type a Plugin 
+    //https://github.com/FormidableLabs/radium/tree/master/docs/api#plugins see PluginConfig and PlugInResult
+}
+function keyframesPluginArray(
+    { addCSS, config, style }
+){
+    const newStyle = Object.keys(style).reduce(
+        (newStyleInProgress, key) => {
+            let value = style[key];
+            if (key === 'animationName' && value && (value.__radiumKeyframes || Array.isArray(value))) {
+                if (Array.isArray(value)) {
+                    value = value.map(v => {
+                        const keyframesValue = v;
+                        const { animationName, css } = keyframesValue.__process(config.userAgent);
+                        addCSS(css);
+                        return animationName;
+                    }).join(", ");
+                } else {
+                    const keyframesValue = value
+                    const { animationName, css } = keyframesValue.__process(config.userAgent);
+                    addCSS(css);
+                    value = animationName;
+                }
+                
+            }
+
+            newStyleInProgress[key] = value;
+            return newStyleInProgress;
+        },
+        {},
+    );
+    return { style: newStyle };
+}
+function ConfiguredRadium(component) {
+    return Radium({
+        plugins: [
+            Radium.Plugins.mergeStyleArray,
+            Radium.Plugins.checkProps,
+            Radium.Plugins.resolveMediaQueries,
+            Radium.Plugins.resolveInteractionStyles,
+            keyframesPluginArray,
+            Radium.Plugins.visited,
+            Radium.Plugins.removeNestedStyles,
+            Radium.Plugins.prefix,
+            Radium.Plugins.checkProps,
+        ],
+    } as RadiumConfig)(component);
+}
+
+
+//#endregion
 //#region App components
-const RadiumTransition = Radium(Transition);
+
+const RadiumTransition = ConfiguredRadium(Transition);
 const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
 const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
-const RadiumHorizontalCenter = Radium(HorizontalCenter)
+const RadiumHorizontalCenter = ConfiguredRadium(HorizontalCenter)
 //#region TicTacToeSquare
 interface TicTacToeSquareRowColProps {
     rowIndex: number,
@@ -1437,7 +1491,7 @@ const ConnectedTicTacToeBoard:any = connect((state: TicTacToeState) => {
     return {
         board: state.board
     }
-})(Radium(TicTacToeBoard));
+})(ConfiguredRadium(TicTacToeBoard));
 //#endregion
 //#region Scoreboard
 interface ScoreboardStateProps extends ScoreboardCountState, PlayerColourState{
@@ -1543,7 +1597,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
             </tr>
     }
 }
-const RadiumScoreboardPlayer=Radium(ScoreboardPlayer)
+const RadiumScoreboardPlayer=ConfiguredRadium(ScoreboardPlayer)
 //#endregion
 //#region TicTacToeApp
 
@@ -1641,6 +1695,55 @@ interface TicTacToeScreenProps {
 interface TicTacToeScreenState {
     winDrawElement: any
 }
+interface AnimationStyle extends Object {
+    animationName:any,
+    animationDuration?:string,
+    animationTimingFunction?: string,
+    animationDelay?: string,
+    animationIterationCount?: string,
+    animationDirection?: string,
+    animationFillMode?: string,
+    animationPlayState?:string
+}
+//will not be necessary if the placeholder worked 
+function mergeAnimations(animationStyles: AnimationStyle[]) {
+    var animationProperties: {name:string,default:string}[] = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "normal" }, { name:"animationPlayState",default:"running" }];
+    var mergedAnimationStyle = {
+        animationName: [],
+        animationDuration: "",
+        animationTimingFunction: "",
+        animationDelay: "",
+        animationIterationCount: "",
+        animationDirection: "",
+        animationFillMode: "",
+        animationPlayState:""
+
+    }
+    var hadFirst = false;
+    for (var i = 0; i < animationStyles.length; i++) {
+        var animationStyle = animationStyles[i];
+        if (animationStyle && animationStyle.animationName) {
+            mergedAnimationStyle.animationName.push(animationStyle.animationName);
+            for (var j = 0; j < animationProperties.length; j++) {
+                var animationProperty = animationProperties[j]
+                var animationPropertyName = animationProperty.name;
+                var animationValue = animationStyle.hasOwnProperty(animationPropertyName) ? animationStyle[animationPropertyName] : animationProperty.default;
+                if (hadFirst) {
+                    animationValue = "," + animationValue
+                }
+                mergedAnimationStyle[animationPropertyName] = mergedAnimationStyle[animationPropertyName] + animationValue
+
+            }
+            hadFirst = true;
+        }
+    }
+    return mergedAnimationStyle;
+}
+//then need to create and replace plugins
+
+//thank charlie for cards
+
+
 class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScreenState>{
     keyframesFlipInX: any
     keyframesFlipOutX: any
@@ -1686,10 +1789,18 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
+    /*
+    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle:null]} onClick={this.props.playAgain}>{playAgainText}</button>
+
+    */
     render() {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
+
+        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        
+        
         return <div>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
@@ -1711,7 +1822,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 </div>
                 <ConnectedTicTacToeBoard />
                 <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null]}>
-                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle:null]} onClick={this.props.playAgain}>{playAgainText}</button>
+                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} },buttonAnimation]} onClick={this.props.playAgain}>{playAgainText}</button>
                 </div>
             </div>
             <ModalCover contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
@@ -1735,7 +1846,7 @@ const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
             dispatch(finishedConfirmed());
         }
     }
-})(Radium(TicTacToeScreen));
+})(ConfiguredRadium(TicTacToeScreen));
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
         fontLoadingState: state.fontLoadingState,

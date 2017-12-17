@@ -45643,45 +45643,6 @@ function withColourChangeTransition(Component) {
     }(React.Component));
     return colourChangeTransition;
 }
-function withSpinAxes(type, props, children) {
-    var squareSpin = {
-        '25%': {
-            transform: "perspective(100px) rotateX(180deg) rotateY(0)"
-        },
-        '50%': {
-            transform: "perspective(100px) rotateX(180deg) rotateY(180deg)"
-        },
-        '75%': {
-            transform: "perspective(100px) rotateX(0) rotateY(180deg)"
-        },
-        '100%': {
-            transform: "perspective(100px) rotateX(0) rotateY(0)"
-        }
-    };
-    var spinAxes = /** @class */ (function (_super) {
-        __extends(class_1, _super);
-        function class_1() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        class_1.prototype.render = function () {
-            var existingStyle = props.style;
-            props.style = [existingStyle, { animationName: Radium.keyframes(squareSpin) }];
-            return React.createElement(type, props, children);
-        };
-        return class_1;
-    }(React.Component));
-    return Radium(spinAxes);
-}
-//#region Spinning div
-var spinningDivProps = {
-    style: {
-        width: 100, height: 100, backgroundColor: "white", textAlign: "center", verticalAlign: "center",
-        animationDuration: "3000ms",
-        fontSize: 90, padding: 5,
-        animationTimingFunction: "cubic-bezier(0.09, 0.57, 0.49, 0.9)",
-        animationIterationCount: "infinite"
-    }
-};
 function scale3d(a, b, c) {
     return 'scale3d(' + a + ', ' + b + ', ' + c + ')';
 }
@@ -45702,11 +45663,11 @@ function createPulseKeyframes(pulseAmount) {
 }
 function withPulse(Component) {
     var pulse = /** @class */ (function (_super) {
-        __extends(class_2, _super);
-        function class_2() {
+        __extends(class_1, _super);
+        function class_1() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        class_2.prototype.render = function () {
+        class_1.prototype.render = function () {
             var _this = this;
             var pulse = createPulseKeyframes(this.props.pulseAmount);
             //passthrough to do
@@ -45724,7 +45685,7 @@ function withPulse(Component) {
                 return _this.props.children(state, additionalProps, transitionStyle);
             });
         };
-        return class_2;
+        return class_1;
     }(React.Component));
     return pulse;
 }
@@ -45869,7 +45830,7 @@ var Demo = /** @class */ (function (_super) {
     };
     return Demo;
 }(React.Component));
-var RadiumDemo = Radium(Demo);
+var RadiumDemo = ConfiguredRadium(Demo);
 //#endregion
 //#region styling
 var thButtonFontWeight = "bold";
@@ -46003,7 +45964,6 @@ var style = {
 };
 //#endregion
 //#region text strings
-//a) ensure that these are all used
 var player = "Player";
 var won = "Won";
 var lost = "Lost";
@@ -46063,12 +46023,52 @@ var ConnectedWebFontLoader = react_redux_1.connect(null, function (dispatch) {
     var mergedProps = __assign({}, ownProps, { config: __assign({}, ownProps.config, dispatchProps) });
     return mergedProps;
 })(WebFontLoader);
+function keyframesPluginArray(_a) {
+    var addCSS = _a.addCSS, config = _a.config, style = _a.style;
+    var newStyle = Object.keys(style).reduce(function (newStyleInProgress, key) {
+        var value = style[key];
+        if (key === 'animationName' && value && (value.__radiumKeyframes || Array.isArray(value))) {
+            if (Array.isArray(value)) {
+                value = value.map(function (v) {
+                    var keyframesValue = v;
+                    var _a = keyframesValue.__process(config.userAgent), animationName = _a.animationName, css = _a.css;
+                    addCSS(css);
+                    return animationName;
+                }).join(", ");
+            }
+            else {
+                var keyframesValue = value;
+                var _a = keyframesValue.__process(config.userAgent), animationName = _a.animationName, css = _a.css;
+                addCSS(css);
+                value = animationName;
+            }
+        }
+        newStyleInProgress[key] = value;
+        return newStyleInProgress;
+    }, {});
+    return { style: newStyle };
+}
+function ConfiguredRadium(component) {
+    return Radium({
+        plugins: [
+            Radium.Plugins.mergeStyleArray,
+            Radium.Plugins.checkProps,
+            Radium.Plugins.resolveMediaQueries,
+            Radium.Plugins.resolveInteractionStyles,
+            keyframesPluginArray,
+            Radium.Plugins.visited,
+            Radium.Plugins.removeNestedStyles,
+            Radium.Plugins.prefix,
+            Radium.Plugins.checkProps,
+        ],
+    })(component);
+}
 //#endregion
 //#region App components
-var RadiumTransition = Radium(Transition_1.default);
+var RadiumTransition = ConfiguredRadium(Transition_1.default);
 var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
-var RadiumHorizontalCenter = Radium(HorizontalCenter);
+var RadiumHorizontalCenter = ConfiguredRadium(HorizontalCenter);
 var TicTacToeSquare = /** @class */ (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -46178,7 +46178,7 @@ var ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
     return {
         board: state.board
     };
-})(Radium(TicTacToeBoard));
+})(ConfiguredRadium(TicTacToeBoard));
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
@@ -46254,7 +46254,7 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     };
     return ScoreboardPlayer;
 }(React.Component));
-var RadiumScoreboardPlayer = Radium(ScoreboardPlayer);
+var RadiumScoreboardPlayer = ConfiguredRadium(ScoreboardPlayer);
 //refactor to a loader ?
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
@@ -46314,6 +46314,40 @@ var TicTacToeApp = /** @class */ (function (_super) {
     };
     return TicTacToeApp;
 }(React.Component));
+//will not be necessary if the placeholder worked 
+function mergeAnimations(animationStyles) {
+    var animationProperties = [{ name: "animationDuration", default: "0s" }, { name: "animationTimingFunction", default: "ease" }, { name: "animationDelay", default: "0s" }, { name: "animationIterationCount", default: "1" }, { name: "animationDirection", default: "normal" }, { name: "animationFillMode", default: "normal" }, { name: "animationPlayState", default: "running" }];
+    var mergedAnimationStyle = {
+        animationName: [],
+        animationDuration: "",
+        animationTimingFunction: "",
+        animationDelay: "",
+        animationIterationCount: "",
+        animationDirection: "",
+        animationFillMode: "",
+        animationPlayState: ""
+    };
+    var hadFirst = false;
+    for (var i = 0; i < animationStyles.length; i++) {
+        var animationStyle = animationStyles[i];
+        if (animationStyle && animationStyle.animationName) {
+            mergedAnimationStyle.animationName.push(animationStyle.animationName);
+            for (var j = 0; j < animationProperties.length; j++) {
+                var animationProperty = animationProperties[j];
+                var animationPropertyName = animationProperty.name;
+                var animationValue = animationStyle.hasOwnProperty(animationPropertyName) ? animationStyle[animationPropertyName] : animationProperty.default;
+                if (hadFirst) {
+                    animationValue = "," + animationValue;
+                }
+                mergedAnimationStyle[animationPropertyName] = mergedAnimationStyle[animationPropertyName] + animationValue;
+            }
+            hadFirst = true;
+        }
+    }
+    return mergedAnimationStyle;
+}
+//then need to create and replace plugins
+//thank charlie for cards
 var TicTacToeScreen = /** @class */ (function (_super) {
     __extends(TicTacToeScreen, _super);
     function TicTacToeScreen(props) {
@@ -46356,10 +46390,15 @@ var TicTacToeScreen = /** @class */ (function (_super) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
         }
     };
+    /*
+    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle:null]} onClick={this.props.playAgain}>{playAgainText}</button>
+
+    */
     TicTacToeScreen.prototype.render = function () {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
+        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         return React.createElement("div", null,
             React.createElement("span", { style: { animationName: this.keyframesFlipInX } }),
             React.createElement("span", { style: { animationName: this.keyframesFlipOutX } }),
@@ -46379,7 +46418,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
                 React.createElement("div", { style: [{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null] },
-                    React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": focusAnimationStyle }, { ":hover": {} }, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null], onClick: this.props.playAgain }, playAgainText))),
+                    React.createElement("button", { key: "button", tabIndex: 0, style: [{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation], onClick: this.props.playAgain }, playAgainText))),
             React.createElement(ModalCover, { contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
     };
     return TicTacToeScreen;
@@ -46399,7 +46438,7 @@ var ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
             dispatch(finishedConfirmed());
         }
     };
-})(Radium(TicTacToeScreen));
+})(ConfiguredRadium(TicTacToeScreen));
 var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         fontLoadingState: state.fontLoadingState,
