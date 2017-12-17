@@ -1820,6 +1820,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     flipInXAnimationName: string
     flipOutXAnimationName: string
     flipDuration = 1000
+    playAgainButton: HTMLButtonElement
     constructor(props) {
         super(props);
         this.state = { winDrawElement: this.getWinDrawElement(props) }
@@ -1829,6 +1830,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         this.flipOutXAnimationName = this.keyframesFlipOutX.__process("all").animationName;
 
     }
+    //<div>{messageElement}<div style={style.winDrawContainerStyle}>(Esc to close )</div></div>;
     getWinDrawElement(props: TicTacToeScreenProps) {
         function getWinner(playerId: string, playerColour: string) {
             return <div style={style.winDrawContainerStyle}><span style={{ fontFamily: textFontFamilyWithDefault }}>{player + " "}</span><span style={{ fontFamily: noughtCrossFontFamily, color: playerColour }}>{playerId + " "}</span><span style={{ fontFamily: textFontFamilyWithDefault }}>{wonMessage}</span></div>
@@ -1847,7 +1849,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 messageElement = <div style={{ ...style.winDrawContainerStyle, fontFamily: textFontFamilyWithDefault }}>{gameDrawn}</div>;
                 break;
         }
-        return <div>{messageElement}<div style={style.winDrawContainerStyle}>(Esc to close )</div></div>;
+        return messageElement;
 
     }
     componentWillReceiveProps(props: TicTacToeScreenProps) {
@@ -1859,8 +1861,21 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var gameState = this.props.gameState;
         return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
     }
-    fixModal = (modal) => {
-        var st = "";
+    fixModal = () => {
+        var modalContent = document.querySelector(".ReactModal__Content") as HTMLElement;
+        modalContent.onkeydown = this.modalKeyDown
+    }
+    modalKeyDown = (event: KeyboardEvent) => {
+        console.log(event.key);
+        switch (event.key) {
+            case " ":
+            case "Enter":
+                event.srcElement.parentElement.click();
+                break;
+            case "Tab":
+                this.playAgainButton.focus();
+        }
+       
     }
     render() {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
@@ -1891,10 +1906,10 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 </div>
                 <ConnectedTicTacToeBoard />
                 <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
-                    <button key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
+                    <button ref={(b)=>this.playAgainButton=b} key="button" tabIndex={0} style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} onMouseDown={(e) => { e.preventDefault() }}>{playAgainText}</button>
                 </div>
             </div>
-            <ModalCover ref={(m)=>this.fixModal} shouldFocusAfterRender={false} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
+            <ModalCover onAfterOpen={this.fixModal} shouldFocusAfterRender={false} contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
                 {this.state.winDrawElement}
             </ModalCover>
         </div>
