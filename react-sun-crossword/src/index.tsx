@@ -1877,6 +1877,9 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         }
        
     }
+    keyDown = () => {
+        console.log("key down!")
+    }
     render() {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
@@ -1900,7 +1903,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     animationFillMode: "forwards"
                 }
             }} />
-            <div style={{ display: "inline-block" }}>
+            <div onKeyDown={this.keyDown} style={{ display: "inline-block" }}>
                 <div style={{ marginBottom: style.componentMargin }}>
                     <ConnectedScoreboard />
                 </div>

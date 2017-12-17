@@ -46428,6 +46428,9 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                     _this.playAgainButton.focus();
             }
         };
+        _this.keyDown = function () {
+            console.log("key down!");
+        };
         _this.state = { winDrawElement: _this.getWinDrawElement(props) };
         _this.keyframesFlipInX = Radium.keyframes(react_animations_1.flipInX);
         _this.flipInXAnimationName = _this.keyframesFlipInX.__process("all").animationName;
@@ -46482,7 +46485,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                         animationFillMode: "forwards"
                     }
                 } }),
-            React.createElement("div", { style: { display: "inline-block" } },
+            React.createElement("div", { onKeyDown: this.keyDown, style: { display: "inline-block" } },
                 React.createElement("div", { style: { marginBottom: style.componentMargin } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
