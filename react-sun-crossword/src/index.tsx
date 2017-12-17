@@ -1944,7 +1944,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     }
     componentWillReceiveProps(props: TicTacToeScreenProps) {
         console.log("TicTacToeScreen receive props, current gameState: " + gameStateString(this.props.gameState) + ", new gameState: " + gameStateString(props.gameState));
-        if (props.gameState !== this.props.gameState && props.gameState !== GameState.FinishedConfirmed) {
+        if (props.gameState !== this.props.gameState && this.props.gameState === GameState.Playing ) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) })
         }
     }
