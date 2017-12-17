@@ -46397,6 +46397,8 @@ var TicTacToeScreen = /** @class */ (function (_super) {
     TicTacToeScreen.prototype.render = function () {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
+        console.log("Button has focus: " + buttonHasFocus);
+        console.log("Button has hover: " + buttonHasFocus);
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         return React.createElement("div", null,

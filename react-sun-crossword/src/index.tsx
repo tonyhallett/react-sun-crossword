@@ -1796,6 +1796,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     render() {
         var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
+        console.log("Button has focus: " + buttonHasFocus)
+        console.log("Button has hover: " + buttonHasFocus)
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
 
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
