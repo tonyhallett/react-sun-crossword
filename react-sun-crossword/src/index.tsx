@@ -936,6 +936,8 @@ function createShakeKeyframes(shakeDistance: number) {
     const upShake = {
         transform: translate3d(shakeDistance, 0, 0)
     };
+    /*
+    without pause ( easy enough to calculate based upon a pause percent)
     return {
         from: noShake,
         '10%': downShake,
@@ -947,6 +949,17 @@ function createShakeKeyframes(shakeDistance: number) {
         '70%': downShake,
         '80%': upShake,
         '90%': downShake,
+        to: noShake
+    };
+    */
+    return {
+        from: noShake,
+        '10%': downShake,
+        '20%': upShake,
+        '30%': downShake,
+        '40%': upShake,
+        '50%': downShake,
+        '60%': noShake,
         to: noShake
     };
 }

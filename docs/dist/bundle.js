@@ -45705,6 +45705,8 @@ function createShakeKeyframes(shakeDistance) {
     var upShake = {
         transform: exports.translate3d(shakeDistance, 0, 0)
     };
+    /*
+    without pause
     return {
         from: noShake,
         '10%': downShake,
@@ -45716,6 +45718,17 @@ function createShakeKeyframes(shakeDistance) {
         '70%': downShake,
         '80%': upShake,
         '90%': downShake,
+        to: noShake
+    };
+    */
+    return {
+        from: noShake,
+        '10%': downShake,
+        '20%': upShake,
+        '30%': downShake,
+        '40%': upShake,
+        '50%': downShake,
+        '60%': noShake,
         to: noShake
     };
 }
