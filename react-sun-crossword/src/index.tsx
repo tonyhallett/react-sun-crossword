@@ -1273,7 +1273,7 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
     render() {
         if (this.props.active&&this.props.replaceCursor) {
             document.body.style.cursor = "none";
-            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y } as React.CSSProperties;
+            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y,pointerEvents:"none" } as React.CSSProperties;
             var childElement = this.props.children as React.ReactElement<any>;
 
             var childStyle = childElement.props.style;

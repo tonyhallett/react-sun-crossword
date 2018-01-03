@@ -45984,7 +45984,7 @@ var BodyCursor = /** @class */ (function (_super) {
     BodyCursor.prototype.render = function () {
         if (this.props.active && this.props.replaceCursor) {
             document.body.style.cursor = "none";
-            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y };
+            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y, pointerEvents: "none" };
             var childElement = this.props.children;
             var childStyle = childElement.props.style;
             var newStyle = __assign({}, childStyle, replacedCursorStyle);
