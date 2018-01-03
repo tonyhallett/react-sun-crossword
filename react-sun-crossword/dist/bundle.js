@@ -46606,9 +46606,9 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
                 React.createElement("div", { style: [{ borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null] },
-                    React.createElement("div", { key: "button", style: [{ ":focus": {} }, { ":hover": {} }, buttonAnimation], onClick: this.props.playAgain },
+                    React.createElement("div", { key: "button", style: [{ ":focus": {} }, { ":hover": {} }, buttonAnimation, { margin: "auto", width: "50%" }], onClick: this.props.playAgain },
                         React.createElement("span", { style: { textDecoration: "underline" } }, "P"),
-                        React.createElement("span", null, "lay Again")))),
+                        React.createElement("span", null, "lay again")))),
             React.createElement(ModalCover, { parentSelector: this.getModalParent, contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
     };
     return TicTacToeScreen;
