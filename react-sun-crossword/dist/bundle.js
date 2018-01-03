@@ -45924,6 +45924,94 @@ var colourTransitionProvider = function (state, props) {
 };
 //#endregion
 //#endregion
+function addEventListener(eventName, el, fn) {
+    if (el.addEventListener) {
+        el.addEventListener(eventName, fn);
+    }
+    else {
+        var ieEl = el;
+        ieEl.attachEvent("on" + eventName, fn);
+    }
+}
+function removeEventListener(eventName, el, fn) {
+    if (el.removeEventListener) {
+        el.removeEventListener(eventName, fn);
+    }
+    else {
+        var ieEl = el;
+        ieEl.detachEvent("on" + eventName, fn);
+    }
+}
+var MouseBodyPosition = /** @class */ (function (_super) {
+    __extends(MouseBodyPosition, _super);
+    function MouseBodyPosition(props) {
+        var _this = _super.call(this, props) || this;
+        _this.mouseMove = function (e) {
+            var pageX = e.pageX;
+            var pageY = e.pageY;
+            // IE 8
+            if (pageX === undefined) {
+                pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            }
+            _this.setState({ x: pageX, y: pageY, active: true });
+        };
+        _this.state = {
+            x: 0,
+            y: 0,
+            active: false
+        };
+        return _this;
+    }
+    MouseBodyPosition.prototype.componentDidMount = function () {
+        addEventListener("mousemove", document.body, this.mouseMove);
+    };
+    MouseBodyPosition.prototype.componentWillUnmount = function () {
+        removeEventListener("mousemove", document.body, this.mouseMove);
+    };
+    MouseBodyPosition.prototype.render = function () {
+        var _this = this;
+        return React.Children.map(this.props.children, (function (child) { return React.cloneElement(child, _this.state); }));
+    };
+    return MouseBodyPosition;
+}(React.Component));
+//will probably change to BodyCursorPlacement - with a zIndex?
+var BodyCursor = /** @class */ (function (_super) {
+    __extends(BodyCursor, _super);
+    function BodyCursor() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BodyCursor.prototype.render = function () {
+        if (this.props.active && this.props.replaceCursor) {
+            document.body.style.cursor = "none";
+            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y };
+            var childElement = this.props.children;
+            var childStyle = childElement.props.style;
+            var newStyle = __assign({}, childStyle, replacedCursorStyle);
+            var newProps = {
+                style: newStyle
+            };
+            return React.cloneElement(this.props.children, newProps);
+        }
+        else {
+            document.body.style.cursor = this.props.cursor;
+            return this.props.children;
+        }
+    };
+    return BodyCursor;
+}(React.Component));
+var DemoCursorReplacement = /** @class */ (function (_super) {
+    __extends(DemoCursorReplacement, _super);
+    function DemoCursorReplacement() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    DemoCursorReplacement.prototype.render = function () {
+        return React.createElement(MouseBodyPosition, null,
+            React.createElement(BodyCursor, { active: true, cursor: "pointer", replaceCursor: true },
+                React.createElement("span", null, "X")));
+    };
+    return DemoCursorReplacement;
+}(React.Component));
 //#region demo
 var demoTimeout = {
     enter: 1000,
@@ -46455,6 +46543,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         outlineColor: backgroundColor
                     }
                 } }),
+            React.createElement(DemoCursorReplacement, null),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement(ConnectedTicTacToeLoader, null) : React.createElement(ConnectedTicTacToeScreen, null)))));

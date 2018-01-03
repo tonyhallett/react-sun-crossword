@@ -1206,6 +1206,99 @@ var colourTransitionProvider: TransitionProvider<ColourChangeProps> = function (
 
 //#endregion
 
+function addEventListener(eventName: string, el: HTMLElement, fn: any) {
+    
+    if (el.addEventListener) {
+        el.addEventListener(eventName,fn);
+    } else {
+        var ieEl = el as any;
+        ieEl.attachEvent("on"+eventName,fn);
+    }
+}
+function removeEventListener(eventName: string,el: HTMLElement, fn: any) {
+    if (el.removeEventListener) {
+        el.removeEventListener(eventName, fn);
+    } else {
+        var ieEl = el as any;
+        ieEl.detachEvent("on" + eventName, fn);
+    }
+}
+interface MouseBodyPositionState {
+    x: number,
+    y: number,
+    active:boolean
+}
+
+class MouseBodyPosition extends React.Component<undefined, MouseBodyPositionState>{
+    constructor(props) {
+        super(props)
+        this.state = {
+            x: 0,
+            y: 0,
+            active:false
+        }
+    }
+    componentDidMount() {
+        addEventListener("mousemove", document.body,this.mouseMove);
+    }
+    componentWillUnmount() {
+        removeEventListener("mousemove", document.body, this.mouseMove);
+    }
+    mouseMove = (e: MouseEvent) => {
+        
+        var pageX = e.pageX;
+        var pageY = e.pageY;
+
+        // IE 8
+        if (pageX === undefined) {
+            pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        this.setState({ x: pageX,y:pageY,active:true })
+
+    }
+    render() {
+        return React.Children.map(this.props.children, (child => React.cloneElement(child as React.ReactElement<any>,this.state)))
+    }
+}
+type Partial<T> = {
+    [P in keyof T]?: T[P];
+}
+interface BodyCursorProps extends Partial<MouseBodyPositionState> {
+    replaceCursor?: boolean,
+    cursor?:string
+}
+//will probably change to BodyCursorPlacement - with a zIndex?
+class BodyCursor extends React.Component<BodyCursorProps, undefined>{
+    render() {
+        if (this.props.active&&this.props.replaceCursor) {
+            document.body.style.cursor = "none";
+            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y } as React.CSSProperties;
+            var childElement = this.props.children as React.ReactElement<any>;
+
+            var childStyle = childElement.props.style;
+            var newStyle = { ...childStyle, ...replacedCursorStyle };
+            var newProps = {
+                style: newStyle
+            }
+
+            return React.cloneElement(this.props.children as React.ReactElement<any>, newProps);
+        } else {
+            document.body.style.cursor = this.props.cursor;
+            return this.props.children;
+        }
+
+    }
+}
+class DemoCursorReplacement extends React.Component<undefined, undefined>{
+    render() {
+        return <MouseBodyPosition>
+            <BodyCursor active={true} cursor="pointer" replaceCursor={true}>
+                <span>X</span>
+            </BodyCursor>
+        </MouseBodyPosition>
+    }
+}
 //#region demo
 const demoTimeout = {
     enter: 1000,
@@ -1861,6 +1954,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                     }
                 }}
             />
+            <DemoCursorReplacement/>
             <VerticallyCenteredContainer backgroundColor={backgroundColor}>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
