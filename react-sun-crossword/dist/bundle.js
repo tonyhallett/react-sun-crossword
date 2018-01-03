@@ -45279,10 +45279,9 @@ function reducer(state, action) {
         case Finished_Confirmed:
             return __assign({}, state, { gameState: GameState.FinishedConfirmed });
         case Play_Again:
-            var nextPlayer = (state.currentPlayer === Player.X) ? Player.O : Player.X;
             return {
                 board: getDefaultBoard(),
-                currentPlayer: nextPlayer,
+                currentPlayer: state.currentPlayer,
                 oColour: state.oColour,
                 xColour: state.xColour,
                 gameState: GameState.Playing,
