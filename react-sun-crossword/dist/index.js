@@ -1249,6 +1249,7 @@ var noughtCrossFontFamily = "Short Stack";
 var defaultFontFamily = ",Helvetica Neue, Helvetica, Arial, sans-serif";
 var noughtCrossFontFamilyWithDefault = noughtCrossFontFamily + defaultFontFamily;
 var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
+var ticTacToeSquareFontSize = 80;
 //override scoreboard.cellStyle with noughtCrossStyle for the player cells
 var style = {
     winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center", fontSize: fontSize },
@@ -1307,9 +1308,12 @@ var style = {
     ticTacToeSquare: {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
-        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: ticTacToeSquareFontSize, fontFamily: noughtCrossFontFamilyWithDefault,
     },
-    ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth
+    ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth,
+    cursor: {
+        fontSize: ticTacToeSquareBorderWidth / 2
+    }
 };
 //#endregion
 //#region text strings
@@ -1420,7 +1424,7 @@ var TicTacToeCursor = (function (_super) {
     TicTacToeCursor.prototype.render = function () {
         return React.createElement(MouseBodyPosition, null,
             React.createElement(BodyCursor, { cursor: "pointer", replaceCursor: this.props.active },
-                React.createElement("span", { style: { zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize } }, this.props.cursorText)));
+                React.createElement("span", { style: { zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.cursorColour } }, this.props.cursorText)));
     };
     return TicTacToeCursor;
 }(React.Component));
@@ -1825,10 +1829,10 @@ var TicTacToeScreen = (function (_super) {
                 React.createElement("div", { style: { marginBottom: style.componentMargin } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
-                React.createElement("div", { role: "button", key: "button", style: [{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonAnimation], onClick: this.props.playAgain },
+                React.createElement("div", { role: "button", key: "button", style: [{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%", cursor: "pointer" }, style.componentBoxShadow, buttonAnimation], onClick: this.props.playAgain },
                     React.createElement("div", { style: { marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" } },
-                        React.createElement("span", { style: { textDecoration: "underline", display: "inlineBlock" } }, playAgainUnderlineLetter),
-                        React.createElement("span", { style: { display: "inlineBlock" } }, playAgainRemainder)))),
+                        React.createElement("span", { style: { textDecoration: "underline", display: "inlineBlock", userSelect: "none" } }, playAgainUnderlineLetter),
+                        React.createElement("span", { style: { display: "inlineBlock", userSelect: "none" } }, playAgainRemainder)))),
             React.createElement(ModalCover, { parentSelector: this.getModalParent, contentStyle: { backgroundColor: componentBackgroundColor }, closeTimeoutMS: this.flipDuration, elementSelector: "#" + ticTacToeBoardId, isOpen: this.modalShouldOpen(), onRequestClose: this.props.finishedConfirmed }, this.state.winDrawElement));
     };
     return TicTacToeScreen;

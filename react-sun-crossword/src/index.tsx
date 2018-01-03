@@ -1506,7 +1506,7 @@ var style = {
     } as React.CSSProperties,
     ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth,
     cursor: {
-        fontSize: ticTacToeSquareBorderWidth/2
+        fontSize: ticTacToeSquareFontSize/2
     }
 }
 

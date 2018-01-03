@@ -46197,7 +46197,7 @@ var style = {
     },
     ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth,
     cursor: {
-        fontSize: ticTacToeSquareBorderWidth / 2
+        fontSize: ticTacToeSquareFontSize / 2
     }
 };
 //#endregion
