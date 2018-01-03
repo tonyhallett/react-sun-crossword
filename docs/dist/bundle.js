@@ -46271,7 +46271,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
             return React.createElement("td", { style: [style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onClick: _this.squareSelected },
-                React.createElement("div", { style: [{ width: "100%", height: "100%" }, _this.props.isSelected ? focusAnimationStyle : null] },
+                React.createElement("div", { style: [{ width: "100%", height: "100%", userSelect: "none" }, _this.props.isSelected ? focusAnimationStyle : null] },
                     " ",
                     _this.props.squareText));
         });
