@@ -1646,7 +1646,7 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     render() {
         return <MouseBodyPosition>
             <BodyCursor cursor="pointer" replaceCursor={this.props.active}>
-                <span style={{ zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize }}>{this.props.cursorText}</span>
+                <span style={{ zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize, fontFamily: textFontFamilyWithDefault, color: this.props.cursorColour }}>{this.props.cursorText}</span>
             </BodyCursor>
         </MouseBodyPosition>
     }
