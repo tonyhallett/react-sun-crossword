@@ -393,13 +393,13 @@ function reducer(state: TicTacToeState = {
                 drawCount: state.drawCount,
                 playCount: state.playCount,
                 playerXWinCount: state.playerXWinCount,
-                currentSquare:null
+                currentSquare: {row:0,column:0}
             }
         case Take_Go:
             if (state.gameState === GameState.Playing) {
                 var row = action.row;
                 var column = action.column;
-
+                
                 var currentPlayer = state.currentPlayer;
                 var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
 
@@ -445,6 +445,7 @@ function reducer(state: TicTacToeState = {
                 }
                 return {
                     ...state,
+                    selectedSquare: {row:row,column:column},
                     board: newBoard,
                     currentPlayer: nextPlayer,
                     oColour: state.oColour,
@@ -1950,7 +1951,6 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 
     }
     componentWillReceiveProps(props: TicTacToeScreenProps) {
-        console.log("TicTacToeScreen receive props, current gameState: " + gameStateString(this.props.gameState) + ", new gameState: " + gameStateString(props.gameState));
         if (props.gameState !== this.props.gameState && this.props.gameState === GameState.Playing ) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) })
         }

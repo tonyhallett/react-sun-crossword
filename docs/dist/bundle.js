@@ -45288,7 +45288,7 @@ function reducer(state, action) {
                 drawCount: state.drawCount,
                 playCount: state.playCount,
                 playerXWinCount: state.playerXWinCount,
-                currentSquare: null
+                currentSquare: { row: 0, column: 0 }
             };
         case Take_Go:
             if (state.gameState === GameState.Playing) {
@@ -45334,7 +45334,7 @@ function reducer(state, action) {
                         playCount++;
                         break;
                 }
-                return __assign({}, state, { board: newBoard, currentPlayer: nextPlayer, oColour: state.oColour, xColour: state.xColour, gameState: gameState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
+                return __assign({}, state, { selectedSquare: { row: row, column: column }, board: newBoard, currentPlayer: nextPlayer, oColour: state.oColour, xColour: state.xColour, gameState: gameState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
             }
             return state;
         default:
@@ -46572,7 +46572,6 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         return messageElement;
     };
     TicTacToeScreen.prototype.componentWillReceiveProps = function (props) {
-        console.log("TicTacToeScreen receive props, current gameState: " + gameStateString(this.props.gameState) + ", new gameState: " + gameStateString(props.gameState));
         if (props.gameState !== this.props.gameState && this.props.gameState === GameState.Playing) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
         }
