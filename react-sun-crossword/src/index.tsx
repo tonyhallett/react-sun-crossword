@@ -1294,7 +1294,7 @@ class DemoCursorReplacement extends React.Component<undefined, undefined>{
     render() {
         return <MouseBodyPosition>
             <BodyCursor active={true} cursor="pointer" replaceCursor={true}>
-                <span>X</span>
+                <span style={{zIndex:1000}}>X</span>
             </BodyCursor>
         </MouseBodyPosition>
     }

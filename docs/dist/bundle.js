@@ -46008,7 +46008,7 @@ var DemoCursorReplacement = /** @class */ (function (_super) {
     DemoCursorReplacement.prototype.render = function () {
         return React.createElement(MouseBodyPosition, null,
             React.createElement(BodyCursor, { active: true, cursor: "pointer", replaceCursor: true },
-                React.createElement("span", null, "X")));
+                React.createElement("span", { style: { zIndex: 1000 } }, "X")));
     };
     return DemoCursorReplacement;
 }(React.Component));
