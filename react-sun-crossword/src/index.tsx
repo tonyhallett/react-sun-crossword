@@ -401,13 +401,15 @@ function reducer(state: TicTacToeState = {
                 var column = action.column;
                 
                 var currentPlayer = state.currentPlayer;
-                var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
+                var nextPlayer = currentPlayer;
 
+                var legitimatePlay = false;
                 var newBoard = state.board.map((rowSquares, index) => {
                     if (index === row) {
                         return rowSquares.map((sq, colIndex) => {
                             if (colIndex === column) {
                                 if (sq === SquareGo.None) {
+                                    legitimatePlay = true;
                                     var squareGo = SquareGo.O;
                                     if (currentPlayer === Player.X) {
                                         squareGo = SquareGo.X;
@@ -421,31 +423,37 @@ function reducer(state: TicTacToeState = {
                     }
                     return rowSquares;
                 });
-                var winner = checkWinner(newBoard);
                 var gameState = GameState.Playing;
 
                 var drawCount = state.drawCount;
                 var playCount = state.playCount;
                 var playerXWinCount = state.playerXWinCount;
 
-                switch (winner) {
-                    case SquareGo.None:
-                        if (checkDraw(newBoard)) {
-                            gameState = GameState.Draw;
+                if (legitimatePlay) {
+                    nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
+
+                    var winner = checkWinner(newBoard);
+                    
+                    switch (winner) {
+                        case SquareGo.None:
+                            if (checkDraw(newBoard)) {
+                                gameState = GameState.Draw;
+                                playCount++;
+                                drawCount++;
+                            }
+                            break;
+                        case SquareGo.X:
+                            gameState = GameState.X;
                             playCount++;
-                            drawCount++;
-                        }
-                        break;
-                    case SquareGo.X:
-                        gameState = GameState.X;
-                        playCount++;
-                        playerXWinCount++;
-                        break;
-                    case SquareGo.O:
-                        gameState = GameState.O;
-                        playCount++;
-                        break;
+                            playerXWinCount++;
+                            break;
+                        case SquareGo.O:
+                            gameState = GameState.O;
+                            playCount++;
+                            break;
+                    }
                 }
+                
                 return {
                     ...state,
                     selectedSquare: {row:row,column:column},
