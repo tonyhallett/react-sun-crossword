@@ -46000,18 +46000,6 @@ var BodyCursor = /** @class */ (function (_super) {
     };
     return BodyCursor;
 }(React.Component));
-var DemoCursorReplacement = /** @class */ (function (_super) {
-    __extends(DemoCursorReplacement, _super);
-    function DemoCursorReplacement() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    DemoCursorReplacement.prototype.render = function () {
-        return React.createElement(MouseBodyPosition, null,
-            React.createElement(BodyCursor, { active: true, cursor: "pointer", replaceCursor: true },
-                React.createElement("span", { style: { zIndex: 1000 } }, "X")));
-    };
-    return DemoCursorReplacement;
-}(React.Component));
 //#region demo
 var demoTimeout = {
     enter: 1000,
@@ -46309,8 +46297,30 @@ function ConfiguredRadium(component) {
         ],
     })(component);
 }
-//#endregion
-//#region App components
+var TicTacToeCursor = /** @class */ (function (_super) {
+    __extends(TicTacToeCursor, _super);
+    function TicTacToeCursor() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TicTacToeCursor.prototype.render = function () {
+        return React.createElement(MouseBodyPosition, null,
+            React.createElement(BodyCursor, { cursor: "pointer", replaceCursor: this.props.active },
+                React.createElement("span", { style: { zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize } }, this.props.cursorText)));
+    };
+    return TicTacToeCursor;
+}(React.Component));
+var ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
+    //need
+    var currentPlayer = state.currentPlayer;
+    var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
+    var cursorText = currentPlayer === Player.X ? cross : nought;
+    var active = state.gameState === GameState.Playing;
+    return {
+        cursorColour: cursorColour,
+        cursorText: cursorText,
+        active: active
+    };
+}, null)(TicTacToeCursor);
 var RadiumTransition = ConfiguredRadium(Transition_1.default);
 var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
@@ -46366,11 +46376,10 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     };
     return TicTacToeSquare;
 }(React.Component));
-var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
-    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
+function getSquareTextAndColour(state, rowIndex, colIndex) {
+    var squareGo = state.board[rowIndex][colIndex];
     var squareGoColour = "white";
     var squareText = "";
-    var canGo = false;
     switch (squareGo) {
         case SquareGo.O:
             squareGoColour = state.oColour;
@@ -46381,19 +46390,21 @@ var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) 
             squareGoColour = state.xColour;
             break;
         case SquareGo.None:
-            canGo = true;
             break;
     }
-    if (state.gameState !== GameState.Playing) {
-        canGo = false;
-    }
+    return { colour: squareGoColour, text: squareText };
+}
+var ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
+    var _a = getSquareTextAndColour(state, ownProps.rowIndex, ownProps.colIndex), colour = _a.colour, text = _a.text;
+    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
+    var canGo = state.gameState === GameState.Playing && squareGo === SquareGo.None;
     var isSelected = false;
     if (state.selectedSquare) {
         isSelected = state.selectedSquare.column === ownProps.colIndex && state.selectedSquare.row == ownProps.rowIndex;
     }
     var connectState = {
-        squareGoColour: squareGoColour,
-        squareText: squareText,
+        squareGoColour: colour,
+        squareText: text,
         canGo: canGo,
         isSelected: isSelected
     };
@@ -46543,7 +46554,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                         outlineColor: backgroundColor
                     }
                 } }),
-            React.createElement(DemoCursorReplacement, null),
+            React.createElement(ConnectedTicTacToeCursor, null),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement(ConnectedTicTacToeLoader, null) : React.createElement(ConnectedTicTacToeScreen, null)))));

@@ -14,6 +14,9 @@ import * as Color from 'Color'
 import { flipOutX,flipInX,pulse,shake } from 'react-animations';
 import * as WebFont  from "webfontloader";
 
+type Partial<T> = {
+    [P in keyof T]?: T[P];
+}
 //#region css animation helpers
 interface AnimationStyle extends Object {
     animationName: any,
@@ -1261,9 +1264,7 @@ class MouseBodyPosition extends React.Component<undefined, MouseBodyPositionStat
         return React.Children.map(this.props.children, (child => React.cloneElement(child as React.ReactElement<any>,this.state)))
     }
 }
-type Partial<T> = {
-    [P in keyof T]?: T[P];
-}
+
 interface BodyCursorProps extends Partial<MouseBodyPositionState> {
     replaceCursor?: boolean,
     cursor?:string
@@ -1290,15 +1291,7 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
 
     }
 }
-class DemoCursorReplacement extends React.Component<undefined, undefined>{
-    render() {
-        return <MouseBodyPosition>
-            <BodyCursor active={true} cursor="pointer" replaceCursor={true}>
-                <span style={{zIndex:1000}}>X</span>
-            </BodyCursor>
-        </MouseBodyPosition>
-    }
-}
+
 //#region demo
 const demoTimeout = {
     enter: 1000,
@@ -1643,6 +1636,34 @@ function ConfiguredRadium(component) {
 //#endregion
 //#region App components
 
+interface TicTacToeCursorProps {
+    cursorColour: string,
+    cursorText: string,
+    active:boolean
+}
+
+class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
+    render() {
+        return <MouseBodyPosition>
+            <BodyCursor cursor="pointer" replaceCursor={this.props.active}>
+                <span style={{ zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize }}>{this.props.cursorText}</span>
+            </BodyCursor>
+        </MouseBodyPosition>
+    }
+}
+const ConnectedTicTacToeCursor = connect((state: TicTacToeState) => {
+    //need
+    var currentPlayer = state.currentPlayer;
+    var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
+    var cursorText = currentPlayer === Player.X ? cross : nought;
+    var active = state.gameState === GameState.Playing;
+    return {
+        cursorColour: cursorColour,
+        cursorText: cursorText,
+        active: active
+    }
+}, null)(TicTacToeCursor) as any;
+
 const RadiumTransition = ConfiguredRadium(Transition);
 const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
 const AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
@@ -1720,11 +1741,10 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
     }
 }
 
-const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
-    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
+function getSquareTextAndColour(state: TicTacToeState, rowIndex: number, colIndex: number) {
+    var squareGo = state.board[rowIndex][colIndex];
     var squareGoColour = "white";
     var squareText = "";
-    var canGo = false;
     switch (squareGo) {
         case SquareGo.O:
             squareGoColour = state.oColour;
@@ -1735,20 +1755,24 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
             squareGoColour = state.xColour;
             break;
         case SquareGo.None:
-            canGo = true;
             break;
 
     }
-    if (state.gameState !== GameState.Playing) {
-        canGo = false;
-    }
+    return { colour: squareGoColour,text:squareText }
+}
+const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
+   
+    var { colour, text } = getSquareTextAndColour(state, ownProps.rowIndex, ownProps.colIndex);
+    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
+    var canGo = state.gameState===GameState.Playing && squareGo === SquareGo.None;
+    
     var isSelected = false;
     if (state.selectedSquare) {
         isSelected = state.selectedSquare.column === ownProps.colIndex && state.selectedSquare.row == ownProps.rowIndex
     }
     var connectState = {
-        squareGoColour: squareGoColour,
-        squareText: squareText,
+        squareGoColour: colour,
+        squareText: text,
         canGo: canGo,
         isSelected:isSelected
     }
@@ -1954,7 +1978,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                     }
                 }}
             />
-            <DemoCursorReplacement/>
+            <ConnectedTicTacToeCursor/>
             <VerticallyCenteredContainer backgroundColor={backgroundColor}>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
