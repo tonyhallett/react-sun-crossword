@@ -1441,6 +1441,7 @@ var noughtCrossFontFamily = "Short Stack";
 var defaultFontFamily = ",Helvetica Neue, Helvetica, Arial, sans-serif";
 var noughtCrossFontFamilyWithDefault = noughtCrossFontFamily + defaultFontFamily;
 var textFontFamilyWithDefault = textFontFamily + defaultFontFamily;
+var ticTacToeSquareFontSize = 80;
 //override scoreboard.cellStyle with noughtCrossStyle for the player cells
 var style = {
     winDrawContainerStyle: { fontWeight: "bold", margin: "0 auto", width: "80%", textAlign: "center",fontSize:fontSize } as React.CSSProperties,
@@ -1501,9 +1502,12 @@ var style = {
     ticTacToeSquare: {
         verticalAlign: "center",
         textAlign: "center", width: 100, height: 100,
-        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: "80px", fontFamily: noughtCrossFontFamilyWithDefault,
+        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: ticTacToeSquareFontSize, fontFamily: noughtCrossFontFamilyWithDefault,
     } as React.CSSProperties,
-    ticTacToeSquareBorderWidth:ticTacToeSquareBorderWidth
+    ticTacToeSquareBorderWidth: ticTacToeSquareBorderWidth,
+    cursor: {
+        fontSize: ticTacToeSquareBorderWidth/2
+    }
 }
 
 //#endregion
@@ -1646,7 +1650,7 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     render() {
         return <MouseBodyPosition>
             <BodyCursor cursor="pointer" replaceCursor={this.props.active}>
-                <span style={{ zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.cursorColour }}>{this.props.cursorText}</span>
+                <span style={{ zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.cursorColour }}>{this.props.cursorText}</span>
             </BodyCursor>
         </MouseBodyPosition>
     }
@@ -2174,7 +2178,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 <ConnectedTicTacToeBoard />
                 <div role="button" key="button" style={[{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%", cursor:"pointer" } as React.CSSProperties, style.componentBoxShadow, buttonAnimation]} onClick={this.props.playAgain}>
                     <div style={{ marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" }}  >
-                        <span style={{ textDecoration: "underline", display: "inlineBlock" }}>{playAgainUnderlineLetter}</span><span style={{ display: "inlineBlock" }}>{playAgainRemainder}</span>
+                        <span style={{ textDecoration: "underline", display: "inlineBlock", userSelect: "none" }}>{playAgainUnderlineLetter}</span><span style={{ display: "inlineBlock", userSelect: "none" }}>{playAgainRemainder}</span>
                     </div>
                 </div>
             </div>
