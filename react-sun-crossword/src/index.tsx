@@ -1265,16 +1265,30 @@ class MouseBodyPosition extends React.Component<undefined, MouseBodyPositionStat
     }
 }
 
+//positionAdjustment?: (x: number, y: number) => {x:number,y:number}
 interface BodyCursorProps extends Partial<MouseBodyPositionState> {
     replaceCursor?: boolean,
-    cursor?:string
+    cursor?: string,
+    xAdjustment?:number,
+    yAdjustment?:number
 }
-//will probably change to BodyCursorPlacement - with a zIndex?
+/*
+positionAdjustment: function (x: number, y: number) {
+            return {x:x,y:y}
+        }
+
+//var { x, y } = this.props.positionAdjustment(this.props.x, this.props.y);
+*/
 class BodyCursor extends React.Component<BodyCursorProps, undefined>{
+    static defaultProps = {
+        xAdjustment: 0,
+        yAdjustment:0
+    }
     render() {
         if (this.props.active&&this.props.replaceCursor) {
             document.body.style.cursor = "none";
-            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y,pointerEvents:"none" } as React.CSSProperties;
+            
+            var replacedCursorStyle = { position: "absolute", left: this.props.x - this.props.xAdjustment, top: this.props.y - this.props.yAdjustment, pointerEvents: "none" } as React.CSSProperties;
             var childElement = this.props.children as React.ReactElement<any>;
 
             var childStyle = childElement.props.style;

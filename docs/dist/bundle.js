@@ -45975,7 +45975,13 @@ var MouseBodyPosition = /** @class */ (function (_super) {
     };
     return MouseBodyPosition;
 }(React.Component));
-//will probably change to BodyCursorPlacement - with a zIndex?
+/*
+positionAdjustment: function (x: number, y: number) {
+            return {x:x,y:y}
+        }
+
+//var { x, y } = this.props.positionAdjustment(this.props.x, this.props.y);
+*/
 var BodyCursor = /** @class */ (function (_super) {
     __extends(BodyCursor, _super);
     function BodyCursor() {
@@ -45984,7 +45990,7 @@ var BodyCursor = /** @class */ (function (_super) {
     BodyCursor.prototype.render = function () {
         if (this.props.active && this.props.replaceCursor) {
             document.body.style.cursor = "none";
-            var replacedCursorStyle = { position: "absolute", left: this.props.x, top: this.props.y, pointerEvents: "none" };
+            var replacedCursorStyle = { position: "absolute", left: this.props.x - this.props.xAdjustment, top: this.props.y - this.props.yAdjustment, pointerEvents: "none" };
             var childElement = this.props.children;
             var childStyle = childElement.props.style;
             var newStyle = __assign({}, childStyle, replacedCursorStyle);
@@ -45997,6 +46003,10 @@ var BodyCursor = /** @class */ (function (_super) {
             document.body.style.cursor = this.props.cursor;
             return this.props.children;
         }
+    };
+    BodyCursor.defaultProps = {
+        xAdjustment: 0,
+        yAdjustment: 0
     };
     return BodyCursor;
 }(React.Component));
