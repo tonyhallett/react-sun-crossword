@@ -2020,7 +2020,11 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
-
+        /*
+        <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
+                    <button tabIndex={-1} key="button" style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} >{playAgainText}</button>
+                </div>
+        */
         return <div tabIndex={0} ref={this.keyContainerRef} onKeyDown={this.keyDown}>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
@@ -2041,8 +2045,10 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
-                    <button tabIndex={-1} key="button" style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} >{playAgainText}</button>
+                <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
+                    <div key="button" style={[{ ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} >
+                        <span style={{ textDecoration:"underline" }}>P</span><span>lay Again</span>
+                    </div>
                 </div>
             </div>
             <ModalCover parentSelector={this.getModalParent}  contentStyle={{ backgroundColor: componentBackgroundColor }} closeTimeoutMS={this.flipDuration} elementSelector={"#" + ticTacToeBoardId} isOpen={this.modalShouldOpen()} onRequestClose={this.props.finishedConfirmed}>
