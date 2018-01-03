@@ -397,59 +397,67 @@ function reducer(state: TicTacToeState = {
                 currentSquare:null
             }
         case Take_Go:
-            var row = action.row;
-            var column = action.column;
-            var currentPlayer = state.currentPlayer;
-            var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
-            var newBoard=state.board.map((rowSquares, index) => {
-                if (index === row) {
-                    return rowSquares.map((sq, colIndex) => {
-                        if (colIndex === column) {
-                            var squareGo = SquareGo.O;
-                            if (currentPlayer === Player.X) {
-                                squareGo = SquareGo.X;
+            if (state.gameState === GameState.Playing) {
+                var row = action.row;
+                var column = action.column;
+
+                var currentPlayer = state.currentPlayer;
+                var nextPlayer = (currentPlayer === Player.X) ? Player.O : Player.X;
+
+                var newBoard = state.board.map((rowSquares, index) => {
+                    if (index === row) {
+                        return rowSquares.map((sq, colIndex) => {
+                            if (colIndex === column) {
+                                var squareGo = SquareGo.O;
+                                if (currentPlayer === Player.X) {
+                                    squareGo = SquareGo.X;
+                                }
+                                return squareGo;
                             }
-                            return squareGo;
-                        }
-                        return sq;
-                    })
-                }
-                return rowSquares;
-            });
-            var winner = checkWinner(newBoard);
-            var gameState = GameState.Playing;
-            var drawCount = state.drawCount;
-            var playCount = state.playCount;
-            var playerXWinCount = state.playerXWinCount;
-            switch (winner) {
-                case SquareGo.None:
-                    if (checkDraw(newBoard)) {
-                        gameState = GameState.Draw;
-                        playCount++;
-                        drawCount++;
+                            return sq;
+                        })
                     }
-                    break;
-                case SquareGo.X:
-                    gameState = GameState.X;
-                    playCount++;
-                    playerXWinCount++;
-                    break;
-                case SquareGo.O:
-                    gameState = GameState.O;
-                    playCount++;
-                    break;
+                    return rowSquares;
+                });
+                var winner = checkWinner(newBoard);
+                var gameState = GameState.Playing;
+
+                var drawCount = state.drawCount;
+                var playCount = state.playCount;
+                var playerXWinCount = state.playerXWinCount;
+
+                switch (winner) {
+                    case SquareGo.None:
+                        if (checkDraw(newBoard)) {
+                            gameState = GameState.Draw;
+                            playCount++;
+                            drawCount++;
+                        }
+                        break;
+                    case SquareGo.X:
+                        gameState = GameState.X;
+                        playCount++;
+                        playerXWinCount++;
+                        break;
+                    case SquareGo.O:
+                        gameState = GameState.O;
+                        playCount++;
+                        break;
+                }
+                return {
+                    ...state,
+                    board: newBoard,
+                    currentPlayer: nextPlayer,
+                    oColour: state.oColour,
+                    xColour: state.xColour,
+                    gameState: gameState,
+                    drawCount: drawCount,
+                    playCount: playCount,
+                    playerXWinCount: playerXWinCount
+                }
             }
-            return {
-                ...state,
-                board: newBoard,
-                currentPlayer: nextPlayer,
-                oColour: state.oColour,
-                xColour: state.xColour,
-                gameState: gameState,
-                drawCount: drawCount,
-                playCount: playCount,
-                playerXWinCount: playerXWinCount
-            }
+            return state;
+            
         default:
             return state;
     }
@@ -1990,9 +1998,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     var selectedSquare = this.props.selectedSquare;
                     if (selectedSquare) {
                         var squareGo = this.props.board[selectedSquare.row][selectedSquare.column];
-                        if (squareGo === SquareGo.None) {
-                            this.props.takeGo(selectedSquare.row, selectedSquare.column);
-                        }
+                        this.props.takeGo(selectedSquare.row, selectedSquare.column);
                     }
 
                     break;
