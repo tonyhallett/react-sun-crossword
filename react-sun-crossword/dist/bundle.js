@@ -46305,7 +46305,7 @@ var TicTacToeCursor = /** @class */ (function (_super) {
     TicTacToeCursor.prototype.render = function () {
         return React.createElement(MouseBodyPosition, null,
             React.createElement(BodyCursor, { cursor: "pointer", replaceCursor: this.props.active },
-                React.createElement("span", { style: { zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize, fontFamily: textFontFamilyWithDefault, color: this.props.cursorColour } }, this.props.cursorText)));
+                React.createElement("span", { style: { zIndex: 1000, fontSize: style.ticTacToeSquare.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.cursorColour } }, this.props.cursorText)));
     };
     return TicTacToeCursor;
 }(React.Component));
