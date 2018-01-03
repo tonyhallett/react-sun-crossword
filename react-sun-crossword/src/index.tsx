@@ -2047,7 +2047,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div key="button" style={[{ ":focus": {} }, { ":hover": {} }, buttonAnimation, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, margin: "auto", width: "50%", textAlign: "center" }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]} onClick={this.props.playAgain} >
+                <div key="button" style={[{ ":focus": {} }, { ":hover": {} }, buttonAnimation, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, marginLeft: "auto", marginRight: "auto", width: "50%", textAlign: "center" }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]} onClick={this.props.playAgain} >
                     <span style={{ textDecoration: "underline", display: "inlineBlock" }}>P</span><span style={{ display: "inlineBlock" }}>lay again</span>
                 </div>
             </div>
