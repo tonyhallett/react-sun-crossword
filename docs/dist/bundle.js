@@ -45269,7 +45269,7 @@ function reducer(state, action) {
         drawCount: 0,
         playerXWinCount: 0,
         fontLoadingState: FontLoadingState.NotStarted,
-        selectedSquare: null
+        selectedSquare: { row: 0, column: 0 }
     }; }
     switch (action.type) {
         case Arrow_Press:
@@ -45288,7 +45288,7 @@ function reducer(state, action) {
                 drawCount: state.drawCount,
                 playCount: state.playCount,
                 playerXWinCount: state.playerXWinCount,
-                currentSquare: { row: 0, column: 0 }
+                selectedSquare: { row: 0, column: 0 }
             };
         case Take_Go:
             if (state.gameState === GameState.Playing) {
