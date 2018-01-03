@@ -407,11 +407,14 @@ function reducer(state: TicTacToeState = {
                     if (index === row) {
                         return rowSquares.map((sq, colIndex) => {
                             if (colIndex === column) {
-                                var squareGo = SquareGo.O;
-                                if (currentPlayer === Player.X) {
-                                    squareGo = SquareGo.X;
+                                if (sq === SquareGo.None) {
+                                    var squareGo = SquareGo.O;
+                                    if (currentPlayer === Player.X) {
+                                        squareGo = SquareGo.X;
+                                    }
+                                    return squareGo;
                                 }
-                                return squareGo;
+                                
                             }
                             return sq;
                         })
@@ -2043,7 +2046,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div key="button" style={[{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonAnimation]} onClick={this.props.playAgain}>
+                <div role="button" key="button" style={[{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonAnimation]} onClick={this.props.playAgain}>
                     <div style={{ marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" }}  >
                         <span style={{ textDecoration: "underline", display: "inlineBlock" }}>{playAgainUnderlineLetter}</span><span style={{ display: "inlineBlock" }}>{playAgainRemainder}</span>
                     </div>
