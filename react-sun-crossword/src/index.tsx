@@ -2019,14 +2019,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
 
         var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
-        
-        /*
-        <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", backgroundColor: buttonBackgroundColor }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
-
-        <div style={[{ borderRadius: style.borderRadius, marginTop: style.componentMargin }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null , this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]}>
-                    <button tabIndex={-1} key="button" style={[{ fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, width: "100%", borderRadius: style.borderRadius, backgroundColor: buttonBackgroundColor, ":focus": {} }, { ":hover": {} }, buttonAnimation]} onClick={this.props.playAgain} >{playAgainText}</button>
-                </div>
-        */
+        var playAgainUnderlineLetter = playAgainText[0];
+        var playAgainRemainder = playAgainText.substr(1);
         return <div tabIndex={0} ref={this.keyContainerRef} onKeyDown={this.keyDown}>
             
             <span style={{ animationName: this.keyframesFlipInX }} />
@@ -2048,8 +2042,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 </div>
                 <ConnectedTicTacToeBoard />
                 <div key="button" style={[{ ":focus": {} }, { ":hover": {} }, buttonAnimation, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]} onClick={this.props.playAgain}>
-                    <div  style={{ marginLeft: "auto", marginRight: "auto", width: "50%", textAlign: "center" }}  >
-                        <span style={{ textDecoration: "underline", display: "inlineBlock" }}>P</span><span style={{ display: "inlineBlock" }}>lay again</span>
+                    <div style={{ marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" }}  >
+                        <span style={{ textDecoration: "underline", display: "inlineBlock" }}>{playAgainUnderlineLetter}</span><span style={{ display: "inlineBlock" }}>{playAgainRemainder}</span>
                     </div>
                 </div>
             </div>
