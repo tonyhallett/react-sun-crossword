@@ -1331,7 +1331,7 @@ var buttonHoverFocusBrightnessAnimationStyle = {
     animationFillMode: "forwards"
 
 }
-var buttonHoverFocusShadowStyle = {
+var buttonHoverShadowStyle = {
     boxShadow: boxShadowHover,
     
 }
@@ -2014,11 +2014,13 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     }
     render() {
         //this is no longer necessary 
-        var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
+        //var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
-        var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
+        //var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
 
-        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        //var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        var buttonAnimation = mergeAnimations([this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null, buttonHasHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        
         var playAgainUnderlineLetter = playAgainText[0];
         var playAgainRemainder = playAgainText.substr(1);
         return <div tabIndex={0} ref={this.keyContainerRef} onKeyDown={this.keyDown}>
@@ -2041,7 +2043,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div key="button" style={[{ ":focus": {} }, { ":hover": {} }, buttonAnimation, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null]} onClick={this.props.playAgain}>
+                <div key="button" style={[{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonAnimation]} onClick={this.props.playAgain}>
                     <div style={{ marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" }}  >
                         <span style={{ textDecoration: "underline", display: "inlineBlock" }}>{playAgainUnderlineLetter}</span><span style={{ display: "inlineBlock" }}>{playAgainRemainder}</span>
                     </div>

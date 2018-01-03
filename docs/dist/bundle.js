@@ -46040,7 +46040,7 @@ var buttonHoverFocusBrightnessAnimationStyle = {
     animationDuration: "1s",
     animationFillMode: "forwards"
 };
-var buttonHoverFocusShadowStyle = {
+var buttonHoverShadowStyle = {
     boxShadow: boxShadowHover,
 };
 var fontSize = 20;
@@ -46578,10 +46578,11 @@ var TicTacToeScreen = /** @class */ (function (_super) {
     };
     TicTacToeScreen.prototype.render = function () {
         //this is no longer necessary 
-        var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
+        //var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
-        var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
-        var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        //var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
+        //var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        var buttonAnimation = mergeAnimations([this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null, buttonHasHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         var playAgainUnderlineLetter = playAgainText[0];
         var playAgainRemainder = playAgainText.substr(1);
         return React.createElement("div", { tabIndex: 0, ref: this.keyContainerRef, onKeyDown: this.keyDown },
@@ -46602,7 +46603,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 React.createElement("div", { style: { marginBottom: style.componentMargin } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
-                React.createElement("div", { key: "button", style: [{ ":focus": {} }, { ":hover": {} }, buttonAnimation, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonFocusOrHover ? buttonHoverFocusShadowStyle : null, this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null], onClick: this.props.playAgain },
+                React.createElement("div", { key: "button", style: [{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%" }, style.componentBoxShadow, buttonAnimation], onClick: this.props.playAgain },
                     React.createElement("div", { style: { marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" } },
                         React.createElement("span", { style: { textDecoration: "underline", display: "inlineBlock" } }, playAgainUnderlineLetter),
                         React.createElement("span", { style: { display: "inlineBlock" } }, playAgainRemainder)))),
