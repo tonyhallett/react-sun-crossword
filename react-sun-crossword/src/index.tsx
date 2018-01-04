@@ -1347,7 +1347,7 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
                 var matched = false;
                 for (var i = 0; i < this.props.inactiveElementIdentifiers.length; i++) {
                     var inactiveElementIdentifier = this.props.inactiveElementIdentifiers[i];
-                    if (inactiveElementIdentifier.id !== null) {
+                    if (!(inactiveElementIdentifier.id === null || inactiveElementIdentifier.id===undefined)) {
                         if (elementToTest.id === inactiveElementIdentifier.id) {
                             inInactiveElement = true;
                         }
