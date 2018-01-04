@@ -45026,11 +45026,12 @@ function gameStateString(gameState) {
     }
 }
 var Do_Adjustment = "Do_Adjustment";
-function adjust(x, y) {
+function adjust(x, y, isCross) {
     return {
         type: Do_Adjustment,
         x: x,
-        y: y
+        y: y,
+        isCross: isCross
     };
 }
 //#endregion
@@ -45283,7 +45284,14 @@ function reducer(state, action) {
     }; }
     switch (action.type) {
         case Do_Adjustment:
-            return __assign({}, state, { crossAdjustment: { x: action.x, y: action.y } });
+            var newState = __assign({}, state);
+            if (action.isCross) {
+                newState.crossAdjustment = { x: action.x, y: action.y };
+            }
+            else {
+                newState.noughtAdjustment = { x: action.x, y: action.y };
+            }
+            return newState;
         case Arrow_Press:
             return __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
         case FONT_LOADING:
@@ -46557,28 +46565,28 @@ var AdjustmentComponent = /** @class */ (function (_super) {
             var newX = evt.target.value;
             _this.setState({ xx: newX });
             if (newX !== "") {
-                _this.props.doAdjustment(parseInt(newX), _this.props.crossAdjustment.y);
+                _this.props.doAdjustment(parseInt(newX), _this.props.crossAdjustment.y, true);
             }
         };
         _this.xyChange = function (evt) {
             var newY = evt.target.value;
             _this.setState({ xy: newY });
             if (newY !== "") {
-                _this.props.doAdjustment(_this.props.crossAdjustment.x, parseInt(newY));
+                _this.props.doAdjustment(_this.props.crossAdjustment.x, parseInt(newY), true);
             }
         };
         _this.oxChange = function (evt) {
             var newX = evt.target.value;
             _this.setState({ ox: newX });
             if (newX !== "") {
-                _this.props.doAdjustment(parseInt(newX), _this.props.noughtAdjustment.y);
+                _this.props.doAdjustment(parseInt(newX), _this.props.noughtAdjustment.y, false);
             }
         };
         _this.oyChange = function (evt) {
             var newY = evt.target.value;
             _this.setState({ oy: newY });
             if (newY !== "") {
-                _this.props.doAdjustment(_this.props.noughtAdjustment.x, parseInt(newY));
+                _this.props.doAdjustment(_this.props.noughtAdjustment.x, parseInt(newY), false);
             }
         };
         _this.state = { xx: "0", xy: "0", ox: "0", oy: "0" };
@@ -46588,16 +46596,16 @@ var AdjustmentComponent = /** @class */ (function (_super) {
         return React.createElement("div", null,
             React.createElement("label", null,
                 "X x",
-                React.createElement("input", { type: "text", onChange: this.xxChange, value: this.props.crossAdjustment.x })),
+                React.createElement("input", { type: "text", onChange: this.xxChange, value: this.state.xx })),
             React.createElement("label", null,
                 "X y",
-                React.createElement("input", { type: "text", onChange: this.xyChange, value: this.props.crossAdjustment.y })),
+                React.createElement("input", { type: "text", onChange: this.xyChange, value: this.state.xy })),
             React.createElement("label", null,
                 "O x",
-                React.createElement("input", { type: "text", onChange: this.oxChange, value: this.props.noughtAdjustment.x })),
+                React.createElement("input", { type: "text", onChange: this.oxChange, value: this.state.ox })),
             React.createElement("label", null,
                 "O y",
-                React.createElement("input", { type: "text", onChange: this.oyChange, value: this.props.noughtAdjustment.y })));
+                React.createElement("input", { type: "text", onChange: this.oyChange, value: this.state.oy })));
     };
     return AdjustmentComponent;
 }(React.Component));
@@ -46610,8 +46618,8 @@ var ConnectedAdjustmentComponent = react_redux_1.connect(function (state) {
     };
 }, (function (dispatch) {
     return {
-        doAdjustment: function (x, y) {
-            dispatch(adjust(x, y));
+        doAdjustment: function (x, y, isCross) {
+            dispatch(adjust(x, y, isCross));
         }
     };
 }))(AdjustmentComponent);

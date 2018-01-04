@@ -134,11 +134,12 @@ interface Adjustment {
     y:number
 }
 const Do_Adjustment = "Do_Adjustment";
-function adjust(x: number, y: number) {
+function adjust(x: number, y: number,isCross:boolean) {
     return {
         type: Do_Adjustment,
         x: x,
-        y:y
+        y: y,
+        isCross:isCross
     }
 }
 interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
@@ -387,10 +388,16 @@ function reducer(state: TicTacToeState = {
 }, action: AnyAction) {
     switch (action.type) {
         case Do_Adjustment:
-            return {
+            var newState = {
                 ...state,
-                crossAdjustment:{x:action.x,y:action.y}
+
+            } as TicTacToeState
+            if (action.isCross) {
+                newState.crossAdjustment = { x: action.x, y: action.y };
+            } else {
+                newState.noughtAdjustment = { x: action.x, y: action.y };
             }
+            return newState;
         case Arrow_Press:
             return {
                 ...state,
@@ -1983,7 +1990,7 @@ interface TicTacToeAppState {
 interface AdjustmentProps {
     crossAdjustment: Adjustment,
     noughtAdjustment: Adjustment,
-    doAdjustment:(x:number,y:number)=>void
+    doAdjustment:(x:number,y:number,isCross:boolean)=>void
 }
 interface AdjustmentState {
     xx: string,
@@ -2000,7 +2007,7 @@ class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentSta
         var newX = evt.target.value;
         this.setState({ xx: newX });
         if (newX !== "") {
-            this.props.doAdjustment(parseInt(newX), this.props.crossAdjustment.y);
+            this.props.doAdjustment(parseInt(newX), this.props.crossAdjustment.y,true);
         }
         
     }
@@ -2008,7 +2015,7 @@ class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentSta
         var newY = evt.target.value;
         this.setState({ xy: newY });
         if (newY !== "") {
-            this.props.doAdjustment(this.props.crossAdjustment.x, parseInt(newY));
+            this.props.doAdjustment(this.props.crossAdjustment.x, parseInt(newY),true);
         }
         
     }
@@ -2016,7 +2023,7 @@ class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentSta
         var newX = evt.target.value;
         this.setState({ ox: newX });
         if (newX !== "") {
-            this.props.doAdjustment(parseInt(newX), this.props.noughtAdjustment.y);
+            this.props.doAdjustment(parseInt(newX), this.props.noughtAdjustment.y,false);
         }
         
     }
@@ -2024,17 +2031,17 @@ class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentSta
         var newY = evt.target.value;
         this.setState({ oy: newY });
         if (newY !== "") {
-            this.props.doAdjustment(this.props.noughtAdjustment.x, parseInt(newY));
+            this.props.doAdjustment(this.props.noughtAdjustment.x, parseInt(newY),false);
         }
         
     }
 
     render() {
         return <div>
-            <label>X x<input type="text" onChange={this.xxChange} value={this.props.crossAdjustment.x} /></label>
-            <label>X y<input type="text" onChange={this.xyChange} value={this.props.crossAdjustment.y} /></label>
-            <label>O x<input type="text" onChange={this.oxChange} value={this.props.noughtAdjustment.x} /></label>
-            <label>O y<input type="text" onChange={this.oyChange} value={this.props.noughtAdjustment.y} /></label>
+            <label>X x<input type="text" onChange={this.xxChange} value={this.state.xx} /></label>
+            <label>X y<input type="text" onChange={this.xyChange} value={this.state.xy} /></label>
+            <label>O x<input type="text" onChange={this.oxChange} value={this.state.ox} /></label>
+            <label>O y<input type="text" onChange={this.oyChange} value={this.state.oy} /></label>
             </div>
     }
 }
@@ -2047,8 +2054,8 @@ const ConnectedAdjustmentComponent = connect((state: TicTacToeState) => {
     }
 }, (dispatch => {
         return {
-            doAdjustment: function (x: number, y: number) {
-                dispatch(adjust(x,y))
+            doAdjustment: function (x: number, y: number,isCross:boolean) {
+                dispatch(adjust(x,y,isCross))
 
             }
         }
