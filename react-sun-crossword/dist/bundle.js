@@ -45025,15 +45025,6 @@ function gameStateString(gameState) {
             return "Playing";
     }
 }
-var Do_Adjustment = "Do_Adjustment";
-function adjust(x, y, isCross) {
-    return {
-        type: Do_Adjustment,
-        x: x,
-        y: y,
-        isCross: isCross
-    };
-}
 //#endregion
 //#region action types
 var Finished_Confirmed = "FINISHED_CONFIRMED";
@@ -45278,20 +45269,9 @@ function reducer(state, action) {
         drawCount: 0,
         playerXWinCount: 0,
         fontLoadingState: FontLoadingState.NotStarted,
-        selectedSquare: { row: 0, column: 0 },
-        crossAdjustment: { x: 0, y: 0 },
-        noughtAdjustment: { x: 0, y: 0 }
+        selectedSquare: { row: 0, column: 0 }
     }; }
     switch (action.type) {
-        case Do_Adjustment:
-            var newState = __assign({}, state);
-            if (action.isCross) {
-                newState.crossAdjustment = { x: action.x, y: action.y };
-            }
-            else {
-                newState.noughtAdjustment = { x: action.x, y: action.y };
-            }
-            return newState;
         case Arrow_Press:
             return __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
         case FONT_LOADING:
@@ -46331,12 +46311,7 @@ var TicTacToeCursor = /** @class */ (function (_super) {
     function TicTacToeCursor() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.positionAdjustment = function (x, y) {
-            if (_this.props.cursorText === "X") {
-                return { x: x - _this.props.crossAdjustment.x, y: y - _this.props.crossAdjustment.y };
-            }
-            else {
-                return { x: x - _this.props.noughtAdjustment.x, y: y - _this.props.noughtAdjustment.y };
-            }
+            return { x: x - 4, y: y - 10 };
         };
         return _this;
     }
@@ -46356,11 +46331,91 @@ var ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
     return {
         cursorColour: cursorColour,
         cursorText: cursorText,
-        active: active,
-        crossAdjustment: state.crossAdjustment,
-        noughtAdjustment: state.noughtAdjustment
+        active: active
     };
 }, null)(TicTacToeCursor);
+//#endregion
+//#region cursor adjustment
+//interface Adjustment {
+//    x: number,
+//    y: number
+//}
+//const Do_Adjustment = "Do_Adjustment";
+//function adjust(x: number, y: number, isCross: boolean) {
+//    return {
+//        type: Do_Adjustment,
+//        x: x,
+//        y: y,
+//        isCross: isCross
+//    }
+//}
+//interface AdjustmentProps {
+//    crossAdjustment: Adjustment,
+//    noughtAdjustment: Adjustment,
+//    doAdjustment: (x: number, y: number, isCross: boolean) => void
+//}
+//interface AdjustmentState {
+//    xx: string,
+//    xy: string,
+//    ox: string,
+//    oy: string
+//}
+//class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentState>{
+//    constructor(props) {
+//        super(props);
+//        this.state = { xx: "0", xy: "0", ox: "0", oy: "0" }
+//    }
+//    xxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newX = evt.target.value;
+//        this.setState({ xx: newX });
+//        if (newX !== "") {
+//            this.props.doAdjustment(parseInt(newX), this.props.crossAdjustment.y, true);
+//        }
+//    }
+//    xyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newY = evt.target.value;
+//        this.setState({ xy: newY });
+//        if (newY !== "") {
+//            this.props.doAdjustment(this.props.crossAdjustment.x, parseInt(newY), true);
+//        }
+//    }
+//    oxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newX = evt.target.value;
+//        this.setState({ ox: newX });
+//        if (newX !== "") {
+//            this.props.doAdjustment(parseInt(newX), this.props.noughtAdjustment.y, false);
+//        }
+//    }
+//    oyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newY = evt.target.value;
+//        this.setState({ oy: newY });
+//        if (newY !== "") {
+//            this.props.doAdjustment(this.props.noughtAdjustment.x, parseInt(newY), false);
+//        }
+//    }
+//    render() {
+//        return <div>
+//            <label>X x<input type="text" onChange={this.xxChange} value={this.state.xx} /></label>
+//            <label>X y<input type="text" onChange={this.xyChange} value={this.state.xy} /></label>
+//            <label>O x<input type="text" onChange={this.oxChange} value={this.state.ox} /></label>
+//            <label>O y<input type="text" onChange={this.oyChange} value={this.state.oy} /></label>
+//        </div>
+//    }
+//}
+//const ConnectedAdjustmentComponent = connect((state: TicTacToeState) => {
+//    return {
+//        crossAdjustment: state.crossAdjustment,
+//        noughtAdjustment: state.noughtAdjustment
+//    }
+//}, (dispatch => {
+//    return {
+//        doAdjustment: function (x: number, y: number, isCross: boolean) {
+//            dispatch(adjust(x, y, isCross))
+//        }
+//    }
+//}))(AdjustmentComponent as any) as any
+//#endregion
+//#endregion
 var RadiumTransition = ConfiguredRadium(Transition_1.default);
 var AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition));
 var AutoOutInOnMountColourChangeRadiumTransition = withColourChangeTransitionFn(AutoOutInOnMount);
@@ -46557,72 +46612,6 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     return ScoreboardPlayer;
 }(React.Component));
 var RadiumScoreboardPlayer = ConfiguredRadium(ScoreboardPlayer);
-var AdjustmentComponent = /** @class */ (function (_super) {
-    __extends(AdjustmentComponent, _super);
-    function AdjustmentComponent(props) {
-        var _this = _super.call(this, props) || this;
-        _this.xxChange = function (evt) {
-            var newX = evt.target.value;
-            _this.setState({ xx: newX });
-            if (newX !== "") {
-                _this.props.doAdjustment(parseInt(newX), _this.props.crossAdjustment.y, true);
-            }
-        };
-        _this.xyChange = function (evt) {
-            var newY = evt.target.value;
-            _this.setState({ xy: newY });
-            if (newY !== "") {
-                _this.props.doAdjustment(_this.props.crossAdjustment.x, parseInt(newY), true);
-            }
-        };
-        _this.oxChange = function (evt) {
-            var newX = evt.target.value;
-            _this.setState({ ox: newX });
-            if (newX !== "") {
-                _this.props.doAdjustment(parseInt(newX), _this.props.noughtAdjustment.y, false);
-            }
-        };
-        _this.oyChange = function (evt) {
-            var newY = evt.target.value;
-            _this.setState({ oy: newY });
-            if (newY !== "") {
-                _this.props.doAdjustment(_this.props.noughtAdjustment.x, parseInt(newY), false);
-            }
-        };
-        _this.state = { xx: "0", xy: "0", ox: "0", oy: "0" };
-        return _this;
-    }
-    AdjustmentComponent.prototype.render = function () {
-        return React.createElement("div", null,
-            React.createElement("label", null,
-                "X x",
-                React.createElement("input", { type: "text", onChange: this.xxChange, value: this.state.xx })),
-            React.createElement("label", null,
-                "X y",
-                React.createElement("input", { type: "text", onChange: this.xyChange, value: this.state.xy })),
-            React.createElement("label", null,
-                "O x",
-                React.createElement("input", { type: "text", onChange: this.oxChange, value: this.state.ox })),
-            React.createElement("label", null,
-                "O y",
-                React.createElement("input", { type: "text", onChange: this.oyChange, value: this.state.oy })));
-    };
-    return AdjustmentComponent;
-}(React.Component));
-//note that the adjustment is only going to be applicable if the font actually loaded !
-//so only replace if it did
-var ConnectedAdjustmentComponent = react_redux_1.connect(function (state) {
-    return {
-        crossAdjustment: state.crossAdjustment,
-        noughtAdjustment: state.noughtAdjustment
-    };
-}, (function (dispatch) {
-    return {
-        doAdjustment: function (x, y, isCross) {
-            dispatch(adjust(x, y, isCross));
-        }
-    };
-}))(AdjustmentComponent);
 //refactor to a loader ?
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
@@ -46661,7 +46650,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     }
                 } }),
             React.createElement(ConnectedTicTacToeCursor, null),
-            React.createElement(ConnectedAdjustmentComponent, null),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement(ConnectedTicTacToeLoader, null) : React.createElement(ConnectedTicTacToeScreen, null)))));

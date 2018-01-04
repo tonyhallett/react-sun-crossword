@@ -129,27 +129,13 @@ interface RowColumnIndices {
     row: number,
     column:number
 }
-interface Adjustment {
-    x: number,
-    y:number
-}
-const Do_Adjustment = "Do_Adjustment";
-function adjust(x: number, y: number,isCross:boolean) {
-    return {
-        type: Do_Adjustment,
-        x: x,
-        y: y,
-        isCross:isCross
-    }
-}
+
 interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     board: SquareGo[][],
     currentPlayer: Player,
     gameState: GameState,
     fontLoadingState: FontLoadingState
-    selectedSquare: RowColumnIndices,
-    crossAdjustment: Adjustment,
-    noughtAdjustment:Adjustment
+    selectedSquare: RowColumnIndices
 }
 //#endregion
 //#region action types
@@ -382,22 +368,9 @@ function reducer(state: TicTacToeState = {
     drawCount: 0,
     playerXWinCount: 0,
     fontLoadingState: FontLoadingState.NotStarted,
-    selectedSquare: { row: 0, column: 0 },
-    crossAdjustment: { x: 0, y: 0 },
-    noughtAdjustment: { x: 0, y: 0 }
+    selectedSquare: { row: 0, column: 0 }
 }, action: AnyAction) {
     switch (action.type) {
-        case Do_Adjustment:
-            var newState = {
-                ...state,
-
-            } as TicTacToeState
-            if (action.isCross) {
-                newState.crossAdjustment = { x: action.x, y: action.y };
-            } else {
-                newState.noughtAdjustment = { x: action.x, y: action.y };
-            }
-            return newState;
         case Arrow_Press:
             return {
                 ...state,
@@ -1674,19 +1647,18 @@ function ConfiguredRadium(component) {
 //#endregion
 //#region App components
 
+
+//#region cursor
+//#region actual cursor
 interface TicTacToeCursorProps {
     cursorColour: string,
     cursorText: string,
-    active:boolean
+    active: boolean
 }
 
-class TicTacToeCursor extends React.Component<TicTacToeCursorProps & AdjustmentProps, undefined>{
-    positionAdjustment = (x:number,y:number) => {
-        if (this.props.cursorText === "X") {
-            return { x: x - this.props.crossAdjustment.x, y: y - this.props.crossAdjustment.y }
-        } else {
-            return { x: x - this.props.noughtAdjustment.x, y: y - this.props.noughtAdjustment.y };
-        }
+class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
+    positionAdjustment = (x: number, y: number) => {
+        return { x: x - 4, y: y - 10 }
     }
     render() {
         return <MouseBodyPosition>
@@ -1705,11 +1677,97 @@ const ConnectedTicTacToeCursor = connect((state: TicTacToeState) => {
     return {
         cursorColour: cursorColour,
         cursorText: cursorText,
-        active: active,
-        crossAdjustment: state.crossAdjustment,
-        noughtAdjustment: state.noughtAdjustment
+        active: active
     }
 }, null)(TicTacToeCursor) as any;
+//#endregion
+//#region cursor adjustment
+//interface Adjustment {
+//    x: number,
+//    y: number
+//}
+//const Do_Adjustment = "Do_Adjustment";
+//function adjust(x: number, y: number, isCross: boolean) {
+//    return {
+//        type: Do_Adjustment,
+//        x: x,
+//        y: y,
+//        isCross: isCross
+//    }
+//}
+//interface AdjustmentProps {
+//    crossAdjustment: Adjustment,
+//    noughtAdjustment: Adjustment,
+//    doAdjustment: (x: number, y: number, isCross: boolean) => void
+//}
+//interface AdjustmentState {
+//    xx: string,
+//    xy: string,
+//    ox: string,
+//    oy: string
+//}
+//class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentState>{
+//    constructor(props) {
+//        super(props);
+//        this.state = { xx: "0", xy: "0", ox: "0", oy: "0" }
+//    }
+//    xxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newX = evt.target.value;
+//        this.setState({ xx: newX });
+//        if (newX !== "") {
+//            this.props.doAdjustment(parseInt(newX), this.props.crossAdjustment.y, true);
+//        }
+
+//    }
+//    xyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newY = evt.target.value;
+//        this.setState({ xy: newY });
+//        if (newY !== "") {
+//            this.props.doAdjustment(this.props.crossAdjustment.x, parseInt(newY), true);
+//        }
+
+//    }
+//    oxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newX = evt.target.value;
+//        this.setState({ ox: newX });
+//        if (newX !== "") {
+//            this.props.doAdjustment(parseInt(newX), this.props.noughtAdjustment.y, false);
+//        }
+
+//    }
+//    oyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+//        var newY = evt.target.value;
+//        this.setState({ oy: newY });
+//        if (newY !== "") {
+//            this.props.doAdjustment(this.props.noughtAdjustment.x, parseInt(newY), false);
+//        }
+
+//    }
+
+//    render() {
+//        return <div>
+//            <label>X x<input type="text" onChange={this.xxChange} value={this.state.xx} /></label>
+//            <label>X y<input type="text" onChange={this.xyChange} value={this.state.xy} /></label>
+//            <label>O x<input type="text" onChange={this.oxChange} value={this.state.ox} /></label>
+//            <label>O y<input type="text" onChange={this.oyChange} value={this.state.oy} /></label>
+//        </div>
+//    }
+//}
+
+//const ConnectedAdjustmentComponent = connect((state: TicTacToeState) => {
+//    return {
+//        crossAdjustment: state.crossAdjustment,
+//        noughtAdjustment: state.noughtAdjustment
+//    }
+//}, (dispatch => {
+//    return {
+//        doAdjustment: function (x: number, y: number, isCross: boolean) {
+//            dispatch(adjust(x, y, isCross))
+//        }
+//    }
+//}))(AdjustmentComponent as any) as any
+//#endregion
+//#endregion
 
 const RadiumTransition = ConfiguredRadium(Transition);
 const AutoOutInOnMount = withAutoOut(withInOnMount(RadiumTransition))
@@ -1987,79 +2045,6 @@ interface TicTacToeAppProps {
 interface TicTacToeAppState {
     showLoadingIndicator:boolean
 }
-interface AdjustmentProps {
-    crossAdjustment: Adjustment,
-    noughtAdjustment: Adjustment,
-    doAdjustment:(x:number,y:number,isCross:boolean)=>void
-}
-interface AdjustmentState {
-    xx: string,
-    xy: string,
-    ox: string,
-    oy:string
-}
-class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentState>{
-    constructor(props) {
-        super(props);
-        this.state = {xx:"0",xy:"0",ox:"0",oy:"0"}
-    }
-    xxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-        var newX = evt.target.value;
-        this.setState({ xx: newX });
-        if (newX !== "") {
-            this.props.doAdjustment(parseInt(newX), this.props.crossAdjustment.y,true);
-        }
-        
-    }
-    xyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-        var newY = evt.target.value;
-        this.setState({ xy: newY });
-        if (newY !== "") {
-            this.props.doAdjustment(this.props.crossAdjustment.x, parseInt(newY),true);
-        }
-        
-    }
-    oxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-        var newX = evt.target.value;
-        this.setState({ ox: newX });
-        if (newX !== "") {
-            this.props.doAdjustment(parseInt(newX), this.props.noughtAdjustment.y,false);
-        }
-        
-    }
-    oyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-        var newY = evt.target.value;
-        this.setState({ oy: newY });
-        if (newY !== "") {
-            this.props.doAdjustment(this.props.noughtAdjustment.x, parseInt(newY),false);
-        }
-        
-    }
-
-    render() {
-        return <div>
-            <label>X x<input type="text" onChange={this.xxChange} value={this.state.xx} /></label>
-            <label>X y<input type="text" onChange={this.xyChange} value={this.state.xy} /></label>
-            <label>O x<input type="text" onChange={this.oxChange} value={this.state.ox} /></label>
-            <label>O y<input type="text" onChange={this.oyChange} value={this.state.oy} /></label>
-            </div>
-    }
-}
-//note that the adjustment is only going to be applicable if the font actually loaded !
-//so only replace if it did
-const ConnectedAdjustmentComponent = connect((state: TicTacToeState) => {
-    return {
-        crossAdjustment: state.crossAdjustment,
-        noughtAdjustment: state.noughtAdjustment
-    }
-}, (dispatch => {
-        return {
-            doAdjustment: function (x: number, y: number,isCross:boolean) {
-                dispatch(adjust(x,y,isCross))
-
-            }
-        }
-}))(AdjustmentComponent as any) as any
 //refactor to a loader ?
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     
@@ -2099,7 +2084,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 }}
             />
             <ConnectedTicTacToeCursor />
-            <ConnectedAdjustmentComponent />
             <VerticallyCenteredContainer backgroundColor={backgroundColor}>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
