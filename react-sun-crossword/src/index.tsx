@@ -1979,7 +1979,7 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
     tbody: HTMLTableSectionElement
     componentWillReceiveProps(nextProps: TicTacToeBoardProps) {
         if (nextProps.hitTestRequest && nextProps.hitTestRequest !== this.props.hitTestRequest) {
-            this.hitTest(this.props.hitTestRequest)
+            this.hitTest(nextProps.hitTestRequest)
         }
     }
     hitTest(hitTestRequest: BoardHitTestReq) {

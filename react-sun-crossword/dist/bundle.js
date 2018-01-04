@@ -46599,7 +46599,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
     }
     TicTacToeBoard.prototype.componentWillReceiveProps = function (nextProps) {
         if (nextProps.hitTestRequest && nextProps.hitTestRequest !== this.props.hitTestRequest) {
-            this.hitTest(this.props.hitTestRequest);
+            this.hitTest(nextProps.hitTestRequest);
         }
     };
     TicTacToeBoard.prototype.hitTest = function (hitTestRequest) {
