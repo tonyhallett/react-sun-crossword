@@ -46073,6 +46073,10 @@ var BodyCursor = /** @class */ (function (_super) {
                         break;
                     }
                 }
+                if (inInactiveElement) {
+                    break;
+                }
+                elementToTest = elementToTest.parentElement;
             }
         }
         return inInactiveElement;

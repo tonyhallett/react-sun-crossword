@@ -1366,6 +1366,10 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
                         break;
                     }
                 }
+                if (inInactiveElement) {
+                    break;
+                }
+                elementToTest = elementToTest.parentElement;
             }
         }
         return inInactiveElement;
