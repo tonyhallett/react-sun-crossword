@@ -1281,8 +1281,8 @@ positionAdjustment: function (x: number, y: number) {
 */
 class BodyCursor extends React.Component<BodyCursorProps, undefined>{
     static defaultProps = {
-        xAdjustment: 0,
-        yAdjustment:0
+        xAdjustment: 20,
+        yAdjustment:20
     }
     render() {
         if (this.props.active&&this.props.replaceCursor) {
