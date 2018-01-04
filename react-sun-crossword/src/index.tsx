@@ -2026,7 +2026,7 @@ const ConnectedAdjustmentComponent = connect((state: TicTacToeState) => {
 
             }
         }
-}))(AdjustmentComponent as any)
+}))(AdjustmentComponent as any) as any
 //refactor to a loader ?
 class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>{
     
@@ -2066,7 +2066,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 }}
             />
             <ConnectedTicTacToeCursor />
-            <ConnectedAdjustmentComponent/>
+            
             <VerticallyCenteredContainer backgroundColor={backgroundColor}>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
@@ -2255,7 +2255,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     animationFillMode: "forwards"
                 }
             }} />
-            <div  style={{ display: "inline-block" }}>
+            <div style={{ display: "inline-block" }}>
+                <ConnectedAdjustmentComponent />
                 <div style={{ marginBottom: style.componentMargin }}>
                     <ConnectedScoreboard />
                 </div>
