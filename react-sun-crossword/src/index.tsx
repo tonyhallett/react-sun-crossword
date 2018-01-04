@@ -1293,7 +1293,7 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
             return React.cloneElement(this.props.children as React.ReactElement<any>, newProps);
         } else {
             document.body.style.cursor = this.props.cursor;
-            return this.props.children;
+            return null;
         }
 
     }

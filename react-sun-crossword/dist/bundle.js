@@ -45995,7 +45995,7 @@ var BodyCursor = /** @class */ (function (_super) {
         }
         else {
             document.body.style.cursor = this.props.cursor;
-            return this.props.children;
+            return null;
         }
     };
     BodyCursor.defaultProps = {
