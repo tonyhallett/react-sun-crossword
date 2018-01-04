@@ -46005,8 +46005,8 @@ var BodyCursor = /** @class */ (function (_super) {
         }
     };
     BodyCursor.defaultProps = {
-        xAdjustment: 0,
-        yAdjustment: 0
+        xAdjustment: 20,
+        yAdjustment: 20
     };
     return BodyCursor;
 }(React.Component));
