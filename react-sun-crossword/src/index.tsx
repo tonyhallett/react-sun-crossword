@@ -445,14 +445,9 @@ function reducer(state: TicTacToeState = {
             }
         case Play_Again:
             return {
+                ...state,
                 board: getDefaultBoard(),
-                currentPlayer: state.currentPlayer,
-                oColour: state.oColour,
-                xColour: state.xColour,
                 gameState: GameState.Playing,
-                drawCount: state.drawCount,
-                playCount: state.playCount,
-                playerXWinCount: state.playerXWinCount,
                 selectedSquare: {row:0,column:0}
             }
         case Take_Go:
@@ -1766,6 +1761,7 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
         this.props.boardHitTestRequest(x, y);
         return { x: x - 4, y: y - 10 }
     }
+    //could have instead used the redux pseudo state for hover 
     render() {
         return <MouseBodyPosition>
             <BodyCursor inactiveElementIdentifiers={[{ className: inactiveCursorClassName }]} cursor="pointer" replaceCursor={this.props.active} positionAdjustment={this.positionAdjustment}>

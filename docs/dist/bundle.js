@@ -45342,17 +45342,7 @@ function reducer(state, action) {
         case Finished_Confirmed:
             return __assign({}, state, { gameState: GameState.FinishedConfirmed });
         case Play_Again:
-            return {
-                board: getDefaultBoard(),
-                currentPlayer: state.currentPlayer,
-                oColour: state.oColour,
-                xColour: state.xColour,
-                gameState: GameState.Playing,
-                drawCount: state.drawCount,
-                playCount: state.playCount,
-                playerXWinCount: state.playerXWinCount,
-                selectedSquare: { row: 0, column: 0 }
-            };
+            return __assign({}, state, { board: getDefaultBoard(), gameState: GameState.Playing, selectedSquare: { row: 0, column: 0 } });
         case Take_Go:
             if (state.gameState === GameState.Playing) {
                 var row = action.row;
@@ -46423,6 +46413,7 @@ var TicTacToeCursor = /** @class */ (function (_super) {
         };
         return _this;
     }
+    //could have instead used the redux pseudo state for hover 
     TicTacToeCursor.prototype.render = function () {
         return React.createElement(MouseBodyPosition, null,
             React.createElement(BodyCursor, { inactiveElementIdentifiers: [{ className: inactiveCursorClassName }], cursor: "pointer", replaceCursor: this.props.active, positionAdjustment: this.positionAdjustment },
