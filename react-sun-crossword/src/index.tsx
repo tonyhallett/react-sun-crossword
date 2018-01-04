@@ -1265,7 +1265,7 @@ var colourTransitionProvider: TransitionProvider<ColourChangeProps> = function (
 
 
 //#endregion
-
+//#region body mouse cursor
 function addEventListener(eventName: string, el: HTMLElement, fn: any) {
     
     if (el.addEventListener) {
@@ -1321,11 +1321,15 @@ class MouseBodyPosition extends React.Component<undefined, MouseBodyPositionStat
         return React.Children.map(this.props.children, (child => React.cloneElement(child as React.ReactElement<any>,this.state)))
     }
 }
-
+interface IdOrClassName {
+    id?: string,
+    className?:string
+}
 interface BodyCursorProps extends Partial<MouseBodyPositionState> {
     replaceCursor?: boolean,
     cursor?: string,
-    positionAdjustment?: (x: number, y: number) => { x: number, y: number }
+    positionAdjustment?: (x: number, y: number) => { x: number, y: number },
+    inactiveElementIdentifiers?:IdOrClassName[]
 }
 
 class BodyCursor extends React.Component<BodyCursorProps, undefined>{
@@ -1334,8 +1338,41 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
             return { x: x, y: y }
         }
     }
+    isInInactiveElement() {
+        var inInactiveElement = false;
+        if (this.props.inactiveElementIdentifiers) {
+            var elementFromPoint = document.elementFromPoint(this.props.x, this.props.y);
+            var elementToTest = elementFromPoint;
+            while (elementToTest) {
+                var matched = false;
+                for (var i = 0; i < this.props.inactiveElementIdentifiers.length; i++) {
+                    var inactiveElementIdentifier = this.props.inactiveElementIdentifiers[i];
+                    if (inactiveElementIdentifier.id !== null) {
+                        if (elementToTest.id === inactiveElementIdentifier.id) {
+                            inInactiveElement = true;
+                        }
+                    } else {
+                        var className = elementToTest.className;
+                        var classNames = className.split(" ");
+                        for (var j = 0; j < classNames.length; j++) {
+                            var className = classNames[j];
+                            if (className === inactiveElementIdentifier.className) {
+                                inInactiveElement = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (inInactiveElement) {
+                        break;
+                    }
+                }
+            }
+        }
+        return inInactiveElement;
+    }
     render() {
-        if (this.props.active&&this.props.replaceCursor) {
+        if (this.props.active && this.props.replaceCursor&&!this.isInInactiveElement()) {
+
             document.body.style.cursor = "none";
             var { x, y } = this.props.positionAdjustment(this.props.x, this.props.y);
             var replacedCursorStyle = { position: "absolute", left: x, top: y, pointerEvents: "none" } as React.CSSProperties;
@@ -1357,7 +1394,7 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
 
     }
 }
-
+//#endregion
 //#region demo
 const demoTimeout = {
     enter: 1000,
@@ -1605,6 +1642,9 @@ toOptimise.forEach(word => {
 })
 
 //#endregion
+//#region ids and classnames
+var inactiveCursorClassName = "inactiveCursor";
+//#endregion
 //#region WebFontLoader
 interface WebFontLoaderProps {
     config: WebFont.Config
@@ -1724,7 +1764,7 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     }
     render() {
         return <MouseBodyPosition>
-            <BodyCursor cursor="pointer" replaceCursor={this.props.active} positionAdjustment={this.positionAdjustment}>
+            <BodyCursor inactiveElementIdentifiers={[{ className: inactiveCursorClassName }]} cursor="pointer" replaceCursor={this.props.active} positionAdjustment={this.positionAdjustment}>
                 <span style={{ zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.overTakenSquare?"gray": this.props.cursorColour }}>{this.props.cursorText}</span>
             </BodyCursor>
         </MouseBodyPosition>
@@ -2366,12 +2406,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         this.modalParent = keyContainer;
     }
     render() {
-        //this is no longer necessary 
-        //var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
-        //var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
-
-        //var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         var buttonAnimation = mergeAnimations([this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null, buttonHasHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         
         var playAgainUnderlineLetter = playAgainText[0];
@@ -2397,7 +2432,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                     <ConnectedScoreboard />
                 </div>
                 <ConnectedTicTacToeBoard />
-                <div role="button" key="button" style={[{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%", cursor:"pointer" } as React.CSSProperties, style.componentBoxShadow, buttonAnimation]} onClick={this.props.playAgain}>
+                <div role="button" key="button" className={inactiveCursorClassName} style={[{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%", cursor: "pointer" } as React.CSSProperties, style.componentBoxShadow, buttonAnimation]} onClick={this.props.playAgain}>
                     <div style={{ marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" }}  >
                         <span style={{ textDecoration: "underline", display: "inlineBlock", userSelect: "none" }}>{playAgainUnderlineLetter}</span><span style={{ display: "inlineBlock", userSelect: "none" }}>{playAgainRemainder}</span>
                     </div>

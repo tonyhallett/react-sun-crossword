@@ -45987,6 +45987,7 @@ var colourTransitionProvider = function (state, props) {
 };
 //#endregion
 //#endregion
+//#region body mouse cursor
 function addEventListener(eventName, el, fn) {
     if (el.addEventListener) {
         el.addEventListener(eventName, fn);
@@ -46043,8 +46044,41 @@ var BodyCursor = /** @class */ (function (_super) {
     function BodyCursor() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
+    BodyCursor.prototype.isInInactiveElement = function () {
+        var inInactiveElement = false;
+        if (this.props.inactiveElementIdentifiers) {
+            var elementFromPoint = document.elementFromPoint(this.props.x, this.props.y);
+            var elementToTest = elementFromPoint;
+            while (elementToTest) {
+                var matched = false;
+                for (var i = 0; i < this.props.inactiveElementIdentifiers.length; i++) {
+                    var inactiveElementIdentifier = this.props.inactiveElementIdentifiers[i];
+                    if (inactiveElementIdentifier.id !== null) {
+                        if (elementToTest.id === inactiveElementIdentifier.id) {
+                            inInactiveElement = true;
+                        }
+                    }
+                    else {
+                        var className = elementToTest.className;
+                        var classNames = className.split(" ");
+                        for (var j = 0; j < classNames.length; j++) {
+                            var className = classNames[j];
+                            if (className === inactiveElementIdentifier.className) {
+                                inInactiveElement = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (inInactiveElement) {
+                        break;
+                    }
+                }
+            }
+        }
+        return inInactiveElement;
+    };
     BodyCursor.prototype.render = function () {
-        if (this.props.active && this.props.replaceCursor) {
+        if (this.props.active && this.props.replaceCursor && !this.isInInactiveElement()) {
             document.body.style.cursor = "none";
             var _a = this.props.positionAdjustment(this.props.x, this.props.y), x = _a.x, y = _a.y;
             var replacedCursorStyle = { position: "absolute", left: x, top: y, pointerEvents: "none" };
@@ -46070,6 +46104,7 @@ var BodyCursor = /** @class */ (function (_super) {
     };
     return BodyCursor;
 }(React.Component));
+//#endregion
 //#region demo
 var demoTimeout = {
     enter: 1000,
@@ -46294,6 +46329,9 @@ toOptimise.forEach(function (word) {
         }
     }
 });
+//#endregion
+//#region ids and classnames
+var inactiveCursorClassName = "inactiveCursor";
 var WebFontLoader = /** @class */ (function (_super) {
     __extends(WebFontLoader, _super);
     function WebFontLoader() {
@@ -46383,7 +46421,7 @@ var TicTacToeCursor = /** @class */ (function (_super) {
     }
     TicTacToeCursor.prototype.render = function () {
         return React.createElement(MouseBodyPosition, null,
-            React.createElement(BodyCursor, { cursor: "pointer", replaceCursor: this.props.active, positionAdjustment: this.positionAdjustment },
+            React.createElement(BodyCursor, { inactiveElementIdentifiers: [{ className: inactiveCursorClassName }], cursor: "pointer", replaceCursor: this.props.active, positionAdjustment: this.positionAdjustment },
                 React.createElement("span", { style: { zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.overTakenSquare ? "gray" : this.props.cursorColour } }, this.props.cursorText)));
     };
     return TicTacToeCursor;
@@ -46896,11 +46934,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         }
     };
     TicTacToeScreen.prototype.render = function () {
-        //this is no longer necessary 
-        //var buttonHasFocus = Radium.getState(this.state, 'button', ':focus');
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
-        //var buttonFocusOrHover = buttonHasFocus || buttonHasHover;
-        //var buttonAnimation = mergeAnimations([buttonHasFocus ? focusAnimationStyle : null, buttonFocusOrHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         var buttonAnimation = mergeAnimations([this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null, buttonHasHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
         var playAgainUnderlineLetter = playAgainText[0];
         var playAgainRemainder = playAgainText.substr(1);
@@ -46922,7 +46956,7 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 React.createElement("div", { style: { marginBottom: style.componentMargin } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
-                React.createElement("div", { role: "button", key: "button", style: [{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%", cursor: "pointer" }, style.componentBoxShadow, buttonAnimation], onClick: this.props.playAgain },
+                React.createElement("div", { role: "button", key: "button", className: inactiveCursorClassName, style: [{ ":focus": {} }, { ":hover": buttonHoverShadowStyle }, { borderRadius: style.borderRadius, marginTop: style.componentMargin, fontWeight: thButtonFontWeight, fontFamily: textFontFamilyWithDefault, fontSize: fontSize, borderStyle: "none", paddingTop: 10, paddingBottom: 10, backgroundColor: buttonBackgroundColor, width: "100%", cursor: "pointer" }, style.componentBoxShadow, buttonAnimation], onClick: this.props.playAgain },
                     React.createElement("div", { style: { marginLeft: "auto", marginRight: "auto", width: "99%", textAlign: "center" } },
                         React.createElement("span", { style: { textDecoration: "underline", display: "inlineBlock", userSelect: "none" } }, playAgainUnderlineLetter),
                         React.createElement("span", { style: { display: "inlineBlock", userSelect: "none" } }, playAgainRemainder)))),
