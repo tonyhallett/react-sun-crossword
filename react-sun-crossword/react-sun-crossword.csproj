@@ -90,6 +90,7 @@
     <Content Include="assets\sounds\small-bell-ring.mp3" />
     <Content Include="prefixPropsCopy.js" />
     <Content Include="src\helpers\annyang.js" />
+    <Content Include="src\helpers\hitTest.js" />
     <Content Include="src\lib\index.js" />
     <Content Include="assets\sounds\family-fortunes-wrong-buzzer.mp3" />
     <Content Include="src\router_test\ContextUtils.js" />

@@ -13,7 +13,7 @@ import { TransitionProps, EndHandler, EnterHandler, ExitHandler } from 'react-tr
 import * as Color from 'Color'
 import { flipOutX,flipInX,pulse,shake } from 'react-animations';
 import * as WebFont  from "webfontloader";
-
+import {hitTest} from "./helpers/hitTest"
 type Partial<T> = {
     [P in keyof T]?: T[P];
 }
@@ -89,6 +89,25 @@ function animationSupported() {
 
 //#region redux
 //#region redux state
+
+const BOARD_HIT_TEST = "Board_Hit_Test";
+function boardHitTest(x: number, y: number) {
+    return {
+        type: BOARD_HIT_TEST,
+        x: x,
+        y:y
+    }
+}
+const BOARD_HIT_TEST_RESULT = "Board_Hit_Test_Result";
+function boardHitTestResult(hit: boolean, row: number, column: number) {
+    return {
+        type: BOARD_HIT_TEST_RESULT,
+        hit: hit,
+        row: row,
+        column:column
+    }
+}
+
 //this is not for all circumstances, just for what is appropriate for me - a single font
 enum FontLoadingState { NotStarted, Loading, Active, Inactive }
 const FONT_LOADING = "FONT_LOADING";
@@ -129,13 +148,24 @@ interface RowColumnIndices {
     row: number,
     column:number
 }
-
+interface BoardHitTestReq {
+    x: number, y: number 
+}
+interface BoardHitTestRes {
+    hit: boolean,
+    row: number,
+    column: number
+}
 interface TicTacToeState extends ScoreboardCountState, PlayerColourState {
     board: SquareGo[][],
     currentPlayer: Player,
     gameState: GameState,
     fontLoadingState: FontLoadingState
-    selectedSquare: RowColumnIndices
+    selectedSquare: RowColumnIndices,
+    boardHitTest: {
+        request: BoardHitTestReq,
+        result: BoardHitTestRes
+    }
 }
 //#endregion
 //#region action types
@@ -368,9 +398,36 @@ function reducer(state: TicTacToeState = {
     drawCount: 0,
     playerXWinCount: 0,
     fontLoadingState: FontLoadingState.NotStarted,
-    selectedSquare: { row: 0, column: 0 }
+    selectedSquare: { row: 0, column: 0 },
+    boardHitTest: {
+        request: null,
+        result:null
+    }
 }, action: AnyAction) {
     switch (action.type) {
+        case BOARD_HIT_TEST:
+            return {
+                ...state,
+                boardHitTest: {
+                    request: {
+                        x: action.x,
+                        y:action.y
+                    },
+                    result: state.boardHitTest.result
+                }
+            }
+        case BOARD_HIT_TEST_RESULT:
+            return {
+                ...state,
+                boardHitTest: {
+                    request: state.boardHitTest.request,
+                    result: {
+                        hit: action.hit,
+                        row: action.row,
+                        column:action.column
+                    }
+                }
+            }
         case Arrow_Press:
             return {
                 ...state,
@@ -1287,7 +1344,9 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
             var childStyle = childElement.props.style;
             var newStyle = { ...childStyle, ...replacedCursorStyle };
             var newProps = {
-                style: newStyle
+                style: newStyle,
+                x: this.props.x,
+                y:this.props.y
             }
 
             return React.cloneElement(this.props.children as React.ReactElement<any>, newProps);
@@ -1653,33 +1712,50 @@ function ConfiguredRadium(component) {
 interface TicTacToeCursorProps {
     cursorColour: string,
     cursorText: string,
-    active: boolean
+    active: boolean,
+    boardHitTestRequest: (x: number, y: number) => void,
+    overTakenSquare:boolean
 }
 
 class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     positionAdjustment = (x: number, y: number) => {
+        this.props.boardHitTestRequest(x, y);
         return { x: x - 4, y: y - 10 }
     }
     render() {
         return <MouseBodyPosition>
             <BodyCursor cursor="pointer" replaceCursor={this.props.active} positionAdjustment={this.positionAdjustment}>
-                <span style={{ zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.cursorColour }}>{this.props.cursorText}</span>
+                <span style={{ zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.overTakenSquare?"gray": this.props.cursorColour }}>{this.props.cursorText}</span>
             </BodyCursor>
         </MouseBodyPosition>
     }
 }
 const ConnectedTicTacToeCursor = connect((state: TicTacToeState) => {
-    //need
     var currentPlayer = state.currentPlayer;
     var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
     var cursorText = currentPlayer === Player.X ? cross : nought;
-    var active = state.gameState === GameState.Playing;
+    var active = state.fontLoadingState === FontLoadingState.Active && state.gameState === GameState.Playing;
+    var boardHitTestResult = state.boardHitTest.result;
+    var overTakenSquare = false;
+    if (boardHitTestResult) {
+        if (boardHitTestResult.hit) {
+            var squareGo = state.board[boardHitTestResult.row][boardHitTestResult.column];
+            overTakenSquare = squareGo !== SquareGo.None
+        }
+    }
     return {
         cursorColour: cursorColour,
         cursorText: cursorText,
-        active: active
+        active: active,
+        overTakenSquare: overTakenSquare
     }
-}, null)(TicTacToeCursor) as any;
+}, (dispatch) => {
+    return {
+        boardHitTestRequest: function (x: number, y: number) {
+            dispatch(boardHitTest(x, y));
+        }
+    }
+})(TicTacToeCursor) as any;
 //#endregion
 //#region cursor adjustment
 //interface Adjustment {
@@ -1892,18 +1968,51 @@ const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: 
 //#endregion
 //#region TicTacToeBoard
 interface TicTacToeBoardProps {
-    board: SquareGo[][]
+    board: SquareGo[][],
+    hitTestRequest: BoardHitTestReq,
+    hitTestResult:(res: BoardHitTestRes)=>void
 }
 const ticTacToeBoardId = "ticTacToeBoard"
 
 
 export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefined>{
+    tbody: HTMLTableSectionElement
+    componentWillReceiveProps(nextProps: TicTacToeBoardProps) {
+        if (nextProps.hitTestRequest && nextProps.hitTestRequest !== this.props.hitTestRequest) {
+            this.hitTest(this.props.hitTestRequest)
+        }
+    }
+    hitTest(hitTestRequest: BoardHitTestReq) {
+        var numRowColumns = this.props.board.length;
+        var rows = this.tbody.rows
+        var isHit = false;
+        var hitRow;
+        var hitColumn;
+
+        for (var i = 0; i < numRowColumns; i++) {
+            var row = rows[i];
+            //will check the row for hittest
+            for (var j = 0; j < numRowColumns; j++) {
+                var cell = row.cells[j];
+                isHit = hitTest(hitTestRequest.x, hitTestRequest.y, cell) as boolean;
+                if (isHit) {
+                    hitRow = i;
+                    hitColumn = j;
+                    break;
+                }
+            }
+            if (isHit) {
+                break;
+            }
+        }
+        this.props.hitTestResult({ hit: isHit, row: hitRow, column: hitColumn });
+    }
     render() {
         var boardDimensions = this.props.board.length;
-        return <table id={ticTacToeBoardId} style={[{
+        return <table  id={ticTacToeBoardId} style={[{
             borderCollapse: "collapse", backgroundColor: style.componentBackgroundColor
         }, style.componentBoxShadow, style.componentBoxShadowHover]}>
-            <tbody>
+            <tbody ref={(b) => this.tbody=b}>
                 {   
                     this.props.board.map((rowSquares, rowIndex) => {
                 return <tr key={rowIndex}>
@@ -1922,7 +2031,14 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
 }
 const ConnectedTicTacToeBoard:any = connect((state: TicTacToeState) => {
     return {
-        board: state.board
+        board: state.board,
+        hitTestRequest: state.boardHitTest.request
+    }
+}, (dispatch) => {
+    return {
+        hitTestResult: function (res: BoardHitTestRes) {
+            dispatch(boardHitTestResult(res.hit, res.row, res.column));
+        }
     }
 })(ConfiguredRadium(TicTacToeBoard));
 //#endregion
