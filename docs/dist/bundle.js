@@ -46551,24 +46551,37 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
 var RadiumScoreboardPlayer = ConfiguredRadium(ScoreboardPlayer);
 var AdjustmentComponent = /** @class */ (function (_super) {
     __extends(AdjustmentComponent, _super);
-    function AdjustmentComponent() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function AdjustmentComponent(props) {
+        var _this = _super.call(this, props) || this;
         _this.xxChange = function (evt) {
             var newX = evt.target.value;
-            adjust(parseInt(newX), _this.props.crossAdjustment.y);
+            _this.setState({ xx: newX });
+            if (newX !== "") {
+                _this.props.doAdjustment(parseInt(newX), _this.props.crossAdjustment.y);
+            }
         };
         _this.xyChange = function (evt) {
             var newY = evt.target.value;
-            adjust(_this.props.crossAdjustment.x, parseInt(newY));
+            _this.setState({ xy: newY });
+            if (newY !== "") {
+                _this.props.doAdjustment(_this.props.crossAdjustment.x, parseInt(newY));
+            }
         };
         _this.oxChange = function (evt) {
             var newX = evt.target.value;
-            adjust(parseInt(newX), _this.props.noughtAdjustment.y);
+            _this.setState({ ox: newX });
+            if (newX !== "") {
+                _this.props.doAdjustment(parseInt(newX), _this.props.noughtAdjustment.y);
+            }
         };
         _this.oyChange = function (evt) {
             var newY = evt.target.value;
-            adjust(_this.props.noughtAdjustment.x, parseInt(newY));
+            _this.setState({ oy: newY });
+            if (newY !== "") {
+                _this.props.doAdjustment(_this.props.noughtAdjustment.x, parseInt(newY));
+            }
         };
+        _this.state = { xx: "0", xy: "0", ox: "0", oy: "0" };
         return _this;
     }
     AdjustmentComponent.prototype.render = function () {
@@ -46597,7 +46610,7 @@ var ConnectedAdjustmentComponent = react_redux_1.connect(function (state) {
     };
 }, (function (dispatch) {
     return {
-        adjust: function (x, y) {
+        doAdjustment: function (x, y) {
             dispatch(adjust(x, y));
         }
     };

@@ -1983,24 +1983,50 @@ interface TicTacToeAppState {
 interface AdjustmentProps {
     crossAdjustment: Adjustment,
     noughtAdjustment: Adjustment,
-    adjust:(x:number,y:number)=>void
+    doAdjustment:(x:number,y:number)=>void
 }
-class AdjustmentComponent extends React.Component<AdjustmentProps, undefined>{
+interface AdjustmentState {
+    xx: string,
+    xy: string,
+    ox: string,
+    oy:string
+}
+class AdjustmentComponent extends React.Component<AdjustmentProps, AdjustmentState>{
+    constructor(props) {
+        super(props);
+        this.state = {xx:"0",xy:"0",ox:"0",oy:"0"}
+    }
     xxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         var newX = evt.target.value;
-        adjust(parseInt(newX), this.props.crossAdjustment.y);
+        this.setState({ xx: newX });
+        if (newX !== "") {
+            this.props.doAdjustment(parseInt(newX), this.props.crossAdjustment.y);
+        }
+        
     }
     xyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         var newY = evt.target.value;
-        adjust(this.props.crossAdjustment.x,parseInt(newY));
+        this.setState({ xy: newY });
+        if (newY !== "") {
+            this.props.doAdjustment(this.props.crossAdjustment.x, parseInt(newY));
+        }
+        
     }
     oxChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         var newX = evt.target.value;
-        adjust(parseInt(newX), this.props.noughtAdjustment.y);
+        this.setState({ ox: newX });
+        if (newX !== "") {
+            this.props.doAdjustment(parseInt(newX), this.props.noughtAdjustment.y);
+        }
+        
     }
     oyChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
         var newY = evt.target.value;
-        adjust(this.props.noughtAdjustment.x, parseInt(newY));
+        this.setState({ oy: newY });
+        if (newY !== "") {
+            this.props.doAdjustment(this.props.noughtAdjustment.x, parseInt(newY));
+        }
+        
     }
 
     render() {
@@ -2021,7 +2047,7 @@ const ConnectedAdjustmentComponent = connect((state: TicTacToeState) => {
     }
 }, (dispatch => {
         return {
-            adjust: function (x: number, y: number) {
+            doAdjustment: function (x: number, y: number) {
                 dispatch(adjust(x,y))
 
             }
