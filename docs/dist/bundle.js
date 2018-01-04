@@ -46640,6 +46640,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     }
                 } }),
             React.createElement(ConnectedTicTacToeCursor, null),
+            React.createElement(ConnectedAdjustmentComponent, null),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement(ConnectedTicTacToeLoader, null) : React.createElement(ConnectedTicTacToeScreen, null)))));
@@ -46792,7 +46793,6 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                     }
                 } }),
             React.createElement("div", { style: { display: "inline-block" } },
-                React.createElement(ConnectedAdjustmentComponent, null),
                 React.createElement("div", { style: { marginBottom: style.componentMargin } },
                     React.createElement(ConnectedScoreboard, null)),
                 React.createElement(ConnectedTicTacToeBoard, null),
@@ -46828,6 +46828,7 @@ var ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
         }
     };
 })(ConfiguredRadium(TicTacToeScreen));
+//#endregion
 var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         fontLoadingState: state.fontLoadingState,
