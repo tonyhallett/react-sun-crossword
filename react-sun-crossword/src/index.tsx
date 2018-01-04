@@ -2066,7 +2066,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
                 }}
             />
             <ConnectedTicTacToeCursor />
-            
+            <ConnectedAdjustmentComponent />
             <VerticallyCenteredContainer backgroundColor={backgroundColor}>
                 <RadiumHorizontalCenter>
                     <div style={{ backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" }}>
@@ -2082,6 +2082,7 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
             
     }
 }
+//#region Loader
 interface TicTacToeLoaderProps {
     oColour: string,
     xColour:string
@@ -2115,6 +2116,8 @@ const ConnectedTicTacToeLoader: any = connect((state: TicTacToeState) => {
         xColour: state.xColour
     }
 })(ConfiguredRadium(TicTacToeLoader));
+//#endregion
+//#region Screen
 interface TicTacToeScreenProps {
     gameState: GameState,
     playAgain: () => void,
@@ -2256,7 +2259,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
                 }
             }} />
             <div style={{ display: "inline-block" }}>
-                <ConnectedAdjustmentComponent />
+                
                 <div style={{ marginBottom: style.componentMargin }}>
                     <ConnectedScoreboard />
                 </div>
@@ -2296,7 +2299,8 @@ const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
             dispatch(takeGo(row,column))
         }
     }
-})(ConfiguredRadium(TicTacToeScreen));
+    })(ConfiguredRadium(TicTacToeScreen));
+//#endregion
 const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
     return {
         fontLoadingState: state.fontLoadingState,
