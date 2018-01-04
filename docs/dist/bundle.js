@@ -45025,6 +45025,14 @@ function gameStateString(gameState) {
             return "Playing";
     }
 }
+var Do_Adjustment = "Do_Adjustment";
+function adjust(x, y) {
+    return {
+        type: Do_Adjustment,
+        x: x,
+        y: y
+    };
+}
 //#endregion
 //#region action types
 var Finished_Confirmed = "FINISHED_CONFIRMED";
@@ -45269,9 +45277,13 @@ function reducer(state, action) {
         drawCount: 0,
         playerXWinCount: 0,
         fontLoadingState: FontLoadingState.NotStarted,
-        selectedSquare: { row: 0, column: 0 }
+        selectedSquare: { row: 0, column: 0 },
+        crossAdjustment: { x: 0, y: 0 },
+        noughtAdjustment: { x: 0, y: 0 }
     }; }
     switch (action.type) {
+        case Do_Adjustment:
+            return __assign({}, state, { crossAdjustment: { x: action.x, y: action.y } });
         case Arrow_Press:
             return __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
         case FONT_LOADING:
@@ -45975,13 +45987,6 @@ var MouseBodyPosition = /** @class */ (function (_super) {
     };
     return MouseBodyPosition;
 }(React.Component));
-/*
-positionAdjustment: function (x: number, y: number) {
-            return {x:x,y:y}
-        }
-
-//var { x, y } = this.props.positionAdjustment(this.props.x, this.props.y);
-*/
 var BodyCursor = /** @class */ (function (_super) {
     __extends(BodyCursor, _super);
     function BodyCursor() {
@@ -45990,7 +45995,8 @@ var BodyCursor = /** @class */ (function (_super) {
     BodyCursor.prototype.render = function () {
         if (this.props.active && this.props.replaceCursor) {
             document.body.style.cursor = "none";
-            var replacedCursorStyle = { position: "absolute", left: this.props.x - this.props.xAdjustment, top: this.props.y - this.props.yAdjustment, pointerEvents: "none" };
+            var _a = this.props.positionAdjustment(this.props.x, this.props.y), x = _a.x, y = _a.y;
+            var replacedCursorStyle = { position: "absolute", left: x, top: y, pointerEvents: "none" };
             var childElement = this.props.children;
             var childStyle = childElement.props.style;
             var newStyle = __assign({}, childStyle, replacedCursorStyle);
@@ -46005,8 +46011,9 @@ var BodyCursor = /** @class */ (function (_super) {
         }
     };
     BodyCursor.defaultProps = {
-        xAdjustment: 20,
-        yAdjustment: 20
+        positionAdjustment: function (x, y) {
+            return { x: x, y: y };
+        }
     };
     return BodyCursor;
 }(React.Component));
@@ -46314,11 +46321,20 @@ function ConfiguredRadium(component) {
 var TicTacToeCursor = /** @class */ (function (_super) {
     __extends(TicTacToeCursor, _super);
     function TicTacToeCursor() {
-        return _super !== null && _super.apply(this, arguments) || this;
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.positionAdjustment = function (x, y) {
+            if (_this.props.cursorText === "X") {
+                return { x: x - _this.props.crossAdjustment.x, y: y - _this.props.crossAdjustment.y };
+            }
+            else {
+                return { x: x - _this.props.noughtAdjustment.x, y: y - _this.props.noughtAdjustment.y };
+            }
+        };
+        return _this;
     }
     TicTacToeCursor.prototype.render = function () {
         return React.createElement(MouseBodyPosition, null,
-            React.createElement(BodyCursor, { cursor: "pointer", replaceCursor: this.props.active },
+            React.createElement(BodyCursor, { cursor: "pointer", replaceCursor: this.props.active, positionAdjustment: this.positionAdjustment },
                 React.createElement("span", { style: { zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.cursorColour } }, this.props.cursorText)));
     };
     return TicTacToeCursor;
@@ -46332,7 +46348,9 @@ var ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
     return {
         cursorColour: cursorColour,
         cursorText: cursorText,
-        active: active
+        active: active,
+        crossAdjustment: state.crossAdjustment,
+        noughtAdjustment: state.noughtAdjustment
     };
 }, null)(TicTacToeCursor);
 var RadiumTransition = ConfiguredRadium(Transition_1.default);
@@ -46531,6 +46549,59 @@ var ScoreboardPlayer = /** @class */ (function (_super) {
     return ScoreboardPlayer;
 }(React.Component));
 var RadiumScoreboardPlayer = ConfiguredRadium(ScoreboardPlayer);
+var AdjustmentComponent = /** @class */ (function (_super) {
+    __extends(AdjustmentComponent, _super);
+    function AdjustmentComponent() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.xxChange = function (evt) {
+            var newX = evt.target.value;
+            adjust(parseInt(newX), _this.props.crossAdjustment.y);
+        };
+        _this.xyChange = function (evt) {
+            var newY = evt.target.value;
+            adjust(_this.props.crossAdjustment.x, parseInt(newY));
+        };
+        _this.oxChange = function (evt) {
+            var newX = evt.target.value;
+            adjust(parseInt(newX), _this.props.noughtAdjustment.y);
+        };
+        _this.oyChange = function (evt) {
+            var newY = evt.target.value;
+            adjust(_this.props.noughtAdjustment.x, parseInt(newY));
+        };
+        return _this;
+    }
+    AdjustmentComponent.prototype.render = function () {
+        return React.createElement("div", null,
+            React.createElement("label", null,
+                "X x",
+                React.createElement("input", { type: "text", onChange: this.xxChange, value: this.props.crossAdjustment.x })),
+            React.createElement("label", null,
+                "X y",
+                React.createElement("input", { type: "text", onChange: this.xyChange, value: this.props.crossAdjustment.y })),
+            React.createElement("label", null,
+                "O x",
+                React.createElement("input", { type: "text", onChange: this.oxChange, value: this.props.noughtAdjustment.x })),
+            React.createElement("label", null,
+                "O y",
+                React.createElement("input", { type: "text", onChange: this.oyChange, value: this.props.noughtAdjustment.y })));
+    };
+    return AdjustmentComponent;
+}(React.Component));
+//note that the adjustment is only going to be applicable if the font actually loaded !
+//so only replace if it did
+var ConnectedAdjustmentComponent = react_redux_1.connect(function (state) {
+    return {
+        crossAdjustment: state.crossAdjustment,
+        noughtAdjustment: state.noughtAdjustment
+    };
+}, (function (dispatch) {
+    return {
+        adjust: function (x, y) {
+            dispatch(adjust(x, y));
+        }
+    };
+}))(AdjustmentComponent);
 //refactor to a loader ?
 var TicTacToeApp = /** @class */ (function (_super) {
     __extends(TicTacToeApp, _super);
@@ -46569,6 +46640,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
                     }
                 } }),
             React.createElement(ConnectedTicTacToeCursor, null),
+            React.createElement(ConnectedAdjustmentComponent, null),
             React.createElement(VerticallyCenteredContainer, { backgroundColor: backgroundColor },
                 React.createElement(RadiumHorizontalCenter, null,
                     React.createElement("div", { style: { backgroundColor: "gray", padding: 10, borderRadius: style.borderRadius, boxShadow: " 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)" } }, showLoading ? React.createElement(ConnectedTicTacToeLoader, null) : React.createElement(ConnectedTicTacToeScreen, null)))));
