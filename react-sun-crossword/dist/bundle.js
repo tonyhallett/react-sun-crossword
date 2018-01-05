@@ -46021,6 +46021,9 @@ var MouseBodyPosition = /** @class */ (function (_super) {
                 pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
                 pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
             }
+            if (_this.props.mouseMove) {
+                _this.props.mouseMove(pageX, pageY);
+            }
             _this.setState({ x: pageX, y: pageY, active: true });
         };
         _this.state = {
@@ -46422,14 +46425,13 @@ var TicTacToeCursor = /** @class */ (function (_super) {
     function TicTacToeCursor() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.positionAdjustment = function (x, y) {
-            _this.props.boardHitTestRequest(x, y);
             return { x: x - 4, y: y - 10 };
         };
         return _this;
     }
     //could have instead used the redux pseudo state for hover 
     TicTacToeCursor.prototype.render = function () {
-        return React.createElement(MouseBodyPosition, null,
+        return React.createElement(MouseBodyPosition, { mouseMove: this.props.boardHitTestRequest },
             React.createElement(BodyCursor, { inactiveElementIdentifiers: [{ className: inactiveCursorClassName }], cursor: "pointer", replaceCursor: this.props.active, positionAdjustment: this.positionAdjustment },
                 React.createElement("span", { style: { zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.overTakenSquare ? "gray" : this.props.cursorColour } }, this.props.cursorText)));
     };

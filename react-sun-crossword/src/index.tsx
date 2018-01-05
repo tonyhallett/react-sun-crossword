@@ -1295,8 +1295,10 @@ interface MouseBodyPositionState {
     y: number,
     active:boolean
 }
-
-class MouseBodyPosition extends React.Component<undefined, MouseBodyPositionState>{
+interface MouseBodyPositionProps {
+    mouseMove?:(x:number,y:number)=>void
+}
+class MouseBodyPosition extends React.Component<MouseBodyPositionProps, MouseBodyPositionState>{
     constructor(props) {
         super(props)
         this.state = {
@@ -1320,6 +1322,9 @@ class MouseBodyPosition extends React.Component<undefined, MouseBodyPositionStat
         if (pageX === undefined) {
             pageX = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
             pageY = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        if (this.props.mouseMove) {
+            this.props.mouseMove(pageX, pageY);
         }
         this.setState({ x: pageX,y:pageY,active:true })
 
@@ -1774,12 +1779,11 @@ interface TicTacToeCursorProps {
 
 class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     positionAdjustment = (x: number, y: number) => {
-        this.props.boardHitTestRequest(x, y);
         return { x: x - 4, y: y - 10 }
     }
     //could have instead used the redux pseudo state for hover 
     render() {
-        return <MouseBodyPosition>
+        return <MouseBodyPosition mouseMove={this.props.boardHitTestRequest}>
             <BodyCursor inactiveElementIdentifiers={[{ className: inactiveCursorClassName }]} cursor="pointer" replaceCursor={this.props.active} positionAdjustment={this.positionAdjustment}>
                 <span style={{ zIndex: 1000, fontSize: style.cursor.fontSize, fontFamily: noughtCrossFontFamily, color: this.props.overTakenSquare?"gray": this.props.cursorColour }}>{this.props.cursorText}</span>
             </BodyCursor>
