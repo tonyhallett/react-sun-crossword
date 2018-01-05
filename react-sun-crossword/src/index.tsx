@@ -1787,7 +1787,6 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     }
 }
 const ConnectedTicTacToeCursor = connect((state: TicTacToeState) => {
-    console.log("ConnectedTicTacToeCursor FontLoadingState Active ? " + (state.fontLoadingState === FontLoadingState.Active));
     var currentPlayer = state.currentPlayer;
     var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
     var cursorText = currentPlayer === Player.X ? cross : nought;
@@ -2242,7 +2241,6 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     render() {
         
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
-        console.log("TicTacToeApp - showLoading:" + showLoading + "fontLoadingState:" + fontLoadingStateString(this.props.fontLoadingState));
         if (!showLoading) {
             showLoading = this.state.showLoadingIndicator;
         }

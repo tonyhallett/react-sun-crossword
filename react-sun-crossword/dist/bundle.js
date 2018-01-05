@@ -46436,7 +46436,6 @@ var TicTacToeCursor = /** @class */ (function (_super) {
     return TicTacToeCursor;
 }(React.Component));
 var ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
-    console.log("ConnectedTicTacToeCursor FontLoadingState Active ? " + (state.fontLoadingState === FontLoadingState.Active));
     var currentPlayer = state.currentPlayer;
     var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
     var cursorText = currentPlayer === Player.X ? cross : nought;
@@ -46801,7 +46800,6 @@ var TicTacToeApp = /** @class */ (function (_super) {
     };
     TicTacToeApp.prototype.render = function () {
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
-        console.log("TicTacToeApp - showLoading:" + showLoading + "fontLoadingState:" + fontLoadingStateString(this.props.fontLoadingState));
         if (!showLoading) {
             showLoading = this.state.showLoadingIndicator;
         }
