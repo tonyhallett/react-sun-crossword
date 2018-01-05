@@ -43,7 +43,8 @@ export function parseGetStorageItem(itemKey: string, storageType: storageType = 
   <S>(reducer: Reducer<S>, preloadedState: S, enhancer?: StoreEnhancer<S>): Store<S>;
 }
 */
-export function createLocalStorageStore<S>(reducer:Reducer<S>,enhancer?:StoreEnhancer<S>,storeKey="store"):Store<S> {
+export function createLocalStorageStore<S>(reducer: Reducer<S>, previousStateReducer?: (state:S) => S, enhancer?: StoreEnhancer<S>, storeKey = "store"): Store<S> {
+    previousStateReducer = previousStateReducer ? previousStateReducer : s => s;
     var store: Store<S>;
     var storageAvailable = isStorageAvailable("localStorage");
     var previousState: S;
@@ -51,7 +52,7 @@ export function createLocalStorageStore<S>(reducer:Reducer<S>,enhancer?:StoreEnh
         previousState = parseGetStorageItem(storeKey);
     }
     if (previousState) {
-        store = createStore(reducer, previousState,enhancer);
+        store = createStore(reducer, previousStateReducer(previousState),enhancer);
     }
     else {
         store = createStore(reducer,enhancer);

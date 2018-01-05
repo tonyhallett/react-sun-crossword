@@ -110,6 +110,18 @@ function boardHitTestResult(hit: boolean, row: number, column: number) {
 
 //this is not for all circumstances, just for what is appropriate for me - a single font
 enum FontLoadingState { NotStarted, Loading, Active, Inactive }
+function fontLoadingStateString(fontLoadingState: FontLoadingState) {
+    switch (fontLoadingState) {
+        case FontLoadingState.Active:
+            return "Active";
+        case FontLoadingState.Inactive:
+            return "Inactive";
+        case FontLoadingState.Loading:
+            return "Loading";
+        case FontLoadingState.NotStarted:
+            return "NotStarted";
+    }
+}
 const FONT_LOADING = "FONT_LOADING";
 function fontLoading(state: FontLoadingState) {
     return {
@@ -1370,15 +1382,19 @@ class BodyCursor extends React.Component<BodyCursorProps, undefined>{
         return inInactiveElement;
     }
     render() {
-        if (this.props.active && this.props.replaceCursor&&!this.isInInactiveElement()) {
+        var shouldDisplayCursor = this.props.active && this.props.replaceCursor && !this.isInInactiveElement();
+        if (shouldDisplayCursor) {
 
             document.body.style.cursor = "none";
+
             var { x, y } = this.props.positionAdjustment(this.props.x, this.props.y);
             var replacedCursorStyle = { position: "absolute", left: x, top: y, pointerEvents: "none" } as React.CSSProperties;
-            var childElement = this.props.children as React.ReactElement<any>;
 
+            var childElement = this.props.children as React.ReactElement<any>;
             var childStyle = childElement.props.style;
+
             var newStyle = { ...childStyle, ...replacedCursorStyle };
+
             var newProps = {
                 style: newStyle,
                 x: this.props.x,
@@ -1771,6 +1787,7 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     }
 }
 const ConnectedTicTacToeCursor = connect((state: TicTacToeState) => {
+    console.log("ConnectedTicTacToeCursor FontLoadingState Active ? " + (state.fontLoadingState === FontLoadingState.Active));
     var currentPlayer = state.currentPlayer;
     var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
     var cursorText = currentPlayer === Player.X ? cross : nought;
@@ -2223,7 +2240,9 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
     hasLoaded = false;
     
     render() {
+        
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
+        console.log("TicTacToeApp - showLoading:" + showLoading + "fontLoadingState:" + fontLoadingStateString(this.props.fontLoadingState));
         if (!showLoading) {
             showLoading = this.state.showLoadingIndicator;
         }
@@ -2479,7 +2498,11 @@ const ConnectedTicTacToeApp:any = connect((state: TicTacToeState) => {
 //#endregion
 //#endregion
 
-var store = createLocalStorageStore(reducer);
+//could have 
+var store = createLocalStorageStore(reducer, (s: TicTacToeState) => {
+    s.fontLoadingState = FontLoadingState.NotStarted;
+    return s;
+});
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedWebFontLoader config={

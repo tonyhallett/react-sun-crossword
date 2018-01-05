@@ -17169,8 +17169,9 @@ exports.parseGetStorageItem = parseGetStorageItem;
   <S>(reducer: Reducer<S>, preloadedState: S, enhancer?: StoreEnhancer<S>): Store<S>;
 }
 */
-function createLocalStorageStore(reducer, enhancer, storeKey) {
+function createLocalStorageStore(reducer, previousStateReducer, enhancer, storeKey) {
     if (storeKey === void 0) { storeKey = "store"; }
+    previousStateReducer = previousStateReducer ? previousStateReducer : function (s) { return s; };
     var store;
     var storageAvailable = isStorageAvailable("localStorage");
     var previousState;
@@ -17178,7 +17179,7 @@ function createLocalStorageStore(reducer, enhancer, storeKey) {
         previousState = parseGetStorageItem(storeKey);
     }
     if (previousState) {
-        store = redux_1.createStore(reducer, previousState, enhancer);
+        store = redux_1.createStore(reducer, previousStateReducer(previousState), enhancer);
     }
     else {
         store = redux_1.createStore(reducer, enhancer);
@@ -45027,6 +45028,18 @@ var FontLoadingState;
     FontLoadingState[FontLoadingState["Active"] = 2] = "Active";
     FontLoadingState[FontLoadingState["Inactive"] = 3] = "Inactive";
 })(FontLoadingState || (FontLoadingState = {}));
+function fontLoadingStateString(fontLoadingState) {
+    switch (fontLoadingState) {
+        case FontLoadingState.Active:
+            return "Active";
+        case FontLoadingState.Inactive:
+            return "Inactive";
+        case FontLoadingState.Loading:
+            return "Loading";
+        case FontLoadingState.NotStarted:
+            return "NotStarted";
+    }
+}
 var FONT_LOADING = "FONT_LOADING";
 function fontLoading(state) {
     return {
@@ -46072,7 +46085,8 @@ var BodyCursor = /** @class */ (function (_super) {
         return inInactiveElement;
     };
     BodyCursor.prototype.render = function () {
-        if (this.props.active && this.props.replaceCursor && !this.isInInactiveElement()) {
+        var shouldDisplayCursor = this.props.active && this.props.replaceCursor && !this.isInInactiveElement();
+        if (shouldDisplayCursor) {
             document.body.style.cursor = "none";
             var _a = this.props.positionAdjustment(this.props.x, this.props.y), x = _a.x, y = _a.y;
             var replacedCursorStyle = { position: "absolute", left: x, top: y, pointerEvents: "none" };
@@ -46422,6 +46436,7 @@ var TicTacToeCursor = /** @class */ (function (_super) {
     return TicTacToeCursor;
 }(React.Component));
 var ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
+    console.log("ConnectedTicTacToeCursor FontLoadingState Active ? " + (state.fontLoadingState === FontLoadingState.Active));
     var currentPlayer = state.currentPlayer;
     var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
     var cursorText = currentPlayer === Player.X ? cross : nought;
@@ -46786,6 +46801,7 @@ var TicTacToeApp = /** @class */ (function (_super) {
     };
     TicTacToeApp.prototype.render = function () {
         var showLoading = this.props.fontLoadingState === FontLoadingState.NotStarted || this.props.fontLoadingState === FontLoadingState.Loading;
+        console.log("TicTacToeApp - showLoading:" + showLoading + "fontLoadingState:" + fontLoadingStateString(this.props.fontLoadingState));
         if (!showLoading) {
             showLoading = this.state.showLoadingIndicator;
         }
@@ -46993,7 +47009,11 @@ var ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
 })(TicTacToeApp);
 //#endregion
 //#endregion
-var store = storage_1.createLocalStorageStore(reducer);
+//could have 
+var store = storage_1.createLocalStorageStore(reducer, function (s) {
+    s.fontLoadingState = FontLoadingState.NotStarted;
+    return s;
+});
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
     React.createElement(ConnectedWebFontLoader, { config: {
             google: {
