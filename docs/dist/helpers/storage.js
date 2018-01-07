@@ -46,8 +46,9 @@ exports.parseGetStorageItem = parseGetStorageItem;
   <S>(reducer: Reducer<S>, preloadedState: S, enhancer?: StoreEnhancer<S>): Store<S>;
 }
 */
-function createLocalStorageStore(reducer, enhancer, storeKey) {
+function createLocalStorageStore(reducer, previousStateReducer, enhancer, storeKey) {
     if (storeKey === void 0) { storeKey = "store"; }
+    previousStateReducer = previousStateReducer ? previousStateReducer : function (s) { return s; };
     var store;
     var storageAvailable = isStorageAvailable("localStorage");
     var previousState;
@@ -55,7 +56,7 @@ function createLocalStorageStore(reducer, enhancer, storeKey) {
         previousState = parseGetStorageItem(storeKey);
     }
     if (previousState) {
-        store = redux_1.createStore(reducer, previousState, enhancer);
+        store = redux_1.createStore(reducer, previousStateReducer(previousState), enhancer);
     }
     else {
         store = redux_1.createStore(reducer, enhancer);
