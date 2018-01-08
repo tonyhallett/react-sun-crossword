@@ -32,7 +32,7 @@ class Scoreboard extends React.Component<ScoreboardProps & ScoreboardStateProps,
         </table>
     }
 }
-export const ConnectedScoreboard: any = connect((state: TicTacToeState) => {
+export const ConnectedScoreboard:any = connect((state: TicTacToeState) => {
     var scoreboardState: ScoreboardStateProps = {
         currentPlayer: state.currentPlayer,
         drawCount: state.drawCount,

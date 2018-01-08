@@ -55,7 +55,7 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
                         return <tr key={rowIndex}>
                             {
                                 rowSquares.map((square, colIndex) => {
-                                    return <ConnectedTicTacToeSquare tabIndex={(rowIndex * boardDimensions) + colIndex + 1} key={colIndex} rowIndex={rowIndex} colIndex={colIndex} />
+                                    return <ConnectedTicTacToeSquare key={colIndex} rowIndex={rowIndex} colIndex={colIndex} />
 
                                 })
                             }

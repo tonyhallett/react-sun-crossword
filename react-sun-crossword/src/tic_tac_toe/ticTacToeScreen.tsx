@@ -53,10 +53,10 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 
         switch (props.gameState) {
             case GameState.X:
-                messageElement = getWinner(textStrings.cross, this.props.xColour);
+                messageElement = getWinner(textStrings.cross, props.xColour);
                 break;
             case GameState.O:
-                messageElement = getWinner(textStrings.nought, this.props.oColour);
+                messageElement = getWinner(textStrings.nought, props.oColour);
                 break;
             case GameState.Draw:
                 messageElement = <div style={{ ...style.winDrawContainerStyle, fontFamily: fontFamilies.textFontFamilyWithDefault }}>{textStrings.gameDrawn}</div>;
@@ -166,11 +166,11 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         </div>
     }
 }
-export const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
+export const ConnectedTicTacToeScreen:any = connect((state: TicTacToeState) => {
     return {
+        xColour: state.xColour,
         gameState: state.gameState,
         oColour: state.oColour,
-        xColour: state.xColour,
         selectedSquare: state.selectedSquare,
         board: state.board
     }

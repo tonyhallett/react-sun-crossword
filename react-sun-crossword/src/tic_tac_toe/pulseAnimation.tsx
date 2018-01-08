@@ -1,8 +1,9 @@
 ﻿import * as React from "react";
 import * as Radium from "radium";
 import { TransitionProps } from "react-transition-group/Transition";
+import { TransitionState } from './transitions'
+export type TransitionState = TransitionState;
 
-export type TransitionState = "exited" | "exiting" | "entered" | "entering";
 interface PulseProps {
     pulseAmount: number,//need default to 1.05
     children: (state: TransitionState, additionalProps: any, pulseStyle: React.CSSProperties) => void

@@ -6,6 +6,7 @@ import * as textStrings from './textStrings'
 import { connect } from "react-redux"
 import { style } from './style'
 import { TicTacToeState, Player, GameState, FontLoadingState, SquareGo, boardHitTest } from './reducer'
+import { getCurrentPlayerColour } from "./connectHelpers";
 
 interface TicTacToeCursorProps {
     cursorColour: string,
@@ -30,9 +31,8 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
     }
 }
 export const ConnectedTicTacToeCursor = connect((state: TicTacToeState) => {
-    var currentPlayer = state.currentPlayer;
-    var cursorColour = currentPlayer === Player.X ? state.xColour : state.oColour;
-    var cursorText = currentPlayer === Player.X ? textStrings.cross : textStrings.nought;
+    var cursorColour = getCurrentPlayerColour(state);
+    var cursorText = state.currentPlayer === Player.X ? textStrings.cross : textStrings.nought;
     var active = state.fontLoadingState === FontLoadingState.Active && state.gameState === GameState.Playing;
     var boardHitTestResult = state.boardHitTest.result;
     var overTakenSquare = false;

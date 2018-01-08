@@ -1,8 +1,10 @@
 ﻿import * as React from "react";
+import * as Radium from 'Radium';
 import { connect } from "react-redux"
 import { style, ticTacToeSquareBorderWidth, focusAnimationStyle } from "./style";
 import { TicTacToeState, SquareGo, GameState, takeGo } from "./reducer";
 import { AutoOutInOnMountColourChangeRadiumTransition, ColourChangeType } from "./transitions";
+import { getCurrentPlayerColour } from "./connectHelpers";
 
 
 interface TicTacToeSquareRowColProps {
@@ -13,7 +15,8 @@ interface TicTacToeSquareConnectStateProps {
     squareGoColour: string,
     squareText: string,
     canGo: boolean,
-    isSelected: boolean
+    isSelected: boolean,
+    currentPlayerColour:string
 }
 interface TicTacToeSquareDispatchProps {
     takeGo: () => void
@@ -45,7 +48,29 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
             }
         }
     }
+    getFocusAnimationStyle() {
+        var startEndBoxShadow = "0 0 5px 2px " + this.props.currentPlayerColour + " inset"
+        var focusKeyframes = {
+            '0%': {
+                boxShadow: startEndBoxShadow
+            },
+            '50%': {
+                boxShadow: "0 0 10px 5px " + this.props.currentPlayerColour + " inset"
+            },
+            '100%': {
+                boxShadow: startEndBoxShadow
+            }
+        }
+        return  {
+            animationName: Radium.keyframes(focusKeyframes),
+			animationDuration: "2000ms",
+            animationIterationCount: "infinite",
+            animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)"
+        }
 
+
+
+    }
     render() {
         var transitionDuration = 1000;
         var exitColour = style.componentBackgroundColor;
@@ -68,7 +93,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                         transitionStyle = { ...stateStyle, transition: stateTransition }
                     }
                     return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onClick={this.squareSelected}>
-                        <div style={[{ width: "100%", height: "100%", userSelect: "none" }, this.props.isSelected ? focusAnimationStyle : null]}> {this.props.squareText}</div>
+                        <div style={[{ width: "100%", height: "100%", userSelect: "none" }, this.props.isSelected ? this.getFocusAnimationStyle() : null]}> {this.props.squareText}</div>
                     </td>
                 }
 
@@ -96,7 +121,7 @@ function getSquareTextAndColour(state: TicTacToeState, rowIndex: number, colInde
     }
     return { colour: squareGoColour, text: squareText }
 }
-export const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
+export const ConnectedTicTacToeSquare = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
 
     var { colour, text } = getSquareTextAndColour(state, ownProps.rowIndex, ownProps.colIndex);
     var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
@@ -110,7 +135,8 @@ export const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, own
         squareGoColour: colour,
         squareText: text,
         canGo: canGo,
-        isSelected: isSelected
+        isSelected: isSelected,
+        currentPlayerColour: getCurrentPlayerColour(state)
     }
     return connectState;
 }, (dispatch, ownProps: TicTacToeSquareRowColProps) => {
@@ -119,4 +145,4 @@ export const ConnectedTicTacToeSquare: any = connect((state: TicTacToeState, own
             dispatch(takeGo(ownProps.rowIndex, ownProps.colIndex))
         }
     }
-})(TicTacToeSquare as any);
+})(TicTacToeSquare);

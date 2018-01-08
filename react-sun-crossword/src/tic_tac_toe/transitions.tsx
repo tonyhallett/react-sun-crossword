@@ -7,7 +7,7 @@ import { TransitionProps } from "react-transition-group/Transition";
 
 import * as Color from 'Color'
 
-type TransitionState = "exited" | "exiting" | "entered" | "entering";
+export type TransitionState = "exited" | "exiting" | "entered" | "entering";
 
 //#region inOnMount
 interface InOnMountState {

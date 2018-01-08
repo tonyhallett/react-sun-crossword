@@ -8,7 +8,6 @@ export class HorizontalCenter extends React.Component<undefined, undefined>{
     }
 }
 
-
 interface VerticallyCenteredContainerProps {
     backgroundColor?: string
 }

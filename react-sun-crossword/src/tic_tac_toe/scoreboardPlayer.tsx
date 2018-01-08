@@ -2,7 +2,7 @@
 import { style, pulseIncrease } from "./style";
 import * as Radium from 'radium'
 import { ConfiguredRadium } from "./configuredRadium";
-import { createPulseKeyframes, TransitionState, withPulse } from "./pulseAnimation";
+import { createPulseKeyframes, withPulse } from "./pulseAnimation";
 import { AutoOutInOnMount } from "./transitions";
 
 interface ScoreboardPlayerProps {
@@ -55,7 +55,7 @@ class ScoreboardPlayer extends React.Component<ScoreboardPlayerProps, Scoreboard
             <td style={style.scoreboard.cellStyle}>
                 <Pulse inSignal={this.state.inSignal} timeout={pulseTimeout} pulseAmount={pulseIncrease} >
                     {
-                        (state: TransitionState, props: any, pulseStyle: React.CSSProperties) => {
+                        (state, props, pulseStyle) => {
 
                             return <div style={[pulseStyle, { color: style.scoreboard.winColour, animationTimingFunction: animationTimingFunction }]}>{this.props.won}</div>
                         }
