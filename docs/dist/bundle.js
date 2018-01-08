@@ -947,7 +947,15 @@ function gameStateReducer(state, action) {
                             break;
                     }
                 }
-                return __assign({}, state, { selectedSquare: { row: row, column: column }, board: newBoard, currentPlayer: nextPlayer, playState: playState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
+                return {
+                    selectedSquare: { row: row, column: column },
+                    board: newBoard,
+                    currentPlayer: nextPlayer,
+                    playState: playState,
+                    drawCount: drawCount,
+                    playCount: playCount,
+                    playerXWinCount: playerXWinCount
+                };
             }
             else {
                 return state;

@@ -368,7 +368,6 @@ function gameStateReducer(state: GameState = {
                 }
 
                 return {
-                    ...state,
                     selectedSquare: { row: row, column: column },
                     board: newBoard,
                     currentPlayer: nextPlayer,
