@@ -2,8 +2,8 @@
 import { style, pulseIncrease } from "./style";
 import * as Radium from 'radium'
 import { ConfiguredRadium } from "./configuredRadium";
-import { createPulseKeyframes, withPulse } from "./pulseAnimation";
-import { AutoOutInOnMount } from "./transitions";
+import { createPulseKeyframes, withPulse } from "./transitions/pulseAnimation";
+import { AutoOutInOnMount } from "./transitions/transitions";
 
 interface ScoreboardPlayerProps {
     playerId: string,

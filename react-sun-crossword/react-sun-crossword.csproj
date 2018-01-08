@@ -157,7 +157,7 @@
     <TypeScriptCompile Include="src\tic_tac_toe\layoutComponents.tsx" />
     <TypeScriptCompile Include="src\tic_tac_toe\mergeAnimations.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\modalEnhanced.tsx" />
-    <TypeScriptCompile Include="src\tic_tac_toe\pulseAnimation.tsx" />
+    <TypeScriptCompile Include="src\tic_tac_toe\transitions\pulseAnimation.tsx" />
     <TypeScriptCompile Include="src\tic_tac_toe\reducer.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\safeEventListener.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\scoreboard.tsx" />
@@ -169,7 +169,12 @@
     <TypeScriptCompile Include="src\tic_tac_toe\ticTacToeCursor.tsx" />
     <TypeScriptCompile Include="src\tic_tac_toe\ticTacToeLoader.tsx" />
     <TypeScriptCompile Include="src\tic_tac_toe\ticTacToeScreen.tsx" />
-    <TypeScriptCompile Include="src\tic_tac_toe\transitions.tsx" />
+    <TypeScriptCompile Include="src\tic_tac_toe\transitions\transitions.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\transitions\colourChangeTransition.tsx" />
+    <TypeScriptCompile Include="src\tic_tac_toe\transitions\common.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\transitions\transitionHelper.tsx" />
+    <TypeScriptCompile Include="src\tic_tac_toe\transitions\withAutoOut.tsx" />
+    <TypeScriptCompile Include="src\tic_tac_toe\transitions\withInOnMount.tsx" />
     <TypeScriptCompile Include="src\tic_tac_toe\webFontLoader.ts" />
     <TypeScriptCompile Include="__not_run_tests\crosswordPuzzleInputTests.tsx" />
     <TypeScriptCompile Include="src\components\commonStyling.ts" />

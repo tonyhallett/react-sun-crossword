@@ -1,7 +1,7 @@
 ﻿import * as React from "react";
 import * as Radium from "radium";
 import { TransitionProps } from "react-transition-group/Transition";
-import { TransitionState } from './transitions'
+import { TransitionState } from './common'
 export type TransitionState = TransitionState;
 
 interface PulseProps {

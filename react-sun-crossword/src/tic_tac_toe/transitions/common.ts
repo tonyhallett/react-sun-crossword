@@ -1,0 +1,1 @@
+﻿export type TransitionState = "exited" | "exiting" | "entered" | "entering";
