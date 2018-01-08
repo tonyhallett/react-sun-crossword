@@ -2,9 +2,10 @@
 import * as Radium from 'Radium';
 import { connect } from "react-redux"
 import { style, ticTacToeSquareBorderWidth, focusAnimationStyle } from "./style";
-import { TicTacToeState, SquareGo, GameState, takeGo } from "./reducer";
+import { TicTacToeState, SquareGo, GameState } from "./reducer";
 import { AutoOutInOnMountColourChangeRadiumTransition, ColourChangeType } from "./transitions/transitions";
 import { getCurrentPlayerColour } from "./connectHelpers";
+import { takeGo } from "./actions";
 
 
 interface TicTacToeSquareRowColProps {
@@ -49,13 +50,13 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         }
     }
     getFocusAnimationStyle() {
-        var startEndBoxShadow = "0 0 5px 2px " + this.props.currentPlayerColour + " inset"
+        var startEndBoxShadow = style.ticTacToeSquare.focusAnimation.startEndBoxShadow + this.props.currentPlayerColour + " inset"
         var focusKeyframes = {
             '0%': {
                 boxShadow: startEndBoxShadow
             },
             '50%': {
-                boxShadow: "0 0 10px 5px " + this.props.currentPlayerColour + " inset"
+                boxShadow: style.ticTacToeSquare.focusAnimation.fiftyPercentBoxShadow  + this.props.currentPlayerColour + " inset"
             },
             '100%': {
                 boxShadow: startEndBoxShadow
@@ -63,9 +64,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
         }
         return  {
             animationName: Radium.keyframes(focusKeyframes),
-			animationDuration: "2000ms",
-            animationIterationCount: "infinite",
-            animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)"
+            ...style.ticTacToeSquare.focusAnimation.animationProps
         }
 
 
@@ -92,7 +91,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
                     } else {
                         transitionStyle = { ...stateStyle, transition: stateTransition }
                     }
-                    return <td style={[style.ticTacToeSquare, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onClick={this.squareSelected}>
+                    return <td style={[style.ticTacToeSquare.style, specificStyle, transitionStyle]} onMouseDown={(e) => { e.preventDefault() }} onClick={this.squareSelected}>
                         <div style={[{ width: "100%", height: "100%", userSelect: "none" }, this.props.isSelected ? this.getFocusAnimationStyle() : null]}> {this.props.squareText}</div>
                     </td>
                 }

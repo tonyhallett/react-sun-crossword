@@ -1,7 +1,8 @@
 ﻿import * as React from "react";
 import * as Radium from "Radium";
 import { connect } from "react-redux"
-import { GameState, ArrowDirection, RowColumnIndices, SquareGo, TicTacToeState, playAgain, finishedConfirmed, arrowPressed, takeGo } from "./reducer";
+import { GameState, RowColumnIndices, SquareGo, TicTacToeState,  } from "./reducer";
+import { ArrowDirection, playAgain, finishedConfirmed, arrowPressed, takeGo} from './actions'
 import { style, buttonHoverShadowStyle, thButtonFontWeight, fontSize, buttonBackgroundColor, componentBackgroundColor, shakeAnimationStyle, buttonHoverFocusBrightnessAnimationStyle } from "./style";
 import * as fontFamilies from './fontFamilies'
 import * as textStrings from './textStrings'

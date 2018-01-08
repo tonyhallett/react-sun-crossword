@@ -1,7 +1,8 @@
 ﻿import * as React from "react";
 import { connect } from "react-redux"
 import { hitTest } from "./hitTest"
-import { SquareGo, BoardHitTestReq, BoardHitTestRes, TicTacToeState, boardHitTestResult } from "./reducer";
+import { SquareGo, BoardHitTestReq, BoardHitTestRes, TicTacToeState } from "./reducer";
+import { boardHitTestResult } from './actions';
 import { style } from "./style";
 import * as idsAndClassNames from './idsAndClassNames'
 import { ConfiguredRadium } from "./configuredRadium";

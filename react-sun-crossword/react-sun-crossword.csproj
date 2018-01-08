@@ -97,6 +97,7 @@
     <Content Include="src\router_test\getRouteParams.js" />
     <Content Include="src\router_test\PatternUtils.js" />
     <TypeScriptCompile Include="src\helpers\storage.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\actions.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\connectHelpers.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\ticTacToeSquare.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />

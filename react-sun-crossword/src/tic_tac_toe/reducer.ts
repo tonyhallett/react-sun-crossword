@@ -1,45 +1,12 @@
 ﻿import { FontLoadingState,FONT_LOADING } from './webFontLoader'
 import { AnyAction } from 'redux'
+import { ArrowDirection, BOARD_HIT_TEST, BOARD_HIT_TEST_RESULT, Arrow_Press, Finished_Confirmed, Play_Again, Take_Go } from "./actions";
 export { FontLoadingState } from './webFontLoader'
-//#region redux
+
 //#region redux state
-
-const BOARD_HIT_TEST = "Board_Hit_Test";
-export function boardHitTest(x: number, y: number) {
-    return {
-        type: BOARD_HIT_TEST,
-        x: x,
-        y: y
-    }
-}
-const BOARD_HIT_TEST_RESULT = "Board_Hit_Test_Result";
-export function boardHitTestResult(hit: boolean, row: number, column: number) {
-    return {
-        type: BOARD_HIT_TEST_RESULT,
-        hit: hit,
-        row: row,
-        column: column
-    }
-}
-
 export enum SquareGo { X, O, None }
 export enum Player { X, O }
 export enum GameState { X, O, Playing, Draw, FinishedConfirmed }
-function gameStateString(gameState: GameState) {
-    switch (gameState) {
-        case GameState.Draw:
-            return "Draw";
-        case GameState.FinishedConfirmed:
-            return "Finished Confirmed";
-        case GameState.O:
-            return "O Winner";
-        case GameState.X:
-            return "X Winner";
-        case GameState.Playing:
-            return "Playing"
-    }
-}
-//probably is a way to type a colour css property
 export interface ScoreboardCountState {
     playCount: number,
     drawCount: number,
@@ -71,38 +38,6 @@ export interface TicTacToeState extends ScoreboardCountState, PlayerColourState 
     boardHitTest: {
         request: BoardHitTestReq,
         result: BoardHitTestRes
-    }
-}
-//#endregion
-//#region action types
-const Finished_Confirmed = "FINISHED_CONFIRMED"
-const Play_Again = "PLAY_AGAIN";
-const Take_Go = "TAKE_GO"
-const Arrow_Press = "ARROW_PRESS"
-//#endregion
-//#region action creators
-export enum ArrowDirection { Up, Down, Left, Right }
-export function arrowPressed(direction: ArrowDirection) {
-    return {
-        type: Arrow_Press,
-        direction: direction
-    }
-}
-export function finishedConfirmed() {
-    return {
-        type: Finished_Confirmed
-    }
-}
-export function playAgain() {
-    return {
-        type: Play_Again
-    }
-}
-export function takeGo(row: number, column: number) {
-    return {
-        type: Take_Go,
-        row: row,
-        column: column
     }
 }
 //#endregion
@@ -435,4 +370,4 @@ export function reducer(state: TicTacToeState = {
     }
 }
 //#endregion
-//#endregion
+
