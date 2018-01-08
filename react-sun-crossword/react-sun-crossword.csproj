@@ -99,6 +99,12 @@
     <TypeScriptCompile Include="src\helpers\storage.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\actions.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\connectHelpers.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\reducers\reducer.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\reducers\appState.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\reducers\boardHitTest.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\reducers\fontLoading.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\reducers\gameState.ts" />
+    <TypeScriptCompile Include="src\tic_tac_toe\reducers\playerColours.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\ticTacToeSquare.tsx" />
     <TypeScriptCompile Include="src\index.tsx" />
     <TypeScriptCompile Include="src\router_test\RouteUtils.ts" />
@@ -159,7 +165,6 @@
     <TypeScriptCompile Include="src\tic_tac_toe\mergeAnimations.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\modalEnhanced.tsx" />
     <TypeScriptCompile Include="src\tic_tac_toe\transitions\pulseAnimation.tsx" />
-    <TypeScriptCompile Include="src\tic_tac_toe\reducer.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\safeEventListener.ts" />
     <TypeScriptCompile Include="src\tic_tac_toe\scoreboard.tsx" />
     <TypeScriptCompile Include="src\tic_tac_toe\scoreboardPlayer.tsx" />

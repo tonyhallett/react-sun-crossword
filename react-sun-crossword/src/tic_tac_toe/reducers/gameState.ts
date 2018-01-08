@@ -1,54 +1,26 @@
-﻿import { FontLoadingState,FONT_LOADING } from './webFontLoader'
-import { AnyAction } from 'redux'
-import { ArrowDirection, BOARD_HIT_TEST, BOARD_HIT_TEST_RESULT, Arrow_Press, Finished_Confirmed, Play_Again, Take_Go } from "./actions";
-import { combineReducers } from 'redux'
-export { FontLoadingState } from './webFontLoader'
+﻿import { AnyAction } from 'redux'
+import { ArrowDirection, Arrow_Press, Finished_Confirmed, Play_Again, Take_Go} from "../actions";
 
-
-//#region redux state
 export enum SquareGo { X, O, None }
 export enum Player { X, O }
 export enum PlayState { X, O, Playing, Draw, FinishedConfirmed }
+
+export interface RowColumnIndices {
+    row: number,
+    column: number
+}
 export interface ScoreboardCountState {
     playCount: number,
     drawCount: number,
     playerXWinCount: number
 }
-export interface PlayerColourState {
-    xColour: string
-    oColour: string
-}
-export interface RowColumnIndices {
-    row: number,
-    column: number
-}
-
-export interface BoardHitTestReq {
-    x: number, y: number
-}
-export interface BoardHitTestRes {
-    hit: boolean,
-    row: number,
-    column: number
-}
-interface BoardHitTestState {
-    request: BoardHitTestReq,
-    result: BoardHitTestRes
-}
-interface GameState extends ScoreboardCountState  {
+export interface GameState extends ScoreboardCountState {
     board: SquareGo[][],
     currentPlayer: Player,
     playState: PlayState,
     selectedSquare: RowColumnIndices
 }
-export interface TicTacToeState {
-    gameState: GameState,
-    fontLoadingState: FontLoadingState
-    boardHitTest: BoardHitTestState,
-    playerColours:PlayerColourState
-}
-//#endregion
-//#region state defaults
+//#region defaults
 var numRowsAndColumns = 4;
 function getDefaultBoard(): SquareGo[][] {
     var rows = [];
@@ -66,7 +38,7 @@ function getDefaultSelectedSquare() {
     return { row: 0, column: 0 };
 }
 //#endregion
-//#region reducer 
+
 //#region check winner
 function checkWinner(board: SquareGo[][]): SquareGo {
     var winner = checkRowsWinner(board);
@@ -240,47 +212,7 @@ function getSelectedSquare(currentSelectedSquare: RowColumnIndices, numSquares, 
 
 }
 
-
-//#region child reducers
-function playerColours(state: PlayerColourState = { oColour: "yellow", xColour: "rgb(255, 51, 153)" },action:AnyAction) {
-    //no actions at the moment
-    return state;
-}
-function boardHitTestReducer(state: BoardHitTestState = { request: null, result: null}, action: AnyAction) {
-    switch (action.type) {
-        case BOARD_HIT_TEST:
-            return {
-                        request: {
-                            x: action.x,
-                            y: action.y
-                        },
-                        result: state.result
-                    }
-    
-            
-        case BOARD_HIT_TEST_RESULT:
-            return  {
-                        request: state.request,
-                        result: {
-                            hit: action.hit,
-                            row: action.row,
-                            column: action.column
-                        }
-                    }
-        default:
-            return state;
-            
-    }
-}
-function fontLoadingState(state: FontLoadingState = FontLoadingState.NotStarted, action: AnyAction) {
-    switch (action.type) {
-        case FONT_LOADING:
-            return action.state as FontLoadingState;
-        default:
-            return state;
-    }
-}
-function gameStateReducer(state: GameState = {
+export function gameStateReducer(state: GameState = {
     currentPlayer: firstPlayer,
     board: getDefaultBoard(),
     playState: PlayState.Playing,
@@ -383,26 +315,3 @@ function gameStateReducer(state: GameState = {
             return state;
     }
 }
-//#endregion
-
-
-
-export const reducer = combineReducers<TicTacToeState>({
-    gameState: gameStateReducer,
-    playerColours: playerColours,
-    fontLoadingState: fontLoadingState,
-    boardHitTest: boardHitTestReducer
-
-})
-
-//export function reducer(state: TicTacToeState = {}, action: AnyAction) {
-    
-//    return {
-//        gameState:gameStateReducer(state.gameState,action),
-//        playerColours: playerColours(state.playerColours,action),
-//        fontLoadingState: fontLoadingState(state.fontLoadingState, action),
-//        boardHitTest: boardHitTestReducer(state.boardHitTest,action)
-//    } as TicTacToeState
-//}
-//#endregion
-

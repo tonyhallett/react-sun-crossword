@@ -2,7 +2,7 @@
 import * as Radium from 'Radium';
 import { connect } from "react-redux"
 import { style, ticTacToeSquareBorderWidth, focusAnimationStyle } from "./style";
-import { TicTacToeState, SquareGo, PlayState } from "./reducer";
+import { TicTacToeState, SquareGo, PlayState } from "./reducers/reducer";
 import { AutoOutInOnMountColourChangeRadiumTransition, ColourChangeType } from "./transitions/transitions";
 import { getCurrentPlayerColour } from "./connectHelpers";
 import { takeGo } from "./actions";

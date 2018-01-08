@@ -1,5 +1,5 @@
 ﻿import * as React from "react";
-import { ScoreboardCountState, PlayerColourState, Player, TicTacToeState } from "./reducer";
+import { ScoreboardCountState, PlayerColourState, Player, TicTacToeState } from "./reducers/reducer";
 import { connect } from "react-redux"
 import { style, thButtonFontWeight } from "./style";
 import * as textStrings from './textStrings'

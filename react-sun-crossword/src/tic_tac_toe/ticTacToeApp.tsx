@@ -6,7 +6,8 @@ import { ConnectedTicTacToeLoader } from "./ticTacToeLoader";
 import { ConnectedTicTacToeScreen } from "./ticTacToeScreen";
 import { ConnectedTicTacToeCursor } from "./ticTacToeCursor";
 import { VerticallyCenteredContainer, HorizontalCenter } from "./layoutComponents";
-import { TicTacToeState, FontLoadingState } from './reducer'
+import { TicTacToeState, FontLoadingState } from './reducers/reducer'
+
 import { backgroundColor, style } from './style'
 import { animationSupported } from './animationSupported'
 

@@ -5,7 +5,7 @@ import * as fontFamilies from './fontFamilies'
 import * as textStrings from './textStrings'
 import { connect } from "react-redux"
 import { style } from './style'
-import { TicTacToeState, Player, PlayState, FontLoadingState, SquareGo } from './reducer'
+import { TicTacToeState, Player, PlayState, FontLoadingState, SquareGo } from './reducers/reducer'
 import { boardHitTest } from './actions'
 import { getCurrentPlayerColour } from "./connectHelpers";
 

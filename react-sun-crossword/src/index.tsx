@@ -1,7 +1,7 @@
 ﻿import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { reducer } from './tic_tac_toe/reducer'
+import { reducer } from './tic_tac_toe/reducers/reducer'
 import { createLocalStorageStore } from "./helpers/storage"
 
 import { ConnectedWebFontLoader, FontLoadingState } from './tic_tac_toe/webFontLoader'

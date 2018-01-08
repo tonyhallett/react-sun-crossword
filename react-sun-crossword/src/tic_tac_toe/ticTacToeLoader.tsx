@@ -2,7 +2,7 @@
 import { style } from "./style";
 import { connect } from "react-redux"
 
-import { TicTacToeState } from "./reducer";
+import { TicTacToeState } from "./reducers/reducer";
 import { ConfiguredRadium } from "./configuredRadium";
 
 interface TicTacToeLoaderProps {

@@ -1,4 +1,4 @@
-﻿import { TicTacToeState, Player } from "./reducer";
+﻿import { TicTacToeState, Player } from "./reducers/reducer";
 
 export function getCurrentPlayerColour(state: TicTacToeState) {
     var currentPlayer = state.gameState.currentPlayer;
