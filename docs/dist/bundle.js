@@ -49778,8 +49778,8 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.flipDuration = 1000;
         _this.modalShouldOpen = function () {
-            var gameState = _this.props.playState;
-            return gameState === reducer_1.PlayState.Draw || gameState === reducer_1.PlayState.O || gameState === reducer_1.PlayState.X;
+            var playState = _this.props.playState;
+            return playState === reducer_1.PlayState.Draw || playState === reducer_1.PlayState.O || playState === reducer_1.PlayState.X;
         };
         _this.keyDown = function (event) {
             var key = event.key;
@@ -49900,7 +49900,7 @@ exports.ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
     var gameState = state.gameState;
     return {
         xColour: state.playerColours.xColour,
-        gameState: state.gameState,
+        playState: gameState.playState,
         oColour: state.playerColours.oColour,
         selectedSquare: gameState.selectedSquare,
         board: gameState.board

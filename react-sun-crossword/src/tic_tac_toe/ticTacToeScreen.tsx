@@ -72,8 +72,8 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         }
     }
     modalShouldOpen = () => {
-        var gameState = this.props.playState;
-        return gameState === PlayState.Draw || gameState === PlayState.O || gameState === PlayState.X;
+        var playState = this.props.playState;
+        return playState === PlayState.Draw || playState === PlayState.O || playState === PlayState.X;
     }
 
     keyDown = (event: any) => {
@@ -171,7 +171,7 @@ export const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => 
     var gameState = state.gameState;
     return {
         xColour: state.playerColours.xColour,
-        gameState: state.gameState,
+        playState: gameState.playState,
         oColour: state.playerColours.oColour,
         selectedSquare: gameState.selectedSquare,
         board: gameState.board
