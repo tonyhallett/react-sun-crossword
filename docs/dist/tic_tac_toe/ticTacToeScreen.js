@@ -158,9 +158,9 @@ var TicTacToeScreen = (function (_super) {
 }(React.Component));
 exports.ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
     return {
+        xColour: state.xColour,
         gameState: state.gameState,
         oColour: state.oColour,
-        xColour: state.xColour,
         selectedSquare: state.selectedSquare,
         board: state.board
     };
