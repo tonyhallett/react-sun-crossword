@@ -885,9 +885,9 @@ function reducer(state, action) {
         drawCount: 0,
         playerXWinCount: 0,
         selectedSquare: { row: 0, column: 0 },
-        playerColours: null,
-        fontLoadingState: null,
-        boardHitTest: null
+        playerColours: undefined,
+        fontLoadingState: undefined,
+        boardHitTest: undefined
     }; }
     var newState;
     switch (action.type) {

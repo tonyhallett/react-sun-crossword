@@ -286,9 +286,9 @@ export function reducer(state: TicTacToeState = {
     
 
 
-    playerColours: null,
-    fontLoadingState: null,
-    boardHitTest:null
+    playerColours: undefined,
+    fontLoadingState: undefined,
+    boardHitTest: undefined
 }, action: AnyAction) {
     var newState: TicTacToeState;
 
