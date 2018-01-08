@@ -2,7 +2,7 @@
 import * as Radium from 'Radium';
 import { connect } from "react-redux"
 import { style, ticTacToeSquareBorderWidth, focusAnimationStyle } from "./style";
-import { TicTacToeState, SquareGo, GameState } from "./reducer";
+import { TicTacToeState, SquareGo, PlayState } from "./reducer";
 import { AutoOutInOnMountColourChangeRadiumTransition, ColourChangeType } from "./transitions/transitions";
 import { getCurrentPlayerColour } from "./connectHelpers";
 import { takeGo } from "./actions";
@@ -102,7 +102,7 @@ class TicTacToeSquare extends React.Component<TicTacToeSquareProps, TicTacToeSqu
 }
 
 function getSquareTextAndColour(state: TicTacToeState, rowIndex: number, colIndex: number) {
-    var squareGo = state.board[rowIndex][colIndex];
+    var squareGo = state.gameState.board[rowIndex][colIndex];
     var squareGoColour = "white";
     var squareText = "";
     switch (squareGo) {
@@ -121,14 +121,14 @@ function getSquareTextAndColour(state: TicTacToeState, rowIndex: number, colInde
     return { colour: squareGoColour, text: squareText }
 }
 export const ConnectedTicTacToeSquare = connect((state: TicTacToeState, ownProps: TicTacToeSquareRowColProps) => {
-
+    var gameState = state.gameState;
     var { colour, text } = getSquareTextAndColour(state, ownProps.rowIndex, ownProps.colIndex);
-    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
-    var canGo = state.gameState === GameState.Playing && squareGo === SquareGo.None;
+    var squareGo = gameState.board[ownProps.rowIndex][ownProps.colIndex];
+    var canGo = gameState.playState === PlayState.Playing && squareGo === SquareGo.None;
 
     var isSelected = false;
-    if (state.selectedSquare) {
-        isSelected = state.selectedSquare.column === ownProps.colIndex && state.selectedSquare.row == ownProps.rowIndex
+    if (gameState.selectedSquare) {
+        isSelected = gameState.selectedSquare.column === ownProps.colIndex && gameState.selectedSquare.row == ownProps.rowIndex
     }
     var connectState = {
         squareGoColour: colour,

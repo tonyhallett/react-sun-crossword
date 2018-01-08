@@ -5,7 +5,7 @@ import * as fontFamilies from './fontFamilies'
 import * as textStrings from './textStrings'
 import { connect } from "react-redux"
 import { style } from './style'
-import { TicTacToeState, Player, GameState, FontLoadingState, SquareGo } from './reducer'
+import { TicTacToeState, Player, PlayState, FontLoadingState, SquareGo } from './reducer'
 import { boardHitTest } from './actions'
 import { getCurrentPlayerColour } from "./connectHelpers";
 
@@ -33,13 +33,14 @@ class TicTacToeCursor extends React.Component<TicTacToeCursorProps, undefined>{
 }
 export const ConnectedTicTacToeCursor = connect((state: TicTacToeState) => {
     var cursorColour = getCurrentPlayerColour(state);
-    var cursorText = state.currentPlayer === Player.X ? textStrings.cross : textStrings.nought;
-    var active = state.fontLoadingState === FontLoadingState.Active && state.gameState === GameState.Playing;
+    var gameState = state.gameState;
+    var cursorText = gameState.currentPlayer === Player.X ? textStrings.cross : textStrings.nought;
+    var active = state.fontLoadingState === FontLoadingState.Active && state.gameState.playState === PlayState.Playing;
     var boardHitTestResult = state.boardHitTest.result;
     var overTakenSquare = false;
     if (boardHitTestResult) {
         if (boardHitTestResult.hit) {
-            var squareGo = state.board[boardHitTestResult.row][boardHitTestResult.column];
+            var squareGo = gameState.board[boardHitTestResult.row][boardHitTestResult.column];
             overTakenSquare = squareGo !== SquareGo.None
         }
     }

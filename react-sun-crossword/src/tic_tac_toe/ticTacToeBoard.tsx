@@ -69,7 +69,7 @@ export class TicTacToeBoard extends React.Component<TicTacToeBoardProps, undefin
 }
 export const ConnectedTicTacToeBoard: any = connect((state: TicTacToeState) => {
     return {
-        board: state.board,
+        board: state.gameState.board,
         hitTestRequest: state.boardHitTest.request
     }
 }, (dispatch) => {

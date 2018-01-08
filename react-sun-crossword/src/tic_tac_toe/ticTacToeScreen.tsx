@@ -1,7 +1,7 @@
 ﻿import * as React from "react";
 import * as Radium from "Radium";
 import { connect } from "react-redux"
-import { GameState, RowColumnIndices, SquareGo, TicTacToeState,  } from "./reducer";
+import { PlayState, RowColumnIndices, SquareGo, TicTacToeState,  } from "./reducer";
 import { ArrowDirection, playAgain, finishedConfirmed, arrowPressed, takeGo} from './actions'
 import { style, buttonHoverShadowStyle, thButtonFontWeight, fontSize, buttonBackgroundColor, componentBackgroundColor, shakeAnimationStyle, buttonHoverFocusBrightnessAnimationStyle } from "./style";
 import * as fontFamilies from './fontFamilies'
@@ -15,7 +15,7 @@ import { mergeAnimations } from "./mergeAnimations";
 import { flipInX, flipOutX } from 'react-animations';
 
 interface TicTacToeScreenProps {
-    gameState: GameState,
+    playState: PlayState,
     playAgain: () => void,
     finishedConfirmed: () => void,
     arrowPressed: (direction: ArrowDirection) => void,
@@ -52,14 +52,14 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 
         var messageElement = <div />
 
-        switch (props.gameState) {
-            case GameState.X:
+        switch (props.playState) {
+            case PlayState.X:
                 messageElement = getWinner(textStrings.cross, props.xColour);
                 break;
-            case GameState.O:
+            case PlayState.O:
                 messageElement = getWinner(textStrings.nought, props.oColour);
                 break;
-            case GameState.Draw:
+            case PlayState.Draw:
                 messageElement = <div style={{ ...style.winDrawContainerStyle, fontFamily: fontFamilies.textFontFamilyWithDefault }}>{textStrings.gameDrawn}</div>;
                 break;
         }
@@ -67,13 +67,13 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 
     }
     componentWillReceiveProps(props: TicTacToeScreenProps) {
-        if (props.gameState !== this.props.gameState && this.props.gameState === GameState.Playing) {
+        if (props.playState !== this.props.playState && this.props.playState === PlayState.Playing) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) })
         }
     }
     modalShouldOpen = () => {
-        var gameState = this.props.gameState;
-        return gameState === GameState.Draw || gameState === GameState.O || gameState === GameState.X;
+        var gameState = this.props.playState;
+        return gameState === PlayState.Draw || gameState === PlayState.O || gameState === PlayState.X;
     }
 
     keyDown = (event: any) => {
@@ -130,7 +130,7 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
     }
     render() {
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover')
-        var buttonAnimation = mergeAnimations([this.props.gameState !== GameState.Playing ? shakeAnimationStyle : null, buttonHasHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
+        var buttonAnimation = mergeAnimations([this.props.playState !== PlayState.Playing ? shakeAnimationStyle : null, buttonHasHover ? buttonHoverFocusBrightnessAnimationStyle : null]);
 
         var playAgainUnderlineLetter = textStrings.playAgainText[0];
         var playAgainRemainder = textStrings.playAgainText.substr(1);
@@ -167,13 +167,14 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
         </div>
     }
 }
-export const ConnectedTicTacToeScreen:any = connect((state: TicTacToeState) => {
+export const ConnectedTicTacToeScreen: any = connect((state: TicTacToeState) => {
+    var gameState = state.gameState;
     return {
         xColour: state.playerColours.xColour,
         gameState: state.gameState,
         oColour: state.playerColours.oColour,
-        selectedSquare: state.selectedSquare,
-        board: state.board
+        selectedSquare: gameState.selectedSquare,
+        board: gameState.board
     }
 }, (dispatch) => {
     return {

@@ -6,7 +6,7 @@ export { FontLoadingState } from './webFontLoader'
 //#region redux state
 export enum SquareGo { X, O, None }
 export enum Player { X, O }
-export enum GameState { X, O, Playing, Draw, FinishedConfirmed }
+export enum PlayState { X, O, Playing, Draw, FinishedConfirmed }
 export interface ScoreboardCountState {
     playCount: number,
     drawCount: number,
@@ -33,13 +33,15 @@ interface BoardHitTestState {
     request: BoardHitTestReq,
     result: BoardHitTestRes
 }
-
-export interface TicTacToeState extends ScoreboardCountState {
+interface GameState extends ScoreboardCountState  {
     board: SquareGo[][],
     currentPlayer: Player,
+    playState: PlayState,
+    selectedSquare: RowColumnIndices
+}
+export interface TicTacToeState {
     gameState: GameState,
     fontLoadingState: FontLoadingState
-    selectedSquare: RowColumnIndices,
     boardHitTest: BoardHitTestState,
     playerColours:PlayerColourState
 }
@@ -58,6 +60,9 @@ function getDefaultBoard(): SquareGo[][] {
     return rows;
 }
 var firstPlayer = Player.X;
+function getDefaultSelectedSquare() {
+    return { row: 0, column: 0 };
+}
 //#endregion
 //#region reducer 
 //#region check winner
@@ -273,49 +278,36 @@ function fontLoadingState(state: FontLoadingState = FontLoadingState.NotStarted,
             return state;
     }
 }
-
-//#endregion
-export function reducer(state: TicTacToeState = {
+function gameStateReducer(state: GameState = {
     currentPlayer: firstPlayer,
     board: getDefaultBoard(),
-    gameState: GameState.Playing,
+    playState: PlayState.Playing,
     playCount: 0,
     drawCount: 0,
     playerXWinCount: 0,
-    selectedSquare: { row: 0, column: 0 },
-    
-
-
-    playerColours: undefined,
-    fontLoadingState: undefined,
-    boardHitTest: undefined
+    selectedSquare: getDefaultSelectedSquare(),
 }, action: AnyAction) {
-    var newState: TicTacToeState;
-
     switch (action.type) {
-        
+
         case Arrow_Press:
-            newState = {
+            return {
                 ...state,
                 selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction)
             }
-            break;
         case Finished_Confirmed:
-            newState = {
+            return {
                 ...state,
-                gameState: GameState.FinishedConfirmed
+                playState: PlayState.FinishedConfirmed
             }
-            break;
         case Play_Again:
-            newState = {
+            return {
                 ...state,
                 board: getDefaultBoard(),
-                gameState: GameState.Playing,
-                selectedSquare: { row: 0, column: 0 }
+                playState: PlayState.Playing,
+                selectedSquare: getDefaultSelectedSquare()
             }
-            break;
         case Take_Go:
-            if (state.gameState === GameState.Playing) {
+            if (state.playState === PlayState.Playing) {
                 var row = action.row;
                 var column = action.column;
 
@@ -342,7 +334,7 @@ export function reducer(state: TicTacToeState = {
                     }
                     return rowSquares;
                 });
-                var gameState = GameState.Playing;
+                var playState = PlayState.Playing;
 
                 var drawCount = state.drawCount;
                 var playCount = state.playCount;
@@ -356,44 +348,45 @@ export function reducer(state: TicTacToeState = {
                     switch (winner) {
                         case SquareGo.None:
                             if (checkDraw(newBoard)) {
-                                gameState = GameState.Draw;
+                                playState = PlayState.Draw;
                                 playCount++;
                                 drawCount++;
                             }
                             break;
                         case SquareGo.X:
-                            gameState = GameState.X;
+                            playState = PlayState.X;
                             playCount++;
                             playerXWinCount++;
                             break;
                         case SquareGo.O:
-                            gameState = GameState.O;
+                            playState = PlayState.O;
                             playCount++;
                             break;
                     }
                 }
 
-                newState = {
+                return {
                     ...state,
                     selectedSquare: { row: row, column: column },
                     board: newBoard,
                     currentPlayer: nextPlayer,
-                    gameState: gameState,
+                    playState: playState,
                     drawCount: drawCount,
                     playCount: playCount,
                     playerXWinCount: playerXWinCount
                 }
             } else {
-                newState = state;
+                return state;
             }
-            
-            break;
         default:
-            newState = state;
-            break;
+            return state;
     }
+}
+//#endregion
+export function reducer(state: TicTacToeState, action: AnyAction) {
+    
     return {
-        ...newState,
+        gameState:gameStateReducer(state.gameState,action),
         playerColours: playerColours(state.playerColours,action),
         fontLoadingState: fontLoadingState(state.fontLoadingState, action),
         boardHitTest: boardHitTestReducer(state.boardHitTest,action)

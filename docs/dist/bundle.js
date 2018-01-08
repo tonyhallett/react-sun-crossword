@@ -633,14 +633,14 @@ var Player;
     Player[Player["X"] = 0] = "X";
     Player[Player["O"] = 1] = "O";
 })(Player = exports.Player || (exports.Player = {}));
-var GameState;
-(function (GameState) {
-    GameState[GameState["X"] = 0] = "X";
-    GameState[GameState["O"] = 1] = "O";
-    GameState[GameState["Playing"] = 2] = "Playing";
-    GameState[GameState["Draw"] = 3] = "Draw";
-    GameState[GameState["FinishedConfirmed"] = 4] = "FinishedConfirmed";
-})(GameState = exports.GameState || (exports.GameState = {}));
+var PlayState;
+(function (PlayState) {
+    PlayState[PlayState["X"] = 0] = "X";
+    PlayState[PlayState["O"] = 1] = "O";
+    PlayState[PlayState["Playing"] = 2] = "Playing";
+    PlayState[PlayState["Draw"] = 3] = "Draw";
+    PlayState[PlayState["FinishedConfirmed"] = 4] = "FinishedConfirmed";
+})(PlayState = exports.PlayState || (exports.PlayState = {}));
 //#endregion
 //#region state defaults
 var numRowsAndColumns = 4;
@@ -656,6 +656,9 @@ function getDefaultBoard() {
     return rows;
 }
 var firstPlayer = Player.X;
+function getDefaultSelectedSquare() {
+    return { row: 0, column: 0 };
+}
 //#endregion
 //#region reducer 
 //#region check winner
@@ -875,33 +878,25 @@ function fontLoadingState(state, action) {
             return state;
     }
 }
-//#endregion
-function reducer(state, action) {
+function gameStateReducer(state, action) {
     if (state === void 0) { state = {
         currentPlayer: firstPlayer,
         board: getDefaultBoard(),
-        gameState: GameState.Playing,
+        playState: PlayState.Playing,
         playCount: 0,
         drawCount: 0,
         playerXWinCount: 0,
-        selectedSquare: { row: 0, column: 0 },
-        playerColours: undefined,
-        fontLoadingState: undefined,
-        boardHitTest: undefined
+        selectedSquare: getDefaultSelectedSquare(),
     }; }
-    var newState;
     switch (action.type) {
         case actions_1.Arrow_Press:
-            newState = __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
-            break;
+            return __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
         case actions_1.Finished_Confirmed:
-            newState = __assign({}, state, { gameState: GameState.FinishedConfirmed });
-            break;
+            return __assign({}, state, { playState: PlayState.FinishedConfirmed });
         case actions_1.Play_Again:
-            newState = __assign({}, state, { board: getDefaultBoard(), gameState: GameState.Playing, selectedSquare: { row: 0, column: 0 } });
-            break;
+            return __assign({}, state, { board: getDefaultBoard(), playState: PlayState.Playing, selectedSquare: getDefaultSelectedSquare() });
         case actions_1.Take_Go:
-            if (state.gameState === GameState.Playing) {
+            if (state.playState === PlayState.Playing) {
                 var row = action.row;
                 var column = action.column;
                 var currentPlayer = state.currentPlayer;
@@ -925,7 +920,7 @@ function reducer(state, action) {
                     }
                     return rowSquares;
                 });
-                var gameState = GameState.Playing;
+                var playState = PlayState.Playing;
                 var drawCount = state.drawCount;
                 var playCount = state.playCount;
                 var playerXWinCount = state.playerXWinCount;
@@ -935,33 +930,39 @@ function reducer(state, action) {
                     switch (winner) {
                         case SquareGo.None:
                             if (checkDraw(newBoard)) {
-                                gameState = GameState.Draw;
+                                playState = PlayState.Draw;
                                 playCount++;
                                 drawCount++;
                             }
                             break;
                         case SquareGo.X:
-                            gameState = GameState.X;
+                            playState = PlayState.X;
                             playCount++;
                             playerXWinCount++;
                             break;
                         case SquareGo.O:
-                            gameState = GameState.O;
+                            playState = PlayState.O;
                             playCount++;
                             break;
                     }
                 }
-                newState = __assign({}, state, { selectedSquare: { row: row, column: column }, board: newBoard, currentPlayer: nextPlayer, gameState: gameState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
+                return __assign({}, state, { selectedSquare: { row: row, column: column }, board: newBoard, currentPlayer: nextPlayer, playState: playState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
             }
             else {
-                newState = state;
+                return state;
             }
-            break;
         default:
-            newState = state;
-            break;
+            return state;
     }
-    return __assign({}, newState, { playerColours: playerColours(state.playerColours, action), fontLoadingState: fontLoadingState(state.fontLoadingState, action), boardHitTest: boardHitTestReducer(state.boardHitTest, action) });
+}
+//#endregion
+function reducer(state, action) {
+    return {
+        gameState: gameStateReducer(state.gameState, action),
+        playerColours: playerColours(state.playerColours, action),
+        fontLoadingState: fontLoadingState(state.fontLoadingState, action),
+        boardHitTest: boardHitTestReducer(state.boardHitTest, action)
+    };
 }
 exports.reducer = reducer;
 //#endregion
@@ -8553,7 +8554,7 @@ function warning(message) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var reducer_1 = __webpack_require__(7);
 function getCurrentPlayerColour(state) {
-    var currentPlayer = state.currentPlayer;
+    var currentPlayer = state.gameState.currentPlayer;
     return currentPlayer === reducer_1.Player.X ? state.playerColours.xColour : state.playerColours.oColour;
 }
 exports.getCurrentPlayerColour = getCurrentPlayerColour;
@@ -49425,11 +49426,12 @@ var Scoreboard = /** @class */ (function (_super) {
     return Scoreboard;
 }(React.Component));
 exports.ConnectedScoreboard = react_redux_1.connect(function (state) {
+    var gameState = state.gameState;
     var scoreboardState = {
-        currentPlayer: state.currentPlayer,
-        drawCount: state.drawCount,
-        playCount: state.playCount,
-        playerXWinCount: state.playerXWinCount,
+        currentPlayer: gameState.currentPlayer,
+        drawCount: gameState.drawCount,
+        playCount: gameState.playCount,
+        playerXWinCount: gameState.playerXWinCount,
         oColour: state.playerColours.oColour,
         xColour: state.playerColours.xColour
     };
@@ -49588,7 +49590,7 @@ var TicTacToeBoard = /** @class */ (function (_super) {
 exports.TicTacToeBoard = TicTacToeBoard;
 exports.ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
     return {
-        board: state.board,
+        board: state.gameState.board,
         hitTestRequest: state.boardHitTest.request
     };
 }, function (dispatch) {
@@ -49646,13 +49648,14 @@ var TicTacToeCursor = /** @class */ (function (_super) {
 }(React.Component));
 exports.ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
     var cursorColour = connectHelpers_1.getCurrentPlayerColour(state);
-    var cursorText = state.currentPlayer === reducer_1.Player.X ? textStrings.cross : textStrings.nought;
-    var active = state.fontLoadingState === reducer_1.FontLoadingState.Active && state.gameState === reducer_1.GameState.Playing;
+    var gameState = state.gameState;
+    var cursorText = gameState.currentPlayer === reducer_1.Player.X ? textStrings.cross : textStrings.nought;
+    var active = state.fontLoadingState === reducer_1.FontLoadingState.Active && state.gameState.playState === reducer_1.PlayState.Playing;
     var boardHitTestResult = state.boardHitTest.result;
     var overTakenSquare = false;
     if (boardHitTestResult) {
         if (boardHitTestResult.hit) {
-            var squareGo = state.board[boardHitTestResult.row][boardHitTestResult.column];
+            var squareGo = gameState.board[boardHitTestResult.row][boardHitTestResult.column];
             overTakenSquare = squareGo !== reducer_1.SquareGo.None;
         }
     }
@@ -49769,8 +49772,8 @@ var TicTacToeScreen = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.flipDuration = 1000;
         _this.modalShouldOpen = function () {
-            var gameState = _this.props.gameState;
-            return gameState === reducer_1.GameState.Draw || gameState === reducer_1.GameState.O || gameState === reducer_1.GameState.X;
+            var gameState = _this.props.playState;
+            return gameState === reducer_1.PlayState.Draw || gameState === reducer_1.PlayState.O || gameState === reducer_1.PlayState.X;
         };
         _this.keyDown = function (event) {
             var key = event.key;
@@ -49838,27 +49841,27 @@ var TicTacToeScreen = /** @class */ (function (_super) {
                 React.createElement("span", { style: { fontFamily: fontFamilies.textFontFamilyWithDefault } }, textStrings.wonMessage));
         }
         var messageElement = React.createElement("div", null);
-        switch (props.gameState) {
-            case reducer_1.GameState.X:
+        switch (props.playState) {
+            case reducer_1.PlayState.X:
                 messageElement = getWinner(textStrings.cross, props.xColour);
                 break;
-            case reducer_1.GameState.O:
+            case reducer_1.PlayState.O:
                 messageElement = getWinner(textStrings.nought, props.oColour);
                 break;
-            case reducer_1.GameState.Draw:
+            case reducer_1.PlayState.Draw:
                 messageElement = React.createElement("div", { style: __assign({}, style_1.style.winDrawContainerStyle, { fontFamily: fontFamilies.textFontFamilyWithDefault }) }, textStrings.gameDrawn);
                 break;
         }
         return messageElement;
     };
     TicTacToeScreen.prototype.componentWillReceiveProps = function (props) {
-        if (props.gameState !== this.props.gameState && this.props.gameState === reducer_1.GameState.Playing) {
+        if (props.playState !== this.props.playState && this.props.playState === reducer_1.PlayState.Playing) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
         }
     };
     TicTacToeScreen.prototype.render = function () {
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
-        var buttonAnimation = mergeAnimations_1.mergeAnimations([this.props.gameState !== reducer_1.GameState.Playing ? style_1.shakeAnimationStyle : null, buttonHasHover ? style_1.buttonHoverFocusBrightnessAnimationStyle : null]);
+        var buttonAnimation = mergeAnimations_1.mergeAnimations([this.props.playState !== reducer_1.PlayState.Playing ? style_1.shakeAnimationStyle : null, buttonHasHover ? style_1.buttonHoverFocusBrightnessAnimationStyle : null]);
         var playAgainUnderlineLetter = textStrings.playAgainText[0];
         var playAgainRemainder = textStrings.playAgainText.substr(1);
         return React.createElement("div", { tabIndex: 0, ref: this.keyContainerRef, onKeyDown: this.keyDown },
@@ -49888,12 +49891,13 @@ var TicTacToeScreen = /** @class */ (function (_super) {
     return TicTacToeScreen;
 }(React.Component));
 exports.ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
+    var gameState = state.gameState;
     return {
         xColour: state.playerColours.xColour,
         gameState: state.gameState,
         oColour: state.playerColours.oColour,
-        selectedSquare: state.selectedSquare,
-        board: state.board
+        selectedSquare: gameState.selectedSquare,
+        board: gameState.board
     };
 }, function (dispatch) {
     return {
@@ -50013,7 +50017,7 @@ var TicTacToeSquare = /** @class */ (function (_super) {
     return TicTacToeSquare;
 }(React.Component));
 function getSquareTextAndColour(state, rowIndex, colIndex) {
-    var squareGo = state.board[rowIndex][colIndex];
+    var squareGo = state.gameState.board[rowIndex][colIndex];
     var squareGoColour = "white";
     var squareText = "";
     switch (squareGo) {
@@ -50031,12 +50035,13 @@ function getSquareTextAndColour(state, rowIndex, colIndex) {
     return { colour: squareGoColour, text: squareText };
 }
 exports.ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
+    var gameState = state.gameState;
     var _a = getSquareTextAndColour(state, ownProps.rowIndex, ownProps.colIndex), colour = _a.colour, text = _a.text;
-    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
-    var canGo = state.gameState === reducer_1.GameState.Playing && squareGo === reducer_1.SquareGo.None;
+    var squareGo = gameState.board[ownProps.rowIndex][ownProps.colIndex];
+    var canGo = gameState.playState === reducer_1.PlayState.Playing && squareGo === reducer_1.SquareGo.None;
     var isSelected = false;
-    if (state.selectedSquare) {
-        isSelected = state.selectedSquare.column === ownProps.colIndex && state.selectedSquare.row == ownProps.rowIndex;
+    if (gameState.selectedSquare) {
+        isSelected = gameState.selectedSquare.column === ownProps.colIndex && gameState.selectedSquare.row == ownProps.rowIndex;
     }
     var connectState = {
         squareGoColour: colour,
