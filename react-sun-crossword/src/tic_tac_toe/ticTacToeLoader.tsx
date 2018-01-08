@@ -34,7 +34,7 @@ class TicTacToeLoader extends React.Component<TicTacToeLoaderProps, undefined>{
 }
 export const ConnectedTicTacToeLoader: any = connect((state: TicTacToeState) => {
     return {
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     }
 })(ConfiguredRadium(TicTacToeLoader));

@@ -69,6 +69,7 @@ import { ConnectedTicTacToeApp } from "./tic_tac_toe/ticTacToeApp";
 
 var store = createLocalStorageStore(reducer, (s) => {
     s.fontLoadingState = FontLoadingState.NotStarted;
+    s.boardHitTest = { request: null, result: null };
     return s;
 });
 ReactDOM.render(

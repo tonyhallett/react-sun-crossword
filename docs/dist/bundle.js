@@ -836,49 +836,70 @@ function getSelectedSquare(currentSelectedSquare, numSquares, direction) {
         return { column: 0, row: 0 };
     }
 }
+//#region child reducers
+function playerColours(state, action) {
+    if (state === void 0) { state = { oColour: "yellow", xColour: "rgb(255, 51, 153)" }; }
+    //no actions at the moment
+    return state;
+}
+function boardHitTestReducer(state, action) {
+    if (state === void 0) { state = { request: null, result: null }; }
+    switch (action.type) {
+        case actions_1.BOARD_HIT_TEST:
+            return {
+                request: {
+                    x: action.x,
+                    y: action.y
+                },
+                result: state.result
+            };
+        case actions_1.BOARD_HIT_TEST_RESULT:
+            return {
+                request: state.request,
+                result: {
+                    hit: action.hit,
+                    row: action.row,
+                    column: action.column
+                }
+            };
+        default:
+            return state;
+    }
+}
+function fontLoadingState(state, action) {
+    if (state === void 0) { state = webFontLoader_1.FontLoadingState.NotStarted; }
+    switch (action.type) {
+        case webFontLoader_1.FONT_LOADING:
+            return action.state;
+        default:
+            return state;
+    }
+}
+//#endregion
 function reducer(state, action) {
     if (state === void 0) { state = {
         currentPlayer: firstPlayer,
         board: getDefaultBoard(),
-        oColour: "yellow",
-        xColour: "rgb(255, 51, 153)",
         gameState: GameState.Playing,
         playCount: 0,
         drawCount: 0,
         playerXWinCount: 0,
-        fontLoadingState: webFontLoader_1.FontLoadingState.NotStarted,
         selectedSquare: { row: 0, column: 0 },
-        boardHitTest: {
-            request: null,
-            result: null
-        }
+        playerColours: null,
+        fontLoadingState: null,
+        boardHitTest: null
     }; }
+    var newState;
     switch (action.type) {
-        case actions_1.BOARD_HIT_TEST:
-            return __assign({}, state, { boardHitTest: {
-                    request: {
-                        x: action.x,
-                        y: action.y
-                    },
-                    result: state.boardHitTest.result
-                } });
-        case actions_1.BOARD_HIT_TEST_RESULT:
-            return __assign({}, state, { boardHitTest: {
-                    request: state.boardHitTest.request,
-                    result: {
-                        hit: action.hit,
-                        row: action.row,
-                        column: action.column
-                    }
-                } });
         case actions_1.Arrow_Press:
-            return __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
-        case webFontLoader_1.FONT_LOADING:
-            return __assign({}, state, { fontLoadingState: action.state });
+            newState = __assign({}, state, { selectedSquare: getSelectedSquare(state.selectedSquare, state.board.length, action.direction) });
+            break;
         case actions_1.Finished_Confirmed:
-            return __assign({}, state, { gameState: GameState.FinishedConfirmed });
+            newState = __assign({}, state, { gameState: GameState.FinishedConfirmed });
+            break;
         case actions_1.Play_Again:
-            return __assign({}, state, { board: getDefaultBoard(), gameState: GameState.Playing, selectedSquare: { row: 0, column: 0 } });
+            newState = __assign({}, state, { board: getDefaultBoard(), gameState: GameState.Playing, selectedSquare: { row: 0, column: 0 } });
+            break;
         case actions_1.Take_Go:
             if (state.gameState === GameState.Playing) {
                 var row = action.row;
@@ -930,12 +951,17 @@ function reducer(state, action) {
                             break;
                     }
                 }
-                return __assign({}, state, { selectedSquare: { row: row, column: column }, board: newBoard, currentPlayer: nextPlayer, oColour: state.oColour, xColour: state.xColour, gameState: gameState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
+                newState = __assign({}, state, { selectedSquare: { row: row, column: column }, board: newBoard, currentPlayer: nextPlayer, gameState: gameState, drawCount: drawCount, playCount: playCount, playerXWinCount: playerXWinCount });
             }
-            return state;
+            else {
+                newState = state;
+            }
+            break;
         default:
-            return state;
+            newState = state;
+            break;
     }
+    return __assign({}, newState, { playerColours: playerColours(state.playerColours, action), fontLoadingState: fontLoadingState(state.fontLoadingState, action), boardHitTest: boardHitTestReducer(state.boardHitTest, action) });
 }
 exports.reducer = reducer;
 //#endregion
@@ -8528,7 +8554,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var reducer_1 = __webpack_require__(7);
 function getCurrentPlayerColour(state) {
     var currentPlayer = state.currentPlayer;
-    return currentPlayer === reducer_1.Player.X ? state.xColour : state.oColour;
+    return currentPlayer === reducer_1.Player.X ? state.playerColours.xColour : state.playerColours.oColour;
 }
 exports.getCurrentPlayerColour = getCurrentPlayerColour;
 
@@ -8848,8 +8874,8 @@ var TicTacToeApp = /** @class */ (function (_super) {
 exports.ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         fontLoadingState: state.fontLoadingState,
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     };
 })(TicTacToeApp);
 
@@ -48898,6 +48924,7 @@ var ticTacToeApp_1 = __webpack_require__(101);
 //#endregion
 var store = storage_1.createLocalStorageStore(reducer_1.reducer, function (s) {
     s.fontLoadingState = webFontLoader_1.FontLoadingState.NotStarted;
+    s.boardHitTest = { request: null, result: null };
     return s;
 });
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },
@@ -49403,8 +49430,8 @@ exports.ConnectedScoreboard = react_redux_1.connect(function (state) {
         drawCount: state.drawCount,
         playCount: state.playCount,
         playerXWinCount: state.playerXWinCount,
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     };
     return scoreboardState;
 })(Scoreboard);
@@ -49690,8 +49717,8 @@ var TicTacToeLoader = /** @class */ (function (_super) {
 }(React.Component));
 exports.ConnectedTicTacToeLoader = react_redux_1.connect(function (state) {
     return {
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     };
 })(configuredRadium_1.ConfiguredRadium(TicTacToeLoader));
 
@@ -49862,9 +49889,9 @@ var TicTacToeScreen = /** @class */ (function (_super) {
 }(React.Component));
 exports.ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
     return {
-        xColour: state.xColour,
+        xColour: state.playerColours.xColour,
         gameState: state.gameState,
-        oColour: state.oColour,
+        oColour: state.playerColours.oColour,
         selectedSquare: state.selectedSquare,
         board: state.board
     };
@@ -49991,12 +50018,12 @@ function getSquareTextAndColour(state, rowIndex, colIndex) {
     var squareText = "";
     switch (squareGo) {
         case reducer_1.SquareGo.O:
-            squareGoColour = state.oColour;
+            squareGoColour = state.playerColours.oColour;
             squareText = "O";
             break;
         case reducer_1.SquareGo.X:
             squareText = "X";
-            squareGoColour = state.xColour;
+            squareGoColour = state.playerColours.xColour;
             break;
         case reducer_1.SquareGo.None:
             break;

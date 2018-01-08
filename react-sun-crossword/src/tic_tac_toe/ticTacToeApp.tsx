@@ -83,8 +83,8 @@ class TicTacToeApp extends React.Component<TicTacToeAppProps, TicTacToeAppState>
 export const ConnectedTicTacToeApp: any = connect((state: TicTacToeState) => {
     return {
         fontLoadingState: state.fontLoadingState,
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     }
 })(TicTacToeApp);
 

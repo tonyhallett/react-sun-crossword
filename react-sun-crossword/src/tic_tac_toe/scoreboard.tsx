@@ -38,8 +38,8 @@ export const ConnectedScoreboard:any = connect((state: TicTacToeState) => {
         drawCount: state.drawCount,
         playCount: state.playCount,
         playerXWinCount: state.playerXWinCount,
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     }
     return scoreboardState;
 })(Scoreboard);

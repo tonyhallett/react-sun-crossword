@@ -107,12 +107,12 @@ function getSquareTextAndColour(state: TicTacToeState, rowIndex: number, colInde
     var squareText = "";
     switch (squareGo) {
         case SquareGo.O:
-            squareGoColour = state.oColour;
+            squareGoColour = state.playerColours.oColour;
             squareText = "O";
             break;
         case SquareGo.X:
             squareText = "X"
-            squareGoColour = state.xColour;
+            squareGoColour = state.playerColours.xColour;
             break;
         case SquareGo.None:
             break;

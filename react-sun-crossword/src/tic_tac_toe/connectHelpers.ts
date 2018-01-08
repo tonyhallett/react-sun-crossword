@@ -2,5 +2,5 @@
 
 export function getCurrentPlayerColour(state: TicTacToeState) {
     var currentPlayer = state.currentPlayer;
-    return currentPlayer === Player.X ? state.xColour : state.oColour;
+    return currentPlayer === Player.X ? state.playerColours.xColour : state.playerColours.oColour;
 }

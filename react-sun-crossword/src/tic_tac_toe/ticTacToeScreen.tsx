@@ -169,9 +169,9 @@ class TicTacToeScreen extends React.Component<TicTacToeScreenProps, TicTacToeScr
 }
 export const ConnectedTicTacToeScreen:any = connect((state: TicTacToeState) => {
     return {
-        xColour: state.xColour,
+        xColour: state.playerColours.xColour,
         gameState: state.gameState,
-        oColour: state.oColour,
+        oColour: state.playerColours.oColour,
         selectedSquare: state.selectedSquare,
         board: state.board
     }
