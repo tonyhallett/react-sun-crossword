@@ -1,7 +1,9 @@
 ﻿import { FontLoadingState,FONT_LOADING } from './webFontLoader'
 import { AnyAction } from 'redux'
 import { ArrowDirection, BOARD_HIT_TEST, BOARD_HIT_TEST_RESULT, Arrow_Press, Finished_Confirmed, Play_Again, Take_Go } from "./actions";
+import { combineReducers } from 'redux'
 export { FontLoadingState } from './webFontLoader'
+
 
 //#region redux state
 export enum SquareGo { X, O, None }
@@ -383,14 +385,25 @@ function gameStateReducer(state: GameState = {
     }
 }
 //#endregion
-export function reducer(state: TicTacToeState, action: AnyAction) {
+
+
+
+export const reducer = combineReducers<TicTacToeState>({
+    gameState: gameStateReducer,
+    playerColours: playerColours,
+    fontLoadingState: fontLoadingState,
+    boardHitTest: boardHitTestReducer
+
+})
+
+//export function reducer(state: TicTacToeState = {}, action: AnyAction) {
     
-    return {
-        gameState:gameStateReducer(state.gameState,action),
-        playerColours: playerColours(state.playerColours,action),
-        fontLoadingState: fontLoadingState(state.fontLoadingState, action),
-        boardHitTest: boardHitTestReducer(state.boardHitTest,action)
-    } as TicTacToeState
-}
+//    return {
+//        gameState:gameStateReducer(state.gameState,action),
+//        playerColours: playerColours(state.playerColours,action),
+//        fontLoadingState: fontLoadingState(state.fontLoadingState, action),
+//        boardHitTest: boardHitTestReducer(state.boardHitTest,action)
+//    } as TicTacToeState
+//}
 //#endregion
 
