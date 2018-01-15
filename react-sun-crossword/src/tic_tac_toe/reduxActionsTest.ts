@@ -586,7 +586,7 @@ var someActionCreator = ReduxActions.createAction<RegExp, string>("SomeAction", 
     
     return new RegExp(arg1);
 })
-var someActionCreator2 = ReduxActions.createAction<Date, string, number>("SomeAction", (arg1, arg2) => {
+var someActionCreator2 = ReduxActions.createAction<Date, string, number>("SomeAction2", (arg1, arg2) => {
     if (arg1 === "throw") {
         return new Error("Some error");
     }

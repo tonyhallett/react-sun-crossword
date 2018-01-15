@@ -10380,7 +10380,7 @@ function handleActionsFromCreators(initialState, ach1, ach2, ach3, ach4, ach5, a
 var someActionCreator = ReduxActions.createAction("SomeAction", function (arg1) {
     return new RegExp(arg1);
 });
-var someActionCreator2 = ReduxActions.createAction("SomeAction", function (arg1, arg2) {
+var someActionCreator2 = ReduxActions.createAction("SomeAction2", function (arg1, arg2) {
     if (arg1 === "throw") {
         return new Error("Some error");
     }
