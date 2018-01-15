@@ -691,7 +691,7 @@ function createReducerMap<State, Payload1, Payload2>(state: State, ach1: ActionC
 }
 
 function createReducerMapMeta<State, Payload1, Meta1, Payload2, Meta2>(state: State, reducerMap: Map<State>, ach: ActionCreatorMetaHandler<State, Payload1, Meta1>, ach2?: ActionCreatorMetaHandler<State, Payload2, Meta2>): Map<State>{
-    for (var i = 1; i < arguments.length; i++) {
+    for (var i = 2; i < arguments.length; i++) {
         var actionCreatorHandler = arguments[i] as ActionCreatorMetaHandler<State, any, any>;
         reducerMap[actionCreatorHandler.actionCreator.toString()] = actionCreatorHandler.reducer;
     }

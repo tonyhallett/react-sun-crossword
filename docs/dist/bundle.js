@@ -10469,7 +10469,7 @@ function createReducerMap(state, ach1, ach2) {
     return reducerMap;
 }
 function createReducerMapMeta(state, reducerMap, ach, ach2) {
-    for (var i = 1; i < arguments.length; i++) {
+    for (var i = 2; i < arguments.length; i++) {
         var actionCreatorHandler = arguments[i];
         reducerMap[actionCreatorHandler.actionCreator.toString()] = actionCreatorHandler.reducer;
     }
