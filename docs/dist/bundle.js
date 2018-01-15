@@ -10520,8 +10520,8 @@ var reducerMapMeta = createReducerMapMeta(initialState, reducerMap, {
 }, {
     actionCreator: actionCreatorMetaGenerics2,
     reducer: function (state, action) {
-        crMapReducer1MetaAction = action;
-        crMapReducer1MetaState = state;
+        crMapReducer2MetaAction = action;
+        crMapReducer2MetaState = state;
         return state;
     }
 });
