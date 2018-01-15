@@ -22,7 +22,7 @@
     "@types/react-router-redux": "^4.0.51",
     "@types/react-select": "^1.0.46",
     "@types/redux": "^3.6.0",
-    "@types/redux-actions": "^2.2.2",
+    "@types/redux-actions": "^2.2.3",
     "@types/webspeechapi": "0.0.27",
     "color": "^1.0.3",
     "es6-promise": "^4.1.0",

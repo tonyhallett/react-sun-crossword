@@ -17,7 +17,9 @@ var fontFamilies = require("./fontFamilies");
 var textStrings = require("./textStrings");
 var react_redux_1 = require("react-redux");
 var style_1 = require("./style");
-var reducer_1 = require("./reducer");
+var reducer_1 = require("./reducers/reducer");
+var actions_1 = require("./actions");
+var connectHelpers_1 = require("./connectHelpers");
 var TicTacToeCursor = (function (_super) {
     __extends(TicTacToeCursor, _super);
     function TicTacToeCursor() {
@@ -36,15 +38,15 @@ var TicTacToeCursor = (function (_super) {
     return TicTacToeCursor;
 }(React.Component));
 exports.ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
-    var currentPlayer = state.currentPlayer;
-    var cursorColour = currentPlayer === reducer_1.Player.X ? state.xColour : state.oColour;
-    var cursorText = currentPlayer === reducer_1.Player.X ? textStrings.cross : textStrings.nought;
-    var active = state.fontLoadingState === reducer_1.FontLoadingState.Active && state.gameState === reducer_1.GameState.Playing;
+    var cursorColour = connectHelpers_1.getCurrentPlayerColour(state);
+    var gameState = state.gameState;
+    var cursorText = gameState.currentPlayer === reducer_1.Player.X ? textStrings.cross : textStrings.nought;
+    var active = state.fontLoadingState === reducer_1.FontLoadingState.Active && state.gameState.playState === reducer_1.PlayState.Playing;
     var boardHitTestResult = state.boardHitTest.result;
     var overTakenSquare = false;
     if (boardHitTestResult) {
         if (boardHitTestResult.hit) {
-            var squareGo = state.board[boardHitTestResult.row][boardHitTestResult.column];
+            var squareGo = gameState.board[boardHitTestResult.row][boardHitTestResult.column];
             overTakenSquare = squareGo !== reducer_1.SquareGo.None;
         }
     }
@@ -57,7 +59,7 @@ exports.ConnectedTicTacToeCursor = react_redux_1.connect(function (state) {
 }, function (dispatch) {
     return {
         boardHitTestRequest: function (x, y) {
-            dispatch(reducer_1.boardHitTest(x, y));
+            dispatch(actions_1.boardHitTest(x, y));
         }
     };
 })(TicTacToeCursor);

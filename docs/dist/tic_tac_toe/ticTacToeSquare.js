@@ -19,10 +19,13 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
+var Radium = require("Radium");
 var react_redux_1 = require("react-redux");
 var style_1 = require("./style");
-var reducer_1 = require("./reducer");
-var transitions_1 = require("./transitions");
+var reducer_1 = require("./reducers/reducer");
+var transitions_1 = require("./transitions/transitions");
+var connectHelpers_1 = require("./connectHelpers");
+var actions_1 = require("./actions");
 var TicTacToeSquare = (function (_super) {
     __extends(TicTacToeSquare, _super);
     function TicTacToeSquare(props) {
@@ -45,6 +48,21 @@ var TicTacToeSquare = (function (_super) {
             }
         }
     };
+    TicTacToeSquare.prototype.getFocusAnimationStyle = function () {
+        var startEndBoxShadow = style_1.style.ticTacToeSquare.focusAnimation.startEndBoxShadow + this.props.currentPlayerColour + " inset";
+        var focusKeyframes = {
+            '0%': {
+                boxShadow: startEndBoxShadow
+            },
+            '50%': {
+                boxShadow: style_1.style.ticTacToeSquare.focusAnimation.fiftyPercentBoxShadow + this.props.currentPlayerColour + " inset"
+            },
+            '100%': {
+                boxShadow: startEndBoxShadow
+            }
+        };
+        return __assign({ animationName: Radium.keyframes(focusKeyframes) }, style_1.style.ticTacToeSquare.focusAnimation.animationProps);
+    };
     TicTacToeSquare.prototype.render = function () {
         var _this = this;
         var transitionDuration = 1000;
@@ -66,8 +84,8 @@ var TicTacToeSquare = (function (_super) {
             else {
                 transitionStyle = __assign({}, stateStyle, { transition: stateTransition });
             }
-            return React.createElement("td", { style: [style_1.style.ticTacToeSquare, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onClick: _this.squareSelected },
-                React.createElement("div", { style: [{ width: "100%", height: "100%", userSelect: "none" }, _this.props.isSelected ? style_1.focusAnimationStyle : null] },
+            return React.createElement("td", { style: [style_1.style.ticTacToeSquare.style, specificStyle, transitionStyle], onMouseDown: function (e) { e.preventDefault(); }, onClick: _this.squareSelected },
+                React.createElement("div", { style: [{ width: "100%", height: "100%", userSelect: "none" }, _this.props.isSelected ? _this.getFocusAnimationStyle() : null] },
                     " ",
                     _this.props.squareText));
         });
@@ -75,17 +93,17 @@ var TicTacToeSquare = (function (_super) {
     return TicTacToeSquare;
 }(React.Component));
 function getSquareTextAndColour(state, rowIndex, colIndex) {
-    var squareGo = state.board[rowIndex][colIndex];
+    var squareGo = state.gameState.board[rowIndex][colIndex];
     var squareGoColour = "white";
     var squareText = "";
     switch (squareGo) {
         case reducer_1.SquareGo.O:
-            squareGoColour = state.oColour;
+            squareGoColour = state.playerColours.oColour;
             squareText = "O";
             break;
         case reducer_1.SquareGo.X:
             squareText = "X";
-            squareGoColour = state.xColour;
+            squareGoColour = state.playerColours.xColour;
             break;
         case reducer_1.SquareGo.None:
             break;
@@ -93,24 +111,26 @@ function getSquareTextAndColour(state, rowIndex, colIndex) {
     return { colour: squareGoColour, text: squareText };
 }
 exports.ConnectedTicTacToeSquare = react_redux_1.connect(function (state, ownProps) {
+    var gameState = state.gameState;
     var _a = getSquareTextAndColour(state, ownProps.rowIndex, ownProps.colIndex), colour = _a.colour, text = _a.text;
-    var squareGo = state.board[ownProps.rowIndex][ownProps.colIndex];
-    var canGo = state.gameState === reducer_1.GameState.Playing && squareGo === reducer_1.SquareGo.None;
+    var squareGo = gameState.board[ownProps.rowIndex][ownProps.colIndex];
+    var canGo = gameState.playState === reducer_1.PlayState.Playing && squareGo === reducer_1.SquareGo.None;
     var isSelected = false;
-    if (state.selectedSquare) {
-        isSelected = state.selectedSquare.column === ownProps.colIndex && state.selectedSquare.row == ownProps.rowIndex;
+    if (gameState.selectedSquare) {
+        isSelected = gameState.selectedSquare.column === ownProps.colIndex && gameState.selectedSquare.row == ownProps.rowIndex;
     }
     var connectState = {
         squareGoColour: colour,
         squareText: text,
         canGo: canGo,
-        isSelected: isSelected
+        isSelected: isSelected,
+        currentPlayerColour: connectHelpers_1.getCurrentPlayerColour(state)
     };
     return connectState;
 }, function (dispatch, ownProps) {
     return {
         takeGo: function () {
-            dispatch(reducer_1.takeGo(ownProps.rowIndex, ownProps.colIndex));
+            dispatch(actions_1.takeGo(ownProps.rowIndex, ownProps.colIndex));
         }
     };
 })(TicTacToeSquare);

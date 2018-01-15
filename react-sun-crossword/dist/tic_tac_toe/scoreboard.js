@@ -19,7 +19,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
-var reducer_1 = require("./reducer");
+var reducer_1 = require("./reducers/reducer");
 var react_redux_1 = require("react-redux");
 var style_1 = require("./style");
 var textStrings = require("./textStrings");
@@ -48,13 +48,14 @@ var Scoreboard = (function (_super) {
     return Scoreboard;
 }(React.Component));
 exports.ConnectedScoreboard = react_redux_1.connect(function (state) {
+    var gameState = state.gameState;
     var scoreboardState = {
-        currentPlayer: state.currentPlayer,
-        drawCount: state.drawCount,
-        playCount: state.playCount,
-        playerXWinCount: state.playerXWinCount,
-        oColour: state.oColour,
-        xColour: state.xColour
+        currentPlayer: gameState.currentPlayer,
+        drawCount: gameState.drawCount,
+        playCount: gameState.playCount,
+        playerXWinCount: gameState.playerXWinCount,
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     };
     return scoreboardState;
 })(Scoreboard);

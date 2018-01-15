@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var ReactDOM = require("react-dom");
-var reducer_1 = require("./tic_tac_toe/reducer");
+var reducer_1 = require("./tic_tac_toe/reducers/reducer");
 var storage_1 = require("./helpers/storage");
 var webFontLoader_1 = require("./tic_tac_toe/webFontLoader");
 var textStrings = require("./tic_tac_toe/textStrings");
@@ -56,6 +56,7 @@ var ticTacToeApp_1 = require("./tic_tac_toe/ticTacToeApp");
 //#endregion
 var store = storage_1.createLocalStorageStore(reducer_1.reducer, function (s) {
     s.fontLoadingState = webFontLoader_1.FontLoadingState.NotStarted;
+    s.boardHitTest = { request: null, result: null };
     return s;
 });
 ReactDOM.render(React.createElement(react_redux_1.Provider, { store: store },

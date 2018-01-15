@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var react_redux_1 = require("react-redux");
 var hitTest_1 = require("./hitTest");
-var reducer_1 = require("./reducer");
+var actions_1 = require("./actions");
 var style_1 = require("./style");
 var idsAndClassNames = require("./idsAndClassNames");
 var configuredRadium_1 = require("./configuredRadium");
@@ -69,13 +69,13 @@ var TicTacToeBoard = (function (_super) {
 exports.TicTacToeBoard = TicTacToeBoard;
 exports.ConnectedTicTacToeBoard = react_redux_1.connect(function (state) {
     return {
-        board: state.board,
+        board: state.gameState.board,
         hitTestRequest: state.boardHitTest.request
     };
 }, function (dispatch) {
     return {
         hitTestResult: function (res) {
-            dispatch(reducer_1.boardHitTestResult(res.hit, res.row, res.column));
+            dispatch(actions_1.boardHitTestResult(res.hit, res.row, res.column));
         }
     };
 })(configuredRadium_1.ConfiguredRadium(TicTacToeBoard));

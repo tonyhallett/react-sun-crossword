@@ -22,8 +22,8 @@ var React = require("react");
 var style_1 = require("./style");
 var Radium = require("radium");
 var configuredRadium_1 = require("./configuredRadium");
-var pulseAnimation_1 = require("./pulseAnimation");
-var transitions_1 = require("./transitions");
+var pulseAnimation_1 = require("./transitions/pulseAnimation");
+var transitions_1 = require("./transitions/transitions");
 var Pulse = pulseAnimation_1.withPulse(transitions_1.AutoOutInOnMount);
 var ScoreboardPlayer = (function (_super) {
     __extends(ScoreboardPlayer, _super);

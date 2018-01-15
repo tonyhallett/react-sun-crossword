@@ -39,8 +39,8 @@ var TicTacToeLoader = (function (_super) {
 }(React.Component));
 exports.ConnectedTicTacToeLoader = react_redux_1.connect(function (state) {
     return {
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     };
 })(configuredRadium_1.ConfiguredRadium(TicTacToeLoader));
 //# sourceMappingURL=ticTacToeLoader.js.map

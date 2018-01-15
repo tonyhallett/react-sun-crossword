@@ -1,6 +1,7 @@
 ﻿import * as React from "react";
 import * as WebFont from "webfontloader";
 import { connect} from "react-redux"
+import { AnyAction } from "redux";
 
 export interface WebFontLoaderProps {
     config: WebFont.Config
@@ -24,12 +25,18 @@ export class WebFontLoader extends React.Component<WebFontLoaderProps, undefined
 
 export const FONT_LOADING = "FONT_LOADING";
 export enum FontLoadingState { NotStarted, Loading, Active, Inactive }
+export interface FontLoadingAction extends AnyAction {
+    type: typeof FONT_LOADING,
+    state: FontLoadingState
+
+}
+
 function fontLoading(state: FontLoadingState) {
     return {
         type: FONT_LOADING,
         state: state
     }
-}
+} 
 export const ConnectedWebFontLoader = connect(null, (dispatch) => {
     return {
         loading: () => {

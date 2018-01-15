@@ -21,7 +21,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var Radium = require("Radium");
 var react_redux_1 = require("react-redux");
-var reducer_1 = require("./reducer");
+var reducer_1 = require("./reducers/reducer");
+var actions_1 = require("./actions");
 var style_1 = require("./style");
 var fontFamilies = require("./fontFamilies");
 var textStrings = require("./textStrings");
@@ -38,8 +39,8 @@ var TicTacToeScreen = (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.flipDuration = 1000;
         _this.modalShouldOpen = function () {
-            var gameState = _this.props.gameState;
-            return gameState === reducer_1.GameState.Draw || gameState === reducer_1.GameState.O || gameState === reducer_1.GameState.X;
+            var playState = _this.props.playState;
+            return playState === reducer_1.PlayState.Draw || playState === reducer_1.PlayState.O || playState === reducer_1.PlayState.X;
         };
         _this.keyDown = function (event) {
             var key = event.key;
@@ -60,16 +61,16 @@ var TicTacToeScreen = (function (_super) {
             else {
                 switch (key) {
                     case "ArrowDown":
-                        _this.props.arrowPressed(reducer_1.ArrowDirection.Down);
+                        _this.props.arrowPressed(actions_1.ArrowDirection.Down);
                         break;
                     case "ArrowUp":
-                        _this.props.arrowPressed(reducer_1.ArrowDirection.Up);
+                        _this.props.arrowPressed(actions_1.ArrowDirection.Up);
                         break;
                     case "ArrowLeft":
-                        _this.props.arrowPressed(reducer_1.ArrowDirection.Left);
+                        _this.props.arrowPressed(actions_1.ArrowDirection.Left);
                         break;
                     case "ArrowRight":
-                        _this.props.arrowPressed(reducer_1.ArrowDirection.Right);
+                        _this.props.arrowPressed(actions_1.ArrowDirection.Right);
                         break;
                     case "p":
                     case "P":
@@ -107,27 +108,27 @@ var TicTacToeScreen = (function (_super) {
                 React.createElement("span", { style: { fontFamily: fontFamilies.textFontFamilyWithDefault } }, textStrings.wonMessage));
         }
         var messageElement = React.createElement("div", null);
-        switch (props.gameState) {
-            case reducer_1.GameState.X:
-                messageElement = getWinner(textStrings.cross, this.props.xColour);
+        switch (props.playState) {
+            case reducer_1.PlayState.X:
+                messageElement = getWinner(textStrings.cross, props.xColour);
                 break;
-            case reducer_1.GameState.O:
-                messageElement = getWinner(textStrings.nought, this.props.oColour);
+            case reducer_1.PlayState.O:
+                messageElement = getWinner(textStrings.nought, props.oColour);
                 break;
-            case reducer_1.GameState.Draw:
+            case reducer_1.PlayState.Draw:
                 messageElement = React.createElement("div", { style: __assign({}, style_1.style.winDrawContainerStyle, { fontFamily: fontFamilies.textFontFamilyWithDefault }) }, textStrings.gameDrawn);
                 break;
         }
         return messageElement;
     };
     TicTacToeScreen.prototype.componentWillReceiveProps = function (props) {
-        if (props.gameState !== this.props.gameState && this.props.gameState === reducer_1.GameState.Playing) {
+        if (props.playState !== this.props.playState && this.props.playState === reducer_1.PlayState.Playing) {
             this.setState({ winDrawElement: this.getWinDrawElement(props) });
         }
     };
     TicTacToeScreen.prototype.render = function () {
         var buttonHasHover = Radium.getState(this.state, 'button', ':hover');
-        var buttonAnimation = mergeAnimations_1.mergeAnimations([this.props.gameState !== reducer_1.GameState.Playing ? style_1.shakeAnimationStyle : null, buttonHasHover ? style_1.buttonHoverFocusBrightnessAnimationStyle : null]);
+        var buttonAnimation = mergeAnimations_1.mergeAnimations([this.props.playState !== reducer_1.PlayState.Playing ? style_1.shakeAnimationStyle : null, buttonHasHover ? style_1.buttonHoverFocusBrightnessAnimationStyle : null]);
         var playAgainUnderlineLetter = textStrings.playAgainText[0];
         var playAgainRemainder = textStrings.playAgainText.substr(1);
         return React.createElement("div", { tabIndex: 0, ref: this.keyContainerRef, onKeyDown: this.keyDown },
@@ -157,26 +158,27 @@ var TicTacToeScreen = (function (_super) {
     return TicTacToeScreen;
 }(React.Component));
 exports.ConnectedTicTacToeScreen = react_redux_1.connect(function (state) {
+    var gameState = state.gameState;
     return {
-        xColour: state.xColour,
-        gameState: state.gameState,
-        oColour: state.oColour,
-        selectedSquare: state.selectedSquare,
-        board: state.board
+        xColour: state.playerColours.xColour,
+        playState: gameState.playState,
+        oColour: state.playerColours.oColour,
+        selectedSquare: gameState.selectedSquare,
+        board: gameState.board
     };
 }, function (dispatch) {
     return {
         playAgain: function () {
-            dispatch(reducer_1.playAgain());
+            dispatch(actions_1.playAgain());
         },
         finishedConfirmed: function () {
-            dispatch(reducer_1.finishedConfirmed());
+            dispatch(actions_1.finishedConfirmed());
         },
         arrowPressed: function (direction) {
-            dispatch(reducer_1.arrowPressed(direction));
+            dispatch(actions_1.arrowPressed(direction));
         },
         takeGo: function (row, column) {
-            dispatch(reducer_1.takeGo(row, column));
+            dispatch(actions_1.takeGo(row, column));
         }
     };
 })(configuredRadium_1.ConfiguredRadium(TicTacToeScreen));

@@ -18,7 +18,7 @@ var ticTacToeLoader_1 = require("./ticTacToeLoader");
 var ticTacToeScreen_1 = require("./ticTacToeScreen");
 var ticTacToeCursor_1 = require("./ticTacToeCursor");
 var layoutComponents_1 = require("./layoutComponents");
-var reducer_1 = require("./reducer");
+var reducer_1 = require("./reducers/reducer");
 var style_1 = require("./style");
 var animationSupported_1 = require("./animationSupported");
 var animationIsSupported = animationSupported_1.animationSupported();
@@ -70,8 +70,8 @@ var TicTacToeApp = (function (_super) {
 exports.ConnectedTicTacToeApp = react_redux_1.connect(function (state) {
     return {
         fontLoadingState: state.fontLoadingState,
-        oColour: state.oColour,
-        xColour: state.xColour
+        oColour: state.playerColours.oColour,
+        xColour: state.playerColours.xColour
     };
 })(TicTacToeApp);
 //# sourceMappingURL=ticTacToeApp.js.map

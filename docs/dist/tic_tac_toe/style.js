@@ -147,9 +147,20 @@ exports.style = {
         thFontWeight: exports.thButtonFontWeight
     },
     ticTacToeSquare: {
-        verticalAlign: "center",
-        textAlign: "center", width: 100, height: 100,
-        borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: ticTacToeSquareFontSize, fontFamily: fontFamilies.noughtCrossFontFamilyWithDefault,
+        style: {
+            verticalAlign: "center",
+            textAlign: "center", width: 100, height: 100,
+            borderColor: "white", borderStyle: "solid", borderWidth: 0, fontSize: ticTacToeSquareFontSize, fontFamily: fontFamilies.noughtCrossFontFamilyWithDefault,
+        },
+        focusAnimation: {
+            startEndBoxShadow: "0 0 5px 2px ",
+            fiftyPercentBoxShadow: "0 0 10px 5px ",
+            animationProps: {
+                animationDuration: "2000ms",
+                animationIterationCount: "infinite",
+                animationTimingFunction: "cubic-bezier(0.23, 1, 0.32, 1)"
+            }
+        }
     },
     ticTacToeSquareBorderWidth: exports.ticTacToeSquareBorderWidth,
     cursor: {

@@ -1,6 +1,9 @@
 ﻿import * as React from "react";
 import * as ReactDOM from "react-dom";
 
+import { dummyFn } from './tic_tac_toe/reduxActionsTest'
+dummyFn(); 
+
 import { reducer } from './tic_tac_toe/reducers/reducer'
 import { createLocalStorageStore } from "./helpers/storage"
 

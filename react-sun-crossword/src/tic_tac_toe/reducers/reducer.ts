@@ -27,6 +27,14 @@ export interface TicTacToeState {
     boardHitTest: BoardHitTestState,
     playerColours: PlayerColourState
 }
+/*
+export interface ReducersMapObject {
+  [key: string]: Reducer<any>;
+
+export type Reducer<S> = (state: S, action: AnyAction) => S;
+export function combineReducers<S>(reducers: ReducersMapObject): Reducer<S>;
+
+*/
 
 export const reducer = combineReducers<TicTacToeState>({
     gameState: gameStateReducer,
