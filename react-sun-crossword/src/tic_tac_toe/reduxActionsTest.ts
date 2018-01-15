@@ -661,7 +661,7 @@ var actionCreatorMetaGenerics2 = ReduxActions.createAction<string, number, strin
 }, (stringArg) => {
     return 1
 });
-var reducerFromTypingHelper2 = handleActionsFromCreators({
+var reducerFromTypingHelper2 = handleActionsFromMetaCreators({
     someValue: "InitialValue"
 }, {
         actionCreator: actionCreatorMetaGenerics,
@@ -697,17 +697,40 @@ function createReducerMapMeta<State, Payload1, Meta1, Payload2, Meta2>(state: St
     }
     return reducerMap;
 }
+//what should the typing be for the reducer map - aside from the store calling the reducer
+//only time will be called is for a test so should have the state typed and if was used as the root reducer could accept any action
+function reducerMapHandleActions<State>(map: Map<State>, initialState: State) {
+    return ReduxActions.handleActions(map as any, initialState) as ReduxActions.Reducer<State, any>;
+}
 //#region example 
 var initialState = { someValue: "Initial" };
+
+var crMapReducer1State;
+var crMapReducer1Action;
+var crMapReducer2State;
+var crMapReducer2Action;
+var crMapReducer1MetaState;
+var crMapReducer1MetaAction;
+var crMapReducer2MetaState;
+var crMapReducer2MetaAction;
+
 var reducerMap = createReducerMap(initialState,
     {
         actionCreator: someActionCreator,
-        reducer: (state, action) => { return { someValue: action.payload.source } }
+        reducer: (state, action) => {
+            crMapReducer1Action = action;
+            crMapReducer1State = state;
+            return { someValue: action.payload.source }
+        }
     },
     {
         actionCreator: someActionCreator2,
         reducer: {
-            next: (state, action) => { return { someValue: action.payload.toTimeString() } },
+            next: (state, action) => {
+                crMapReducer2Action = action;
+                crMapReducer2State = state;
+                return { someValue: action.payload.toTimeString() }
+            },
             throw: (state, action) => {
                 return { someValue: "Errored" }
             }
@@ -717,22 +740,43 @@ var reducerMapMeta = createReducerMapMeta(initialState, reducerMap,
     {
         actionCreator: actionCreatorMetaGenerics,
         reducer: (state, action) => {
+            crMapReducer1MetaAction = action;
+            crMapReducer1MetaState = state;
             return state;
         }
     },
     {
         actionCreator: actionCreatorMetaGenerics2,
         reducer: (state, action) => {
+            crMapReducer1MetaAction = action;
+            crMapReducer1MetaState = state;
             return state;
         }
     }
 );
-function reducerMapHandleActions<State>(map: Map<State>, initialState: State) {
-    return ReduxActions.handleActions(map as any, initialState) as ReduxActions.Reducer<State, any>;
-}
-//what should the typing be for the reducer map - aside from the store calling the reducer
-//only time will be called is for a test so should have the state typed and if was used as the root reducer could accept any action
+
+
 var reducerFromTypingHelper3 = reducerMapHandleActions(reducerMapMeta, initialState);
+
+reducerFromTypingHelper3(reducerState, action1);
+if (!(crMapReducer1State === reducerState && crMapReducer1Action === action1)) {
+    throw new Error("Unexpected");
+}
+reducerFromTypingHelper3(reducerState, action2);
+if (!(crMapReducer2State === reducerState && crMapReducer2Action === action2)) {
+    throw new Error("Unexpected");
+}
+var actionGenerics1 = actionCreatorMetaGenerics(9)
+var actionGenerics2 = actionCreatorMetaGenerics2("1")
+reducerFromTypingHelper3(reducerState, actionGenerics1);
+if (!(crMapReducer1MetaState === reducerState && crMapReducer1MetaAction === actionGenerics1)) {
+    throw new Error("Unexpected");
+}
+reducerFromTypingHelper3(reducerState, actionGenerics2);
+if (!(crMapReducer2MetaState === reducerState && crMapReducer2MetaAction === actionGenerics2)) {
+    throw new Error("Unexpected");
+}
+
 //#endregion
 //#endregion
 //#endregion
