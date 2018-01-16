@@ -14,6 +14,8 @@ const multiplyAction: (...args: number[]) => ReduxActions.Action<number> = Redux
     'MULTIPLY'
 );
 
+
+
 const action: ReduxActions.Action<number> = incrementAction();
 
 const actionHandler = ReduxActions.handleAction<number, number>(
@@ -140,6 +142,7 @@ const typedIncrementByActionWithMetaAnyArgs: (...args: any[]) => ReduxActions.Ac
         (_, remote) => ({ remote })
     );
 
+
 const actionMetaFromAnyArgs = typedIncrementByActionWithMetaAnyArgs(10, true, 'nic', 'cage');
 actionMetaFromAnyArgs.payload.increase === 10;
 actionMetaFromAnyArgs.meta.remote;
@@ -260,6 +263,9 @@ export function createAction<Payload, T extends Error, Arg1>(
 
 ): ActionFunction1<Arg1|T, Action<Payload | T>>;
 */
+
+
+
 //arg and return type typed correctly
 var errorSkipsPayloadCreatorAction=ReduxActions.createAction<number, EvalError, string>("ErrorArgSkipsCreator", (arg) => {
     return 5;
@@ -273,14 +279,48 @@ var errorSkipsPayloadCreatorActionThatCanReturnError = ReduxActions.createAction
     return 5;
 });
 
-
-const passThroughNoArgsActionCreator = ReduxActions.createAction('ACTION0');
-
-var test = passThroughNoArgsActionCreator();
-if (test.payload === null) {
-    throw new Error("Damn I was incorrect ");
+//new createAction meta when called with error
+/*
+//new
+export function createAction<Payload,T extends Error, Meta, Arg1>(
+    actionType: string,
+    payloadCreator: ActionFunction1<Arg1, Payload>,
+    metaCreator: ActionFunction1<Arg1|T, Meta>
+): ActionFunction1<Arg1, ActionMeta<T|Payload, Meta>>;
+*/
+var payloadCreatorCallCount: any = 0;
+var metaCreatorCallCount: any = 0;
+var metaActionCreatorWithErrorArg = ReduxActions.createAction<number, EvalError, string, string>("T",
+    (arg) => {
+        //we know this is a string
+        payloadCreatorCallCount++;
+        return 9;
+    },
+    (arg) => {
+        metaCreatorCallCount++;
+        //this can be either
+        if (arg instanceof EvalError) {
+            return arg.message;
+        } else {
+            return arg;
+        }
+    }
+)
+var errorArg = new EvalError();
+metaActionCreatorWithErrorArg(errorArg);
+if (payloadCreatorCallCount !== 0) {
+    throw new Error("Misunderstood");
 }
-
+if (metaCreatorCallCount !== 1) {
+    throw new Error("Misunderstood");
+}
+metaActionCreatorWithErrorArg("SomeString");
+if (payloadCreatorCallCount !== 1) {
+    throw new Error("Misunderstood");
+}
+if (metaCreatorCallCount !== 2) {
+    throw new Error("Misunderstood");
+}
 //#endregion
 
 //#region no meta
@@ -311,7 +351,7 @@ var payloadThroughGeneric = ReduxActions.createAction<string>("PayloadThroughGen
 
 
 //arguments - specifiying argument type on the argument
-var actionCreatorFunction = ReduxActions.createAction("ByFunction", (someArg: number) => {
+var actionCreatorFunction = ReduxActions.createAction("ByFunction", (someArg:number) => {
     return "Payload: " + someArg.toString();
 })
 
@@ -322,34 +362,45 @@ var actionCreatorFunctionGenerics = ReduxActions.createAction<string, number, st
     return numberArg.toString() + stringArg;
 });
 //note that limited to 4 arguments by the typing.  Not sure if this is the case with the js ( metadata actions can take any )
-//below does not compile
-//var actionCreatorAnyFunction = ReduxActions.createAction("AnyFunction", (someArg1: number, someArg2: number, someArg3: number, someArg4: number, someArg5: number) => {
-//    return "Payload: " + someArg1.toString();
-//})
+//below does not compile normally but does with the additional typing that have provided
+var actionCreatorAnyFunction = ReduxActions.createAction("AnyFunction", (someArg1: number, someArg2: number, someArg3: number, someArg4: number, someArg5: number) => {
+    return "Payload: " + someArg1.toString();
+})
 //#endregion
 //#region meta
-
+//#region new ! - actionCreator is correctly typed - not any
+var metaActionCreatorNoArgs=ReduxActions.createAction("MetaNoArgs",
+    () => { return 1 },
+    () => {
+        return "SomeMeta";
+    }
+)
+//#endregion
 //#region ActionFunctionAny - typed arguments only
 
 //because ActionFunctionAny<string> it will compile if provide different function signatures
 
-//avoid unless need more args
-//note that if use one of the other ActionFunctionn in this manner - the returned action creator will also be 
-//of type ActionFunctionAny<ActionMeta<Payload, Meta>>;
+    //avoid unless need more args
 
 //this allows more arguments but the caller of the actionCreator does not know the type of the arguments
-//var actionWithMeta = actionCreatorMetaAny("badarg", 1, 2, 3, 4, 5, 6, 7);
+    //var actionWithMeta = actionCreatorMetaAny("badarg", 1, 2, 3, 4, 5, 6, 7);
 
-//if supported by the js ( think that is ) and if required then add more ActionFunction<Arg1,.........,T>
-//and additional createAction
-/*
-export type ActionFunction4<T1, T2, T3, T4,T5, R> = (t1: T1, t2: T2, t3: T3, t4: T4,t5:T5) => R;
+    //if supported by the js ( think that is ) and if required then add more ActionFunction<Arg1,.........,T>
+    //and additional createAction
+    /*
+    export type ActionFunction4<T1, T2, T3, T4,T5, R> = (t1: T1, t2: T2, t3: T3, t4: T4,t5:T5) => R;
 
-export function createAction<Payload, Meta, Arg1, Arg2, Arg3, Arg4,Arg5>(
-    actionType: string,
-    payloadCreator: ActionFunction5<Arg1, Arg2, Arg3, Arg4,Arg5, Payload>,
-    metaCreator: ActionFunction5<Arg1, Arg2, Arg3, Arg4,Arg5, Meta>
-): ActionFunction5<Arg1, Arg2, Arg3, Arg4,Arg5, ActionMeta<Payload, Meta>>;
+    export function createAction<Payload, Meta, Arg1, Arg2, Arg3, Arg4,Arg5>(
+        actionType: string,
+        payloadCreator: ActionFunction5<Arg1, Arg2, Arg3, Arg4,Arg5, Payload>,
+        metaCreator: ActionFunction5<Arg1, Arg2, Arg3, Arg4,Arg5, Meta>
+    ): ActionFunction5<Arg1, Arg2, Arg3, Arg4,Arg5, ActionMeta<Payload, Meta>>;
+
+
+//note that if use one of the other ActionFunction n in this manner - the returned action creator will also be 
+//of type ActionFunctionAny<ActionMeta<Payload, Meta>>;
+
+
 */
 
 
