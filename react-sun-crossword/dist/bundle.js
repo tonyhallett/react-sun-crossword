@@ -10162,15 +10162,29 @@ var metaActionCreatorWithErrorArg = ReduxActions.createAction("T", function (arg
         return arg;
     }
 });
-var errorArg = new EvalError();
-metaActionCreatorWithErrorArg(errorArg);
+var evalMessage = "EvalMessage";
+var errorArg = new EvalError(evalMessage);
+var errorAction = metaActionCreatorWithErrorArg(errorArg);
 if (payloadCreatorCallCount !== 0) {
     throw new Error("Misunderstood");
 }
 if (metaCreatorCallCount !== 1) {
     throw new Error("Misunderstood");
 }
-metaActionCreatorWithErrorArg("SomeString");
+if (!(errorAction.error && errorAction.payload === errorArg)) {
+    throw new Error("Misunderstood");
+}
+if (errorAction.meta !== evalMessage) {
+    throw new Error("Misunderstood");
+}
+var nonErrorArg = "SomeString";
+var nonErrorAction = metaActionCreatorWithErrorArg(nonErrorArg);
+if (nonErrorAction.payload !== 9) {
+    throw new Error("Misunderstood");
+}
+if (nonErrorAction.meta !== nonErrorArg) {
+    throw new Error("Misunderstood");
+}
 if (payloadCreatorCallCount !== 1) {
     throw new Error("Misunderstood");
 }
