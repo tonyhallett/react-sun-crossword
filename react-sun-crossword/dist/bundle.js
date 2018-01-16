@@ -10021,16 +10021,16 @@ var actionsHandlerWithRecursiveReducerMap = ReduxActions.handleActions({
 }, 0);
 state = actionsHandlerWithRecursiveReducerMap(0, { type: 'ADJUST/UP', payload: 1 });
 var typedState;
-var richerAction = {
-    type: 'INCREMENT',
-    error: false,
-    payload: {
-        value: 2
-    },
-    meta: {
-        remote: true
-    }
-};
+//const richerAction: ReduxActions.ActionMeta<TypedState, MetaType> = {
+//    type: 'INCREMENT',
+//    error: false,
+//    payload: {
+//        value: 2
+//    },
+//    meta: {
+//        remote: true
+//    }
+//};
 var typedIncrementAction = ReduxActions.createAction('INCREMENT', function () { return ({ increase: 1 }); });
 var typedActionHandler = ReduxActions.handleAction('INCREMENT', function (state, action) { return ({ value: state.value + 1 }); }, { value: 1 });
 var actionNoArgs = typedIncrementAction();
@@ -10065,12 +10065,6 @@ var typedActionHandlerReducerMetaMap = ReduxActions.handleActions({
         throw: function (state) { return state; }
     }
 }, { value: 1 });
-////!!!!!!!!!!!!!
-var tonyTestReducerMetaMap = ReduxActions.handleActions({
-    INCREMENT_BY: function (state, action) {
-        return action.meta.remote ? state : { value: state.value + action.payload.increase };
-    },
-}, { value: 1 });
 typedState = typedActionHandlerReducerMetaMap({ value: 0 }, actionMetaFromAnyArgs);
 var typedActionWithMeta1TypedArg = ReduxActions.createAction('INCREMENT_BY', function (amount) { return ({ increase: amount }); }, function (amount) { return ({ remote: true }); });
 var actionMetaFrom1Arg = typedActionWithMeta1TypedArg(10);
@@ -10099,12 +10093,14 @@ ReduxActions.handleAction(act2, function (state, action) {
 ReduxActions.handleAction(act3, function (state, action) {
     return { hello: action.payload.s };
 }, { hello: 'greetings' });
+//#region TONY CHANGE
 ReduxActions.handleAction(ReduxActions.combineActions(act1, act3, act2), function (state, action) { return state + 1; }, 0);
 ReduxActions.handleActions((_a = {},
-    _a[ReduxActions.combineActions(act1, act3, act2)] = function (state, action) {
+    _a[ReduxActions.combineActions(act1, act3, act2).toString()] = function (state, action) {
         return state + 1;
     },
     _a), 0);
+//#endregion
 /* can't do this until it lands in 2.2, HKTs
 ReduxActions.handleAction(act, (state, action) => {
     action.payload === 'hello'
@@ -10122,6 +10118,31 @@ ReduxActions.handleAction(act3, (state, action) => {
 })*/
 //#endregion
 //#region createAction
+//#region new !
+/*
+export function createAction<Payload, T extends Error, Arg1>(
+    actionType: string,
+    payloadCreator: ActionFunction1<Arg1, Payload>
+
+): ActionFunction1<Arg1|T, Action<Payload | T>>;
+*/
+//arg and return type typed correctly
+var errorSkipsPayloadCreatorAction = ReduxActions.createAction("ErrorArgSkipsCreator", function (arg) {
+    return 5;
+});
+var e = errorSkipsPayloadCreatorAction(new EvalError(""));
+var errorSkipsPayloadCreatorActionThatCanReturnError = ReduxActions.createAction("ErrorArgSkipsCreator", function (arg) {
+    if (arg === "throw") {
+        return new DOMError();
+    }
+    return 5;
+});
+var passThroughNoArgsActionCreator = ReduxActions.createAction('ACTION0');
+var test = passThroughNoArgsActionCreator();
+if (test.payload === null) {
+    throw new Error("Damn I was incorrect ");
+}
+//#endregion
 //#region no meta
 //no payload
 var noPayloadActionCreator = ReduxActions.createAction('NoPayloadAction');
@@ -10275,6 +10296,65 @@ function handleActionMeta(initialState, actionType, reducer) {
 var usingMyTypedHandleActionsReducer = handleActionMeta({ someValue: "InitialState" }, actionCreatorMetaGenerics, function (state, action) {
     return { someValue: action.meta };
 });
+//export function createAction<Payload, Meta, Arg1>(
+var combinedMeta1 = ReduxActions.createAction("CombinedMeta1", function (arg) {
+    return arg;
+}, function (arg) {
+    return "Meta";
+});
+var combinedMeta2 = ReduxActions.createAction("CombinedMeta2", function (arg) {
+    return arg;
+}, function (arg) {
+    return "Meta2";
+});
+/*
+getting for combineActions
+export function combineActions<Payload>(...actionTypes: Array<ActionFunctions<Payload>>): Combined<Payload>;
+    export type ActionFunctions<Payload> =
+    ActionFunction0<Action<Payload>> |
+    ActionFunction1<any, Action<Payload>> |
+
+instead of
+export function combineActions<Payload,Meta>(...actionTypes: Array<ActionFunctionsMeta<Payload,Meta>>): CombinedMeta<Payload,Meta>;
+    export type ActionFunctionsMeta<Payload, Meta> =
+    ReduxActions.ActionFunction0<ReduxActions.ActionMeta<Payload, Meta>> |
+    ReduxActions.ActionFunction1<any, ReduxActions.ActionMeta<Payload, Meta>> |
+
+
+export function createAction<Payload, Meta, Arg1>(
+    actionType: string,
+    payloadCreator: ActionFunction1<Arg1, Payload>,
+    metaCreator: ActionFunction1<Arg1, Meta>
+): ActionFunction1<Arg1, ActionMeta<Payload, Meta>>; -- export type ActionFunction1<T1, R> = (t1: T1) => R;
+
+without specifying - with both overloads have ActionFunction<T>
+
+can the return type change to assist with the typing ?
+    fromm ActionFunction1<T1, R> = (t1: T1) => R;
+    to ActionMetaFunction<T1,Payload,Meta>=(t1:T1)=>ActionMeta<Payload,Meta> *********************************************
+
+a) If did this then what else would have to change ? ( caller of the returned action no change )
+   handleAction - think that that would be ok
+       just change ActionFunctionsMeta to a new AllActionMetaFunction<Payload,Meta>
+        export function handleAction<State, Payload, Meta>(
+            actionType: ActionFunctionsMeta<Payload, Meta> | { toString(): string } |CombinedMeta<Payload,Meta>,
+            reducer: ReducerMeta<State, Payload, Meta> | ReducerNextThrowMeta<State, Payload, Meta>,
+            initialState: State
+        ): Reducer<State, Payload>;
+
+    export function combineActions<Payload,Meta>(...actionTypes: Array<AllActionMetaFunction<Payload,Meta>>): CombinedMeta<Payload,Meta>;
+    --- before changing do locally combineActions first - they might still be considered the same
+   handleActions - think that the built in would not need to change
+
+   DOES MINE NEED TO CHANGE ?
+
+
+*/
+//************************************************ to return to
+//var combinedMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2);
+//handleActionMeta({ someValue: "initial" }, combinedMeta, (state, action) => {
+//    action
+//});
 //#endregion
 //#endregion
 //#endregion
@@ -10378,26 +10458,48 @@ function handleActionsFromCreators(initialState, ach1, ach2, ach3, ach4, ach5, a
 }
 //<payload, meta? arg1,arg2,....>
 var someActionCreator = ReduxActions.createAction("SomeAction", function (arg1) {
+    if (arg1 === "throw") {
+        return new Error();
+    }
     return new RegExp(arg1);
 });
 var someActionCreator2 = ReduxActions.createAction("SomeAction2", function (arg1, arg2) {
     if (arg1 === "throw") {
-        return new Error("Some error");
+        return new EvalError("msg");
     }
     return new Date();
 });
+var possibleErrorAction = someActionCreator2("throw", 1);
+if (possibleErrorAction.error) {
+    var evalError = possibleErrorAction.payload;
+}
 var reducer1StateArg;
 var reducer1ActionArg;
 var reducer2StateArg;
 var reducer2ActionArg;
 var reducer2ErrorStateArg;
 var reducer2ErrorActionArg;
+//now need to combine some
+var toCombine1 = ReduxActions.createAction("ToCombine1", function (arg) {
+    return new Date();
+});
+var toCombine2 = ReduxActions.createAction("ToCombine2", function (arg1, arg2) {
+    return new Date();
+});
+var combinedActionCreator = ReduxActions.combineActions(toCombine1, toCombine2);
 var reducerFromTypingHelper1 = handleActionsFromCreators({ someValue: "Initial Value" }, {
+    actionCreator: combinedActionCreator,
+    reducer: function (state, action) {
+        return {
+            someValue: action.payload.getMonth().toString()
+        };
+    }
+}, {
     actionCreator: someActionCreator,
     reducer: function (state, action) {
         reducer1StateArg = state;
         reducer1ActionArg = action;
-        return { someValue: action.payload.source };
+        return { someValue: action.error ? "Error" : action.payload.source };
     }
 }, {
     actionCreator: someActionCreator2,
@@ -10406,7 +10508,7 @@ var reducerFromTypingHelper1 = handleActionsFromCreators({ someValue: "Initial V
             reducer2StateArg = state;
             reducer2ActionArg = action;
             return {
-                someValue: action.payload.toTimeString()
+                someValue: action.error ? "Error" : action.payload.toTimeString()
             };
         },
         throw: function (state, action) {
@@ -10432,6 +10534,18 @@ reducerFromTypingHelper1(reducerState, action2Error);
 if (!(reducer2ErrorStateArg === reducerState && reducer2ErrorActionArg === action2Error)) {
     throw new Error("Unexpected");
 }
+var actionsNested = {
+    LevelOne1: {
+        action1: ReduxActions.createAction("Level1.Action1", function (arg) { return 9; }),
+        actions2: ReduxActions.createAction("Level1.Action2", function (arg) { return arg.toString(); })
+    },
+    LevelOne2: {
+        action1: ReduxActions.createAction("Level1.Action1", function (arg) { return 9; }),
+        actions2: ReduxActions.createAction("Level1.Action2", function (arg) { return arg.toString(); })
+    }
+};
+//export function combineActions(...actionTypes: Array<ActionFunctions<any> | string>): string;
+//var t = handleActionsFromCreators({someValue:"initial"},)
 //#endregion
 //#region handleActionsFromMetaCreators
 function handleActionsFromMetaCreators(initialState, ach1, ach2) {
@@ -10495,7 +10609,7 @@ var reducerMap = createReducerMap(initialState, {
     reducer: function (state, action) {
         crMapReducer1Action = action;
         crMapReducer1State = state;
-        return { someValue: action.payload.source };
+        return { someValue: "blah" };
     }
 }, {
     actionCreator: someActionCreator2,
@@ -10503,7 +10617,7 @@ var reducerMap = createReducerMap(initialState, {
         next: function (state, action) {
             crMapReducer2Action = action;
             crMapReducer2State = state;
-            return { someValue: action.payload.toTimeString() };
+            return { someValue: "Blah" };
         },
         throw: function (state, action) {
             return { someValue: "Errored" };

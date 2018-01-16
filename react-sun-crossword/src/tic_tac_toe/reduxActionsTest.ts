@@ -79,16 +79,16 @@ interface MetaType {
 
 let typedState: TypedState;
 
-const richerAction: ReduxActions.ActionMeta<TypedState, MetaType> = {
-    type: 'INCREMENT',
-    error: false,
-    payload: {
-        value: 2
-    },
-    meta: {
-        remote: true
-    }
-};
+//const richerAction: ReduxActions.ActionMeta<TypedState, MetaType> = {
+//    type: 'INCREMENT',
+//    error: false,
+//    payload: {
+//        value: 2
+//    },
+//    meta: {
+//        remote: true
+//    }
+//};
 
 const typedIncrementAction: () => ReduxActions.Action<TypedPayload> = ReduxActions.createAction<TypedPayload>(
     'INCREMENT',
@@ -167,15 +167,7 @@ const typedActionHandlerReducerMetaMap = ReduxActions.handleActions<TypedState, 
     },
     {value: 1}
 );
-////!!!!!!!!!!!!!
-const tonyTestReducerMetaMap = ReduxActions.handleActions<TypedState, TypedPayload, MetaType>(
-    {
-        INCREMENT_BY: (state: TypedState, action: ReduxActions.ActionMeta<TypedPayload, MetaType>)=> {
-            return action.meta.remote ? state : { value: state.value + action.payload.increase };
-        },
-    },
-    { value: 1 }
-);
+
 
 typedState = typedActionHandlerReducerMetaMap({ value: 0 }, actionMetaFromAnyArgs);
 
@@ -229,13 +221,17 @@ ReduxActions.handleAction(act3, (state, action) => {
     return { hello: action.payload.s };
 }, {hello: 'greetings'});
 
-ReduxActions.handleAction(ReduxActions.combineActions(act1, act3, act2), (state, action) => state + 1, 0);
+//#region TONY CHANGE
+ReduxActions.handleAction(ReduxActions.combineActions<any>(act1, act3, act2), (state, action) => state + 1, 0);
+
 
 ReduxActions.handleActions({
-    [ReduxActions.combineActions(act1, act3, act2)](state, action) {
+    [ReduxActions.combineActions<any>(act1, act3, act2).toString()](state, action) {
         return state + 1;
     }
 }, 0);
+//#endregion
+
 
 /* can't do this until it lands in 2.2, HKTs
 ReduxActions.handleAction(act, (state, action) => {
@@ -256,6 +252,37 @@ ReduxActions.handleAction(act3, (state, action) => {
 //#endregion
 
 //#region createAction
+//#region new !
+/*
+export function createAction<Payload, T extends Error, Arg1>(
+    actionType: string,
+    payloadCreator: ActionFunction1<Arg1, Payload>
+
+): ActionFunction1<Arg1|T, Action<Payload | T>>;
+*/
+//arg and return type typed correctly
+var errorSkipsPayloadCreatorAction=ReduxActions.createAction<number, EvalError, string>("ErrorArgSkipsCreator", (arg) => {
+    return 5;
+});
+var e = errorSkipsPayloadCreatorAction(new EvalError(""));
+
+var errorSkipsPayloadCreatorActionThatCanReturnError = ReduxActions.createAction<number|DOMError, EvalError, string>("ErrorArgSkipsCreator", (arg) => {
+    if (arg === "throw") {
+        return new DOMError();
+    }
+    return 5;
+});
+
+
+const passThroughNoArgsActionCreator = ReduxActions.createAction('ACTION0');
+
+var test = passThroughNoArgsActionCreator();
+if (test.payload === null) {
+    throw new Error("Damn I was incorrect ");
+}
+
+//#endregion
+
 //#region no meta
 //no payload
 var noPayloadActionCreator = ReduxActions.createAction('NoPayloadAction')
@@ -436,7 +463,7 @@ export function handleAction<State, Payload, Meta>(
 //the function below ensures typing is available in the reducer body immediately
 function handleActionMeta<State, Payload, Meta>(
     initialState: State,
-    actionType: ReduxActions.ActionFunctionsMeta<Payload, Meta> ,
+    actionType: ReduxActions.ActionFunctionsMeta<Payload, Meta> | ReduxActions.CombinedMeta<Payload,Meta>,
     reducer: ReduxActions.ReducerMeta<State, Payload, Meta> | ReduxActions.ReducerNextThrowMeta<State, Payload, Meta>,
     
 ) {
@@ -446,6 +473,66 @@ function handleActionMeta<State, Payload, Meta>(
 var usingMyTypedHandleActionsReducer = handleActionMeta({ someValue: "InitialState" }, actionCreatorMetaGenerics, (state, action) => {
     return { someValue: action.meta }
 });
+//export function createAction<Payload, Meta, Arg1>(
+var combinedMeta1 = ReduxActions.createAction<number, string, number>("CombinedMeta1", (arg) => {
+    return arg;
+}, (arg) => {
+    return "Meta";
+});
+var combinedMeta2 = ReduxActions.createAction<number, string, number>("CombinedMeta2", (arg) => {
+    return arg;
+}, (arg) => {
+    return "Meta2";
+    });
+/*
+getting for combineActions
+export function combineActions<Payload>(...actionTypes: Array<ActionFunctions<Payload>>): Combined<Payload>;
+    export type ActionFunctions<Payload> =
+    ActionFunction0<Action<Payload>> |
+    ActionFunction1<any, Action<Payload>> |
+
+instead of
+export function combineActions<Payload,Meta>(...actionTypes: Array<ActionFunctionsMeta<Payload,Meta>>): CombinedMeta<Payload,Meta>;
+    export type ActionFunctionsMeta<Payload, Meta> =
+	ReduxActions.ActionFunction0<ReduxActions.ActionMeta<Payload, Meta>> |
+	ReduxActions.ActionFunction1<any, ReduxActions.ActionMeta<Payload, Meta>> |
+
+
+export function createAction<Payload, Meta, Arg1>(
+    actionType: string,
+    payloadCreator: ActionFunction1<Arg1, Payload>,
+    metaCreator: ActionFunction1<Arg1, Meta>
+): ActionFunction1<Arg1, ActionMeta<Payload, Meta>>; -- export type ActionFunction1<T1, R> = (t1: T1) => R;
+
+without specifying - with both overloads have ActionFunction<T>
+
+can the return type change to assist with the typing ?
+    fromm ActionFunction1<T1, R> = (t1: T1) => R;
+    to ActionMetaFunction<T1,Payload,Meta>=(t1:T1)=>ActionMeta<Payload,Meta> *********************************************
+
+a) If did this then what else would have to change ? ( caller of the returned action no change )
+   handleAction - think that that would be ok
+       just change ActionFunctionsMeta to a new AllActionMetaFunction<Payload,Meta>
+        export function handleAction<State, Payload, Meta>(
+            actionType: ActionFunctionsMeta<Payload, Meta> | { toString(): string } |CombinedMeta<Payload,Meta>,
+            reducer: ReducerMeta<State, Payload, Meta> | ReducerNextThrowMeta<State, Payload, Meta>,
+            initialState: State
+        ): Reducer<State, Payload>;
+
+    export function combineActions<Payload,Meta>(...actionTypes: Array<AllActionMetaFunction<Payload,Meta>>): CombinedMeta<Payload,Meta>;
+    --- before changing do locally combineActions first - they might still be considered the same 
+   handleActions - think that the built in would not need to change 
+
+   DOES MINE NEED TO CHANGE ?
+
+
+*/
+//************************************************ to return to
+//var combinedMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2);
+//handleActionMeta({ someValue: "initial" }, combinedMeta, (state, action) => {
+//    action
+//});
+
 //#endregion
 
 //#endregion
@@ -563,12 +650,13 @@ const reducerDifferentPayloadTypes = ReduxActions.handleActions<number, any>({
 type ReducerTypes<State, Payload> = ReduxActions.Reducer<State, Payload> | ReduxActions.ReducerNextThrow<State, Payload> 
 type ReducerMetaTypes<State, Payload, Meta> = ReduxActions.ReducerMeta<State, Payload, Meta> | ReduxActions.ReducerNextThrowMeta<State, Payload, Meta>;
 
+
 interface ActionCreatorHandler<State,Payload > {
-    actionCreator: ReduxActions.ActionFunctions < Payload >,
+    actionCreator: ReduxActions.Combined<Payload> | ReduxActions.ActionFunctions<Payload>,
     reducer: ReducerTypes<State,Payload>  
 }
 interface ActionCreatorMetaHandler<State, Payload,Meta> {
-    actionCreator: ReduxActions.ActionFunctionsMeta<Payload,Meta>,
+    actionCreator: ReduxActions.ActionFunctionsMeta<Payload,Meta>|ReduxActions.CombinedMeta<Payload,Meta>
     reducer: ReducerMetaTypes<State, Payload,Meta>
 }
 //#endregion
@@ -582,16 +670,22 @@ function handleActionsFromCreators<State, Payload1, Payload2, Payload3, Payload4
     return ReduxActions.handleActions(reducerMap, initialState) as ReduxActions.Reducer<State,any>;
 }
 //<payload, meta? arg1,arg2,....>
-var someActionCreator = ReduxActions.createAction<RegExp, string>("SomeAction", (arg1) => {
-    
+var someActionCreator = ReduxActions.createAction<RegExp|Error, string>("SomeAction", (arg1) => {
+    if (arg1==="throw") {
+        return new Error()
+    }
     return new RegExp(arg1);
 })
-var someActionCreator2 = ReduxActions.createAction<Date, string, number>("SomeAction2", (arg1, arg2) => {
+var someActionCreator2 = ReduxActions.createAction<Date | EvalError, string, number>("SomeAction2", (arg1, arg2) => {
     if (arg1 === "throw") {
-        return new Error("Some error");
+        return new EvalError("msg");
     }
     return new Date();
 })
+var possibleErrorAction = someActionCreator2("throw", 1);
+if (possibleErrorAction.error) {
+    var evalError = possibleErrorAction.payload as EvalError;
+}
 
 var reducer1StateArg;
 var reducer1ActionArg;
@@ -599,14 +693,32 @@ var reducer2StateArg;
 var reducer2ActionArg;
 var reducer2ErrorStateArg;
 var reducer2ErrorActionArg;
+//now need to combine some
+var toCombine1 = ReduxActions.createAction<Date, string>("ToCombine1", (arg) => {
+    return  new Date();
+    
+})
+var toCombine2 = ReduxActions.createAction<Date, number, string>("ToCombine2", (arg1, arg2) => {
+    return new Date();
+})
+var combinedActionCreator = ReduxActions.combineActions(toCombine1, toCombine2);
+
 var reducerFromTypingHelper1 = handleActionsFromCreators(
     { someValue: "Initial Value" },
+    {
+        actionCreator: combinedActionCreator,
+        reducer: (state, action)=>{
+            return {
+                someValue:action.payload.getMonth().toString()
+            }
+        }
+    },
     {
         actionCreator: someActionCreator,
         reducer: (state, action) => {
             reducer1StateArg = state;
             reducer1ActionArg = action;
-            return { someValue: action.payload.source }
+            return { someValue: action.error?"Error":(action.payload as RegExp).source }
         }
     },
     {
@@ -616,7 +728,7 @@ var reducerFromTypingHelper1 = handleActionsFromCreators(
                 reducer2StateArg = state;
                 reducer2ActionArg = action;
                 return {
-                    someValue: action.payload.toTimeString()
+                    someValue:action.error?"Error":(action.payload as Date).toTimeString()
                 }
             },
             throw: (state, action) => {
@@ -645,6 +757,18 @@ if (!(reducer2ErrorStateArg === reducerState && reducer2ErrorActionArg === actio
     throw new Error("Unexpected");
 }
 
+var actionsNested = {
+    LevelOne1: {
+        action1: ReduxActions.createAction<number, string>("Level1.Action1", (arg) => { return 9 }),
+        actions2: ReduxActions.createAction<string, number>("Level1.Action2", (arg) => { return arg.toString() })
+    },
+    LevelOne2: {
+        action1: ReduxActions.createAction<number, string>("Level1.Action1", (arg) => { return 9 }),
+        actions2: ReduxActions.createAction<string, number>("Level1.Action2", (arg) => { return arg.toString() })
+    }
+}
+//export function combineActions(...actionTypes: Array<ActionFunctions<any> | string>): string;
+//var t = handleActionsFromCreators({someValue:"initial"},)
 
 //#endregion
 //#region handleActionsFromMetaCreators
@@ -720,7 +844,7 @@ var reducerMap = createReducerMap(initialState,
         reducer: (state, action) => {
             crMapReducer1Action = action;
             crMapReducer1State = state;
-            return { someValue: action.payload.source }
+            return { someValue: "blah" }
         }
     },
     {
@@ -729,7 +853,7 @@ var reducerMap = createReducerMap(initialState,
             next: (state, action) => {
                 crMapReducer2Action = action;
                 crMapReducer2State = state;
-                return { someValue: action.payload.toTimeString() }
+                return { someValue: "Blah"}
             },
             throw: (state, action) => {
                 return { someValue: "Errored" }
