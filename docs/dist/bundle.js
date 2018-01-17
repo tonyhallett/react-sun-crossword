@@ -10543,7 +10543,7 @@ var nestedMetaReducer = ReduxActions.handleActions((_f = {},
             someValue: "InitialValue"
         };
     },
-    _f.createActionsNested = {
+    _f.nested = {
         nested1: function (state, action) {
             reducerCallCount++;
             nested1ActionArg = action;
@@ -10571,6 +10571,7 @@ nestedMetaReducer({ someValue: "SomeValue" }, nested1Action);
 if (!(reducerCallCount === 2 && nested1Action.payload === nested1Payload && nested1Action.meta === nested1Meta)) {
     throw new Error("Misunderstood");
 }
+nestedMetaReducer({ someValue: "SomeValue" }, nested2Action);
 if (!(reducerCallCount === 3 && nested2Action.payload === nested2Payload && nested2Action.meta === nested2Meta)) {
     throw new Error("Misunderstood");
 }
