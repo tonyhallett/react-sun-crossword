@@ -10493,6 +10493,7 @@ var nestedActions = ReduxActions.createActions({
         nested2: function (arg1, arg2) { new Date(); }
     }
 });
+console.log(nestedActions);
 /*the return type of createActions is
 {
     [actionName: string]: ActionFunctionAny<Action<Payload>>

@@ -715,6 +715,7 @@ var nestedActions: CreateActionsReturnType = <CreateActionsReturnType>(<any>Redu
     }
 
 }));
+console.log(nestedActions);
 
 /*the return type of createActions is 
 {
