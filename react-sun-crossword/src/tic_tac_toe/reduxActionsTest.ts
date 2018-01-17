@@ -607,36 +607,57 @@ a) If did this then what else would have to change ? ( caller of the returned ac
 //#region typing advice
 //DO NOT USE !
 //#endregion
-//do not need to type the Payload as can be inferred from return value - and have to be the same for all if not typing to any - see below
-//The typing cannot be improved with K in key of T, T[K] Wsee https://github.com/Microsoft/TypeScript/issues/14719 and https://github.com/Microsoft/TypeScript/issues/5453
-//just use object with multiple createAction
-const { ACTION1,ACTION2 } = ReduxActions.createActions({
+//this is all new !
+
+
+
+
+//now the keys are typesafe and if type the generic parameters can type the payload/meta if all the same
+//PERSONALLY THINK THAT TYPING PAYLOAD/META IS A WASTE OF TIME AS WILL NEED TO
+//RETYPE ANYWAY FOR ARGS SO HAVE TO TYPE THE PAYLOAD/META FOR EACH ONE ANYWAY !
+//if wanted to lose type safety on the action creators it would still be there for handleAction/s
+
+
+var createActionsArgument = {
     ACTION1: (arg1: number) => { return 1 },
     ACTION2: (arg1: string) => { return 2 }
-});
+}
+//can cast if want the payload typed for all
+const { ACTION1, ACTION2 } = <ReduxActions.MappedActions<typeof createActionsArgument, number>>ReduxActions.createActions(createActionsArgument);
+
+//or - Note the requirement for typeof when providing the generic parameter
+var createActionsArgument2 = {
+    ACTION3: (arg1: number) => { return 1 },
+    ACTION4: (arg1: string) => { return 2 }
+}
+const { ACTION3, ACTION4 } = ReduxActions.createActions<number, typeof createActionsArgument2>(createActionsArgument2);
+
+//with the previous typing the array did not need to be typed
+var createActionsMetaArgument = {
+    CREATEACTIONSMETA: [() => { return 1 }, () => { return "1" }] as ReduxActions.ActionMapPayloadAndMetaCreator,
+    CREATEACTIONSMETA2: [() => { return 1 }, () => { return "1" }] as ReduxActions.ActionMapPayloadAndMetaCreator
+}
+
+
+
+const { CREATEACTIONSMETA, CREATEACTIONSMETA2 } = ReduxActions.createActions < number, string,typeof createActionsMetaArgument>(createActionsMetaArgument);
 
 
 
 
-//the actions lose there typing as is ActionFunctionAny<Action<Payload>>
-//ACTION1("incorrect")
-//ACTION2(3)
 
 
-//explicit typing 
-/*
-had to cast to any first - can this be done any better
-Type '{ [actionName: string]: ActionFunctionAny<Action<any>>; }' cannot be converted to type
-'{ PAYLOADDIFFERENTACTION1: () => number; PAYLOADDIFFERENTACTION2: () => string; }'.
-
-Property 'PAYLOADDIFFERENTACTION1' is missing in type '{ [actionName: string]: ActionFunctionAny<Action<any>>; }'.
-*/
 
 
-const { PAYLOADDIFFERENTACTION1, PAYLOADDIFFERENTACTION2 }=  <{ PAYLOADDIFFERENTACTION1: ()=>number, PAYLOADDIFFERENTACTION2: ()=>string }> <any>ReduxActions.createActions<any>(
+
+//explicit typing the action creators
+const actions = <{
+    PAYLOADDIFFERENTACTION1: () => ReduxActions.ActionMeta<number, string>,
+    PAYLOADDIFFERENTACTION2: (arg: string) => ReduxActions.Action<string>
+}>ReduxActions.createActions(
     {
-        PAYLOADDIFFERENTACTION1: () => { return 1 },
-        PAYLOADDIFFERENTACTION2: () => { return "1" },
+        PAYLOADDIFFERENTACTION1: [() => { return 1 },()=>"1"],
+        PAYLOADDIFFERENTACTION2: (arg:string) => { return arg},
 
     }
 );
@@ -668,11 +689,11 @@ const actionsHandlerGenericParameters = ReduxActions.handleActions<number,number
 {
     [testAction]: (state, action) => state + action.payload,
 */
-var testAction = ReduxActions.createAction<number, string, number>("TestAction", (arg1, arg2) => {
+var WITHNUMBERPAYLOAD1 = ReduxActions.createAction<number, string, number>("TestAction", (arg1, arg2) => {
     return 99;
 })
 const actionsHandlerActionCreatorKeys = ReduxActions.handleActions<number, number>({
-    [testAction.toString()]: (state, action) => state + action.payload,
+    [WITHNUMBERPAYLOAD1.toString()]: (state, action) => state + action.payload,
     WITHNUMBERPAYLOAD2: (state, action) => state * action.payload
 }, 0);
 //#endregion
@@ -690,38 +711,40 @@ const actionsHandlerMeta = ReduxActions.handleActions<number, string, { someMeta
     },99
 )
 //#region nested - new
-
-
-
 interface TheState {
     someValue:string
 }
-
-
+//just for demo
+export type IdentityActionFunctionAny<Payload> = (p:Payload,...args: any[]) => Payload;
 
 //this will combine meta and non meta
 interface CreateActionsReturnType {
-    createActionsTopLevel: ReduxActions.ActionFunction1<string,ReduxActions.Action<number>>,
-    createActionsNested: {
+    topLevel: ReduxActions.ActionFunction1<string, ReduxActions.ActionMeta<Date,RegExp>>,
+    identityTopLevel: IdentityActionFunctionAny<string>
+    nested: {
         nested1: ReduxActions.ActionFunction1<number, ReduxActions.ActionMeta<number,string>>,
-        nested2: ReduxActions.ActionFunction2<string,number, ReduxActions.Action<Date>>
+        nested2: ReduxActions.ActionFunction2<string,number, ReduxActions.ActionMeta<string,number>>
     }
 }
-var nestedActions: CreateActionsReturnType = <CreateActionsReturnType>(<any>ReduxActions.createActions<any>({
-    createActionsTopLevel: (arg1: string) => { return 9 },
-    createActionsNested: {
-        nested1: [(arg1: number) => 7, (arg1: number) => "9"],
-        nested2: (arg1: string, arg2: number) => { new Date() }
+
+
+//.....having corrected the return type
+var topLevelPayload = new Date();
+var topLevelMeta = new RegExp("blah");
+var nested1Payload = 7;
+var nested1Meta = "9";
+var nested2Payload = "7";
+var nested2Meta = 9;
+var nestedActions = <CreateActionsReturnType>ReduxActions.createActions({
+    topLevel: [(arg1: number) => topLevelPayload, (arg1: number) => topLevelMeta],
+    nested: {
+        nested1: [(arg1: number) => nested1Payload, (arg1: number) => nested1Meta] as ReduxActions.ActionMapPayloadAndMetaCreator,
+        nested2: [(arg1: string) => nested2Payload, (arg1: number) => nested2Meta] as ReduxActions.ActionMapPayloadAndMetaCreator,
     }
+});
 
-}));
-console.log(nestedActions);
-
-/*the return type of createActions is 
-{
-    [actionName: string]: ActionFunctionAny<Action<Payload>>
-};
-which is incorrect for nesting
+//#region example usage of calling nested action creators
+/*
 
 Example usage https://redux-actions.js.org/docs/api/createAction.html
 const actionCreators = createActions({
@@ -739,26 +762,42 @@ expect(actionCreators.app.counter.increment(1)).to.deep.equal({
   meta: { key: 'value', amount: 1 }
 });
 */
-//single reducer that will call the others 
+//#endregion
+ 
 
 
-//a) Check the return of createActions when nested 
-//b) Set up the reducers to demonstrate calls and action values
-//b) is there any point in nesting when can dot in to the return of createActions ( no point in using full stop ) and use toString() for safe key names ( assuming that the toString itself is dotted to show the path)
+
+//a) Set up the reducers to demonstrate calls and action values
+
+//is there any point in nesting when can dot in to the return of createActions
+//and use toString() for safe key names (assuming that the toString itself is dotted to show the path)
+
+var reducerCallCount:any = 0;
+var topLevelActionArg: ReduxActions.ActionMeta<Date,RegExp>;
+var nested1ActionArg: ReduxActions.ActionMeta<number, string>
+var nested2ActionArg: ReduxActions.ActionMeta<string,number>
+
+//single reducer that will call the others
+//ONLY USE THIS OVERLOAD WHEN ALL ACTION CREATORS PROVIDE META  ( if action was identity then no meta )
 var nestedMetaReducer = ReduxActions.handleActions<TheState, any, any>({
-    //sure there was an example of handleActions using return from createActions ( think it was object with the same structure) - possible use a map ? seperate overload
-    [nestedActions.createActionsTopLevel.toString()]: (state, action:ReduxActions.Action<number>) => {
+    [nestedActions.topLevel.toString()]: (state, action: ReduxActions.ActionMeta<Date, RegExp>) => {
+        reducerCallCount++;
+        topLevelActionArg = action;
         return {
             someValue: "InitialValue"
         }
     },
     createActionsNested: {
         nested1: (state, action: ReduxActions.ActionMeta<number, string>) => {
+            reducerCallCount++;
+            nested1ActionArg = action;
             return {
                 someValue: "InitialValue"
             }
         },
-        nested2: (state, action: ReduxActions.Action<Date>) => {
+        nested2: (state, action: ReduxActions.ActionMeta<string, number>) => {
+            reducerCallCount++;
+            nested2ActionArg = action;
             return {
                 someValue: "InitialValue"
             }
@@ -767,8 +806,22 @@ var nestedMetaReducer = ReduxActions.handleActions<TheState, any, any>({
 
 }, { someValue: "InitialValue" });
 
+var topLevelAction = nestedActions.topLevel("Value");
+var nested1Action = nestedActions.nested.nested1(9);
+var nested2Action = nestedActions.nested.nested2("Value", 9);
 
-//want to test that the real reducers get called for these actions and that get the Action values as expected
+nestedMetaReducer({ someValue: "SomeValue" }, topLevelAction)
+if (!(reducerCallCount === 1 && topLevelAction.payload === topLevelPayload && topLevelAction.meta ===topLevelMeta)){
+    throw new Error("Misunderstood");
+}
+nestedMetaReducer({ someValue: "SomeValue" }, nested1Action);
+if (!(reducerCallCount === 2 && nested1Action.payload === nested1Payload && nested1Action.meta ===nested1Meta)){
+    throw new Error("Misunderstood");
+}
+if (!(reducerCallCount === 3 && nested2Action.payload === nested2Payload && nested2Action.meta === nested2Meta)) {
+    throw new Error("Misunderstood");
+}
+
 
 
 //endregion

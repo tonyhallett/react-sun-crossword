@@ -10420,28 +10420,34 @@ a) If did this then what else would have to change ? ( caller of the returned ac
 //#region typing advice
 //DO NOT USE !
 //#endregion
-//do not need to type the Payload as can be inferred from return value - and have to be the same for all if not typing to any - see below
-//The typing cannot be improved with K in key of T, T[K] Wsee https://github.com/Microsoft/TypeScript/issues/14719 and https://github.com/Microsoft/TypeScript/issues/5453
-//just use object with multiple createAction
-var _b = ReduxActions.createActions({
+//this is all new !
+//now the keys are typesafe and if type the generic parameters can type the payload/meta if all the same
+//PERSONALLY THINK THAT TYPING PAYLOAD/META IS A WASTE OF TIME AS WILL NEED TO
+//RETYPE ANYWAY FOR ARGS SO HAVE TO TYPE THE PAYLOAD/META FOR EACH ONE ANYWAY !
+//if wanted to lose type safety on the action creators it would still be there for handleAction/s
+var createActionsArgument = {
     ACTION1: function (arg1) { return 1; },
     ACTION2: function (arg1) { return 2; }
-}), ACTION1 = _b.ACTION1, ACTION2 = _b.ACTION2;
-//the actions lose there typing as is ActionFunctionAny<Action<Payload>>
-//ACTION1("incorrect")
-//ACTION2(3)
-//explicit typing 
-/*
-had to cast to any first - can this be done any better
-Type '{ [actionName: string]: ActionFunctionAny<Action<any>>; }' cannot be converted to type
-'{ PAYLOADDIFFERENTACTION1: () => number; PAYLOADDIFFERENTACTION2: () => string; }'.
-
-Property 'PAYLOADDIFFERENTACTION1' is missing in type '{ [actionName: string]: ActionFunctionAny<Action<any>>; }'.
-*/
-var _c = ReduxActions.createActions({
-    PAYLOADDIFFERENTACTION1: function () { return 1; },
-    PAYLOADDIFFERENTACTION2: function () { return "1"; },
-}), PAYLOADDIFFERENTACTION1 = _c.PAYLOADDIFFERENTACTION1, PAYLOADDIFFERENTACTION2 = _c.PAYLOADDIFFERENTACTION2;
+};
+//can cast if want the payload typed for all
+var _b = ReduxActions.createActions(createActionsArgument), ACTION1 = _b.ACTION1, ACTION2 = _b.ACTION2;
+//or - Note the requirement for typeof when providing the generic parameter
+var createActionsArgument2 = {
+    ACTION3: function (arg1) { return 1; },
+    ACTION4: function (arg1) { return 2; }
+};
+var _c = ReduxActions.createActions(createActionsArgument2), ACTION3 = _c.ACTION3, ACTION4 = _c.ACTION4;
+//with the previous typing the array did not need to be typed
+var createActionsMetaArgument = {
+    CREATEACTIONSMETA: [function () { return 1; }, function () { return "1"; }],
+    CREATEACTIONSMETA2: [function () { return 1; }, function () { return "1"; }]
+};
+var _d = ReduxActions.createActions(createActionsMetaArgument), CREATEACTIONSMETA = _d.CREATEACTIONSMETA, CREATEACTIONSMETA2 = _d.CREATEACTIONSMETA2;
+//explicit typing the action creators
+var actions = ReduxActions.createActions({
+    PAYLOADDIFFERENTACTION1: [function () { return 1; }, function () { return "1"; }],
+    PAYLOADDIFFERENTACTION2: function (arg) { return arg; },
+});
 //why type when it is simpler to just do the following ! can do nested in this manner
 var someActions = {
     someAction1: ReduxActions.createAction("SomeAction1", function (arg1, arg2) { return 22; }),
@@ -10468,13 +10474,13 @@ var actionsHandlerGenericParameters = ReduxActions.handleActions({
 {
     [testAction]: (state, action) => state + action.payload,
 */
-var testAction = ReduxActions.createAction("TestAction", function (arg1, arg2) {
+var WITHNUMBERPAYLOAD1 = ReduxActions.createAction("TestAction", function (arg1, arg2) {
     return 99;
 });
-var actionsHandlerActionCreatorKeys = ReduxActions.handleActions((_d = {},
-    _d[testAction.toString()] = function (state, action) { return state + action.payload; },
-    _d.WITHNUMBERPAYLOAD2 = function (state, action) { return state * action.payload; },
-    _d), 0);
+var actionsHandlerActionCreatorKeys = ReduxActions.handleActions((_e = {},
+    _e[WITHNUMBERPAYLOAD1.toString()] = function (state, action) { return state + action.payload; },
+    _e.WITHNUMBERPAYLOAD2 = function (state, action) { return state * action.payload; },
+    _e), 0);
 //#endregion
 //<State,Payload,Meta>
 var actionsHandlerMeta = ReduxActions.handleActions({
@@ -10486,19 +10492,22 @@ var actionsHandlerMeta = ReduxActions.handleActions({
         return state + action.payload + action.meta.someMetaValue === "Do it" ? 999 : 0;
     }
 }, 99);
+//.....having corrected the return type
+var topLevelPayload = new Date();
+var topLevelMeta = new RegExp("blah");
+var nested1Payload = 7;
+var nested1Meta = "9";
+var nested2Payload = "7";
+var nested2Meta = 9;
 var nestedActions = ReduxActions.createActions({
-    createActionsTopLevel: function (arg1) { return 9; },
-    createActionsNested: {
-        nested1: [function (arg1) { return 7; }, function (arg1) { return "9"; }],
-        nested2: function (arg1, arg2) { new Date(); }
+    topLevel: [function (arg1) { return topLevelPayload; }, function (arg1) { return topLevelMeta; }],
+    nested: {
+        nested1: [function (arg1) { return nested1Payload; }, function (arg1) { return nested1Meta; }],
+        nested2: [function (arg1) { return nested2Payload; }, function (arg1) { return nested2Meta; }],
     }
 });
-console.log(nestedActions);
-/*the return type of createActions is
-{
-    [actionName: string]: ActionFunctionAny<Action<Payload>>
-};
-which is incorrect for nesting
+//#region example usage of calling nested action creators
+/*
 
 Example usage https://redux-actions.js.org/docs/api/createAction.html
 const actionCreators = createActions({
@@ -10516,31 +10525,55 @@ expect(actionCreators.app.counter.increment(1)).to.deep.equal({
   meta: { key: 'value', amount: 1 }
 });
 */
-//single reducer that will call the others 
-//a) Check the return of createActions when nested 
-//b) Set up the reducers to demonstrate calls and action values
-//b) is there any point in nesting when can dot in to the return of createActions ( no point in using full stop ) and use toString() for safe key names ( assuming that the toString itself is dotted to show the path)
-var nestedMetaReducer = ReduxActions.handleActions((_e = {},
-    //sure there was an example of handleActions using return from createActions ( think it was object with the same structure) - possible use a map ? seperate overload
-    _e[nestedActions.createActionsTopLevel.toString()] = function (state, action) {
+//#endregion
+//a) Set up the reducers to demonstrate calls and action values
+//is there any point in nesting when can dot in to the return of createActions
+//and use toString() for safe key names (assuming that the toString itself is dotted to show the path)
+var reducerCallCount = 0;
+var topLevelActionArg;
+var nested1ActionArg;
+var nested2ActionArg;
+//single reducer that will call the others
+//ONLY USE THIS OVERLOAD WHEN ALL ACTION CREATORS PROVIDE META  ( if action was identity then no meta )
+var nestedMetaReducer = ReduxActions.handleActions((_f = {},
+    _f[nestedActions.topLevel.toString()] = function (state, action) {
+        reducerCallCount++;
+        topLevelActionArg = action;
         return {
             someValue: "InitialValue"
         };
     },
-    _e.createActionsNested = {
+    _f.createActionsNested = {
         nested1: function (state, action) {
+            reducerCallCount++;
+            nested1ActionArg = action;
             return {
                 someValue: "InitialValue"
             };
         },
         nested2: function (state, action) {
+            reducerCallCount++;
+            nested2ActionArg = action;
             return {
                 someValue: "InitialValue"
             };
         }
     },
-    _e), { someValue: "InitialValue" });
-//want to test that the real reducers get called for these actions and that get the Action values as expected
+    _f), { someValue: "InitialValue" });
+var topLevelAction = nestedActions.topLevel("Value");
+var nested1Action = nestedActions.nested.nested1(9);
+var nested2Action = nestedActions.nested.nested2("Value", 9);
+nestedMetaReducer({ someValue: "SomeValue" }, topLevelAction);
+if (!(reducerCallCount === 1 && topLevelAction.payload === topLevelPayload && topLevelAction.meta === topLevelMeta)) {
+    throw new Error("Misunderstood");
+}
+nestedMetaReducer({ someValue: "SomeValue" }, nested1Action);
+if (!(reducerCallCount === 2 && nested1Action.payload === nested1Payload && nested1Action.meta === nested1Meta)) {
+    throw new Error("Misunderstood");
+}
+if (!(reducerCallCount === 3 && nested2Action.payload === nested2Payload && nested2Action.meta === nested2Meta)) {
+    throw new Error("Misunderstood");
+}
 //endregion
 //#endregion
 //#region STATEANDPAYLOAD TYPING
@@ -10772,7 +10805,7 @@ reducerFromTypingHelper3(reducerState, actionGenerics2);
 if (!(crMapReducer2MetaState === reducerState && crMapReducer2MetaAction === actionGenerics2)) {
     throw new Error("Unexpected");
 }
-var _a, _d, _e;
+var _a, _e, _f;
 //#endregion
 //#endregion
 //#endregion
