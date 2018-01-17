@@ -10093,8 +10093,8 @@ ReduxActions.handleAction(act2, function (state, action) {
 ReduxActions.handleAction(act3, function (state, action) {
     return { hello: action.payload.s };
 }, { hello: 'greetings' });
-//#region TONY CHANGE
 ReduxActions.handleAction(ReduxActions.combineActions(act1, act3, act2), function (state, action) { return state + 1; }, 0);
+//#region TONY CHANGE
 ReduxActions.handleActions((_a = {},
     _a[ReduxActions.combineActions(act1, act3, act2).toString()] = function (state, action) {
         return state + 1;
@@ -10117,6 +10117,7 @@ ReduxActions.handleAction(act3, (state, action) => {
     return {}
 })*/
 //#endregion
+var combinedWillThrow = ReduxActions.combineActions();
 //#region createAction
 //#region new !
 /*
@@ -10354,7 +10355,6 @@ function handleActionMeta(initialState, actionType, reducer) {
 var usingMyTypedHandleActionsReducer = handleActionMeta({ someValue: "InitialState" }, actionCreatorMetaGenerics, function (state, action) {
     return { someValue: action.meta };
 });
-//export function createAction<Payload, Meta, Arg1>(
 var combinedMeta1 = ReduxActions.createAction("CombinedMeta1", function (arg) {
     return arg;
 }, function (arg) {
@@ -10365,30 +10365,35 @@ var combinedMeta2 = ReduxActions.createAction("CombinedMeta2", function (arg) {
 }, function (arg) {
     return "Meta2";
 });
+var combinedMetaDifferent = ReduxActions.createAction("CombinedMeta2", function (arg) {
+    return arg.toString();
+}, function (arg) {
+    return 9;
+});
+var combined1 = ReduxActions.createAction("Combined1", function (arg) { return 2; });
+var combined2 = ReduxActions.createAction("Combined1", function (arg) { return 2; });
+var combinedDifferentPayload = ReduxActions.createAction("Combined1", function (arg) { return "2"; });
+//#region combineActions - remember not to be directly called !
+//restrict to at least two args ??????????????????????????????????????
+//*********** this is the only one that could be considered dodgy 
+var combinedStringsNoGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<{},{}>
+var combinedStringsGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //Combined<number>
+var combinedStringsGenericParameters = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<number,string>
+var inference = ReduxActions.combineActions(combined1, combined2); //Combined<number>
+var inferenceMixedTypes = ReduxActions.combineActions(combined1, "FROMSTRING"); //Combined<number>
+var inferenceDifferentTypes = ReduxActions.combineActions(combined1, combinedDifferentPayload); //Combined<any>
+var inferenceMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2, "SOMESRING");
+//if meta different get Combined<T> - if payload the same then is typed otherwise is any
+var differentMeta = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
+var differentMetaGenericParameter = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
+//a) Where was I using these again ?
+//b) Does it matter CombinedMeta<{},{}>
+//b) Does it make sense to do the cast in different meta
+//#endregion
 /*
-getting for combineActions
-export function combineActions<Payload>(...actionTypes: Array<ActionFunctions<Payload>>): Combined<Payload>;
-    export type ActionFunctions<Payload> =
-    ActionFunction0<Action<Payload>> |
-    ActionFunction1<any, Action<Payload>> |
-
-instead of
-export function combineActions<Payload,Meta>(...actionTypes: Array<ActionFunctionsMeta<Payload,Meta>>): CombinedMeta<Payload,Meta>;
-    export type ActionFunctionsMeta<Payload, Meta> =
-    ReduxActions.ActionFunction0<ReduxActions.ActionMeta<Payload, Meta>> |
-    ReduxActions.ActionFunction1<any, ReduxActions.ActionMeta<Payload, Meta>> |
-
-
-export function createAction<Payload, Meta, Arg1>(
-    actionType: string,
-    payloadCreator: ActionFunction1<Arg1, Payload>,
-    metaCreator: ActionFunction1<Arg1, Meta>
-): ActionFunction1<Arg1, ActionMeta<Payload, Meta>>; -- export type ActionFunction1<T1, R> = (t1: T1) => R;
-
-without specifying - with both overloads have ActionFunction<T>
 
 can the return type change to assist with the typing ?
-    fromm ActionFunction1<T1, R> = (t1: T1) => R;
+    from ActionFunction1<T1, R> = (t1: T1) => R;
     to ActionMetaFunction<T1,Payload,Meta>=(t1:T1)=>ActionMeta<Payload,Meta> *********************************************
 
 a) If did this then what else would have to change ? ( caller of the returned action no change )

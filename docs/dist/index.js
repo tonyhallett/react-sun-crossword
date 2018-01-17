@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
 var ReactDOM = require("react-dom");
+var reduxActionsTest_1 = require("./tic_tac_toe/reduxActionsTest");
+reduxActionsTest_1.dummyFn();
 var reducer_1 = require("./tic_tac_toe/reducers/reducer");
 var storage_1 = require("./helpers/storage");
 var webFontLoader_1 = require("./tic_tac_toe/webFontLoader");
