@@ -603,7 +603,7 @@ a) If did this then what else would have to change ? ( caller of the returned ac
 //#endregion
 //#endregion
 
-//#region createActions
+//#region createActions - THEY DO NOT HAVE A SINGLE EXAMPLE
 //#region typing advice
 //DO NOT USE !
 //#endregion
@@ -689,6 +689,88 @@ const actionsHandlerMeta = ReduxActions.handleActions<number, string, { someMeta
         }
     },99
 )
+//#region nested - new
+
+
+
+interface TheState {
+    someValue:string
+}
+
+
+
+//this will combine meta and non meta
+interface CreateActionsReturnType {
+    createActionsTopLevel: ReduxActions.ActionFunction1<string,ReduxActions.Action<number>>,
+    createActionsNested: {
+        nested1: ReduxActions.ActionFunction1<number, ReduxActions.ActionMeta<number,string>>,
+        nested2: ReduxActions.ActionFunction2<string,number, ReduxActions.Action<Date>>
+    }
+}
+var nestedActions: CreateActionsReturnType = <CreateActionsReturnType>(<any>ReduxActions.createActions<any>({
+    createActionsTopLevel: (arg1: string) => { return 9 },
+    createActionsNested: {
+        nested1: [(arg1: number) => 7, (arg1: number) => "9"],
+        nested2: (arg1: string, arg2: number) => { new Date() }
+    }
+
+}));
+
+/*the return type of createActions is 
+{
+    [actionName: string]: ActionFunctionAny<Action<Payload>>
+};
+which is incorrect for nesting
+
+Example usage https://redux-actions.js.org/docs/api/createAction.html
+const actionCreators = createActions({
+  APP: {
+    COUNTER: {
+      INCREMENT: [
+        amount => ({ amount }),
+        amount => ({ key: 'value', amount })
+      ],
+    ....
+
+expect(actionCreators.app.counter.increment(1)).to.deep.equal({
+  type: 'APP/COUNTER/INCREMENT',
+  payload: { amount: 1 },
+  meta: { key: 'value', amount: 1 }
+});
+*/
+//single reducer that will call the others 
+
+
+//a) Check the return of createActions when nested 
+//b) Set up the reducers to demonstrate calls and action values
+//b) is there any point in nesting when can dot in to the return of createActions ( no point in using full stop ) and use toString() for safe key names ( assuming that the toString itself is dotted to show the path)
+var nestedMetaReducer = ReduxActions.handleActions<TheState, any, any>({
+    //sure there was an example of handleActions using return from createActions ( think it was object with the same structure) - possible use a map ? seperate overload
+    [nestedActions.createActionsTopLevel.toString()]: (state, action:ReduxActions.Action<number>) => {
+        return {
+            someValue: "InitialValue"
+        }
+    },
+    createActionsNested: {
+        nested1: (state, action: ReduxActions.ActionMeta<number, string>) => {
+            return {
+                someValue: "InitialValue"
+            }
+        },
+        nested2: (state, action: ReduxActions.Action<Date>) => {
+            return {
+                someValue: "InitialValue"
+            }
+        }
+    }
+
+}, { someValue: "InitialValue" });
+
+
+//want to test that the real reducers get called for these actions and that get the Action values as expected
+
+
+//endregion
 //#endregion
 //#region STATEANDPAYLOAD TYPING
 /*

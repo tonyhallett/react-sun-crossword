@@ -10416,7 +10416,7 @@ a) If did this then what else would have to change ? ( caller of the returned ac
 //#endregion
 //#endregion
 //#endregion
-//#region createActions
+//#region createActions - THEY DO NOT HAVE A SINGLE EXAMPLE
 //#region typing advice
 //DO NOT USE !
 //#endregion
@@ -10486,6 +10486,61 @@ var actionsHandlerMeta = ReduxActions.handleActions({
         return state + action.payload + action.meta.someMetaValue === "Do it" ? 999 : 0;
     }
 }, 99);
+var nestedActions = ReduxActions.createActions({
+    createActionsTopLevel: function (arg1) { return 9; },
+    createActionsNested: {
+        nested1: [function (arg1) { return 7; }, function (arg1) { return "9"; }],
+        nested2: function (arg1, arg2) { new Date(); }
+    }
+});
+/*the return type of createActions is
+{
+    [actionName: string]: ActionFunctionAny<Action<Payload>>
+};
+which is incorrect for nesting
+
+Example usage https://redux-actions.js.org/docs/api/createAction.html
+const actionCreators = createActions({
+  APP: {
+    COUNTER: {
+      INCREMENT: [
+        amount => ({ amount }),
+        amount => ({ key: 'value', amount })
+      ],
+    ....
+
+expect(actionCreators.app.counter.increment(1)).to.deep.equal({
+  type: 'APP/COUNTER/INCREMENT',
+  payload: { amount: 1 },
+  meta: { key: 'value', amount: 1 }
+});
+*/
+//single reducer that will call the others 
+//a) Check the return of createActions when nested 
+//b) Set up the reducers to demonstrate calls and action values
+//b) is there any point in nesting when can dot in to the return of createActions ( no point in using full stop ) and use toString() for safe key names ( assuming that the toString itself is dotted to show the path)
+var nestedMetaReducer = ReduxActions.handleActions((_e = {},
+    //sure there was an example of handleActions using return from createActions ( think it was object with the same structure) - possible use a map ? seperate overload
+    _e[nestedActions.createActionsTopLevel.toString()] = function (state, action) {
+        return {
+            someValue: "InitialValue"
+        };
+    },
+    _e.createActionsNested = {
+        nested1: function (state, action) {
+            return {
+                someValue: "InitialValue"
+            };
+        },
+        nested2: function (state, action) {
+            return {
+                someValue: "InitialValue"
+            };
+        }
+    },
+    _e), { someValue: "InitialValue" });
+//want to test that the real reducers get called for these actions and that get the Action values as expected
+//endregion
 //#endregion
 //#region STATEANDPAYLOAD TYPING
 /*
@@ -10716,7 +10771,7 @@ reducerFromTypingHelper3(reducerState, actionGenerics2);
 if (!(crMapReducer2MetaState === reducerState && crMapReducer2MetaAction === actionGenerics2)) {
     throw new Error("Unexpected");
 }
-var _a, _d;
+var _a, _d, _e;
 //#endregion
 //#endregion
 //#endregion
