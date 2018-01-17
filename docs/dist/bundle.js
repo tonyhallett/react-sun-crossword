@@ -10420,6 +10420,15 @@ a) If did this then what else would have to change ? ( caller of the returned ac
 //#region typing advice
 //DO NOT USE !
 //#endregion
+//#region identity
+var actionsWithIdentity = ReduxActions.createActions({
+    identity1: undefined
+});
+var identityArg = "One";
+if (actionsWithIdentity.identity1(identityArg, "Ignored").payload !== identityArg) {
+    throw new Error("Misunderstood");
+}
+//#endregion
 //this is all new !
 //now the keys are typesafe and if type the generic parameters can type the payload/meta if all the same
 //PERSONALLY THINK THAT TYPING PAYLOAD/META IS A WASTE OF TIME AS WILL NEED TO

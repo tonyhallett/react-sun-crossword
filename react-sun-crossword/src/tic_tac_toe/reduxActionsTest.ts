@@ -607,6 +607,16 @@ a) If did this then what else would have to change ? ( caller of the returned ac
 //#region typing advice
 //DO NOT USE !
 //#endregion
+//#region identity
+
+var actionsWithIdentity = <{ identity1: (arg1: string, ignored: string) => ReduxActions.Action<string> }><any>ReduxActions.createActions({
+    identity1: undefined
+});
+var identityArg = "One";
+if (actionsWithIdentity.identity1(identityArg, "Ignored").payload !== identityArg) {
+    throw new Error("Misunderstood");
+}
+//#endregion
 //this is all new !
 
 
@@ -714,13 +724,11 @@ const actionsHandlerMeta = ReduxActions.handleActions<number, string, { someMeta
 interface TheState {
     someValue:string
 }
-//just for demo
-export type IdentityActionFunctionAny<Payload> = (p:Payload,...args: any[]) => Payload;
+
 
 //this will combine meta and non meta
 interface CreateActionsReturnType {
     topLevel: ReduxActions.ActionFunction1<string, ReduxActions.ActionMeta<Date,RegExp>>,
-    identityTopLevel: IdentityActionFunctionAny<string>
     nested: {
         nested1: ReduxActions.ActionFunction1<number, ReduxActions.ActionMeta<number,string>>,
         nested2: ReduxActions.ActionFunction2<string,number, ReduxActions.ActionMeta<string,number>>
