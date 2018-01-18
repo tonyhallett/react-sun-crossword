@@ -10613,7 +10613,7 @@ var nestedMetaReducer3 = ReduxActions.handleActions((_h = {},
             someValue: "InitialValue"
         };
     },
-    _h[nestedActionsWithoutCreateActions.nested.nested1.toString()] = function (state, action) {
+    _h[nestedActionsWithoutCreateActions.nested.nested2.toString()] = function (state, action) {
         reducerCallCount++;
         nested2ActionArg = action;
         return {
