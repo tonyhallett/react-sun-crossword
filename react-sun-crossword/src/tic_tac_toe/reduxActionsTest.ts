@@ -659,16 +659,16 @@ var createActionsArgument = {
     ACTION1: (arg1: number) => { return 1 },
     ACTION2: (arg1: string) => { return 2 }
 }
+var createActionsArgument2 = {
+    ACTION3: (arg1: number) => { return 1 },
+    ACTION4: (arg1: string) => { return 2 }
+}
 
 var actionsObjPayloadNotTyped=ReduxActions.createActions(createActionsArgument2);
 //can cast if want the payload typed for all
 const { ACTION1, ACTION2 } = <ReduxActions.MappedActions<typeof createActionsArgument, number>>ReduxActions.createActions(createActionsArgument);
 
 //or - Note the requirement for typeof when providing the generic parameter
-var createActionsArgument2 = {
-    ACTION3: (arg1: number) => { return 1 },
-    ACTION4: (arg1: string) => { return 2 }
-}
 const { ACTION3, ACTION4 } = ReduxActions.createActions<number, typeof createActionsArgument2>(createActionsArgument2);
 
 //with the previous typing the array did not need to be typed - DOWNSIDE

@@ -10450,14 +10450,14 @@ var createActionsArgument = {
     ACTION1: function (arg1) { return 1; },
     ACTION2: function (arg1) { return 2; }
 };
-var actionsObjPayloadNotTyped = ReduxActions.createActions(createActionsArgument2);
-//can cast if want the payload typed for all
-var _b = ReduxActions.createActions(createActionsArgument), ACTION1 = _b.ACTION1, ACTION2 = _b.ACTION2;
-//or - Note the requirement for typeof when providing the generic parameter
 var createActionsArgument2 = {
     ACTION3: function (arg1) { return 1; },
     ACTION4: function (arg1) { return 2; }
 };
+var actionsObjPayloadNotTyped = ReduxActions.createActions(createActionsArgument2);
+//can cast if want the payload typed for all
+var _b = ReduxActions.createActions(createActionsArgument), ACTION1 = _b.ACTION1, ACTION2 = _b.ACTION2;
+//or - Note the requirement for typeof when providing the generic parameter
 var _c = ReduxActions.createActions(createActionsArgument2), ACTION3 = _c.ACTION3, ACTION4 = _c.ACTION4;
 //with the previous typing the array did not need to be typed - DOWNSIDE
 var createActionsMetaArgument = {
