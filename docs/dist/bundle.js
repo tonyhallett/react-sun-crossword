@@ -10635,15 +10635,15 @@ function testReducer(nestedMetaReducer, nestedActions) {
     //#endregion
     //#region calls and expectations
     nestedMetaReducer({ someValue: "SomeValue" }, topLevelAction);
-    if (!(reducerCallCount === 1 && topLevelAction.payload === topLevelPayload && topLevelAction.meta === topLevelMeta)) {
+    if (!(reducerCallCount === 1 && topLevelActionArg.payload === topLevelPayload && topLevelActionArg.meta === topLevelMeta)) {
         throw new Error("Misunderstood");
     }
     nestedMetaReducer({ someValue: "SomeValue" }, nested1Action);
-    if (!(reducerCallCount === 2 && nested1Action.payload === nested1Payload && nested1Action.meta === nested1Meta)) {
+    if (!(reducerCallCount === 2 && nested1ActionArg.payload === nested1Payload && nested1ActionArg.meta === nested1Meta)) {
         throw new Error("Misunderstood");
     }
     nestedMetaReducer({ someValue: "SomeValue" }, nested2Action);
-    if (!(reducerCallCount === 3 && nested2Action.payload === nested2Payload && nested2Action.meta === nested2Meta)) {
+    if (!(reducerCallCount === 3 && nested2ActionArg.payload === nested2Payload && nested2ActionArg.meta === nested2Meta)) {
         throw new Error("Misunderstood");
     }
     //#endregion
