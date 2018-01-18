@@ -836,7 +836,7 @@ var nestedMetaReducer2 = ReduxActions.handleActions<TheState, any, any>({
             someValue: "InitialValue"
         }
     },
-    [nestedActions.nested.nested1.toString()]: (state, action: ReduxActions.ActionMeta<string, number>) => {
+    [nestedActions.nested.nested2.toString()]: (state, action: ReduxActions.ActionMeta<string, number>) => {
         reducerCallCount++;
         nested2ActionArg = action;
         return {
