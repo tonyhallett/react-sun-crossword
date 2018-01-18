@@ -9980,6 +9980,16 @@ exports.createLocalStorageStore = createLocalStorageStore;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ReduxActions = __webpack_require__(369);
 var redux_1 = __webpack_require__(25);
@@ -10117,7 +10127,63 @@ ReduxActions.handleAction(act3, (state, action) => {
     return {}
 })*/
 //#endregion
-var combinedWillThrow = ReduxActions.combineActions();
+//#region combinedActions remember not to be directly called ! 
+//<Payload,Meta,Arg1>
+var combinedMeta1 = ReduxActions.createAction("CombinedMeta1", function (arg) {
+    return arg;
+}, function (arg) {
+    return "Meta";
+});
+var combinedMeta2 = ReduxActions.createAction("CombinedMeta2", function (arg) {
+    return 1;
+}, function (arg) {
+    return "Meta2";
+});
+var combinedMetaDifferent = ReduxActions.createAction("CombinedMeta3", function (arg) {
+    return arg;
+}, function (arg) {
+    return 9;
+});
+var combinedPayloadDifferent = ReduxActions.createAction("CombinedMeta4", function (arg) {
+    return arg.toString();
+}, function (arg) {
+    return "9";
+});
+var combinedBothDifferent = ReduxActions.createAction("CombinedMeta4", function (arg) {
+    return arg.toString();
+}, function (arg) {
+    return 9;
+});
+var combined1 = ReduxActions.createAction("Combined1", function (arg) { return 1; });
+var combined2 = ReduxActions.createAction("Combined2", function (arg) { return 2; });
+var combinedDifferentPayload = ReduxActions.createAction("Combined3", function (arg) { return "2"; });
+//*********** this is the only one that could be considered dodgy 
+var combinedStringsNoGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<{},{}>
+var combinedStringsGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //Combined<number>
+var combinedStringsGenericParameters = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<number,string>
+var inference = ReduxActions.combineActions(combined1, combined2); //Combined<number>
+var inferenceMixedTypes = ReduxActions.combineActions(combined1, "FROMSTRING"); //Combined<number>
+var inferenceDifferentTypes = ReduxActions.combineActions(combined1, combinedDifferentPayload); //Combined<any>
+var inferenceMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2);
+var inferenceMetaMixedTypes = ReduxActions.combineActions(combinedMeta1, combinedMeta2, "SomeActionType");
+//** for when either meta or payload is different then explicitly type ( of course you would not combine if needed to then check the action type in the reducer !)
+//if meta different get Combined<T> - if payload the same then is typed otherwise is any
+var differentMeta = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
+var differentMetaGenericParameter = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
+//if payload different - Combined<any>
+var differentPayload = ReduxActions.combineActions(combinedMeta1, combinedPayloadDifferent);
+//both different - Combined<any>
+var differentBoth = ReduxActions.combineActions(combinedMeta1, combinedBothDifferent);
+//Combined<T> when they have the same payload
+var nonMetaWithMetaCombined = ReduxActions.combineActions(combined1, combinedMeta1);
+var handleActionFromInferredNonMeta = ReduxActions.handleAction(inference, function (state, action) {
+    return { someValue: action.payload.toExponential() };
+}, { someValue: "Initial Value" });
+//although vs does not complain - webpack will prevent the combinedMeta from having different payload/meta types to those specified
+var handleActionFromInferredMeta = ReduxActions.handleAction(inferenceMeta, function (state, action) {
+    return { someValue: action.meta };
+}, { someValue: "Initial Value" });
+//#endregion
 //#region createAction
 //#region new !
 /*
@@ -10348,76 +10414,17 @@ export function handleAction<State, Payload, Meta>(
     initialState: State
 ): Reducer<State, Payload>;
 */
-//the function below ensures typing is available in the reducer body immediately
+//the function below ensures typing is available 
 function handleActionMeta(initialState, actionType, reducer) {
     return ReduxActions.handleAction(actionType, reducer, initialState);
 }
 var usingMyTypedHandleActionsReducer = handleActionMeta({ someValue: "InitialState" }, actionCreatorMetaGenerics, function (state, action) {
     return { someValue: action.meta };
 });
-var combinedMeta1 = ReduxActions.createAction("CombinedMeta1", function (arg) {
-    return arg;
-}, function (arg) {
-    return "Meta";
-});
-var combinedMeta2 = ReduxActions.createAction("CombinedMeta2", function (arg) {
-    return arg;
-}, function (arg) {
-    return "Meta2";
-});
-var combinedMetaDifferent = ReduxActions.createAction("CombinedMeta2", function (arg) {
-    return arg.toString();
-}, function (arg) {
-    return 9;
-});
-var combined1 = ReduxActions.createAction("Combined1", function (arg) { return 2; });
-var combined2 = ReduxActions.createAction("Combined1", function (arg) { return 2; });
-var combinedDifferentPayload = ReduxActions.createAction("Combined1", function (arg) { return "2"; });
-//#region combineActions - remember not to be directly called !
-//restrict to at least two args ??????????????????????????????????????
-//*********** this is the only one that could be considered dodgy 
-var combinedStringsNoGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<{},{}>
-var combinedStringsGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //Combined<number>
-var combinedStringsGenericParameters = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<number,string>
-var inference = ReduxActions.combineActions(combined1, combined2); //Combined<number>
-var inferenceMixedTypes = ReduxActions.combineActions(combined1, "FROMSTRING"); //Combined<number>
-var inferenceDifferentTypes = ReduxActions.combineActions(combined1, combinedDifferentPayload); //Combined<any>
-var inferenceMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2, "SOMESRING");
-//if meta different get Combined<T> - if payload the same then is typed otherwise is any
-var differentMeta = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
-var differentMetaGenericParameter = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
-//a) Where was I using these again ?
-//b) Does it matter CombinedMeta<{},{}>
-//b) Does it make sense to do the cast in different meta
-//#endregion
-/*
-
-can the return type change to assist with the typing ?
-    from ActionFunction1<T1, R> = (t1: T1) => R;
-    to ActionMetaFunction<T1,Payload,Meta>=(t1:T1)=>ActionMeta<Payload,Meta> *********************************************
-
-a) If did this then what else would have to change ? ( caller of the returned action no change )
-   handleAction - think that that would be ok
-       just change ActionFunctionsMeta to a new AllActionMetaFunction<Payload,Meta>
-        export function handleAction<State, Payload, Meta>(
-            actionType: ActionFunctionsMeta<Payload, Meta> | { toString(): string } |CombinedMeta<Payload,Meta>,
-            reducer: ReducerMeta<State, Payload, Meta> | ReducerNextThrowMeta<State, Payload, Meta>,
-            initialState: State
-        ): Reducer<State, Payload>;
-
-    export function combineActions<Payload,Meta>(...actionTypes: Array<AllActionMetaFunction<Payload,Meta>>): CombinedMeta<Payload,Meta>;
-    --- before changing do locally combineActions first - they might still be considered the same
-   handleActions - think that the built in would not need to change
-
-   DOES MINE NEED TO CHANGE ?
-
-
-*/
-//************************************************ to return to
-//var combinedMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2);
-//handleActionMeta({ someValue: "initial" }, combinedMeta, (state, action) => {
-//    action
-//});
+//****************** HAVE TO PROVIDE GENERIC PARAMETERS 
+ReduxActions.handleAction(actionCreatorMetaGenerics, function (state, action) {
+    return { someValue: action.meta + action.payload.toExponential() };
+}, { someValue: "InitialState" });
 //#endregion
 //#endregion
 //#endregion
@@ -10443,6 +10450,7 @@ var createActionsArgument = {
     ACTION1: function (arg1) { return 1; },
     ACTION2: function (arg1) { return 2; }
 };
+var actionsObjPayloadNotTyped = ReduxActions.createActions(createActionsArgument2);
 //can cast if want the payload typed for all
 var _b = ReduxActions.createActions(createActionsArgument), ACTION1 = _b.ACTION1, ACTION2 = _b.ACTION2;
 //or - Note the requirement for typeof when providing the generic parameter
@@ -10451,7 +10459,7 @@ var createActionsArgument2 = {
     ACTION4: function (arg1) { return 2; }
 };
 var _c = ReduxActions.createActions(createActionsArgument2), ACTION3 = _c.ACTION3, ACTION4 = _c.ACTION4;
-//with the previous typing the array did not need to be typed
+//with the previous typing the array did not need to be typed - DOWNSIDE
 var createActionsMetaArgument = {
     CREATEACTIONSMETA: [function () { return 1; }, function () { return "1"; }],
     CREATEACTIONSMETA2: [function () { return 1; }, function () { return "1"; }]
@@ -10470,15 +10478,9 @@ var someActions = {
 };
 //#endregion
 //#region handleActions
-/*Note that visual studio is not type checking that the reducer is returning the state !
-e.g
-const actionsHandlerGenericParameters = ReduxActions.handleActions<number,number>({
-    WITHNUMBERPAYLOAD1: (state, action) => state + action.payload,
-    WITHNUMBERPAYLOAD2: (state, action) => state * action.payload,
-    NORETURN: function (state, action) { } //this should show an intellisense error - does not compile in webpack
-}, 0);
-*/
-//#region generic parameters - actions same payload ( meta ) type
+//#region generic parameters 
+//#region actions same payload (meta) type
+//<State,Payload>
 var actionsHandlerGenericParameters = ReduxActions.handleActions({
     WITHNUMBERPAYLOAD1: function (state, action) { return state + action.payload; },
     WITHNUMBERPAYLOAD2: function (state, action) { return state * action.payload; },
@@ -10496,7 +10498,7 @@ var actionsHandlerActionCreatorKeys = ReduxActions.handleActions((_e = {},
     _e.WITHNUMBERPAYLOAD2 = function (state, action) { return state * action.payload; },
     _e), 0);
 //#endregion
-//<State,Payload,Meta>
+//<State,Payload,Meta> 
 var actionsHandlerMeta = ReduxActions.handleActions({
     SOMEMETAREDUCER1: function (state, action) {
         var meta = action.meta.someMetaValue;
@@ -10506,49 +10508,26 @@ var actionsHandlerMeta = ReduxActions.handleActions({
         return state + action.payload + action.meta.someMetaValue === "Do it" ? 999 : 0;
     }
 }, 99);
-//.....having corrected the return type
+//#region vars for testing
 var topLevelPayload = new Date();
 var topLevelMeta = new RegExp("blah");
 var nested1Payload = 7;
 var nested1Meta = "9";
 var nested2Payload = "7";
 var nested2Meta = 9;
-var nestedActions = ReduxActions.createActions({
-    topLevel: [function (arg1) { return topLevelPayload; }, function (arg1) { return topLevelMeta; }],
-    nested: {
-        nested1: [function (arg1) { return nested1Payload; }, function (arg1) { return nested1Meta; }],
-        nested2: [function (arg1) { return nested2Payload; }, function (arg1) { return nested2Meta; }],
-    }
-});
-//#region example usage of calling nested action creators
-/*
-
-Example usage https://redux-actions.js.org/docs/api/createAction.html
-const actionCreators = createActions({
-  APP: {
-    COUNTER: {
-      INCREMENT: [
-        amount => ({ amount }),
-        amount => ({ key: 'value', amount })
-      ],
-    ....
-
-expect(actionCreators.app.counter.increment(1)).to.deep.equal({
-  type: 'APP/COUNTER/INCREMENT',
-  payload: { amount: 1 },
-  meta: { key: 'value', amount: 1 }
-});
-*/
-//#endregion
-//a) Set up the reducers to demonstrate calls and action values
-//is there any point in nesting when can dot in to the return of createActions
-//and use toString() for safe key names (assuming that the toString itself is dotted to show the path)
 var reducerCallCount = 0;
 var topLevelActionArg;
 var nested1ActionArg;
 var nested2ActionArg;
-//single reducer that will call the others
-//ONLY USE THIS OVERLOAD WHEN ALL ACTION CREATORS PROVIDE META  ( if action was identity then no meta )
+//#endregion
+var nestedActions = ReduxActions.createActions({
+    topLevel: [function (arg1) { return topLevelPayload; }, function (arg1) { return topLevelMeta; }],
+    nested: {
+        nested1: [function (arg1) { return nested1Payload; }, function (arg1) { return nested1Meta; }],
+        nested2: [function (arg1, arg2) { return nested2Payload; }, function (arg1, arg2) { return nested2Meta; }],
+    }
+});
+//single reducer that will call the others 
 var nestedMetaReducer = ReduxActions.handleActions((_f = {},
     _f[nestedActions.topLevel.toString()] = function (state, action) {
         reducerCallCount++;
@@ -10574,22 +10553,123 @@ var nestedMetaReducer = ReduxActions.handleActions((_f = {},
         }
     },
     _f), { someValue: "InitialValue" });
-var topLevelAction = nestedActions.topLevel("Value");
-var nested1Action = nestedActions.nested.nested1(9);
-var nested2Action = nestedActions.nested.nested2("Value", 9);
-nestedMetaReducer({ someValue: "SomeValue" }, topLevelAction);
-if (!(reducerCallCount === 1 && topLevelAction.payload === topLevelPayload && topLevelAction.meta === topLevelMeta)) {
-    throw new Error("Misunderstood");
+/* alternatively
+//is there any point in nesting when can dot in to the return of createActions ( have to create the return type to be typesafe )
+//and use toString() for safe key names
+*/
+var nestedMetaReducer2 = ReduxActions.handleActions((_g = {},
+    _g[nestedActions.topLevel.toString()] = function (state, action) {
+        reducerCallCount++;
+        topLevelActionArg = action;
+        return {
+            someValue: "InitialValue"
+        };
+    },
+    _g[nestedActions.nested.nested1.toString()] = function (state, action) {
+        reducerCallCount++;
+        nested1ActionArg = action;
+        return {
+            someValue: "InitialValue"
+        };
+    },
+    _g[nestedActions.nested.nested1.toString()] = function (state, action) {
+        reducerCallCount++;
+        nested2ActionArg = action;
+        return {
+            someValue: "InitialValue"
+        };
+    },
+    _g), { someValue: "InitialValue" });
+/*
+Better still create own nested object without createActions and use handleActions with a flat object
+copying actions above - ( but not nesting the action type names  ( could if wanted to ) ) - note no need for the cast
+var nestedActions = <CreateActionsReturnType>ReduxActions.createActions({
+    topLevel: [(arg1: number) => topLevelPayload, (arg1: number) => topLevelMeta],
+    nested: {
+        nested1: [(arg1: number) => nested1Payload, (arg1: number) => nested1Meta] as ReduxActions.ActionMapPayloadAndMetaCreator,
+        nested2: [(arg1: string) => nested2Payload, (arg1: number) => nested2Meta] as ReduxActions.ActionMapPayloadAndMetaCreator,
+    }
+});
+*/
+var nestedActionsWithoutCreateActions = {
+    topLevel: ReduxActions.createAction("topLevel", function (arg1) { return topLevelPayload; }, function (arg1) { return topLevelMeta; }),
+    nested: {
+        nested1: ReduxActions.createAction("nested1", function (arg1) { return nested1Payload; }, function (arg1) { return nested1Meta; }),
+        nested2: ReduxActions.createAction("nested2", function (arg1, arg2) { return nested2Payload; }, function (arg1) { return nested2Meta; })
+    }
+};
+var nestedMetaReducer3 = ReduxActions.handleActions((_h = {},
+    _h[nestedActionsWithoutCreateActions.topLevel.toString()] = function (state, action) {
+        reducerCallCount++;
+        topLevelActionArg = action;
+        return {
+            someValue: "InitialValue"
+        };
+    },
+    _h[nestedActionsWithoutCreateActions.nested.nested1.toString()] = function (state, action) {
+        reducerCallCount++;
+        nested1ActionArg = action;
+        return {
+            someValue: "InitialValue"
+        };
+    },
+    _h[nestedActionsWithoutCreateActions.nested.nested1.toString()] = function (state, action) {
+        reducerCallCount++;
+        nested2ActionArg = action;
+        return {
+            someValue: "InitialValue"
+        };
+    },
+    _h), { someValue: "InitialValue" });
+function testReducer(nestedMetaReducer, nestedActions) {
+    //reset the parts that are testing
+    reducerCallCount = 0;
+    topLevelActionArg = null;
+    nested1ActionArg = null;
+    nested2ActionArg = null;
+    //#region actions from creators - for reducer
+    //args not used - just demonstrating that the appropriate reducer gets called as expected
+    var topLevelAction = nestedActions.topLevel(1);
+    var nested1Action = nestedActions.nested.nested1(9);
+    var nested2Action = nestedActions.nested.nested2("Value", 9);
+    //#endregion
+    //#region calls and expectations
+    nestedMetaReducer({ someValue: "SomeValue" }, topLevelAction);
+    if (!(reducerCallCount === 1 && topLevelAction.payload === topLevelPayload && topLevelAction.meta === topLevelMeta)) {
+        throw new Error("Misunderstood");
+    }
+    nestedMetaReducer({ someValue: "SomeValue" }, nested1Action);
+    if (!(reducerCallCount === 2 && nested1Action.payload === nested1Payload && nested1Action.meta === nested1Meta)) {
+        throw new Error("Misunderstood");
+    }
+    nestedMetaReducer({ someValue: "SomeValue" }, nested2Action);
+    if (!(reducerCallCount === 3 && nested2Action.payload === nested2Payload && nested2Action.meta === nested2Meta)) {
+        throw new Error("Misunderstood");
+    }
+    //#endregion
 }
-nestedMetaReducer({ someValue: "SomeValue" }, nested1Action);
-if (!(reducerCallCount === 2 && nested1Action.payload === nested1Payload && nested1Action.meta === nested1Meta)) {
-    throw new Error("Misunderstood");
+testReducer(nestedMetaReducer, nestedActions);
+testReducer(nestedMetaReducer2, nestedActions);
+testReducer(nestedMetaReducer3, nestedActionsWithoutCreateActions);
+/*
+Better still use the helper functions below !!!!
+*/
+//#region to be thorough - though no need
+/*note that if wanted to (and there is no need to [ you could just pass a flat object with keys being toString from the nested actions object created yourself ] ) use nested handleActions with structure matching a nested object created yourself
+I think it would be necessary to 'level' your ActionTypes
+var actionsNested = {
+    LevelOne1: {
+        action1: ReduxActions.createAction<number, string>("LevelOne1/action1", (arg) => { return 9 }),
+        action2: ReduxActions.createAction<string, number>("LevelOne1/action2", (arg) => { return arg.toString() })
+    },
+    LevelOne2: {
+        action1: ReduxActions.createAction<number, string>("LevelOne2/action1", (arg) => { return 9 }),
+        action2: ReduxActions.createAction<string, number>("LevelOne2/action2", (arg) => { return arg.toString() })
+    }
 }
-nestedMetaReducer({ someValue: "SomeValue" }, nested2Action);
-if (!(reducerCallCount === 3 && nested2Action.payload === nested2Payload && nested2Action.meta === nested2Meta)) {
-    throw new Error("Misunderstood");
-}
-//endregion
+*/
+//#endregion
+//#endregion
 //#endregion
 //#region STATEANDPAYLOAD TYPING
 /*
@@ -10603,12 +10683,6 @@ var reducerStateAndPayloadsTypescriptOverload = ReduxActions.handleActions({
     SAMEPAYLOADASSTATE2: function (state, action) { return state * action.payload; }
 }, 0);
 //#endregion
-//#region different payloads
-var reducerDifferentPayloadTypes = ReduxActions.handleActions({
-    PAYLOADSTRING: function (state, action) { return state + parseInt(action.payload); },
-    PAYLOADNUMBER: function (state, action) { return state + action.payload; },
-}, 0);
-//#endregion
 //#region handleActionsFromCreators
 function handleActionsFromCreators(initialState, ach1, ach2, ach3, ach4, ach5, ach6, ach7, ach8) {
     var reducerMap = {};
@@ -10619,29 +10693,34 @@ function handleActionsFromCreators(initialState, ach1, ach2, ach3, ach4, ach5, a
     return ReduxActions.handleActions(reducerMap, initialState);
 }
 //<payload, meta? arg1,arg2,....>
+var CustomError = /** @class */ (function (_super) {
+    __extends(CustomError, _super);
+    function CustomError(message) {
+        var _this = _super.call(this, message) || this;
+        //Object.setPrototypeOf(this, new.target.prototype); // restore prototype chain
+        _this.additionalProp = new Date();
+        return _this;
+    }
+    return CustomError;
+}(Error));
 var someActionCreator = ReduxActions.createAction("SomeAction", function (arg1) {
     if (arg1 === "throw") {
-        return new Error();
+        return new CustomError();
     }
     return new RegExp(arg1);
 });
 var someActionCreator2 = ReduxActions.createAction("SomeAction2", function (arg1, arg2) {
     if (arg1 === "throw") {
-        return new EvalError("msg");
+        return new CustomError("msg");
     }
     return new Date();
 });
-var possibleErrorAction = someActionCreator2("throw", 1);
-if (possibleErrorAction.error) {
-    var evalError = possibleErrorAction.payload;
-}
 var reducer1StateArg;
 var reducer1ActionArg;
 var reducer2StateArg;
 var reducer2ActionArg;
 var reducer2ErrorStateArg;
 var reducer2ErrorActionArg;
-//now need to combine some
 var toCombine1 = ReduxActions.createAction("ToCombine1", function (arg) {
     return new Date();
 });
@@ -10649,6 +10728,9 @@ var toCombine2 = ReduxActions.createAction("ToCombine2", function (arg1, arg2) {
     return new Date();
 });
 var combinedActionCreator = ReduxActions.combineActions(toCombine1, toCombine2);
+function payloadIsError(payload) {
+    return payload instanceof Error;
+}
 var reducerFromTypingHelper1 = handleActionsFromCreators({ someValue: "Initial Value" }, {
     actionCreator: combinedActionCreator,
     reducer: function (state, action) {
@@ -10661,22 +10743,34 @@ var reducerFromTypingHelper1 = handleActionsFromCreators({ someValue: "Initial V
     reducer: function (state, action) {
         reducer1StateArg = state;
         reducer1ActionArg = action;
-        return { someValue: action.error ? "Error" : action.payload.source };
+        if (payloadIsError(action.payload)) {
+            return {
+                someValue: action.payload.additionalProp.toLocaleTimeString()
+            };
+        }
+        else {
+            return {
+                someValue: action.payload.source
+            };
+        }
     }
 }, {
     actionCreator: someActionCreator2,
     reducer: {
+        //for the moment we have to cast
         next: function (state, action) {
             reducer2StateArg = state;
             reducer2ActionArg = action;
             return {
-                someValue: action.error ? "Error" : action.payload.toTimeString()
+                someValue: action.payload.toLocaleTimeString()
             };
         },
         throw: function (state, action) {
             reducer2ErrorStateArg = state;
             reducer2ErrorActionArg = action;
-            return { someValue: "Errored" };
+            //casting above fixes action.payload - so have to go to any !
+            var v = action.payload.additionalProp;
+            return { someValue: "s" };
         }
     }
 });
@@ -10696,21 +10790,9 @@ reducerFromTypingHelper1(reducerState, action2Error);
 if (!(reducer2ErrorStateArg === reducerState && reducer2ErrorActionArg === action2Error)) {
     throw new Error("Unexpected");
 }
-var actionsNested = {
-    LevelOne1: {
-        action1: ReduxActions.createAction("Level1.Action1", function (arg) { return 9; }),
-        actions2: ReduxActions.createAction("Level1.Action2", function (arg) { return arg.toString(); })
-    },
-    LevelOne2: {
-        action1: ReduxActions.createAction("Level1.Action1", function (arg) { return 9; }),
-        actions2: ReduxActions.createAction("Level1.Action2", function (arg) { return arg.toString(); })
-    }
-};
-//export function combineActions(...actionTypes: Array<ActionFunctions<any> | string>): string;
-//var t = handleActionsFromCreators({someValue:"initial"},)
 //#endregion
 //#region handleActionsFromMetaCreators
-function handleActionsFromMetaCreators(initialState, ach1, ach2) {
+function handleActionsFromMetaCreators(initialState, ach1, ach2, ach3) {
     var reducerMap = {};
     for (var i = 1; i < arguments.length; i++) {
         var actionCreatorHandler = arguments[i];
@@ -10723,6 +10805,8 @@ var actionCreatorMetaGenerics2 = ReduxActions.createAction("SomeActionType", fun
 }, function (stringArg) {
     return 1;
 });
+var metaCombine1 = ReduxActions.createAction("Meta1", function (arg) { return 1; }, function (arg) { return arg; });
+var metaCombine2 = ReduxActions.createAction("Meta1", function (arg) { return 1; }, function (arg) { return arg; });
 var reducerFromTypingHelper2 = handleActionsFromMetaCreators({
     someValue: "InitialValue"
 }, {
@@ -10734,6 +10818,13 @@ var reducerFromTypingHelper2 = handleActionsFromMetaCreators({
     actionCreator: actionCreatorMetaGenerics2,
     reducer: function (state, action) {
         return state;
+    }
+}, {
+    actionCreator: ReduxActions.combineActions(metaCombine1, metaCombine2),
+    reducer: function (state, action) {
+        return {
+            someValue: action.payload.toExponential() + action.meta
+        };
     }
 });
 function createReducerMap(state, ach1, ach2) {
@@ -10820,7 +10911,7 @@ reducerFromTypingHelper3(reducerState, actionGenerics2);
 if (!(crMapReducer2MetaState === reducerState && crMapReducer2MetaAction === actionGenerics2)) {
     throw new Error("Unexpected");
 }
-var _a, _e, _f;
+var _a, _e, _f, _g, _h;
 //#endregion
 //#endregion
 //#endregion

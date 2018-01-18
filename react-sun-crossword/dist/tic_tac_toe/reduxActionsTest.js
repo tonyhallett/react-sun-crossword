@@ -112,8 +112,8 @@ ReduxActions.handleAction(act2, function (state, action) {
 ReduxActions.handleAction(act3, function (state, action) {
     return { hello: action.payload.s };
 }, { hello: 'greetings' });
-//#region TONY CHANGE
 ReduxActions.handleAction(ReduxActions.combineActions(act1, act3, act2), function (state, action) { return state + 1; }, 0);
+//#region TONY CHANGE
 ReduxActions.handleActions((_a = {},
     _a[ReduxActions.combineActions(act1, act3, act2).toString()] = function (state, action) {
         return state + 1;
@@ -379,90 +379,38 @@ var combinedMeta1 = ReduxActions.createAction("CombinedMeta1", function (arg) {
     return "Meta";
 });
 var combinedMeta2 = ReduxActions.createAction("CombinedMeta2", function (arg) {
-    return arg;
+    return 1;
 }, function (arg) {
     return "Meta2";
 });
-var combined1 = ReduxActions.createAction("Combined1", function (arg) { return 2; });
+var combinedMetaDifferent = ReduxActions.createAction("CombinedMeta3", function (arg) {
+    return arg.toString();
+}, function (arg) {
+    return 9;
+});
+var combinedPayloadDifferent = ReduxActions.createAction("CombinedMeta4", function (arg) {
+    return arg.toString();
+}, function (arg) {
+    return 9;
+});
+var combined1 = ReduxActions.createAction("Combined1", function (arg) { return 1; });
 var combined2 = ReduxActions.createAction("Combined1", function (arg) { return 2; });
 var combinedDifferentPayload = ReduxActions.createAction("Combined1", function (arg) { return "2"; });
 //#region combineActions - remember not to be directly called !
 //restrict to at least two args ??????????????????????????????????????
-var combinedStringsNoGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //Combined<{}>
+//*********** this is the only one that could be considered dodgy 
+var combinedStringsNoGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<{},{}>
 var combinedStringsGenericParameter = ReduxActions.combineActions("Action1", "Action2"); //Combined<number>
 var combinedStringsGenericParameters = ReduxActions.combineActions("Action1", "Action2"); //CombinedMeta<number,string>
 var inference = ReduxActions.combineActions(combined1, combined2); //Combined<number>
 var inferenceMixedTypes = ReduxActions.combineActions(combined1, "FROMSTRING"); //Combined<number>
 var inferenceDifferentTypes = ReduxActions.combineActions(combined1, combinedDifferentPayload); //Combined<any>
-/* have to specify for meta
-export type ActionFunctionsMeta<Payload, Meta> =
-    ReduxActions.ActionFunction0<ReduxActions.ActionMeta<Payload, Meta>> |
-    ReduxActions.ActionFunction1<any, ReduxActions.ActionMeta<Payload, Meta>> |
-
-vs
-
-export type ActionFunctions<Payload> =
-    ActionFunction0<Action<Payload>> |
-    ActionFunction1<any, Action<Payload>> |
-
-
-
-/*
 var inferenceMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2);
-
-
-//var combinedStringsGenericParameter = ReduxActions.combineActions<number>(["Action1","Action2"])
-
+var inferenceMetaMixedTypes = ReduxActions.combineActions(combinedMeta1, combinedMeta2, "SomeActionType");
+//if meta different get Combined<T> - if payload the same then is typed otherwise is any
+var differentMeta = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
+var differentMetaGenericParameter = ReduxActions.combineActions(combinedMeta1, combinedMetaDifferent);
 //#endregion
-
-/*
-getting for combineActions
-export function combineActions<Payload>(...actionTypes: Array<ActionFunctions<Payload>>): Combined<Payload>;
-    export type ActionFunctions<Payload> =
-    ActionFunction0<Action<Payload>> |
-    ActionFunction1<any, Action<Payload>> |
-
-instead of
-export function combineActions<Payload,Meta>(...actionTypes: Array<ActionFunctionsMeta<Payload,Meta>>): CombinedMeta<Payload,Meta>;
-    export type ActionFunctionsMeta<Payload, Meta> =
-    ReduxActions.ActionFunction0<ReduxActions.ActionMeta<Payload, Meta>> |
-    ReduxActions.ActionFunction1<any, ReduxActions.ActionMeta<Payload, Meta>> |
-
-
-export function createAction<Payload, Meta, Arg1>(
-    actionType: string,
-    payloadCreator: ActionFunction1<Arg1, Payload>,
-    metaCreator: ActionFunction1<Arg1, Meta>
-): ActionFunction1<Arg1, ActionMeta<Payload, Meta>>; -- export type ActionFunction1<T1, R> = (t1: T1) => R;
-
-without specifying - with both overloads have ActionFunction<T>
-
-can the return type change to assist with the typing ?
-    fromm ActionFunction1<T1, R> = (t1: T1) => R;
-    to ActionMetaFunction<T1,Payload,Meta>=(t1:T1)=>ActionMeta<Payload,Meta> *********************************************
-
-a) If did this then what else would have to change ? ( caller of the returned action no change )
-   handleAction - think that that would be ok
-       just change ActionFunctionsMeta to a new AllActionMetaFunction<Payload,Meta>
-        export function handleAction<State, Payload, Meta>(
-            actionType: ActionFunctionsMeta<Payload, Meta> | { toString(): string } |CombinedMeta<Payload,Meta>,
-            reducer: ReducerMeta<State, Payload, Meta> | ReducerNextThrowMeta<State, Payload, Meta>,
-            initialState: State
-        ): Reducer<State, Payload>;
-
-    export function combineActions<Payload,Meta>(...actionTypes: Array<AllActionMetaFunction<Payload,Meta>>): CombinedMeta<Payload,Meta>;
-    --- before changing do locally combineActions first - they might still be considered the same
-   handleActions - think that the built in would not need to change
-
-   DOES MINE NEED TO CHANGE ?
-
-
-*/
-//************************************************ to return to
-//var combinedMeta = ReduxActions.combineActions(combinedMeta1, combinedMeta2);
-//handleActionMeta({ someValue: "initial" }, combinedMeta, (state, action) => {
-//    action
-//});
 //#endregion
 //#endregion
 //#endregion
@@ -585,7 +533,6 @@ expect(actionCreators.app.counter.increment(1)).to.deep.equal({
 });
 */
 //#endregion
-//a) Set up the reducers to demonstrate calls and action values
 //is there any point in nesting when can dot in to the return of createActions
 //and use toString() for safe key names (assuming that the toString itself is dotted to show the path)
 var reducerCallCount = 0;
@@ -676,17 +623,12 @@ var someActionCreator2 = ReduxActions.createAction("SomeAction2", function (arg1
     }
     return new Date();
 });
-var possibleErrorAction = someActionCreator2("throw", 1);
-if (possibleErrorAction.error) {
-    var evalError = possibleErrorAction.payload;
-}
 var reducer1StateArg;
 var reducer1ActionArg;
 var reducer2StateArg;
 var reducer2ActionArg;
 var reducer2ErrorStateArg;
 var reducer2ErrorActionArg;
-//now need to combine some
 var toCombine1 = ReduxActions.createAction("ToCombine1", function (arg) {
     return new Date();
 });
@@ -751,11 +693,9 @@ var actionsNested = {
         actions2: ReduxActions.createAction("Level1.Action2", function (arg) { return arg.toString(); })
     }
 };
-//export function combineActions(...actionTypes: Array<ActionFunctions<any> | string>): string;
-//var t = handleActionsFromCreators({someValue:"initial"},)
 //#endregion
 //#region handleActionsFromMetaCreators
-function handleActionsFromMetaCreators(initialState, ach1, ach2) {
+function handleActionsFromMetaCreators(initialState, ach1, ach2, ach3) {
     var reducerMap = {};
     for (var i = 1; i < arguments.length; i++) {
         var actionCreatorHandler = arguments[i];
@@ -768,6 +708,8 @@ var actionCreatorMetaGenerics2 = ReduxActions.createAction("SomeActionType", fun
 }, function (stringArg) {
     return 1;
 });
+var metaCombine1 = ReduxActions.createAction("Meta1", function (arg) { return 1; }, function (arg) { return arg; });
+var metaCombine2 = ReduxActions.createAction("Meta1", function (arg) { return 1; }, function (arg) { return arg; });
 var reducerFromTypingHelper2 = handleActionsFromMetaCreators({
     someValue: "InitialValue"
 }, {
@@ -779,6 +721,13 @@ var reducerFromTypingHelper2 = handleActionsFromMetaCreators({
     actionCreator: actionCreatorMetaGenerics2,
     reducer: function (state, action) {
         return state;
+    }
+}, {
+    actionCreator: ReduxActions.combineActions(metaCombine1, metaCombine2),
+    reducer: function (state, action) {
+        return {
+            someValue: action.payload.toExponential() + action.meta
+        };
     }
 });
 function createReducerMap(state, ach1, ach2) {
